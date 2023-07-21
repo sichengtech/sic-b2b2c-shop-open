@@ -1,0 +1,28 @@
+<script type="text/javascript" src="${ctx}/views/wap/default/productSearch.js"></script>
+<div class="search-page show">
+	<div class="content" style="padding-bottom:0px;">
+		<div class="page-search-box weui-border-b">
+			<span class="icon icon-arrowleft l back" onclick="javascript:window.history.go(-1);"></span>
+			<a href="/wap/index.htm" class="icon icon-wxbzhuye r"></a>
+			<div class="word-text weui-border-radius">
+				<span class="icon icon-wxbsousuotuiguang"></span>
+				<input type="text" class="search-text-input" placeholder="热水器" value="${k!}">
+				<input type="hidden" class="search_storeId" value="${storeId!}">
+				<input type="submit" class="button search_button" value="搜索">
+			</div>
+		</div>
+		<dl class="search_hotword weui-border-b clearfix">
+			<dt class="">你是不是要找</dt>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">起重机械</a></dd>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">农用机械</a></dd>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">穿戴设备</a></dd>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">影音娱乐</a></dd>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">监控套装</a></dd>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">云摄像头</a></dd>
+			<dd><a href="${ctxw}/product/list.htm?k=起重机械">汽车装饰</a></dd>
+		</dl>
+	</div>
+	<script type="text/template" id="storeCategory_Tpl" info="搜索页面分类模板模板">
+		<dd><a href="{{d.url}}">{{d.name}}</a></dd>
+	</script>
+</div>

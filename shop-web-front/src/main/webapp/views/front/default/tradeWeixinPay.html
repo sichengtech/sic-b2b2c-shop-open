@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+	<%var weChatPayment =fy.getMsg({key:'微信支付'});%>
+	${weChatPayment!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/default/tradeWeixinPay.js"></script>
+<style type="text/css">
+	.weixinPayBody .sui-container{width: 1200px;margin-top: 30px;}
+	.weixinPayBody .sui-container .title{font-size: 24px;margin-bottom: 10px;}
+	.weixinPayBody .sui-container .hint{color: #ccc;}
+	.weixinPayBody .sui-container .payOrderMoney{font-size: 18px;margin-top: 20px;
+		border: 1px solid #f3f3f3;line-height: 40px;padding-left: 20px;box-shadow: 0 0 3px 1px #f3f3f3;}
+	.weixinPayBody .sui-container .payOrderMoney .red{font-weight: bold;padding: 0 5px;}
+	.weixinPayBody .sui-container .payOrder{border: 1px solid #f3f3f3;box-shadow: 0 0 3px 1px #f3f3f3;}
+	.weixinPayBody .sui-container .payOrder .title{font-size: 20px;padding: 20px;}
+	.weixinPayBody .sui-container .payOrder .payOrderImg{width: 700px;margin: 0 auto;}
+	.weixinPayBody .sui-container .payOrder .payOrderImg .code{float: left;width: 300px;height: 360px;border: 1px solid #ccc;margin-right: 20px;margin-top: 18px;}
+	.weixinPayBody .sui-container .payOrder .payOrderImg .codeImgDiv{height: 300px;width: 300px; text-align: center;line-height: 300px;}
+	.weixinPayBody .sui-container .payOrder .payOrderImg .code .codeFoot{background-image: url('${ctx}/views/front/default/images/icon-red.png');
+		background-color:#ff7674;background-repeat: no-repeat;height:44px;background-position: 48px 8px;
+		font-size: 14px;color: #fff;height: 44px;padding: 8px 0 8px 125px;font-weight: 700;line-height: 22px;}
+	.weixinPayBody .sui-container .payOrder  .back{font-size: 16px;padding: 30px 50px;display: block;line-height: 20px;}
+</style>
+</head>
+<body class="bgfff weixinPayBody">
+	<% include("/include/header.html"){}%>
+	<div class="sui-container">
+		<div class="payOrderTitle">
+			<%var paymentSubmit =fy.getMsg({key:'支付提交'});
+				var viewOrder =fy.getMsg({key:'订单详情内容可查看'});
+				var myOrder =fy.getMsg({key:'我的订单'});
+			%>
+			<p class="title">${paymentSubmit!}</p>
+			<p class="hint">${viewOrder!}<a href="${ctxm}/trade/tradeOrder/list.htm">${myOrder!}</a></p>
+			<input type="hidden" value="${orderIds}" class="orderIds"/>
+		</div>
+		<div class="payOrderMoney">
+			<%var orderSubmitSucc =fy.getMsg({key:'订单提交成功，请您尽快付款。应付金额'});
+			var yuan=fy.getMsg({key:'元'});
+			%>
+			${orderSubmitSucc!} ${yuan!}<span class="red">${totalFee}</span>
+		</div>
+		<div class="sui-container payOrder">
+			<p class="title">${weChatPayment!}</p>
+			<div class="payOrderImg">
+				<div class="code">
+					<div class="codeImgDiv">
+						<img alt="" src="${ctxf}/trade/pay/weixin/codeImg.htm?codeUrl=${codeUrl}&orderIds=${orderIds}">
+					</div>
+					<div class="codeFoot">
+						<%var scan =fy.getMsg({key:'请使用微信扫一扫'});
+						var scanPay=fy.getMsg({key:'扫描二维码支付'});
+						%>
+						<p>${scan!}</p>
+						<p>${scanPay!}</p>
+					</div>
+				</div>
+				<img alt="" src="${ctx}/views/front/default/images/phone-bg.png">
+			</div>
+			<%var otherPayment =fy.getMsg({key:'选择其他付款方式'});%>
+			<a class="back" href="javascript:history.back(-1);"><i class="sui-icon icon-tb-back"></i> ${otherPayment!}</a>
+		</div>
+	</div>
+	<div class="footer-simple"></div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<script type="text/javascript" src="${ctxStatic}/sui/1.5.1/sui.min.js"></script></body>
+</html>

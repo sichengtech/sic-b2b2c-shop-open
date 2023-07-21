@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="">
+	
+	<!-- 默认装饰页面, 在需要装饰的页面增加<meta name="decorator" content="default"/> -->
+
+	<!--管理后台 -->
+	<decorator name="admin" page="/views/admin/layouts/defaultAdmin.jsp" />
+	<!-- jbox弹出树布局 -->
+	<decorator name="blank" page="/views/admin/layouts/blank.jsp" />
+	
+</decorators>

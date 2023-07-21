@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 页面返回js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-back.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeCartList.js"></script>
+</head>
+<body class="user myCart-body">
+	<% include("/include/foot-nav.html"){}%>
+	<!-- 头部开始 -->
+	<div class="header-default-box weui-border-b">
+		<a href="javascript:;" class="icon icon-arrowleft l back click_back"></a>
+		<a class="icon icon-edit r myCartEdit"> 编辑</a>
+		<a class="icon-more icon icon-wancheng r myCartEditOK" style="display: none;"> 完成</a>
+		<h1>购物车</h1>
+	</div>
+	<!-- 头部结束 -->
+	<!-- 内容开始 -->
+	<div class="noList"></div>
+	<div class="content">
+		<div class="weui-form-preview weui_cells_checkbox cart-list total myCartAll">
+			<div class="weui-form-preview-hd">
+		        <label class="weui_cell weui_check_label" for="s99">
+					<input type="checkbox" name="checkbox1" class="weui_check allCheckbox" id="s99">
+					<i class="weui_icon_checked"></i>
+		        </label>
+				<label class="weui-form-preview-label">全选</label>
+				<div class="weui_cell_ft moneyAll">合计：¥<span class="productSumPrice">0.00</span></div>
+				<a href="javascript:void(0);" class="total-button settlement" style="display: block;">去结算</a>
+				<a href="javascript:void(0);" class="total-button delete" style="display: none;">删除</a>
+			</div>
+		</div>
+	</div>
+	<!-- 内容结束 -->
+	<% include("/include/foot.html"){}%>
+	<script type="text/template" id="cart_tpl" info="购物车模板">
+		<div class="weui-form-preview weui_cells_checkbox cart-list myCart">
+			<div class="weui-form-preview-hd">
+        		<label class="weui_cell weui_check_label cartStore" for="s16">
+					<input type="checkbox" name="checkbox1" class="weui_check" id="s16">
+					<i class="weui_icon_checked"></i>
+        		</label>
+				<a href="${ctxw}/store/index.htm?storeId={{d.storeId}}">
+					<label class="weui-form-preview-label storeName" sellerId="{{d.sellerId}}">{{d.storeName}}</label>
+					<div class="weui_cell_ft"></div>
+				</a>
+			</div>
+			{{d.products}}
+		</div>
+	</script>
+	<script type="text/template" id="cart_offSale_product_tpl" info="购物车下架商品模板">
+		<div class="weui-form-preview-bd weui-border-t clearfix">
+	    	<label class="weui_cell weui_check_label cartProduct" for="{{d.cartId}}">
+				<input type="checkbox" name="checkbox1" class="weui_check cartCheckbox" id="{{d.cartId}}" invalid="1">
+				<i class="weui_icon_checked"></i>
+       		</label>
+			<div class="d-picture weui-border">
+				<div class="undercarriage">下架</div>
+				<img class="weui_media_appmsg_thumb undercarriageCur" data-src="{{d.productImg}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+			</div>
+			<div class="d-text">
+				<label class="weui-form-preview-label undercarriageCur">{{d.productName}}
+					<span>暂无报价</span>
+				</label>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="cart_product_tpl" info="购物车商品模板">
+		<div class="weui-form-preview-bd weui-border-t clearfix">
+			<label class="weui_cell weui_check_label cartProduct" for="{{d.cartId}}">
+				<input type="checkbox" name="checkbox1" class="weui_check cartCheckbox" id="{{d.cartId}}"/>
+				<i class="weui_icon_checked"></i>
+		    </label>
+			<div class="d-picture weui-border">
+				<a href="${ctxw}/product/detail.htm?pid={{d.pid}}"><img data-src="{{d.productImg}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></a>
+			</div>
+			<div class="d-text">
+				<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+					<label class="weui-form-preview-label">
+						<span class="productName">{{d.productName}}</span>
+						<span>{{d.sku}}</span>
+						<span>起购量：<font color="red">{{d.purchasingAmount}}</font>{{d.unit}}</span>
+					</label>
+				</a>
+				<span class="weui-form-preview-value">¥{{d.price}}
+					<div style="font-size: 0px;float: right;" class="weui_cell_ft weui-number-group" isUpdate="1" cartId="{{d.cartId}}">
+						<a class="weui-number weui-number-sub needsclick">-</a>
+						<input type="number" pattern="[0-9]*" class="weui-number-input buyNumber" style="width:30px;" oldCount="{{d.count}}" value="{{d.count}}" data-min="1" data-step="1" data-max="{{d.stock}}" readonly="readonly"/>
+						<a class="weui-number weui-number-plus needsclick">+</a> 
+					</div>
+				</span>
+				<input type="hidden" name="purchasingAmount" class="purchasingAmount" value="{{d.purchasingAmount}}"/>
+				<input type="hidden" name="stock" class="stock" value="{{d.stock}}"/>
+				<input type="hidden" name="price" class="price" value="{{d.price}}"/>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="cart_noGoods_product_tpl" info="购物车无货商品模板">
+		<div class="weui-form-preview-bd weui-border-t clearfix">
+			<label class="weui_cell weui_check_label cartProduct" for="{{d.cartId}}">
+				<input type="checkbox" name="checkbox1" class="weui_check cartCheckbox" id="{{d.cartId}}" invalid="1"/>
+				<i class="weui_icon_checked"></i>
+		    </label>
+			<div class="d-picture weui-border">
+				<div class="undercarriage">无货</div>
+				<img data-src="{{d.productImg}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+			</div>
+			<div class="d-text">
+				<label class="weui-form-preview-label">
+					<span class="productName">{{d.productName}}</span>
+					<span>{{d.sku}}</span>
+					<span>起购量：<font color="red">{{d.purchasingAmount}}</font>{{d.unit}}</span>
+				</label>
+				<span class="weui-form-preview-value">¥{{d.price}}</span>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="cart_count_input_tpl" info="购物车数量模板">
+		<div style="height: 50px;margin-left: 66px;" isUpdate="0" class="weui_cell_ft weui-number-group" cartId="{{d.cartId}}">
+			<a class="weui-number weui-number-sub needsclick" style="height: 33px;padding: 3px 15px;line-height:31px;color: #888C88;">-</a>
+			<input type="number" pattern="[0-9]*" class="weui-number-input buyNumber buyNumber2" style="width: 65px;height: 33px;" oldCount="{{d.count}}" value="{{d.count}}" data-min="1" data-step="1" data-max="{{d.dataMax}}"/>
+			<a class="weui-number weui-number-plus needsclick" style="height: 33px;padding: 3px 15px;line-height:31px;color: #888C88;">+</a> 
+		</div>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="暂无咨询模板">
+		<div class="noList-div">
+			<div class="icon icon-xiaoxi1" style="padding-top: 31%;"></div>
+			<span>您的购物车还没有宝贝哦~</span>
+		</div>
+	</script>
+</body>
+</html>

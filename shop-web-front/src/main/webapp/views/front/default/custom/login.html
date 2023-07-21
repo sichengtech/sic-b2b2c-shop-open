@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN" style="min-width: 345px;">
+<head>
+<% include("/include/head.html"){}%>
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/default/custom/login.js"></script>
+<link rel="stylesheet" href="${ctx}/views/front/default/css/style.css"/>
+</head>
+<body class="ajax-login-body bg-f6f6f6" style="min-width: 345px;">
+<div class="sso-main" style="height:362px;">
+	<div class="order-tabs sso-login-box" style="float:none; clear:both; margin:auto; height:340px; min-height:340px;">
+	 <ul class="sui-nav nav-tabs">
+		<li class="active"><a href="#aaa" data-toggle="tab">账号登录</a></li>
+		<li class="line"></li>
+		<li class=""><a href="#bbb" data-toggle="tab">手机登录</a></li>
+	 </ul>
+	<div class="tab-content pl20 pr20">
+		<div class="tab-content">
+			<div id="aaa" class="tab-pane active">
+				<ul id="all" class="tab-pane active table-css">
+					<label class="control-label label-name"><i class="icon"></i>
+						<input type="text" name="loginName" id="loginName1" class="input-username" placeholder="请输入会员帐号">
+					</label>
+					<label class="control-label label-password"><i class="icon"></i>
+						<input type="password" name="password" id="password1" class="input-password" placeholder="请输入密码">
+					</label>
+					<label class="control-label"><input type="button" class="input-ok input-ok1" value="登 录"/></label>
+					<div class="block-h20">
+						<div class="textl"><input type="checkbox" class="checkbox" value="1" name="rememberMe" id="rememberMe"> 记住我（公共场所慎用）</div>
+					</div>
+				</ul>
+			</div>
+			<div id="bbb" class="tab-pane">
+				<ul id="payment" class="tab-pane">
+					<label class="control-label label-mobile"><i class="icon"></i>
+						<input type="text" name="loginName" id="loginName2" class="input-mobile" placeholder="请输入手机号码" value="">
+					</label>
+					<label class="control-label label-code"><i class="icon"></i>
+						<input type="text" id="validateCode2" name="validateCode" class="input-Code" placeholder="请输入验证码">
+						<a id="refresh" href="javascript:" onclick="$('.input-Code-img').attr('src','${ctx}/servlet/validateCodeServlet?'+new Date().getTime());" 
+						class="mid validateCodeRefresh">
+						<img src="${ctx}/servlet/validateCodeServlet" id="validate_map" title="验证码" class="input-Code-img"></a>
+					</label>
+					<label class="control-label label-code"><i class="icon"></i>
+						<input type="text" id="password2" name="password" class="input-Code" placeholder="请输入验证码" value="">
+						<a id="smsSender" href="javascript:void(0);" class="post-code">发送验证码</a>
+					</label>
+					<label class="control-label">
+						<input type="button" class="input-ok input-ok2" value="登 录"/>
+					</label>
+				</ul>
+			</div>
+			<div class="api-login">
+				<div class="reg" style="float: left;">
+					<a href="${ctxsso}/register/save1.htm"><i class="regicon"></i>立即注册</a>
+				</div>
+				<div class="reg">
+					<a href="${ctxsso}/forgetPassWord/save1.htm"><i class="regicon"></i>忘记密码</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</div>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

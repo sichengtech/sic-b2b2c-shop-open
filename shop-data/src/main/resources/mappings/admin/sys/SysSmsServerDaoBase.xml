@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysSmsServerDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysSmsServerColumns">
+		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.status AS "status",                                                <!-- 状态，0停用，1启用 char(1)-->
+		a.url AS "url",                                                      <!-- 短信网关URL nvarchar2(255)-->
+		a.username AS "username",                                            <!-- 用户名 nvarchar2(64)-->
+		a.pwd AS "pwd",                                                      <!-- 密码 nvarchar2(64)-->
+		a.access_key AS "accessKey",                                         <!-- ACCESS KEY nvarchar2(64)-->
+		a.app_id AS "appId",                                                 <!-- APP ID nvarchar2(64)-->
+		a.client_id AS "clientId",                                           <!-- 客户id nvarchar2(64)-->
+		a.token AS "token",                                                  <!-- 令牌 nvarchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5"                                                    <!-- 备用字段5 nvarchar2(64)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysSmsServerJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.url != null and c.url != ''">AND a.url = #{c.url}</if>
+		<if test="c.username != null and c.username != ''">AND a.username = #{c.username}</if>
+		<if test="c.pwd != null and c.pwd != ''">AND a.pwd = #{c.pwd}</if>
+		<if test="c.accessKey != null and c.accessKey != ''">AND a.access_key = #{c.accessKey}</if>
+		<if test="c.appId != null and c.appId != ''">AND a.app_id = #{c.appId}</if>
+		<if test="c.clientId != null and c.clientId != ''">AND a.client_id = #{c.clientId}</if>
+		<if test="c.token != null and c.token != ''">AND a.token = #{c.token}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysSmsServer">
+		SELECT 
+		<include refid="sysSmsServerColumns"/>
+		FROM sys_sms_server a
+		<include refid="sysSmsServerJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysSmsServer">
+		SELECT
+		<include refid="sysSmsServerColumns"/>
+		FROM sys_sms_server a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysSmsServer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysSmsServerColumns"/>
+		FROM sys_sms_server a
+		<include refid="sysSmsServerJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysSmsServer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysSmsServerColumns"/>
+		FROM sys_sms_server a
+		<include refid="sysSmsServerJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_sms_server(
+			id,                                                <!-- 主键 number(19)-->
+			status,                                            <!-- 状态，0停用，1启用 char(1)-->
+			url,                                               <!-- 短信网关URL nvarchar2(255)-->
+			username,                                          <!-- 用户名 nvarchar2(64)-->
+			pwd,                                               <!-- 密码 nvarchar2(64)-->
+			access_key,                                        <!-- ACCESS KEY nvarchar2(64)-->
+			app_id,                                            <!-- APP ID nvarchar2(64)-->
+			client_id,                                         <!-- 客户id nvarchar2(64)-->
+			token,                                             <!-- 令牌 nvarchar2(64)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_sms_server_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.status},                                  <!-- 状态，0停用，1启用 char(1)-->
+			#{entity.url},                                     <!-- 短信网关URL nvarchar2(255)-->
+			#{entity.username},                                <!-- 用户名 nvarchar2(64)-->
+			#{entity.pwd},                                     <!-- 密码 nvarchar2(64)-->
+			#{entity.accessKey},                               <!-- ACCESS KEY nvarchar2(64)-->
+			#{entity.appId},                                   <!-- APP ID nvarchar2(64)-->
+			#{entity.clientId},                                <!-- 客户id nvarchar2(64)-->
+			#{entity.token},                                   <!-- 令牌 nvarchar2(64)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5}                                    <!-- 备用字段5 nvarchar2(64)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_sms_server
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.status != null">status,</if>                                      <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.url != null">url,</if>                                            <!-- 短信网关URL nvarchar2(255)-->
+			<if test="entity.username != null">username,</if>                                  <!-- 用户名 nvarchar2(64)-->
+			<if test="entity.pwd != null">pwd,</if>                                            <!-- 密码 nvarchar2(64)-->
+			<if test="entity.accessKey != null">access_key,</if>                               <!-- ACCESS KEY nvarchar2(64)-->
+			<if test="entity.appId != null">app_id,</if>                                       <!-- APP ID nvarchar2(64)-->
+			<if test="entity.clientId != null">client_id,</if>                                 <!-- 客户id nvarchar2(64)-->
+			<if test="entity.token != null">token,</if>                                        <!-- 令牌 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_sms_server_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.url != null">#{entity.url},</if>                                            <!-- 短信网关URL nvarchar2(255)-->
+			<if test="entity.username != null">#{entity.username},</if>                                  <!-- 用户名 nvarchar2(64)-->
+			<if test="entity.pwd != null">#{entity.pwd},</if>                                            <!-- 密码 nvarchar2(64)-->
+			<if test="entity.accessKey != null">#{entity.accessKey},</if>                                <!-- ACCESS KEY nvarchar2(64)-->
+			<if test="entity.appId != null">#{entity.appId},</if>                                        <!-- APP ID nvarchar2(64)-->
+			<if test="entity.clientId != null">#{entity.clientId},</if>                                  <!-- 客户id nvarchar2(64)-->
+			<if test="entity.token != null">#{entity.token},</if>                                        <!-- 令牌 nvarchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_sms_server SET
+			status = #{entity.status},                                      <!-- 状态，0停用，1启用 char(1)-->
+			url = #{entity.url},                                            <!-- 短信网关URL nvarchar2(255)-->
+			username = #{entity.username},                                  <!-- 用户名 nvarchar2(64)-->
+			pwd = #{entity.pwd},                                            <!-- 密码 nvarchar2(64)-->
+			access_key = #{entity.accessKey},                               <!-- ACCESS KEY nvarchar2(64)-->
+			app_id = #{entity.appId},                                       <!-- APP ID nvarchar2(64)-->
+			client_id = #{entity.clientId},                                 <!-- 客户id nvarchar2(64)-->
+			token = #{entity.token},                                        <!-- 令牌 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_sms_server a SET
+			status = #{entity.status},                                      <!-- 状态，0停用，1启用 char(1)-->
+			url = #{entity.url},                                            <!-- 短信网关URL nvarchar2(255)-->
+			username = #{entity.username},                                  <!-- 用户名 nvarchar2(64)-->
+			pwd = #{entity.pwd},                                            <!-- 密码 nvarchar2(64)-->
+			access_key = #{entity.accessKey},                               <!-- ACCESS KEY nvarchar2(64)-->
+			app_id = #{entity.appId},                                       <!-- APP ID nvarchar2(64)-->
+			client_id = #{entity.clientId},                                 <!-- 客户id nvarchar2(64)-->
+			token = #{entity.token},                                        <!-- 令牌 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_sms_server
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 短信网关URL nvarchar2(255)-->
+			<if test="entity.username != null">username = #{entity.username},</if>                                              <!-- 用户名 nvarchar2(64)-->
+			<if test="entity.pwd != null">pwd = #{entity.pwd},</if>                                                             <!-- 密码 nvarchar2(64)-->
+			<if test="entity.accessKey != null">access_key = #{entity.accessKey},</if>                                          <!-- ACCESS KEY nvarchar2(64)-->
+			<if test="entity.appId != null">app_id = #{entity.appId},</if>                                                      <!-- APP ID nvarchar2(64)-->
+			<if test="entity.clientId != null">client_id = #{entity.clientId},</if>                                             <!-- 客户id nvarchar2(64)-->
+			<if test="entity.token != null">token = #{entity.token},</if>                                                       <!-- 令牌 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_sms_server a
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 短信网关URL nvarchar2(255)-->
+			<if test="entity.username != null">username = #{entity.username},</if>                                              <!-- 用户名 nvarchar2(64)-->
+			<if test="entity.pwd != null">pwd = #{entity.pwd},</if>                                                             <!-- 密码 nvarchar2(64)-->
+			<if test="entity.accessKey != null">access_key = #{entity.accessKey},</if>                                          <!-- ACCESS KEY nvarchar2(64)-->
+			<if test="entity.appId != null">app_id = #{entity.appId},</if>                                                      <!-- APP ID nvarchar2(64)-->
+			<if test="entity.clientId != null">client_id = #{entity.clientId},</if>                                             <!-- 客户id nvarchar2(64)-->
+			<if test="entity.token != null">token = #{entity.token},</if>                                                       <!-- 令牌 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_sms_server
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_sms_server
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_sms_server a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_sms_server a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

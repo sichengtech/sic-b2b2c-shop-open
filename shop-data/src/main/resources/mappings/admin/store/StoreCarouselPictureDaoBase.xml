@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreCarouselPictureDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeCarouselPictureColumns">
+	<trim suffixOverrides=",">
+		a.cp_id AS "cpId",                                                   <!-- 主键 number(19)-->
+		a.picture_path AS "picturePath",                                     <!-- 图片地址 nvarchar2(64)-->
+		a.original_size AS "originalSize",                                   <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
+		a.is_open AS "isOpen",                                               <!-- 是否开启(0否、1是) char(1)-->
+		a.action AS "action",                                                <!-- 动作，字典 number(10)-->
+		a.url AS "url",                                                      <!-- 目标链接 nvarchar2(255)-->
+		a.target AS "target",                                                <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+		a.title AS "title",                                                  <!-- 标题 nvarchar2(64)-->
+		a.txt AS "txt",                                                      <!-- 文本 nvarchar2(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeCarouselPictureJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.cpId != null ">AND a.cp_id = #{c.cpId}</if>
+		<if test="c.picturePath != null and c.picturePath != ''">AND a.picture_path = #{c.picturePath}</if>
+		<if test="c.originalSize != null and c.originalSize != ''">AND a.original_size = #{c.originalSize}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.isOpen != null and c.isOpen != ''">AND a.is_open = #{c.isOpen}</if>
+		<if test="c.action != null ">AND a.action = #{c.action}</if>
+		<if test="c.url != null and c.url != ''">AND a.url = #{c.url}</if>
+		<if test="c.target != null and c.target != ''">AND a.target = #{c.target}</if>
+		<if test="c.title != null and c.title != ''">				
+			<bind name="pattern" value="'%' + c.title + '%'" />				
+			AND lower(a.title) LIKE lower(#{pattern})
+		</if>
+		<if test="c.txt != null and c.txt != ''">AND a.txt = #{c.txt}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreCarouselPicture">
+		SELECT 
+		<include refid="storeCarouselPictureColumns"/>
+		FROM store_carousel_picture a
+		<include refid="storeCarouselPictureJoins"/>
+		WHERE a.cp_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreCarouselPicture">
+		SELECT 
+		<include refid="storeCarouselPictureColumns"/>
+		FROM store_carousel_picture a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.cp_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreCarouselPicture">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeCarouselPictureColumns"/>
+		FROM store_carousel_picture a
+		<include refid="storeCarouselPictureJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.cp_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreCarouselPicture">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeCarouselPictureColumns"/>
+		FROM store_carousel_picture a
+		<include refid="storeCarouselPictureJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.cp_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.cpId" keyColumn="cp_id" useGeneratedKeys="true">
+		INSERT INTO store_carousel_picture
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			cp_id,                                             <!-- 主键 number(19)-->
+			picture_path,                                      <!-- 图片地址 nvarchar2(64)-->
+			original_size,                                     <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			sort,                                              <!-- 排序 number(10)-->
+			is_open,                                           <!-- 是否开启(0否、1是) char(1)-->
+			action,                                            <!-- 动作，字典 number(10)-->
+			url,                                               <!-- 目标链接 nvarchar2(255)-->
+			target,                                            <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			title,                                             <!-- 标题 nvarchar2(64)-->
+			txt,                                               <!-- 文本 nvarchar2(255)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			store_id,                                          <!-- 关联(店铺表) number(19)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.cpId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_carousel_picture_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.picturePath},                             <!-- 图片地址 nvarchar2(64)-->
+			#{entity.originalSize},                            <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			#{entity.sort},                                    <!-- 排序 number(10)-->
+			#{entity.isOpen},                                  <!-- 是否开启(0否、1是) char(1)-->
+			#{entity.action},                                  <!-- 动作，字典 number(10)-->
+			#{entity.url},                                     <!-- 目标链接 nvarchar2(255)-->
+			#{entity.target},                                  <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			#{entity.title},                                   <!-- 标题 nvarchar2(64)-->
+			#{entity.txt},                                     <!-- 文本 nvarchar2(255)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.cpId" keyColumn="cp_id" useGeneratedKeys="true">
+		INSERT INTO store_carousel_picture
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.cpId != null">cp_id,</if></if>
+			<if test="entity.pkMode==2">cp_id,</if>
+			<if test="entity.picturePath != null">picture_path,</if>                           <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.originalSize != null">original_size,</if>                         <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 是否开启(0否、1是) char(1)-->
+			<if test="entity.action != null">action,</if>                                      <!-- 动作，字典 number(10)-->
+			<if test="entity.url != null">url,</if>                                            <!-- 目标链接 nvarchar2(255)-->
+			<if test="entity.target != null">target,</if>                                      <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			<if test="entity.title != null">title,</if>                                        <!-- 标题 nvarchar2(64)-->
+			<if test="entity.txt != null">txt,</if>                                            <!-- 文本 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.cpId != null">#{entity.cpId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_carousel_picture_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.picturePath != null">#{entity.picturePath},</if>                            <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.originalSize != null">#{entity.originalSize},</if>                          <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 是否开启(0否、1是) char(1)-->
+			<if test="entity.action != null">#{entity.action},</if>                                      <!-- 动作，字典 number(10)-->
+			<if test="entity.url != null">#{entity.url},</if>                                            <!-- 目标链接 nvarchar2(255)-->
+			<if test="entity.target != null">#{entity.target},</if>                                      <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 标题 nvarchar2(64)-->
+			<if test="entity.txt != null">#{entity.txt},</if>                                            <!-- 文本 nvarchar2(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_carousel_picture 
+		<set>
+			picture_path = #{entity.picturePath},                           <!-- 图片地址 nvarchar2(64)-->
+			original_size = #{entity.originalSize},                         <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			is_open = #{entity.isOpen},                                     <!-- 是否开启(0否、1是) char(1)-->
+			action = #{entity.action},                                      <!-- 动作，字典 number(10)-->
+			url = #{entity.url},                                            <!-- 目标链接 nvarchar2(255)-->
+			target = #{entity.target},                                      <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			title = #{entity.title},                                        <!-- 标题 nvarchar2(64)-->
+			txt = #{entity.txt},                                            <!-- 文本 nvarchar2(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+
+		</set>
+		WHERE cp_id = #{entity.cpId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_carousel_picture a 
+		<set>
+			picture_path = #{entity.picturePath},                           <!-- 图片地址 nvarchar2(64)-->
+			original_size = #{entity.originalSize},                         <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			is_open = #{entity.isOpen},                                     <!-- 是否开启(0否、1是) char(1)-->
+			action = #{entity.action},                                      <!-- 动作，字典 number(10)-->
+			url = #{entity.url},                                            <!-- 目标链接 nvarchar2(255)-->
+			target = #{entity.target},                                      <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			title = #{entity.title},                                        <!-- 标题 nvarchar2(64)-->
+			txt = #{entity.txt},                                            <!-- 文本 nvarchar2(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_carousel_picture
+		<set>
+			<if test="entity.picturePath != null">picture_path = #{entity.picturePath},</if>                                    <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.originalSize != null">original_size = #{entity.originalSize},</if>                                 <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启(0否、1是) char(1)-->
+			<if test="entity.action != null">action = #{entity.action},</if>                                                    <!-- 动作，字典 number(10)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 目标链接 nvarchar2(255)-->
+			<if test="entity.target != null">target = #{entity.target},</if>                                                    <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 标题 nvarchar2(64)-->
+			<if test="entity.txt != null">txt = #{entity.txt},</if>                                                             <!-- 文本 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+		</set>
+		WHERE cp_id = #{entity.cpId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_carousel_picture a
+		<set>
+			<if test="entity.picturePath != null">picture_path = #{entity.picturePath},</if>                                    <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.originalSize != null">original_size = #{entity.originalSize},</if>                                 <!-- 原图尺寸（单位像素） nvarchar2(64)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启(0否、1是) char(1)-->
+			<if test="entity.action != null">action = #{entity.action},</if>                                                    <!-- 动作，字典 number(10)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 目标链接 nvarchar2(255)-->
+			<if test="entity.target != null">target = #{entity.target},</if>                                                    <!-- 窗口打开方式（1mainFrame、2 _blank、3_self、4_parent、5_top） nvarchar2(64)-->
+			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 标题 nvarchar2(64)-->
+			<if test="entity.txt != null">txt = #{entity.txt},</if>                                                             <!-- 文本 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_carousel_picture
+		WHERE cp_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_carousel_picture
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					cp_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_carousel_picture a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_carousel_picture a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

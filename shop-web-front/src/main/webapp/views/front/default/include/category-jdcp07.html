@@ -1,0 +1,122 @@
+<!-- 1F开始-->
+<div class="section mt30 wp">
+	<dl class="wp class-floorer-box blue clearfix">
+		<%var category1=product.category({cid:'330'});%>
+		<dt>
+			<strong>1F</strong>
+			<h2>${category1.name}</h2>
+			<span>
+				<a href="${ctxf}/product/list.htm?k=冰箱">冰箱</a>
+				<a href="${ctxf}/product/list.htm?k=洗衣机">洗衣机</a>
+				<a href="${ctxf}/product/list.htm?k=电视">电视</a>
+				<a href="${ctxf}/product/list.htm?k=液晶电视">液晶电视</a>
+				<a href="${ctxf}/product/list.htm?k=热水器">热水器</a>
+				<a href="${ctxf}/product/list.htm?k=空调">空调</a>
+				<a href="${ctxf}/product/list.htm?k=中央空调">中央空调</a>
+				<a href="${ctxf}/product/list.htm?k=冷柜">冷柜</a>
+				<a href="${ctxf}/product/list.htm?k=干洗机">干洗机</a>
+				<a href="${ctxf}/product/list.htm?k=空气净化器">空气净化器</a>
+			</span>
+		</dt>
+		<dd class="floorer-prolist clearfix">
+			<ul class="floorer-prolist-box">
+				<% var productList_1F=site.recommend({number:'category_jdcp_product_1F'});%>
+				<% for(p in productList_1F.siteRecommendItemList!){
+					var product=product.one({pid:p.pId!});%>
+					<li>
+						<div class="p-pic">
+							<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+								<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+							</a>
+						</div>
+						<div class="go-color">
+							<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+								<% for(img in product.storeAlbumPictureList2!){%>
+									<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}"/>
+								<%}%>
+							<%}%>
+						</div>
+						<div class="p-word">
+							<p class="p-name">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">${product.name!}</a>
+							</p>
+							<p class="p-price">
+								<% if((product.type!)=='2'){%>
+									¥${product.minPrice2!}<small class="p-type-1"></small>
+								<%}else{%>
+									¥${product.minPrice1!}<small class="p-type-2"></small>
+								<%}%>
+							</p>
+						</div>
+					</li>
+				<%}%>
+			</ul>
+			<ul class="brand_list clearfix">
+				<% var brandList_1F=site.recommend({number:'category_jdcp_brand_1F'});%>
+				<% for(brand in brandList_1F.siteRecommendItemList!){%>
+					<li><a target="_blank" href="${isNotEmpty(brand.url!)?brand.url!:'javascript:;'}"><img src="${ctxfs}${brand.path!}" onerror="fdp.defaultImage('${ctxfs}/shop_init/store_logo.png');"/></a></li>
+				<%}%>
+			</ul>
+		</dd>
+	</dl>
+</div>
+<!-- 1F结束-->
+<!-- 2F开始-->
+<div class="section mt30 wp">
+	<dl class="wp class-floorer-box blue clearfix">
+		<%var category2=product.category({cid:'385'});%>
+		<dt>
+			<strong>2F</strong>
+			<h2>${category2.name}</h2>
+			<span>
+				<a href="${ctxf}/product/list.htm?k=油烟机">油烟机</a>
+				<a href="${ctxf}/product/list.htm?k=燃气灶">燃气灶</a>
+				<a href="${ctxf}/product/list.htm?k=电热水器">电热水器</a>
+				<a href="${ctxf}/product/list.htm?k=消毒柜">消毒柜</a>
+				<a href="${ctxf}/product/list.htm?k=燃气热水器">燃气热水器</a>
+				<a href="${ctxf}/product/list.htm?k=立式消毒柜">	立式消毒柜</a>
+			</span>
+		</dt>
+		<dd class="floorer-prolist clearfix">
+			<ul class="floorer-prolist-box">
+				<% var productList_2F=site.recommend({number:'category_jdcp_product_2F'});%>
+				<% for(p in productList_2F.siteRecommendItemList!){
+					var product=product.one({pid:p.pId!});%>
+					<li>
+						<div class="p-pic">
+							<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+								<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+							</a>
+						</div>
+						<div class="go-color">
+							<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+								<% for(img in product.storeAlbumPictureList2!){%>
+									<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}"/>
+								<%}%>
+							<%}%>
+						</div>
+						<div class="p-word">
+							<p class="p-name">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">${product.name!}</a>
+							</p>
+							<p class="p-price">
+								<% if((product.type!)=='2'){%>
+									¥${product.minPrice2!}<small class="p-type-1"></small>
+								<%}else{%>
+									¥${product.minPrice1!}<small class="p-type-2"></small>
+								<%}%>
+							</p>
+						</div>
+					</li>
+				<%}%>
+			</ul>
+			<ul class="brand_list clearfix">
+				<% var brandList_2F=site.recommend({number:'category_jdcp_brand_2F'});%>
+				<% for(brand in brandList_2F.siteRecommendItemList!){%>
+					<li><a target="_blank" href="${isNotEmpty(brand.url!)?brand.url!:'javascript:;'}"><img src="${ctxfs}${brand.path!}" onerror="fdp.defaultImage('${ctxfs}/shop_init/store_logo.png');"/></a></li>
+				<%}%>
+			</ul>
+		</dd>
+	</dl>
+</div>
+<!-- 2F结束-->

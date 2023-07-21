@@ -1,0 +1,471 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductBrandDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productBrandColumns">
+	<trim suffixOverrides=",">
+		a.brand_id AS "brandId",                                             <!-- id number(19)-->
+		a.name AS "name",                                                    <!-- 品牌名称 nvarchar2(64)-->
+		a.first_letter AS "firstLetter",                                     <!-- 首页字母 nvarchar2(64)-->
+		a.english_name AS "englishName",                                     <!-- 英文名称 nvarchar2(64)-->
+		a.logo AS "logo",                                                    <!-- logo图片的path nvarchar2(128)-->
+		a.display_mode AS "displayMode",                                     <!-- 展示方式，1文字、2图片 char(1)-->
+		a.recommend AS "recommend",                                          <!-- 推荐，0未推荐，1推荐 char(1)-->
+		a.type AS "type",                                                    <!-- 类型 char(1)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
+		a.status AS "status",                                                <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+		a.url AS "url",                                                      <!-- 网址 nvarchar2(255)-->
+		a.introduction AS "introduction",                                    <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.cause AS "cause",                                                  <!-- 审核未通过原因 nvarchar2(512)-->
+		a.apply_number AS "applyNumber",                                     <!-- 注册/申请号 nvarchar2(64)-->
+		a.apply_path_p1 AS "applyPathP1",                                    <!-- 注册证/受理书，图1 nvarchar2(64)-->
+		a.apply_path_p2 AS "applyPathP2",                                    <!-- 注册证/受理书，图2 nvarchar2(64)-->
+		a.brand_owner AS "brandOwner",                                       <!-- 品牌所有者 nvarchar2(64)-->
+		a.store_id AS "storeId",                                             <!-- 谁申请的品牌 number(19)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productBrandJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.brandId != null ">AND a.brand_id = #{c.brandId}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.firstLetter != null and c.firstLetter != ''">				
+			<bind name="pattern" value="'%' + c.firstLetter + '%'" />				
+			AND lower(a.first_letter) LIKE lower(#{pattern})
+		</if>
+		<if test="c.englishName != null and c.englishName != ''">AND a.english_name = #{c.englishName}</if>
+		<if test="c.logo != null and c.logo != ''">AND a.logo = #{c.logo}</if>
+		<if test="c.displayMode != null and c.displayMode != ''">AND a.display_mode = #{c.displayMode}</if>
+		<if test="c.recommend != null and c.recommend != ''">AND a.recommend = #{c.recommend}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.url != null and c.url != ''">AND a.url = #{c.url}</if>
+		<if test="c.introduction != null and c.introduction != ''">AND a.introduction = #{c.introduction}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.cause != null and c.cause != ''">AND a.cause = #{c.cause}</if>
+		<if test="c.applyNumber != null and c.applyNumber != ''">AND a.apply_number = #{c.applyNumber}</if>
+		<if test="c.applyPathP1 != null and c.applyPathP1 != ''">AND a.apply_path_p1 = #{c.applyPathP1}</if>
+		<if test="c.applyPathP2 != null and c.applyPathP2 != ''">AND a.apply_path_p2 = #{c.applyPathP2}</if>
+		<if test="c.brandOwner != null and c.brandOwner != ''">AND a.brand_owner = #{c.brandOwner}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductBrand">
+		SELECT 
+		<include refid="productBrandColumns"/>
+		FROM product_brand a
+		<include refid="productBrandJoins"/>
+		WHERE a.brand_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductBrand">
+		SELECT 
+		<include refid="productBrandColumns"/>
+		FROM product_brand a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.brand_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductBrand">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productBrandColumns"/>
+		FROM product_brand a
+		<include refid="productBrandJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.brand_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductBrand">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productBrandColumns"/>
+		FROM product_brand a
+		<include refid="productBrandJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.brand_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.brandId" keyColumn="brand_id" useGeneratedKeys="true">
+		INSERT INTO product_brand
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			brand_id,                                          <!-- id number(19)-->
+			name,                                              <!-- 品牌名称 nvarchar2(64)-->
+			first_letter,                                      <!-- 首页字母 nvarchar2(64)-->
+			english_name,                                      <!-- 英文名称 nvarchar2(64)-->
+			logo,                                              <!-- logo图片的path nvarchar2(128)-->
+			display_mode,                                      <!-- 展示方式，1文字、2图片 char(1)-->
+			recommend,                                         <!-- 推荐，0未推荐，1推荐 char(1)-->
+			type,                                              <!-- 类型 char(1)-->
+			sort,                                              <!-- 排序 number(10)-->
+			status,                                            <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			url,                                               <!-- 网址 nvarchar2(255)-->
+			introduction,                                      <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			cause,                                             <!-- 审核未通过原因 nvarchar2(512)-->
+			apply_number,                                      <!-- 注册/申请号 nvarchar2(64)-->
+			apply_path_p1,                                     <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			apply_path_p2,                                     <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			brand_owner,                                       <!-- 品牌所有者 nvarchar2(64)-->
+			store_id,                                          <!-- 谁申请的品牌 number(19)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.brandId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_brand_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.name},                                    <!-- 品牌名称 nvarchar2(64)-->
+			#{entity.firstLetter},                             <!-- 首页字母 nvarchar2(64)-->
+			#{entity.englishName},                             <!-- 英文名称 nvarchar2(64)-->
+			#{entity.logo},                                    <!-- logo图片的path nvarchar2(128)-->
+			#{entity.displayMode},                             <!-- 展示方式，1文字、2图片 char(1)-->
+			#{entity.recommend},                               <!-- 推荐，0未推荐，1推荐 char(1)-->
+			#{entity.type},                                    <!-- 类型 char(1)-->
+			#{entity.sort},                                    <!-- 排序 number(10)-->
+			#{entity.status},                                  <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			#{entity.url},                                     <!-- 网址 nvarchar2(255)-->
+			#{entity.introduction},                            <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.cause},                                   <!-- 审核未通过原因 nvarchar2(512)-->
+			#{entity.applyNumber},                             <!-- 注册/申请号 nvarchar2(64)-->
+			#{entity.applyPathP1},                             <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			#{entity.applyPathP2},                             <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			#{entity.brandOwner},                              <!-- 品牌所有者 nvarchar2(64)-->
+			#{entity.storeId},                                 <!-- 谁申请的品牌 number(19)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.brandId" keyColumn="brand_id" useGeneratedKeys="true">
+		INSERT INTO product_brand
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.brandId != null">brand_id,</if></if>
+			<if test="entity.pkMode==2">brand_id,</if>
+			<if test="entity.name != null">name,</if>                                          <!-- 品牌名称 nvarchar2(64)-->
+			<if test="entity.firstLetter != null">first_letter,</if>                           <!-- 首页字母 nvarchar2(64)-->
+			<if test="entity.englishName != null">english_name,</if>                           <!-- 英文名称 nvarchar2(64)-->
+			<if test="entity.logo != null">logo,</if>                                          <!-- logo图片的path nvarchar2(128)-->
+			<if test="entity.displayMode != null">display_mode,</if>                           <!-- 展示方式，1文字、2图片 char(1)-->
+			<if test="entity.recommend != null">recommend,</if>                                <!-- 推荐，0未推荐，1推荐 char(1)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 类型 char(1)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			<if test="entity.url != null">url,</if>                                            <!-- 网址 nvarchar2(255)-->
+			<if test="entity.introduction != null">introduction,</if>                          <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.cause != null">cause,</if>                                        <!-- 审核未通过原因 nvarchar2(512)-->
+			<if test="entity.applyNumber != null">apply_number,</if>                           <!-- 注册/申请号 nvarchar2(64)-->
+			<if test="entity.applyPathP1 != null">apply_path_p1,</if>                          <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			<if test="entity.applyPathP2 != null">apply_path_p2,</if>                          <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			<if test="entity.brandOwner != null">brand_owner,</if>                             <!-- 品牌所有者 nvarchar2(64)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 谁申请的品牌 number(19)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.brandId != null">#{entity.brandId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_brand_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 品牌名称 nvarchar2(64)-->
+			<if test="entity.firstLetter != null">#{entity.firstLetter},</if>                            <!-- 首页字母 nvarchar2(64)-->
+			<if test="entity.englishName != null">#{entity.englishName},</if>                            <!-- 英文名称 nvarchar2(64)-->
+			<if test="entity.logo != null">#{entity.logo},</if>                                          <!-- logo图片的path nvarchar2(128)-->
+			<if test="entity.displayMode != null">#{entity.displayMode},</if>                            <!-- 展示方式，1文字、2图片 char(1)-->
+			<if test="entity.recommend != null">#{entity.recommend},</if>                                <!-- 推荐，0未推荐，1推荐 char(1)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型 char(1)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			<if test="entity.url != null">#{entity.url},</if>                                            <!-- 网址 nvarchar2(255)-->
+			<if test="entity.introduction != null">#{entity.introduction},</if>                          <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.cause != null">#{entity.cause},</if>                                        <!-- 审核未通过原因 nvarchar2(512)-->
+			<if test="entity.applyNumber != null">#{entity.applyNumber},</if>                            <!-- 注册/申请号 nvarchar2(64)-->
+			<if test="entity.applyPathP1 != null">#{entity.applyPathP1},</if>                            <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			<if test="entity.applyPathP2 != null">#{entity.applyPathP2},</if>                            <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			<if test="entity.brandOwner != null">#{entity.brandOwner},</if>                              <!-- 品牌所有者 nvarchar2(64)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 谁申请的品牌 number(19)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_brand 
+		<set>
+			name = #{entity.name},                                          <!-- 品牌名称 nvarchar2(64)-->
+			first_letter = #{entity.firstLetter},                           <!-- 首页字母 nvarchar2(64)-->
+			english_name = #{entity.englishName},                           <!-- 英文名称 nvarchar2(64)-->
+			logo = #{entity.logo},                                          <!-- logo图片的path nvarchar2(128)-->
+			display_mode = #{entity.displayMode},                           <!-- 展示方式，1文字、2图片 char(1)-->
+			recommend = #{entity.recommend},                                <!-- 推荐，0未推荐，1推荐 char(1)-->
+			type = #{entity.type},                                          <!-- 类型 char(1)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			status = #{entity.status},                                      <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			url = #{entity.url},                                            <!-- 网址 nvarchar2(255)-->
+			introduction = #{entity.introduction},                          <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			cause = #{entity.cause},                                        <!-- 审核未通过原因 nvarchar2(512)-->
+			apply_number = #{entity.applyNumber},                           <!-- 注册/申请号 nvarchar2(64)-->
+			apply_path_p1 = #{entity.applyPathP1},                          <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			apply_path_p2 = #{entity.applyPathP2},                          <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			brand_owner = #{entity.brandOwner},                             <!-- 品牌所有者 nvarchar2(64)-->
+			store_id = #{entity.storeId},                                   <!-- 谁申请的品牌 number(19)-->
+
+		</set>
+		WHERE brand_id = #{entity.brandId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_brand a 
+		<set>
+			name = #{entity.name},                                          <!-- 品牌名称 nvarchar2(64)-->
+			first_letter = #{entity.firstLetter},                           <!-- 首页字母 nvarchar2(64)-->
+			english_name = #{entity.englishName},                           <!-- 英文名称 nvarchar2(64)-->
+			logo = #{entity.logo},                                          <!-- logo图片的path nvarchar2(128)-->
+			display_mode = #{entity.displayMode},                           <!-- 展示方式，1文字、2图片 char(1)-->
+			recommend = #{entity.recommend},                                <!-- 推荐，0未推荐，1推荐 char(1)-->
+			type = #{entity.type},                                          <!-- 类型 char(1)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			status = #{entity.status},                                      <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			url = #{entity.url},                                            <!-- 网址 nvarchar2(255)-->
+			introduction = #{entity.introduction},                          <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			cause = #{entity.cause},                                        <!-- 审核未通过原因 nvarchar2(512)-->
+			apply_number = #{entity.applyNumber},                           <!-- 注册/申请号 nvarchar2(64)-->
+			apply_path_p1 = #{entity.applyPathP1},                          <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			apply_path_p2 = #{entity.applyPathP2},                          <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			brand_owner = #{entity.brandOwner},                             <!-- 品牌所有者 nvarchar2(64)-->
+			store_id = #{entity.storeId},                                   <!-- 谁申请的品牌 number(19)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_brand
+		<set>
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 品牌名称 nvarchar2(64)-->
+			<if test="entity.firstLetter != null">first_letter = #{entity.firstLetter},</if>                                    <!-- 首页字母 nvarchar2(64)-->
+			<if test="entity.englishName != null">english_name = #{entity.englishName},</if>                                    <!-- 英文名称 nvarchar2(64)-->
+			<if test="entity.logo != null">logo = #{entity.logo},</if>                                                          <!-- logo图片的path nvarchar2(128)-->
+			<if test="entity.displayMode != null">display_mode = #{entity.displayMode},</if>                                    <!-- 展示方式，1文字、2图片 char(1)-->
+			<if test="entity.recommend != null">recommend = #{entity.recommend},</if>                                           <!-- 推荐，0未推荐，1推荐 char(1)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型 char(1)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 网址 nvarchar2(255)-->
+			<if test="entity.introduction != null">introduction = #{entity.introduction},</if>                                  <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.cause != null">cause = #{entity.cause},</if>                                                       <!-- 审核未通过原因 nvarchar2(512)-->
+			<if test="entity.applyNumber != null">apply_number = #{entity.applyNumber},</if>                                    <!-- 注册/申请号 nvarchar2(64)-->
+			<if test="entity.applyPathP1 != null">apply_path_p1 = #{entity.applyPathP1},</if>                                   <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			<if test="entity.applyPathP2 != null">apply_path_p2 = #{entity.applyPathP2},</if>                                   <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			<if test="entity.brandOwner != null">brand_owner = #{entity.brandOwner},</if>                                       <!-- 品牌所有者 nvarchar2(64)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 谁申请的品牌 number(19)-->
+		</set>
+		WHERE brand_id = #{entity.brandId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_brand a
+		<set>
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 品牌名称 nvarchar2(64)-->
+			<if test="entity.firstLetter != null">first_letter = #{entity.firstLetter},</if>                                    <!-- 首页字母 nvarchar2(64)-->
+			<if test="entity.englishName != null">english_name = #{entity.englishName},</if>                                    <!-- 英文名称 nvarchar2(64)-->
+			<if test="entity.logo != null">logo = #{entity.logo},</if>                                                          <!-- logo图片的path nvarchar2(128)-->
+			<if test="entity.displayMode != null">display_mode = #{entity.displayMode},</if>                                    <!-- 展示方式，1文字、2图片 char(1)-->
+			<if test="entity.recommend != null">recommend = #{entity.recommend},</if>                                           <!-- 推荐，0未推荐，1推荐 char(1)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型 char(1)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 审核状态，0待审、1通过、2未通过 char(1)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 网址 nvarchar2(255)-->
+			<if test="entity.introduction != null">introduction = #{entity.introduction},</if>                                  <!-- 品牌介绍，品牌数量少clob不单独提成一张表 clob-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.cause != null">cause = #{entity.cause},</if>                                                       <!-- 审核未通过原因 nvarchar2(512)-->
+			<if test="entity.applyNumber != null">apply_number = #{entity.applyNumber},</if>                                    <!-- 注册/申请号 nvarchar2(64)-->
+			<if test="entity.applyPathP1 != null">apply_path_p1 = #{entity.applyPathP1},</if>                                   <!-- 注册证/受理书，图1 nvarchar2(64)-->
+			<if test="entity.applyPathP2 != null">apply_path_p2 = #{entity.applyPathP2},</if>                                   <!-- 注册证/受理书，图2 nvarchar2(64)-->
+			<if test="entity.brandOwner != null">brand_owner = #{entity.brandOwner},</if>                                       <!-- 品牌所有者 nvarchar2(64)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 谁申请的品牌 number(19)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_brand
+		WHERE brand_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_brand
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					brand_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_brand a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_brand a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

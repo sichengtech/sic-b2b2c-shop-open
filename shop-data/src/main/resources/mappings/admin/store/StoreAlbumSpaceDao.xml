@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreAlbumSpaceDao">
+	<cache-ref namespace="com.sicheng.admin.store.dao.StoreAlbumSpaceDao"/> 
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	StoreAlbumSpaceDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	StoreAlbumSpaceDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	StoreAlbumSpaceDao.xml文件与StoreAlbumSpaceDaoBase.xml文件，在运行时会合并起来。
+	StoreAlbumSpaceDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，StoreAlbumSpaceDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<!-- 根据albumSpaceId修改图片数量、图片占用空间、相册数量,图片占用空间 -->
+	<update id="addPicMsgByAlbumSpecId">
+		UPDATE store_album_space t
+		<set>
+			<if test="entity.pictureCount != null">t.picture_count = t.picture_count+#{entity.pictureCount},</if>   <!-- 图片数量 number(10)-->
+			<if test="entity.albumCount != null">t.album_count = t.album_count+#{entity.albumCount},</if>           <!-- 相册的数量 number(10)-->
+			<if test="entity.pictureSpace != null">t.picture_space =t.picture_space+#{entity.pictureSpace},</if>  	<!-- 图片占用空间 number(10)-->
+		</set>
+		WHERE t.album_space_id = #{entity.albumSpaceId}
+	</update>
+	
+	<!-- 根据albumSpaceId修改图片数量、图片占用空间、相册数量,图片占用空间 -->
+	<update id="reducePicMsgByAlbumSpecId">
+		UPDATE store_album_space t
+		<set>
+			<if test="entity.pictureCount != null">t.picture_count = t.picture_count-#{entity.pictureCount},</if>   <!-- 图片数量 number(10)-->
+			<if test="entity.albumCount != null">t.album_count = t.album_count-#{entity.albumCount},</if>           <!-- 相册的数量 number(10)-->
+			<if test="entity.pictureSpace != null">t.picture_space =t.picture_space-#{entity.pictureSpace},</if>  	<!-- 图片占用空间 number(10)-->
+		</set>
+		WHERE t.album_space_id = #{entity.albumSpaceId}
+	</update>
+</mapper>

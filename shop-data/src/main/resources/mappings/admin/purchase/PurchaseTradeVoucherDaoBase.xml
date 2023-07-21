@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.purchase.dao.PurchaseTradeVoucherDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="purchaseTradeVoucherColumns">
+	<trim suffixOverrides=",">
+		a.trade_voucher_id AS "tradeVoucherId",                              <!-- 凭证id bigint(20)-->
+		a.purchase_trade_id AS "purchaseTradeId",                            <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+		a.money AS "money",                                                  <!-- 金额 decimal(12,3)-->
+		a.file_path AS "filePath",                                           <!-- 凭证文件地址 varchar(31)-->
+		a.u_id AS "uId",                                                     <!-- 会员ID bigint(255)-->
+		a.type AS "type",                                                    <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+		a.status AS "status",                                                <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+		a.audit_grounds AS "auditGrounds",                                   <!-- 审核理由 varchar(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="purchaseTradeVoucherJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.tradeVoucherId != null ">AND a.trade_voucher_id = #{c.tradeVoucherId}</if>
+		<if test="c.purchaseTradeId != null ">AND a.purchase_trade_id = #{c.purchaseTradeId}</if>
+		<if test="c.money != null ">AND a.money = #{c.money}</if>
+		<if test="c.filePath != null and c.filePath != ''">AND a.file_path = #{c.filePath}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.auditGrounds != null and c.auditGrounds != ''">AND a.audit_grounds = #{c.auditGrounds}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="PurchaseTradeVoucher">
+		SELECT 
+		<include refid="purchaseTradeVoucherColumns"/>
+		FROM purchase_trade_voucher a
+		<include refid="purchaseTradeVoucherJoins"/>
+		WHERE a.trade_voucher_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="PurchaseTradeVoucher">
+		SELECT 
+		<include refid="purchaseTradeVoucherColumns"/>
+		FROM purchase_trade_voucher a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.trade_voucher_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="PurchaseTradeVoucher">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="purchaseTradeVoucherColumns"/>
+		FROM purchase_trade_voucher a
+		<include refid="purchaseTradeVoucherJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="PurchaseTradeVoucher">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="purchaseTradeVoucherColumns"/>
+		FROM purchase_trade_voucher a
+		<include refid="purchaseTradeVoucherJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO purchase_trade_voucher
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			trade_voucher_id,                                  <!-- 凭证id bigint(20)-->
+			purchase_trade_id,                                 <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			money,                                             <!-- 金额 decimal(12,3)-->
+			file_path,                                         <!-- 凭证文件地址 varchar(31)-->
+			u_id,                                              <!-- 会员ID bigint(255)-->
+			type,                                              <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			status,                                            <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			audit_grounds,                                     <!-- 审核理由 varchar(255)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			#{entity.tradeVoucherId},                          <!-- 凭证id bigint(20)-->
+			#{entity.purchaseTradeId},                         <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			#{entity.money},                                   <!-- 金额 decimal(12,3)-->
+			#{entity.filePath},                                <!-- 凭证文件地址 varchar(31)-->
+			#{entity.uId},                                     <!-- 会员ID bigint(255)-->
+			#{entity.type},                                    <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			#{entity.status},                                  <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			#{entity.auditGrounds},                            <!-- 审核理由 varchar(255)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO purchase_trade_voucher
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.tradeVoucherId != null">trade_voucher_id,</if>                    <!-- 凭证id bigint(20)-->
+			<if test="entity.purchaseTradeId != null">purchase_trade_id,</if>                  <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			<if test="entity.money != null">money,</if>                                        <!-- 金额 decimal(12,3)-->
+			<if test="entity.filePath != null">file_path,</if>                                 <!-- 凭证文件地址 varchar(31)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员ID bigint(255)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			<if test="entity.auditGrounds != null">audit_grounds,</if>                         <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.tradeVoucherId != null">#{entity.tradeVoucherId},</if>                      <!-- 凭证id bigint(20)-->
+			<if test="entity.purchaseTradeId != null">#{entity.purchaseTradeId},</if>                    <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			<if test="entity.money != null">#{entity.money},</if>                                        <!-- 金额 decimal(12,3)-->
+			<if test="entity.filePath != null">#{entity.filePath},</if>                                  <!-- 凭证文件地址 varchar(31)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员ID bigint(255)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			<if test="entity.auditGrounds != null">#{entity.auditGrounds},</if>                          <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE purchase_trade_voucher 
+		<set>
+			trade_voucher_id = #{entity.tradeVoucherId},                    <!-- 凭证id bigint(20)-->
+			purchase_trade_id = #{entity.purchaseTradeId},                  <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			money = #{entity.money},                                        <!-- 金额 decimal(12,3)-->
+			file_path = #{entity.filePath},                                 <!-- 凭证文件地址 varchar(31)-->
+			u_id = #{entity.uId},                                           <!-- 会员ID bigint(255)-->
+			type = #{entity.type},                                          <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			status = #{entity.status},                                      <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			audit_grounds = #{entity.auditGrounds},                         <!-- 审核理由 varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE trade_voucher_id = #{entity.tradeVoucherId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE purchase_trade_voucher a 
+		<set>
+			trade_voucher_id = #{entity.tradeVoucherId},                    <!-- 凭证id bigint(20)-->
+			purchase_trade_id = #{entity.purchaseTradeId},                  <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			money = #{entity.money},                                        <!-- 金额 decimal(12,3)-->
+			file_path = #{entity.filePath},                                 <!-- 凭证文件地址 varchar(31)-->
+			u_id = #{entity.uId},                                           <!-- 会员ID bigint(255)-->
+			type = #{entity.type},                                          <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			status = #{entity.status},                                      <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			audit_grounds = #{entity.auditGrounds},                         <!-- 审核理由 varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE purchase_trade_voucher
+		<set>
+			<if test="entity.tradeVoucherId != null">trade_voucher_id = #{entity.tradeVoucherId},</if>                          <!-- 凭证id bigint(20)-->
+			<if test="entity.purchaseTradeId != null">purchase_trade_id = #{entity.purchaseTradeId},</if>                       <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			<if test="entity.money != null">money = #{entity.money},</if>                                                       <!-- 金额 decimal(12,3)-->
+			<if test="entity.filePath != null">file_path = #{entity.filePath},</if>                                             <!-- 凭证文件地址 varchar(31)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员ID bigint(255)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			<if test="entity.auditGrounds != null">audit_grounds = #{entity.auditGrounds},</if>                                 <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE trade_voucher_id = #{entity.tradeVoucherId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE purchase_trade_voucher a
+		<set>
+			<if test="entity.tradeVoucherId != null">trade_voucher_id = #{entity.tradeVoucherId},</if>                          <!-- 凭证id bigint(20)-->
+			<if test="entity.purchaseTradeId != null">purchase_trade_id = #{entity.purchaseTradeId},</if>                       <!-- 关联purchase_trade_order(供采交易订单表) bigint(20)-->
+			<if test="entity.money != null">money = #{entity.money},</if>                                                       <!-- 金额 decimal(12,3)-->
+			<if test="entity.filePath != null">file_path = #{entity.filePath},</if>                                             <!-- 凭证文件地址 varchar(31)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员ID bigint(255)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 交易凭证类型：1合同、2收据、3对公发票、4合同+汇款凭证、5货物作证+汇款、6作证 char(1)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 审核状态10.审核中20.审核未30.审核通过 char(2)-->
+			<if test="entity.auditGrounds != null">audit_grounds = #{entity.auditGrounds},</if>                                 <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM purchase_trade_voucher
+		WHERE trade_voucher_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM purchase_trade_voucher
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					trade_voucher_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM purchase_trade_voucher a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM purchase_trade_voucher a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

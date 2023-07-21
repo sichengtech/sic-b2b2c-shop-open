@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysExpressServerDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysExpressServerColumns">
+	<trim suffixOverrides=",">
+		a.ses_id AS "sesId",                                                 <!-- 主键 number(19)-->
+		a.status AS "status",                                                <!-- 状态，0停用，1启用 char(1)-->
+		a.ebusiness_id AS "ebusinessId",                                     <!-- 电商id nvarchar2(64)-->
+		a.appkey AS "appkey",                                                <!-- 电商加密私钥 nvarchar2(64)-->
+		a.url AS "url",                                                      <!-- 请求url nvarchar2(128)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysExpressServerJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.sesId != null ">AND a.ses_id = #{c.sesId}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.ebusinessId != null and c.ebusinessId != ''">AND a.ebusiness_id = #{c.ebusinessId}</if>
+		<if test="c.appkey != null and c.appkey != ''">AND a.appkey = #{c.appkey}</if>
+		<if test="c.url != null and c.url != ''">AND a.url = #{c.url}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysExpressServer">
+		SELECT 
+		<include refid="sysExpressServerColumns"/>
+		FROM sys_express_server a
+		<include refid="sysExpressServerJoins"/>
+		WHERE a.ses_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysExpressServer">
+		SELECT 
+		<include refid="sysExpressServerColumns"/>
+		FROM sys_express_server a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.ses_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysExpressServer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysExpressServerColumns"/>
+		FROM sys_express_server a
+		<include refid="sysExpressServerJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ses_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysExpressServer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysExpressServerColumns"/>
+		FROM sys_express_server a
+		<include refid="sysExpressServerJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ses_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.sesId" keyColumn="ses_id" useGeneratedKeys="true">
+		INSERT INTO sys_express_server
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ses_id,                                            <!-- 主键 number(19)-->
+			status,                                            <!-- 状态，0停用，1启用 char(1)-->
+			ebusiness_id,                                      <!-- 电商id nvarchar2(64)-->
+			appkey,                                            <!-- 电商加密私钥 nvarchar2(64)-->
+			url,                                               <!-- 请求url nvarchar2(128)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.sesId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_express_server_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.status},                                  <!-- 状态，0停用，1启用 char(1)-->
+			#{entity.ebusinessId},                             <!-- 电商id nvarchar2(64)-->
+			#{entity.appkey},                                  <!-- 电商加密私钥 nvarchar2(64)-->
+			#{entity.url},                                     <!-- 请求url nvarchar2(128)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.sesId" keyColumn="ses_id" useGeneratedKeys="true">
+		INSERT INTO sys_express_server
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.sesId != null">ses_id,</if></if>
+			<if test="entity.pkMode==2">ses_id,</if>
+			<if test="entity.status != null">status,</if>                                      <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.ebusinessId != null">ebusiness_id,</if>                           <!-- 电商id nvarchar2(64)-->
+			<if test="entity.appkey != null">appkey,</if>                                      <!-- 电商加密私钥 nvarchar2(64)-->
+			<if test="entity.url != null">url,</if>                                            <!-- 请求url nvarchar2(128)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.sesId != null">#{entity.sesId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_express_server_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.ebusinessId != null">#{entity.ebusinessId},</if>                            <!-- 电商id nvarchar2(64)-->
+			<if test="entity.appkey != null">#{entity.appkey},</if>                                      <!-- 电商加密私钥 nvarchar2(64)-->
+			<if test="entity.url != null">#{entity.url},</if>                                            <!-- 请求url nvarchar2(128)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_express_server 
+		<set>
+			status = #{entity.status},                                      <!-- 状态，0停用，1启用 char(1)-->
+			ebusiness_id = #{entity.ebusinessId},                           <!-- 电商id nvarchar2(64)-->
+			appkey = #{entity.appkey},                                      <!-- 电商加密私钥 nvarchar2(64)-->
+			url = #{entity.url},                                            <!-- 请求url nvarchar2(128)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+
+		</set>
+		WHERE ses_id = #{entity.sesId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_express_server a 
+		<set>
+			status = #{entity.status},                                      <!-- 状态，0停用，1启用 char(1)-->
+			ebusiness_id = #{entity.ebusinessId},                           <!-- 电商id nvarchar2(64)-->
+			appkey = #{entity.appkey},                                      <!-- 电商加密私钥 nvarchar2(64)-->
+			url = #{entity.url},                                            <!-- 请求url nvarchar2(128)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_express_server
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.ebusinessId != null">ebusiness_id = #{entity.ebusinessId},</if>                                    <!-- 电商id nvarchar2(64)-->
+			<if test="entity.appkey != null">appkey = #{entity.appkey},</if>                                                    <!-- 电商加密私钥 nvarchar2(64)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 请求url nvarchar2(128)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+		</set>
+		WHERE ses_id = #{entity.sesId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_express_server a
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，0停用，1启用 char(1)-->
+			<if test="entity.ebusinessId != null">ebusiness_id = #{entity.ebusinessId},</if>                                    <!-- 电商id nvarchar2(64)-->
+			<if test="entity.appkey != null">appkey = #{entity.appkey},</if>                                                    <!-- 电商加密私钥 nvarchar2(64)-->
+			<if test="entity.url != null">url = #{entity.url},</if>                                                             <!-- 请求url nvarchar2(128)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_express_server
+		WHERE ses_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_express_server
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					ses_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_express_server a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_express_server a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rsf xmlns="http://code.hc360.com/schema/rsf"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:rsf="http://code.hc360.com/schema/rsf">
+
+	<!-- rsf协议-->
+	<rsf:protocol id="protocol_rsf" name="rsf" port="63634" ></rsf:protocol>	
+	
+	<!-- 登录，客户端-->
+	<rsf:client portalId="order" id="clearAuthorizationCache" url="rsf://127.0.0.1:63638" timeout="20000"
+	displayName="清理权限的缓存服务" owner="蔡龙" department="开发部" 
+	interfaceClass="com.sicheng.common.shiro.SsoClearAuthorizationCache">
+	</rsf:client>
+
+</rsf>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<script type="text/javascript">
+		var storeId = '${storeId!}';
+	</script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/categoryIndex.js"></script>
+</head>
+<body class="category">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id='prod_list'>
+			<div class="content">
+				<div class="page-search-box weui-border-b">	
+					<a href="javascript:void(0);" class="icon l icon-arrowleft" onclick="javascript:window.history.go(-1);"></a>
+					<a href="/wap/index.htm" class="icon icon-wxbzhuye r"></a>
+					<a href="#page-search" class="use-router" id="gosearch-box">
+						<div class="word-text weui-border-radius">
+							<span class="icon icon-wxbsousuotuiguang"></span>
+							<span>热水器</span>
+						</div>
+					</a>
+				</div>
+				<div id="category" class="show">
+				    <div class="category_w" id="category_w">
+				        <div id="leftnav" class="leftnav weui-border-r">
+				            <div id="leftnav_item">
+				                <ul>
+				                    <li class="weui-border-b cur">
+				                        <a href="javascript:void(0);" attr="rx"><span class="icon icon-hot"></span> 热 销</a>
+				                    </li>
+				                    <li class="weui-border-b">
+				                        <a href="javascript:void(0);" attr="gcjx">工程机械</a>
+				                    </li>
+				                    <li class="weui-border-b">
+				                        <a href="javascript:void(0);" attr="jdcp">家电产品</a>
+				                    </li>
+				                    <li class="weui-border-b">
+				                        <a href="javascript:void(0);" attr="3csm">3C数码</a>
+				                    </li>
+				                    <li class="weui-border-b">
+				                        <a href="javascript:void(0);" attr="afjk">安防监控</a>
+				                    </li>
+				                    <li class="weui-border-b">
+				                        <a href="javascript:void(0);" attr="qcqp">汽车汽配</a>
+				                    </li>
+				                </ul>
+				            </div>
+				        </div>
+				        <div class="category_m rx">
+							<dl class="clearfix" >
+								<dt>热销品牌</dt>
+								<dd class="logo_list">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>热销分类</dt>
+								<dd class="rx_category1">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>其他分类</dt>
+								<dd class="rx_category2">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+						</div>
+				        <div class="category_m gcjx" style="display: none;">
+							<dl class="clearfix">
+								<dt>热销品牌</dt>
+								<dd class="logo_list">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>起重机械</dt>
+								<dd class="gcjx_category1">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>专用属具</dt>
+								<dd class="gcjx_category2">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+				        </div>
+				        <div class="category_m jdcp" style="display: none;">
+							<dl class="clearfix">
+								<dt>热销品牌</dt>
+								<dd class="logo_list">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>生活家电</dt>
+								<dd class="jdcp_category1">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>厨卫电器</dt>
+								<dd class="jdcp_category2">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+				        </div>
+				        <div class="category_m 3csm" style="display: none;">
+							<dl class="clearfix">
+								<dt>热销品牌</dt>
+								<dd class="logo_list">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>摄影摄像</dt>
+								<dd class="3csm_category1">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>数码配件</dt>
+								<dd class="3csm_category2">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+				        </div>
+				        <div class="category_m afjk" style="display: none;">
+							<dl class="clearfix">
+								<dt>热销品牌</dt>
+								<dd class="logo_list">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>视频监控</dt>
+								<dd class="afjk_category1">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>门禁产品</dt>
+								<dd class="afjk_category2">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+				        </div>
+				        <div class="category_m qcqp" style="display: none;">
+							<dl class="clearfix">
+								<dt>热销品牌</dt>
+								<dd class="logo_list">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>汽车装饰</dt>
+								<dd class="qcqp_category1">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+							<dl class="clearfix">
+								<dt>汽车电子</dt>
+								<dd class="qcqp_category2">
+									<ul class="clearfix"></ul>
+								</dd>
+							</dl>
+				        </div>
+				    </div>
+				</div>	
+			</div>
+			<% include("/include/foot-nav.html"){}%>
+		</div>
+		<div class="sui-page" id="page-search">
+			<% include("productSearch.html"){}%>
+		</div>
+	</div>
+	<% include("/include/foot.html"){}%>
+	<script type="text/template" id="category_brand_Tpl" info="商品分类品牌模板">
+		<li class="weui-border-b"><a href="{{d.url}}" class="weui-border-r"><img src="{{d.path}}" onerror="fdp.defaultImage('/static/static/images/default_store.png');"/></a></li>
+	</script>
+	<script type="text/template" id="category_Tpl" info="商品分类商品模板">
+		<li><a href="{{d.url}}"><img data-src="{{d.path}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/><p>{{d.cName}}</p></a></li>
+	</script>
+</body>
+</html>

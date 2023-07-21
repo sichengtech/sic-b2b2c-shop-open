@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var storeId=parameter.storeId;%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/include/storeNav.js"></script>
+	<script type="text/javascript" src="${ctx}/views/wap/default/storeArticleList.js"></script>
+	<style type="text/css">
+		.sui-page, .sui-page-group{position: absolute;}
+	</style>
+</head>
+<body class="store storeArticle-body">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id='storeArticleList-page'>
+			<div class="content" style="overflow-x: hidden;">
+				<% include("/include/store-footer-nav.html",{'storeId':(storeId!)}){}%>
+				<% include("/include/header-store.html",{'storeId':(storeId!)}){}%>
+				<% include("/include/store-nav.html",{'storeId':(storeId!)}){}%>
+				<div class="noList hide" style="padding-top: 25%;height: 69%;"></div>
+				<div class="weui_panel">
+		            <div class="weui_panel_bd"></div>
+		        </div>
+			</div>
+		</div>
+		<div class="sui-page" id="page-search">	
+			<% include("productSearch.html"){}%>
+		</div>
+		<% include("/include/foot.html"){}%>
+	</div>
+	<script type="text/template" id="storeArticle_Tpl" info="店铺文章模板">
+		<div class="weui_media_box weui_media_text">
+			<a href="${ctxw}/store/article/detail.htm?storeId={{d.storeId}}&&saId={{d.saId}}">
+				<h4 class="weui_media_title">{{d.title}}</h4>
+				<p class="weui_media_desc">{{d.content}}</p>
+			</a>
+			<ul class="weui_media_info">
+				<li class="weui_media_info_meta">文字来源：本店</li>
+				<li class="weui_media_info_meta">时间：{{d.createDate}}</li>
+			</ul>
+		</div>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="没有动态模板">
+		<div class="noList-div">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>当前店铺没有动态哦~</span>
+		</div>
+	</script>
+</body>
+</html>

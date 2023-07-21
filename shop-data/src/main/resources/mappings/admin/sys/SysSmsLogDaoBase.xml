@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysSmsLogDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysSmsLogColumns">
+	<trim suffixOverrides=",">
+		a.ssl_id AS "sslId",                                                 <!-- 主键 number(19)-->
+		a.content AS "content",                                              <!-- 短信内容 nvarchar2(255)-->
+		a.templatecode AS "templatecode",                                    <!-- 模板id nvarchar2(128)-->
+		a.status AS "status",                                                <!-- 发送状态（0、失败，1、成功） char(1)-->
+		a.bewrite AS "bewrite",                                              <!-- 描述 nvarchar2(128)-->
+		a.type AS "type",                                                    <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+		a.send_date AS "sendDate",                                           <!-- 发送时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysSmsLogJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.sslId != null ">AND a.ssl_id = #{c.sslId}</if>
+		<if test="c.content != null and c.content != ''">AND a.content = #{c.content}</if>
+		<if test="c.templatecode != null and c.templatecode != ''">AND a.templatecode = #{c.templatecode}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.bewrite != null and c.bewrite != ''">AND a.bewrite = #{c.bewrite}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.beginSendDate != null and c.endSendDate != null ">AND a.send_date BETWEEN #{c.beginSendDate} AND #{c.endSendDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysSmsLog">
+		SELECT 
+		<include refid="sysSmsLogColumns"/>
+		FROM sys_sms_log a
+		<include refid="sysSmsLogJoins"/>
+		WHERE a.ssl_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysSmsLog">
+		SELECT 
+		<include refid="sysSmsLogColumns"/>
+		FROM sys_sms_log a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.ssl_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysSmsLog">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysSmsLogColumns"/>
+		FROM sys_sms_log a
+		<include refid="sysSmsLogJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ssl_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysSmsLog">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysSmsLogColumns"/>
+		FROM sys_sms_log a
+		<include refid="sysSmsLogJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ssl_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.sslId" keyColumn="ssl_id" useGeneratedKeys="true">
+		INSERT INTO sys_sms_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ssl_id,                                            <!-- 主键 number(19)-->
+			content,                                           <!-- 短信内容 nvarchar2(255)-->
+			templatecode,                                      <!-- 模板id nvarchar2(128)-->
+			status,                                            <!-- 发送状态（0、失败，1、成功） char(1)-->
+			bewrite,                                           <!-- 描述 nvarchar2(128)-->
+			type,                                              <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			send_date,                                         <!-- 发送时间 date(7)-->
+			bak1,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.sslId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_sms_log_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.content},                                 <!-- 短信内容 nvarchar2(255)-->
+			#{entity.templatecode},                            <!-- 模板id nvarchar2(128)-->
+			#{entity.status},                                  <!-- 发送状态（0、失败，1、成功） char(1)-->
+			#{entity.bewrite},                                 <!-- 描述 nvarchar2(128)-->
+			#{entity.type},                                    <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			#{entity.sendDate},                                <!-- 发送时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.sslId" keyColumn="ssl_id" useGeneratedKeys="true">
+		INSERT INTO sys_sms_log
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.sslId != null">ssl_id,</if></if>
+			<if test="entity.pkMode==2">ssl_id,</if>
+			<if test="entity.content != null">content,</if>                                    <!-- 短信内容 nvarchar2(255)-->
+			<if test="entity.templatecode != null">templatecode,</if>                          <!-- 模板id nvarchar2(128)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 发送状态（0、失败，1、成功） char(1)-->
+			<if test="entity.bewrite != null">bewrite,</if>                                    <!-- 描述 nvarchar2(128)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			<if test="entity.sendDate != null">send_date,</if>                                 <!-- 发送时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.sslId != null">#{entity.sslId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_sms_log_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 短信内容 nvarchar2(255)-->
+			<if test="entity.templatecode != null">#{entity.templatecode},</if>                          <!-- 模板id nvarchar2(128)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 发送状态（0、失败，1、成功） char(1)-->
+			<if test="entity.bewrite != null">#{entity.bewrite},</if>                                    <!-- 描述 nvarchar2(128)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			<if test="entity.sendDate != null">#{entity.sendDate},</if>                                  <!-- 发送时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_sms_log 
+		<set>
+			content = #{entity.content},                                    <!-- 短信内容 nvarchar2(255)-->
+			templatecode = #{entity.templatecode},                          <!-- 模板id nvarchar2(128)-->
+			status = #{entity.status},                                      <!-- 发送状态（0、失败，1、成功） char(1)-->
+			bewrite = #{entity.bewrite},                                    <!-- 描述 nvarchar2(128)-->
+			type = #{entity.type},                                          <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			send_date = #{entity.sendDate},                                 <!-- 发送时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+
+		</set>
+		WHERE ssl_id = #{entity.sslId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_sms_log a 
+		<set>
+			content = #{entity.content},                                    <!-- 短信内容 nvarchar2(255)-->
+			templatecode = #{entity.templatecode},                          <!-- 模板id nvarchar2(128)-->
+			status = #{entity.status},                                      <!-- 发送状态（0、失败，1、成功） char(1)-->
+			bewrite = #{entity.bewrite},                                    <!-- 描述 nvarchar2(128)-->
+			type = #{entity.type},                                          <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			send_date = #{entity.sendDate},                                 <!-- 发送时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_sms_log
+		<set>
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 短信内容 nvarchar2(255)-->
+			<if test="entity.templatecode != null">templatecode = #{entity.templatecode},</if>                                  <!-- 模板id nvarchar2(128)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 发送状态（0、失败，1、成功） char(1)-->
+			<if test="entity.bewrite != null">bewrite = #{entity.bewrite},</if>                                                 <!-- 描述 nvarchar2(128)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			<if test="entity.sendDate != null">send_date = #{entity.sendDate},</if>                                             <!-- 发送时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+		</set>
+		WHERE ssl_id = #{entity.sslId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_sms_log a
+		<set>
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 短信内容 nvarchar2(255)-->
+			<if test="entity.templatecode != null">templatecode = #{entity.templatecode},</if>                                  <!-- 模板id nvarchar2(128)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 发送状态（0、失败，1、成功） char(1)-->
+			<if test="entity.bewrite != null">bewrite = #{entity.bewrite},</if>                                                 <!-- 描述 nvarchar2(128)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 短信网关类型（1、阿里大于，2、慧聪短信网关） char(1)-->
+			<if test="entity.sendDate != null">send_date = #{entity.sendDate},</if>                                             <!-- 发送时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_sms_log
+		WHERE ssl_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_sms_log
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					ssl_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_sms_log a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_sms_log a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

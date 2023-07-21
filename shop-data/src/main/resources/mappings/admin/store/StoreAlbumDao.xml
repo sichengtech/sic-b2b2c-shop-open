@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreAlbumDao">
+	<cache-ref namespace="com.sicheng.admin.store.dao.StoreAlbumDao"/> 
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	StoreAlbumDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	StoreAlbumDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	StoreAlbumDao.xml文件与StoreAlbumDaoBase.xml文件，在运行时会合并起来。
+	StoreAlbumDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，StoreAlbumDao.xml文件的内容你要自行做好备份。
+	-->
+	
+	<!-- 根据albumId增加图片数量 -->
+	<update id="addPicCountByAlbum">
+		UPDATE store_album t
+		<set>
+			t.picture_count = t.picture_count+#{count}
+		</set>
+		WHERE album_id =#{albumId}
+	</update>
+	
+	<!-- 根据albumId减少图片数量 -->
+	<update id="reducePicCountByAlbum">
+		UPDATE store_album t
+		<set>
+			t.picture_count = t.picture_count-#{count}
+		</set>
+		WHERE album_id =#{albumId}
+	</update>
+</mapper>

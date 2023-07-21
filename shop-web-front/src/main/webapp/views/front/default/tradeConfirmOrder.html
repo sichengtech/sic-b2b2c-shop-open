@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+	<%var confirmOrder =fy.getMsg({key:'确认订单'});%>
+	${confirmOrder!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/default/tradeConfirmOrder.js"></script>
+<script type="text/javascript" src="${ctx}/views/member/logistics/selectArea.js"></script>
+<style>
+input[type="radio"], input[type="checkbox"] {margin: 0px;}
+.table-bordered > tbody > tr > td { border: none; border-top: 1px solid #e6e6e6; }
+.sui-table { margin-bottom: 0; border: 0; }
+.caret { border: none; width: 8px; }
+.modal-footer { border-top: 0; }
+.confirmOrderBody .checkorder .btn { width: 100%; }
+.confirmOrderBody .newInvoice .deliverLabel { width: 284px; }
+</style>
+</head>
+<body class="bgfff confirmOrderBody" id="confirmOrderBody">
+	<% include("/include/header.html"){}%>
+	<div class="sui-container checkorder">
+		<form action="${ctxf}/trade/order/addOrder.htm" class="sui-form" id="inputForm" method="post">
+			<% var maoHao=fy.getMsg({key:'：'});
+			var yuan =fy.getMsg({key:'元'});
+			var defaultAddress =fy.getMsg({key:'默认地址'});%>
+			<div class="title">
+				<span><a href="${ctxf}/trade/cart/list.htm"><%var returnCart =fy.getMsg({key:'返回购物车修改'});%> ${returnCart!}</a></span>
+				<strong><%var checkOrder =fy.getMsg({key:'填写并核对订单信息'});%> ${checkOrder!}</strong>
+			</div>
+			<dl class="checkorder-content">
+				<!-- 收货地址信息开始 -->
+				<div id="editMsgDiv">
+					<dt>
+						<%var consigneeInfo =fy.getMsg({key:'收货人信息'});
+						var modify =fy.getMsg({key:'修改'});
+						var addAddress =fy.getMsg({key:'新增收货地址'});
+						%>
+						${consigneeInfo!}
+						<a href="javascript:" class="editAddress" style="display:${isNotEmpty(addressList)?'':'none'};">[${modify!}]</a>
+						<a href="javascript:" class="addAddress" style="display: ${isNotEmpty(addressList)?'none':''};">[${addAddress!}]</a>
+					</dt>
+					<dd class="defaultAddress" style="display:${isNotEmpty(addressList)?'':'none'}">
+						<input type="hidden" name="addressId" value="${isNotEmpty(addressList)?addressList[0].addressId:''}" style=""/>
+						<% var address;
+						if(isNotEmpty(addressList!)){
+							address=addressList[0];
+						}
+						%>
+						<label>
+							<span class="name">${address.name!}</span>
+							<span class="address">${address.provinceName!} ${address.cityName!} ${address.districtName!} ${address.detailedAddress!}</span>
+							<span><i class="sui-icon icon-tb-phone"></i><span class="mobile">${address.mobile!}</span></span>
+							<span class="sui-label label-" class="isDefault" style="display:${(address.isDefault!) =='1'?'':'none'} ">${defaultAddress!}</span>
+						</label>
+						
+					</dd>
+					<dd class="moreAddress" style="display: none;">
+						<ul class="addressList">
+						</ul>
+					</dd>
+				</div>
+				<!-- 收货地址信息结束 -->
+				<!-- 支付信息开始 -->
+				<div id="editMsgDiv">
+					<dt><%var paymentMethod =fy.getMsg({key:'支付方式'});%> ${paymentMethod!}</dt>
+					<dd class="payment">
+                        <% if(sysPaySwitch=='0'){ %>
+                            <%var noNeedPay =fy.getMsg({key:'无需支付'});%> ${noNeedPay!}
+                        <%}else{%>
+                            <%var onlinePayments =fy.getMsg({key:'在线支付'});%> ${onlinePayments!}
+                        <%}%>
+					</dd>
+				</div>
+				<!-- 支付信息结束 -->
+				<!-- 发票信息开始 -->
+				<div id="editDeliverDiv">
+					<dt>
+						<%var invoiceInfo =fy.getMsg({key:'发票信息'});%>${invoiceInfo!}
+						<% if(invoice=="1"){%>
+							<a href="javascript:" class="editDeliver">[${modify!}]</a>
+						<%}%>
+					</dt>
+					<dd class="defaultInvoice">
+						<input type="hidden" name="deliverId"/>
+						<span class="noInvoice">
+							<%var noInvoiceRequired =fy.getMsg({key:'不需要发票'});%>
+							<% if(invoice=="1"){%>
+								${noInvoiceRequired!}
+							<%}else{%>
+								<%var noInvoiceSupported =fy.getMsg({key:'不支持发票'});%> ${noInvoiceSupported!}
+							<%}%>
+						</span>
+						<span class="invoiceMsg"></span>
+					</dd>
+					<dd style="display: none;" id="invoice" class="moreInvoice">
+						<ul>
+							<li>
+								<ul class="moreInvoiceList"></ul>
+							</li>
+							<li>
+								<input type="radio" name="deliver" checked="checked" class="deliverRadio" isNew="1"/>
+								<label><%var newInvoice =fy.getMsg({key:'使用新的发票信息'});%> ${newInvoice!}</label>
+								<div class="newInvoice">
+									<ul>
+										<li>
+											<label class="deliverLabel"><%var invoiceType =fy.getMsg({key:'发票类型'});%> ${invoiceType!}</label>
+											<% for(dt in dict.list({type:'deliver_type'})){%>
+												<input type="radio" id="deliverRadio${dtLP.index}" name="deliverType" value="${dt.value}" ${dtLP.first?'checked="checked"':'' }/>
+												<label value="${dt.value}" for="deliverRadio${dtLP.index}">${dt.label}</label>
+											<%}%>
+										</li>
+										<!-- <li>
+											<label class="deliverLabel">发票抬头：</label>
+											<input type="text" name="deliverTitle" class="input-fat input-xlarge"/>
+										</li>
+										<li>
+											<label class="deliverLabel">发票内容：</label>
+											<input type="text" name="deliverContent" class="input-fat input-xlarge"/>
+										</li> -->
+										<li>
+											<label class="deliverLabel"><%var companyName =fy.getMsg({key:'公司名称'});%> ${companyName!}</label>
+											<input type="text" name="companyName" class="input-fat input-xlarge"/>
+										</li>
+										<li>
+											<label class="deliverLabel"><%var taxpayerNum =fy.getMsg({key:'纳税人识别号'});%> ${taxpayerNum!}</label>
+											<input type="text" name="axpayerIdentityNumber" class="input-fat input-xlarge"/>
+										</li>
+										<li>
+											<label class="deliverLabel"><%var accountBank =fy.getMsg({key:'开户行'});%> ${accountBank!}</label>
+											<input type="text" name="openingBank" class="input-fat input-xlarge"/>
+										</li>
+										<li>
+											<label class="deliverLabel"><%var countNum =fy.getMsg({key:'账号'});%> ${countNum!}</label>
+											<input type="text" name="accountNumber" class="input-fat input-xlarge"/>
+										</li>
+										<li>
+											<label class="deliverLabel"><%var receiveAddress =fy.getMsg({key:'地址'});%> ${receiveAddress!}</label>
+											<input type="text" name="address" class="input-fat input-xlarge"/>
+										</li>
+										<li>
+											<label class="deliverLabel"><%var phone =fy.getMsg({key:'电话'});%> ${phone!}</label>
+											<input type="text" name="phone" class="input-fat input-xlarge"/>
+										</li>
+									</ul>
+								</div>
+							</li>
+							<li class="submitInvoiceBtns">
+		                   		<button type="button" class="sui-btn btn-bordered btn-primary invoiceBtn addInvoiceBtn">
+									<%var saveInvoice =fy.getMsg({key:'保存发票信息'});%> ${saveInvoice!}
+								</button>
+								<button type="button" class="sui-btn btn-bordered invoiceBtn noInvoiceBtn">${noInvoiceRequired!}</button>
+							</li>
+						</ul>
+					</dd>
+				</div>
+				<!-- 发票信息结束 -->
+				<!-- 订单信息开始 -->
+				<div id="editMsgDiv">
+					<input type="hidden" value="${ids!}" name="ids"/>
+					<dt>${confirmOrder!}</dt>
+					<dd>
+						<div class="my-orderlist-info">
+							<span class="span4" style="width:34%; text-align: center;"><%var productName =fy.getMsg({key:'商品名称'});%> ${productName!}</span>
+							<span class="span1" style="width:9%; text-align: center;"><%var price =fy.getMsg({key:'单价'});%> ${price!}</span>
+							<span class="span1" style="width:8%; text-align: center;"><%var count =fy.getMsg({key:'数量'});%> ${count!}</span>
+							<span class="span1" style="width:15%; text-align: center;"><%var offer =fy.getMsg({key:'优惠'});%> ${offer!}</span>
+							<span class="span2" style="width:12%; text-align: center;"><%var subtotal =fy.getMsg({key:'小计'});%> ${subtotal!}</span>
+							<span class="span2" style="width:15%; text-align: center;"><%var freight =fy.getMsg({key:'运费'});%> ${freight!}</span>
+						</div>
+						<input type="hidden" name="keys" value="${keys!}">
+						<input type="hidden" name="orderIds" value="">
+						<% var pidList=[];var totalCount=0;
+						for(cart in cartMap!){%>
+							<table class="sui-table table-bordered-simple productTable" id="productTable">
+								<thead>
+									<tr>
+										<% var storeOne = store.one({sid:cart.key!});%>
+										<th class="" colspan="6">
+											${storeOne.name!}
+											<input type="hidden" name="storeId" value="${cart.key!}"/>
+										</th>
+									</tr>
+								</thead>
+								<tbody>
+									<% for(v in cart.value){
+										if(!array.contain(pidList,v.pId)){
+											array.add(pidList,v.pId);
+										}
+										totalCount=totalCount+parseInt(v.count!);
+									%>
+										<tr>
+											<td width="31%">
+												<div class="typographic">
+													<img src="${ctxfs}${v.productSpu.image!}@!60x70" width="60" height="70" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+													<ul class="">
+														<li><a href="${ctxf}/detail/${v.pId!}.htm" target="_blank" style="text-align: left;">${v.productSpu.name!}</a></li></br>
+														<li style="text-align: left;">
+															${v.skuValue!}
+															<input type="hidden" name="cartId" value="${v.cartId!}"/>
+														</li>
+													</ul>
+												</div>
+											</td>
+											<td width="8%" class="">${v.productSku.price!}</td>
+											<%var noGoods =fy.getMsg({key:'无货'});%>
+											<td width="8%" class="productCount" cartId="${v.cartId}" pid="${v.productSpu.pId!}">
+													<span class="sui-text-warning noproduct" style="font-size:14px;font-weight: bolder; ${v.productSpu.expressPrice == -1?'display:block;':'display: none;'}">(${noGoods!})</span>
+													<span class="productCountSpan hasProduct" style="${v.productSpu.expressPrice != -1?'display:block;':'display: none;'}">${v.count!}</span>
+											</td>
+											<td width="13%" class="benefitTd"><span class="" name="benefit_${v.pId!}">${v.productSpu.benefit!}</span></td>
+											<td width="12%" class="productPriceSum">
+												${yuan!}<span>${v.priceSum!}</span>
+												<input type="hidden" name="expressPrice" class="expressPrice" cartId="${v.cartId}" value="${v.productSpu.expressPrice == -1?'0':v.productSpu.expressPrice}"/>
+											</td>
+											<% if(vLP.first){%>
+												<td width="15%" class="center borderTd orderSumFreight" rowspan="${cart.value.~size}"></td>
+											<%}%>
+										</tr>
+									<%}%>
+								</tbody>
+								<tfoot>
+									<tr>
+										<td colspan="3">
+											<div>
+												<%var message =fy.getMsg({key:'给商家留言'});%>
+												<%var messageInfo =fy.getMsg({key:'对本次交易的说明'});%>
+												${message!}
+												<textarea length="300" maxlength="128" placeholder="${messageInfo!}" class="order-msg-textarea" name="memo_${cart.key!}"></textarea>
+											</div>
+										</td>
+										<td colspan="3">
+											<dl class="align-right">
+												<%var freightTotal =fy.getMsg({key:'运费总计'});%>
+												<dd style="padding-bottom:0px;border-bottom: none;padding-right: 0;">${freightTotal!}${yuan!}<span class="orderSumFreight">0.00</span></dd>
+												<input type="hidden" name="freight_${cart.key!}" value="" class="orderSumFreight"/>
+											</dl>
+											<dl class="sum">
+												<%var productAmount =fy.getMsg({key:'商品金额总计'});%>
+												<span>${productAmount!}</span>
+												${yuan!}<font style="color: #C00;" class="orderSumPrice"></font><span></span>
+												<input type="hidden" name="amountPaid_${cart.key!}" value="" class="orderSumPrice"/>
+											</dl>
+								 		</td>
+									</tr>
+								</tfoot>
+							</table>
+						<%}%>
+					</dd>
+					<dd class="orderinfo">
+						<div class="l">
+							<%var typeProduct =fy.getMsg({key:'购买商品种类'});
+								var species =fy.getMsg({key:'种'});
+								var totalQuantity =fy.getMsg({key:'数量总计'});
+								var jian =fy.getMsg({key:'件'});
+							%>
+							${typeProduct!}<span>${pidList.~size}</span>${species!},${totalQuantity!}<span>${totalCount!}</span>${jian!}
+						</div>
+						<div class="r">
+							<ul>
+								<%var totalAmount =fy.getMsg({key:'总商品金额'});
+								%>
+								<li>${totalAmount!}<span class="totalProductSumPrice">${yuan!}0.00</span></li>
+								<li>${freight!}${maoHao!}<span>${yuan!}<font class="totalProductFreight">0.00</font></span></li>
+							</ul>
+						</div>
+						<div class="clear"></div>
+					</dd>
+				</div>
+				<!-- 订单信息结束 -->
+			</dl>
+			<div class="price cartFoot"><%var totalDue =fy.getMsg({key:'应付总额'});%>${totalDue!}${maoHao}
+				<input type="hidden" name="freight"/>
+				<input type="hidden" name="amountPaid"/>
+				<span>${yuan!}<font class="orderPrice">00.00</font>
+					<input type="hidden" name="orderPrice"/>
+				</span>
+				<p><%var send =fy.getMsg({key:'寄送至'});%>${send!}
+					<font class="sendAddress">
+						<% if(isNotEmpty(addressList)){%>
+							${addressList[0].name!}&nbsp;${addressList[0].provinceName!} ${addressList[0].cityName!} ${addressList[0].districtName!} ${addressList[0].detailedAddress!}
+						<%}%>
+					</font>
+				</p>
+			</div>
+			<div class="btn"><a href="javascript:" class="addOrder"><%var submitOrder =fy.getMsg({key:'提交订单'});%>${submitOrder!}</a></div>
+			<div class="clear"></div>
+		</form>
+	</div>
+	<div class="footer-simple"></div>
+	<!-- 添加收货地址弹出框开始 -->
+	<div id="addAddressModal" tabindex="-1" role="dialog" data-hasfoot="false" class="hide" style="border-radius: 5px;">
+		<div class="">
+			<div class="modal-body" style="padding: 0;">
+				<form class="sui-form form-horizontal"  id="addressForm" name="" action="" method="post">
+					<input type="hidden" name="ordersId" value="142">
+					<input type="hidden" name="addressId" value="">
+					<table class="sui-table table-bordered" id="delTable">
+						<tbody>
+							<tr>
+								<%var addressName =fy.getMsg({key:'地址名称'});
+								var addressNameTip =fy.getMsg({key:'请给地址添加一个名称'});
+								%>
+								<td class="addressTd" style="">${addressName!}${maoHao!}</td>
+								<td>
+									<input type="text" class="input-xlarge input-fat" style="width: 288px;" name="addressName" placeholder="${addressNameTip!}"/>
+								</td>
+							</tr>
+							<tr>
+								<%var consignee =fy.getMsg({key:'收货人'});
+								var consigneeTip =fy.getMsg({key:'请填写您的真实姓名'});
+								%>
+								<td class="addressTd" style=""><font color="red">*</font> ${consignee}${maoHao!}</td>
+								<td>
+									<input type="text" class="input-xlarge input-fat" style="width: 288px;" name="name" placeholder="${consigneeTip}"/>
+								</td>
+							</tr>
+							<tr>
+								<%var area =fy.getMsg({key:'所在地区'});
+								var selProvince=fy.getMsg({key:'省'});
+								var selCity=fy.getMsg({key:'市'});
+								var selDistrict=fy.getMsg({key:'县'});
+								%>
+								<td class="addressTd" style=""><font color="red">*</font> ${area!}${maoHao!}</td>
+								<td>
+									<span id="area2">
+										<input type="hidden" name="countryId" id="countryId" value="1"/>
+										<input type="hidden" name="countryName" id="countryName" value="中国"/>
+										<span class="sui-dropdown dropdown-bordered select">
+											<span class="dropdown-inner">
+												<a role="button" data-toggle="dropdown" href="#" class="dropdown-toggle">
+													<input type="hidden" name="provinceId" id="provinceId"  onchange="selectCity(this)" value=""/><i class="caret"></i>
+													<span id="provinceName">${selProvince!}</span>
+												</a>
+												<ul role="menu" aria-labelledby="drop12" class="sui-dropdown-menu addressUl" name="provinceAttr">
+													<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" value="">${selProvince!}</a></li>
+													<% for(province in area.list({parentId:1,limit:35})){%>
+														<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" value="${province.id!}">${province.name!}</a></li>
+													<%}%>
+												</ul>
+											</span>
+										</span>
+										<span class="sui-dropdown dropdown-bordered select">
+											<span class="dropdown-inner">
+												<a role="button" data-toggle="dropdown" href="#" class="dropdown-toggle">
+													<input type="hidden" name="cityId" id="cityId" onchange="selectDistrict(this)" value=""/><i class="caret"></i>
+													<span id="cityName">${selCity!}</span>
+												</a>
+												<ul role="menu" aria-labelledby="drop12" class="sui-dropdown-menu addressUl" name="cityAttr">
+													<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" value="">${selCity!}</a></li>
+												</ul>
+											</span>
+										</span>
+										<span class="sui-dropdown dropdown-bordered select">
+											<span class="dropdown-inner">
+												<a role="button" data-toggle="dropdown" href="#" class="dropdown-toggle">
+													<input type="hidden" name="districtId" id="districtId" value=""/><i class="caret"></i>
+													<span id="districtName">${selDistrict!}</span>
+												</a>
+												<ul role="menu" aria-labelledby="drop12" class="sui-dropdown-menu addressUl" name="districtAttr">
+													<li role="presentation"><a role="menuitem" tabindex="-1" href="javascript:void(0);" value="">${selDistrict!}</a></li>
+												</ul>
+											</span>
+										</span>
+									</span>
+								</td>
+							</tr>
+							<tr>
+								<%var detailAddress =fy.getMsg({key:'详细地址'});
+								var detailAddressTip =fy.getMsg({key:'不必重复填写地址'});
+								%>
+								<td class="addressTd" style=""><font color="red">*</font> ${detailAddress!}${maoHao!}</td>
+								<td>
+									<input type="text" class="input-xlarge input-fat" style="width: 288px;" name="detailedAddress" value="" placeholder="${detailAddressTip!}"/>
+								</td>
+							</tr>
+							<tr>
+								<%var mobileNum =fy.getMsg({key:'手机号码'});
+								var  phoneTip=fy.getMsg({key:'请填写正确的手机号码'});
+								%>
+								<td class="addressTd" style=""><font color="red">*</font> ${mobileNum!}${maoHao!}</td>
+								<td>
+									<input type="text" class="input-xlarge input-fat"  style="width: 288px;"name="mobile" value="" placeholder="${phoneTip!}"/>
+								</td>
+							</tr>
+							<tr>
+								<%var postcode =fy.getMsg({key:'邮编'});
+								var  postcodeTip=fy.getMsg({key:'请输入正确的值',params:postcode});
+								%>
+								<td class="addressTd" style=""> ${postcode!}${maoHao!}</td>
+								<td>
+									<input type="text" class="input-xlarge input-fat" style="width: 288px;" name="zipCode" value="" placeholder="${postcodeTip!}"/>
+								</td>
+							</tr>
+							<tr>
+								<td class="addressTd" style="">${defaultAddress!}${maoHao!}</td>
+								<td>
+									<%var setDefaultAddr =fy.getMsg({key:'设置改地址为默认地址'});%>
+									<input type="checkbox" class="" name="isDefault" value=""/>
+									<label>${setDefaultAddr!}</label>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="span3"></div>
+					<div class="modal-footer" id="delayReceiptModal-footer">
+						<%var determine =fy.getMsg({key:'确定'});
+						var cancel=fy.getMsg({key:'取消'});
+						%>
+						<button type="submit" data-ok="modal" class="sui-btn btn-primary btn-large addAddressBtn" style="margin-right: 10px;" orderId="">${determine!}</button>
+						<button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large"  onclick="(function(){layer.closeAll('page');}())">${cancel!}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- 添加收货地址弹出框结束 -->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<%var delete =fy.getMsg({key:'删除'});
+	%>
+	<script type="text/template" id="deliver_tpl" info="发票列表模板">
+	<li>
+		<input type="radio" name="deliver" {{d.checked}} deliverId="{{d.deliverId}}" class="deliverRadio" isNew="0"/>
+		<label>{{d.deliverType}}&nbsp;{{d.companyName}}&nbsp;</label>
+		<a href="javascript:" class="deleDeliver" deliverId="{{d.deliverId}}">${delete!}</a>
+	</li>
+	</script>
+	<script type="text/template" id="address_tpl" info="收货地址列表模板">
+	<li>
+		<input type="radio" name="address" {{d.checked}} addressId="{{d.addressId}}" class="addressRadio"/>
+		<label>
+			<span class="name">{{d.name}}</span>
+			<span class="address">{{d.provinceName}} {{d.cityName}} {{d.districtName}} {{d.detailedAddress}}</span>
+			<span><i class="sui-icon icon-tb-phone"></i><span class="mobile">{{d.mobile}}</span></span>
+			<span class="sui-label label-" class="isDefault" style="display:{{d.css}} ">${defaultAddress!}</span>
+		</label>
+		<a href="javascript:" class="editAddress2" deliverId="{{d.addressId}}">${modify!}</a>
+		<a href="javascript:" class="deleAddress" addressId="{{d.addressId}}">${delete!}</a>
+	</li>
+	</script>
+</body>
+</html>

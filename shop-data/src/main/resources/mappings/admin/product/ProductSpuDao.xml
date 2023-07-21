@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductSpuDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	ProductSpuDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	ProductSpuDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	ProductSpuDao.xml文件与ProductSpuDaoBase.xml文件，在运行时会合并起来。
+	ProductSpuDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，ProductSpuDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<!--查询指定店铺最新的四款产品-->
+	<select id="selectFourProductByStoreId" resultType="ProductSpu">
+		SELECT * FROM product_spu WHERE `store_id` = #{storeId} and `status` = 50 ORDER BY `create_date` DESC LIMIT 0,4
+	</select>
+</mapper>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeOrderItemDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	TradeOrderItemDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	TradeOrderItemDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	TradeOrderItemDao.xml文件与TradeOrderItemDaoBase.xml文件，在运行时会合并起来。
+	TradeOrderItemDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，TradeOrderItemDao.xml文件的内容你要自行做好备份。
+	-->
+	
+	
+	<!-- 商品 最近30天销量 -->
+	<select id="sumByWhere" resultType="java.lang.Integer">
+		SELECT  SUM(a.quantity)
+		FROM trade_order tor
+		left join trade_order_item a on tor.order_id=a.order_id
+		<where>
+			(tor.order_status='40' or tor.order_status='50')
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+	<!--根据店铺id获取指定时间内该店铺销售总额，不指定时间则不限时间-->
+	<select id="countSalesByStoreId" resultType="Integer">
+		SELECT SUM(`quantity`) FROM `trade_order_item` WHERE `order_id` IN(
+			SELECT order_id FROM trade_order
+			WHERE `store_id` = #{storeId}
+			AND `order_status` IN(40,50)
+			<if test="date!=null">
+				AND `create_date` &lt;= #{date}
+			</if>
+		)
+	</select>
+</mapper>

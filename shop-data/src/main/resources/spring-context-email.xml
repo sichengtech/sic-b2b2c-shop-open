@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task" xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
+	default-lazy-init="true">
+	
+
+	<!-- EmailSender 邮箱发送者，请使用我来发送邮件 -->
+	<bean id="emailSender" class="com.sicheng.common.email.EmailSenderImpl"></bean>
+	
+	<!-- 
+	Spring的JavaMailSenderImpl提供了强大的邮件发送功能，可发送普通文本邮件、带附件邮件、html格式邮件、带图片邮件、设置发送内容编码格式、设置发送人的显示名称。
+	 -->
+	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
+				<prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
+				<prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
+				<!--
+				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
+				-->
+			</props>
+		</property>
+	</bean>	
+	
+	<!-- 
+	线程池的基础知识
+	
+	当向线程池添加任务时，处理过程如下：
+	1、如果此时线程池中的数量小于corePoolSize，即使线程池中的线程都处于空闲状态，也要创建新的线程来处理被添加的任务
+	2、如果此时线程池中的数量等于 corePoolSize，但是缓冲队列 workQueue未满，那么任务被放入缓冲队列，由有空的线程来处理任务。
+	3、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量小于maximumPoolSize，建新的线程来处理被添加的任务
+	4、如果此时线程池中的数量大于corePoolSize，缓冲队列workQueue满，并且线程池中的数量等于maximumPoolSize，那么通过 handler所指定的策略来处理此任务。也就是：处理任务的优先级为：核心线程corePoolSize、任务队列workQueue、最大线程 maximumPoolSize，如果三者都满了，使用handler处理被拒绝的任务
+	5、当线程池中的线程数量大于 corePoolSize时，如果某线程空闲时间超过keepAliveTime，线程将被终止。这样，线程池可以动态的调整池中的线程数
+	
+	四种拒绝策略：
+	1、在默认的 ThreadPoolExecutor.AbortPolicy 中，处理程序遭到拒绝将抛出运行时异常 RejectedExecutionException。
+	2、在 ThreadPoolExecutor.CallerRunsPolicy 中，调用者所在的线程来自行这个任务，此策略提供简单的反馈控制机制，能够减缓新任务的提交速度。
+	3、在 ThreadPoolExecutor.DiscardPolicy 中，不能执行的任务将被删除。
+	4、在 ThreadPoolExecutor.DiscardOldestPolicy 中，如果执行程序尚未关闭，则位于工作队列头部的任务将被删除，然后重试执行程序（如果再次失败，则重复此过程）
+	 -->	
+	
+	<!--
+	普通线程池
+	这是最常用的线程池，具有普通线程池应有的特性：异步、可控制速度、有限队列
+	大多时候你需要使用本线程池
+	当业务需要线程池时，可向service层注入本线程池。如：发邮件、记录操作日志
+	-->
+	<bean id="taskExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor">
+		<property name="corePoolSize" value="${threadpool.core_pool_size}" /><!-- 核心线程数 -->
+		<property name="maxPoolSize" value="${threadpool.max_pool_size}" /><!-- 最大线程数 -->
+		<property name="queueCapacity" value="${threadpool.queue_capacity}" /><!-- 队列最大长度 -->
+		<property name="keepAliveSeconds" value="${threadpool.keep_alive_seconds}" /><!-- 线程池维护线程所允许的空闲时间 -->
+		<!-- 
+		线程池对拒绝任务(无线程可用时)的处理策略 
+		ThreadPoolExecutor.CallerRunsPolicy策略 ,调用者所在的线程来自行这个任务，
+		此策略提供简单的反馈控制机制，能够减缓新任务的提交速度。 
+		-->
+        <property name="rejectedExecutionHandler">
+            <bean class="java.util.concurrent.ThreadPoolExecutor$CallerRunsPolicy" />
+        </property>
+	</bean>
+	
+	<!-- 
+	延迟线程池
+	特性：异步、不可控制速度、延迟执行、无限队列
+	当有些任务需要失败后过n分钟再重执行时，可选用此线程池来实现。
+	ScheduledExecutorFactoryBean是由spring提供的工厂类，用于创建ScheduledThreadPoolExecutor
+	ScheduledThreadPoolExecutor是java自带的定时任务线程池，可在线程池中延迟执行任务。
+	也可立即执行，有不同的api提供给使用者。
+	 -->
+    <bean id="scheduledExecutor" class="org.springframework.scheduling.concurrent.ScheduledExecutorFactoryBean">  
+		<property name="poolSize" value="${threadpool.core_pool_size}" /><!-- 核心线程数 -->
+		<!-- maxPoolSize 最大线程数，不支持配置，固定值Integer.MAX_VALUE -->
+		<!-- queueCapacity 队列最大长度，不支持配置，固定值Integer.MAX_VALUE -->
+		<!-- keepAliveSeconds 线程池维护线程所允许的空闲时间，不支持配置，固定值0 -->
+		<!-- 
+		rejectedExecutionHandler 线程池对拒绝任务(无线程可用时)的处理策略 
+		不支持配置，固定值：ThreadPoolExecutor.AbortPolicy 
+		因为queueCapacity 队列最大长度的长度是Integer.MAX_VALUE，支持了也无意义。
+		-->         
+    </bean>  	
+	
+</beans>

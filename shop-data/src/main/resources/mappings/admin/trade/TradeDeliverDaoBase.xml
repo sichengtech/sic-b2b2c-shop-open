@@ -1,0 +1,435 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeDeliverDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="tradeDeliverColumns">
+	<trim suffixOverrides=",">
+		a.deliver_id AS "deliverId",                                         <!-- 主键 number(19)-->
+		a.u_id AS "uId",                                                     <!-- 会员id(会员表Id) number(19)-->
+		a.deliver_type AS "deliverType",                                     <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+		a.deliver_title AS "deliverTitle",                                   <!-- 发票抬头 nvarchar2(64)-->
+		a.deliver_content AS "deliverContent",                               <!-- 发票内容 nvarchar2(255)-->
+		a.hbjbuyer AS "hbjbuyer",                                            <!-- 默认，0否、1是 char(1)-->
+		a.company_name AS "companyName",                                     <!-- 公司名称 nvarchar2(64)-->
+		a.axpayer_identity_number AS "axpayerIdentityNumber",                <!-- 纳税人识别号 nvarchar2(64)-->
+		a.opening_bank AS "openingBank",                                     <!-- 开户行 nvarchar2(64)-->
+		a.account_number AS "accountNumber",                                 <!-- 账号 nvarchar2(64)-->
+		a.address AS "address",                                              <!-- 地址 nvarchar2(128)-->
+		a.phone AS "phone",                                                  <!-- 电话 nvarchar2(64)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="tradeDeliverJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.deliverId != null ">AND a.deliver_id = #{c.deliverId}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.deliverType != null and c.deliverType != ''">AND a.deliver_type = #{c.deliverType}</if>
+		<if test="c.deliverTitle != null and c.deliverTitle != ''">AND a.deliver_title = #{c.deliverTitle}</if>
+		<if test="c.deliverContent != null and c.deliverContent != ''">AND a.deliver_content = #{c.deliverContent}</if>
+		<if test="c.hbjbuyer != null and c.hbjbuyer != ''">AND a.hbjbuyer = #{c.hbjbuyer}</if>
+		<if test="c.companyName != null and c.companyName != ''">AND a.company_name = #{c.companyName}</if>
+		<if test="c.axpayerIdentityNumber != null and c.axpayerIdentityNumber != ''">AND a.axpayer_identity_number = #{c.axpayerIdentityNumber}</if>
+		<if test="c.openingBank != null and c.openingBank != ''">AND a.opening_bank = #{c.openingBank}</if>
+		<if test="c.accountNumber != null and c.accountNumber != ''">AND a.account_number = #{c.accountNumber}</if>
+		<if test="c.address != null and c.address != ''">AND a.address = #{c.address}</if>
+		<if test="c.phone != null and c.phone != ''">AND a.phone = #{c.phone}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="TradeDeliver">
+		SELECT 
+		<include refid="tradeDeliverColumns"/>
+		FROM trade_deliver a
+		<include refid="tradeDeliverJoins"/>
+		WHERE a.deliver_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="TradeDeliver">
+		SELECT 
+		<include refid="tradeDeliverColumns"/>
+		FROM trade_deliver a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.deliver_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="TradeDeliver">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeDeliverColumns"/>
+		FROM trade_deliver a
+		<include refid="tradeDeliverJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.deliver_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="TradeDeliver">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeDeliverColumns"/>
+		FROM trade_deliver a
+		<include refid="tradeDeliverJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.deliver_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.deliverId" keyColumn="deliver_id" useGeneratedKeys="true">
+		INSERT INTO trade_deliver
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			deliver_id,                                        <!-- 主键 number(19)-->
+			u_id,                                              <!-- 会员id(会员表Id) number(19)-->
+			deliver_type,                                      <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			deliver_title,                                     <!-- 发票抬头 nvarchar2(64)-->
+			deliver_content,                                   <!-- 发票内容 nvarchar2(255)-->
+			hbjbuyer,                                          <!-- 默认，0否、1是 char(1)-->
+			company_name,                                      <!-- 公司名称 nvarchar2(64)-->
+			axpayer_identity_number,                           <!-- 纳税人识别号 nvarchar2(64)-->
+			opening_bank,                                      <!-- 开户行 nvarchar2(64)-->
+			account_number,                                    <!-- 账号 nvarchar2(64)-->
+			address,                                           <!-- 地址 nvarchar2(128)-->
+			phone,                                             <!-- 电话 nvarchar2(64)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.deliverId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_deliver_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.uId},                                     <!-- 会员id(会员表Id) number(19)-->
+			#{entity.deliverType},                             <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			#{entity.deliverTitle},                            <!-- 发票抬头 nvarchar2(64)-->
+			#{entity.deliverContent},                          <!-- 发票内容 nvarchar2(255)-->
+			#{entity.hbjbuyer},                                <!-- 默认，0否、1是 char(1)-->
+			#{entity.companyName},                             <!-- 公司名称 nvarchar2(64)-->
+			#{entity.axpayerIdentityNumber},                   <!-- 纳税人识别号 nvarchar2(64)-->
+			#{entity.openingBank},                             <!-- 开户行 nvarchar2(64)-->
+			#{entity.accountNumber},                           <!-- 账号 nvarchar2(64)-->
+			#{entity.address},                                 <!-- 地址 nvarchar2(128)-->
+			#{entity.phone},                                   <!-- 电话 nvarchar2(64)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.deliverId" keyColumn="deliver_id" useGeneratedKeys="true">
+		INSERT INTO trade_deliver
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.deliverId != null">deliver_id,</if></if>
+			<if test="entity.pkMode==2">deliver_id,</if>
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表Id) number(19)-->
+			<if test="entity.deliverType != null">deliver_type,</if>                           <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			<if test="entity.deliverTitle != null">deliver_title,</if>                         <!-- 发票抬头 nvarchar2(64)-->
+			<if test="entity.deliverContent != null">deliver_content,</if>                     <!-- 发票内容 nvarchar2(255)-->
+			<if test="entity.hbjbuyer != null">hbjbuyer,</if>                                  <!-- 默认，0否、1是 char(1)-->
+			<if test="entity.companyName != null">company_name,</if>                           <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.axpayerIdentityNumber != null">axpayer_identity_number,</if>      <!-- 纳税人识别号 nvarchar2(64)-->
+			<if test="entity.openingBank != null">opening_bank,</if>                           <!-- 开户行 nvarchar2(64)-->
+			<if test="entity.accountNumber != null">account_number,</if>                       <!-- 账号 nvarchar2(64)-->
+			<if test="entity.address != null">address,</if>                                    <!-- 地址 nvarchar2(128)-->
+			<if test="entity.phone != null">phone,</if>                                        <!-- 电话 nvarchar2(64)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.deliverId != null">#{entity.deliverId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_deliver_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表Id) number(19)-->
+			<if test="entity.deliverType != null">#{entity.deliverType},</if>                            <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			<if test="entity.deliverTitle != null">#{entity.deliverTitle},</if>                          <!-- 发票抬头 nvarchar2(64)-->
+			<if test="entity.deliverContent != null">#{entity.deliverContent},</if>                      <!-- 发票内容 nvarchar2(255)-->
+			<if test="entity.hbjbuyer != null">#{entity.hbjbuyer},</if>                                  <!-- 默认，0否、1是 char(1)-->
+			<if test="entity.companyName != null">#{entity.companyName},</if>                            <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.axpayerIdentityNumber != null">#{entity.axpayerIdentityNumber},</if>        <!-- 纳税人识别号 nvarchar2(64)-->
+			<if test="entity.openingBank != null">#{entity.openingBank},</if>                            <!-- 开户行 nvarchar2(64)-->
+			<if test="entity.accountNumber != null">#{entity.accountNumber},</if>                        <!-- 账号 nvarchar2(64)-->
+			<if test="entity.address != null">#{entity.address},</if>                                    <!-- 地址 nvarchar2(128)-->
+			<if test="entity.phone != null">#{entity.phone},</if>                                        <!-- 电话 nvarchar2(64)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE trade_deliver 
+		<set>
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表Id) number(19)-->
+			deliver_type = #{entity.deliverType},                           <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			deliver_title = #{entity.deliverTitle},                         <!-- 发票抬头 nvarchar2(64)-->
+			deliver_content = #{entity.deliverContent},                     <!-- 发票内容 nvarchar2(255)-->
+			hbjbuyer = #{entity.hbjbuyer},                                  <!-- 默认，0否、1是 char(1)-->
+			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
+			axpayer_identity_number = #{entity.axpayerIdentityNumber},      <!-- 纳税人识别号 nvarchar2(64)-->
+			opening_bank = #{entity.openingBank},                           <!-- 开户行 nvarchar2(64)-->
+			account_number = #{entity.accountNumber},                       <!-- 账号 nvarchar2(64)-->
+			address = #{entity.address},                                    <!-- 地址 nvarchar2(128)-->
+			phone = #{entity.phone},                                        <!-- 电话 nvarchar2(64)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		WHERE deliver_id = #{entity.deliverId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE trade_deliver a 
+		<set>
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表Id) number(19)-->
+			deliver_type = #{entity.deliverType},                           <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			deliver_title = #{entity.deliverTitle},                         <!-- 发票抬头 nvarchar2(64)-->
+			deliver_content = #{entity.deliverContent},                     <!-- 发票内容 nvarchar2(255)-->
+			hbjbuyer = #{entity.hbjbuyer},                                  <!-- 默认，0否、1是 char(1)-->
+			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
+			axpayer_identity_number = #{entity.axpayerIdentityNumber},      <!-- 纳税人识别号 nvarchar2(64)-->
+			opening_bank = #{entity.openingBank},                           <!-- 开户行 nvarchar2(64)-->
+			account_number = #{entity.accountNumber},                       <!-- 账号 nvarchar2(64)-->
+			address = #{entity.address},                                    <!-- 地址 nvarchar2(128)-->
+			phone = #{entity.phone},                                        <!-- 电话 nvarchar2(64)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE trade_deliver
+		<set>
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表Id) number(19)-->
+			<if test="entity.deliverType != null">deliver_type = #{entity.deliverType},</if>                                    <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			<if test="entity.deliverTitle != null">deliver_title = #{entity.deliverTitle},</if>                                 <!-- 发票抬头 nvarchar2(64)-->
+			<if test="entity.deliverContent != null">deliver_content = #{entity.deliverContent},</if>                           <!-- 发票内容 nvarchar2(255)-->
+			<if test="entity.hbjbuyer != null">hbjbuyer = #{entity.hbjbuyer},</if>                                              <!-- 默认，0否、1是 char(1)-->
+			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.axpayerIdentityNumber != null">axpayer_identity_number = #{entity.axpayerIdentityNumber},</if>     <!-- 纳税人识别号 nvarchar2(64)-->
+			<if test="entity.openingBank != null">opening_bank = #{entity.openingBank},</if>                                    <!-- 开户行 nvarchar2(64)-->
+			<if test="entity.accountNumber != null">account_number = #{entity.accountNumber},</if>                              <!-- 账号 nvarchar2(64)-->
+			<if test="entity.address != null">address = #{entity.address},</if>                                                 <!-- 地址 nvarchar2(128)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话 nvarchar2(64)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		WHERE deliver_id = #{entity.deliverId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE trade_deliver a
+		<set>
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表Id) number(19)-->
+			<if test="entity.deliverType != null">deliver_type = #{entity.deliverType},</if>                                    <!-- 发票类型：1普通发票，2增值税普通发票，3增值税专用发票 char(1)-->
+			<if test="entity.deliverTitle != null">deliver_title = #{entity.deliverTitle},</if>                                 <!-- 发票抬头 nvarchar2(64)-->
+			<if test="entity.deliverContent != null">deliver_content = #{entity.deliverContent},</if>                           <!-- 发票内容 nvarchar2(255)-->
+			<if test="entity.hbjbuyer != null">hbjbuyer = #{entity.hbjbuyer},</if>                                              <!-- 默认，0否、1是 char(1)-->
+			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.axpayerIdentityNumber != null">axpayer_identity_number = #{entity.axpayerIdentityNumber},</if>     <!-- 纳税人识别号 nvarchar2(64)-->
+			<if test="entity.openingBank != null">opening_bank = #{entity.openingBank},</if>                                    <!-- 开户行 nvarchar2(64)-->
+			<if test="entity.accountNumber != null">account_number = #{entity.accountNumber},</if>                              <!-- 账号 nvarchar2(64)-->
+			<if test="entity.address != null">address = #{entity.address},</if>                                                 <!-- 地址 nvarchar2(128)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话 nvarchar2(64)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM trade_deliver
+		WHERE deliver_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM trade_deliver
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					deliver_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM trade_deliver a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM trade_deliver a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

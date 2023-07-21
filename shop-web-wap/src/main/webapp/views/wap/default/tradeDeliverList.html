@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 下拉选 -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/select.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeDeliverList.js"></script>
+</head>
+<body class="invoice-list-body">
+	<div class="sui-page-group invoice-list">
+		<div class="sui-page sui-page-current invoice-list-div" id='invoiceList'>
+			<% include("/include/router-login.html"){}%>
+			<div class="header-default-box weui-border-b">
+				<a href="javascript:void(0);" class="icon icon-arrowleft l back" onclick="javascript:window.history.go(-1);"></a>
+				<h1>管理发票信息</h1>
+			</div>
+			<div class="trade-invoice-list"></div>
+			<div class="weui_btn_area">
+				<a id="formSubmitBtn" href="${ctxw}/trade/deliver/save.htm" class="weui_btn weui_btn_warn use-router">新增一个发票信息</a>
+				<a id="backTradeConfirmOrder" href="javaScript:;" class="weui_btn weui_btn_warn">取消发票信息</a>
+	     	</div>
+		</div>
+	    <% include("/include/foot-nav.html"){}%>
+	    <script type="text/template" id="noList_Tpl" info="没有收藏模板">
+			<div class="noList-div">
+				<div class="icon icon-xiaoxi1"></div>
+				<span>该用户没有设置发票</span>
+			</div>
+		</script>
+		<script type="text/template" id="tradeDeliverList_Tpl" info="没有收藏模板">
+			<div class="weui_cells invoice-item">
+				<label class="weui_cell weui_check_label">
+					<div class="weui_cell_bd weui_cell_primary returnOrder">
+						<p class="l invoice-deliverType">{{d.label}}</p>
+						<div class="clear"></div>
+						<p class="invoice-companyName">{{d.companyName}}</p>
+					</div>
+				</label>
+				<div class="weui_cells weui_cells_checkbox">
+		            <label class="weui_cell weui_check_label l default-invoice-input" for="{{d.deliverId}}">
+		                <div class="weui_cell_hd">
+		                    <input type="checkbox" class="weui_check hbjbuyer" name="checkbox1" id="{{d.deliverId}}" {{d.checked}}>
+		                    <i class="weui_icon_checked"></i>
+		                </div>
+		                <div class="weui_cell_bd weui_cell_primary">
+		                    <p>设为默认</p>
+		                </div>
+		            </label>
+		            <div class="r">
+						<a href="${ctxw}/trade/deliver/edit.htm?deliverId={{d.deliverId}}" class="edit-invoice use-router"><span class="icon icon-67"></span> 编辑</a>
+						<a href="javascript:void(0);" class="dele-invoice" deliverId={{d.deliverId}}><span class="icon icon-26"></span> 删除</a>
+					</div>
+		         </div>
+			</div>
+		</script>
+	</div>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

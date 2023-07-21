@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.SettlementTaskMainDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="settlementTaskMainColumns">
+	<trim suffixOverrides=",">
+		a.task_main_id AS 'taskMainId',                                      <!-- 主键 bigint(20)-->
+		a.name AS 'name',                                                    <!-- 名称(年-月-日) varchar(64)-->
+		a.type AS 'type',                                                    <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+		a.begin_time AS 'beginTime',                                         <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+		a.end_time AS 'endTime',                                             <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+		a.status AS 'status',                                                <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+		a.success_count AS 'successCount',                                   <!-- 成功数 int(11)-->
+		a.error_count AS 'errorCount',                                       <!-- 失败数 int(11)-->
+		a.sum_count AS 'sumCount',                                           <!-- 总数 int(11)-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.taskMainId != null ">AND a.task_main_id = #{c.taskMainId}</if>
+		<if test="c.name != null and c.name != ''">AND a.name = #{c.name}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.beginBeginTime != null and c.endBeginTime != null ">AND a.begin_time BETWEEN #{c.beginBeginTime} AND #{c.endBeginTime}</if>
+		<if test="c.beginEndTime != null and c.endEndTime != null ">AND a.end_time BETWEEN #{c.beginEndTime} AND #{c.endEndTime}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.successCount != null ">AND a.success_count = #{c.successCount}</if>
+		<if test="c.errorCount != null ">AND a.error_count = #{c.errorCount}</if>
+		<if test="c.sumCount != null ">AND a.sum_count = #{c.sumCount}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SettlementTaskMain">
+		SELECT 
+		<include refid="settlementTaskMainColumns"/>
+		FROM settlement_task_main a
+		WHERE a.task_main_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SettlementTaskMain">
+		SELECT 
+		<include refid="settlementTaskMainColumns"/>
+		FROM settlement_task_main a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.task_main_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SettlementTaskMain">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="settlementTaskMainColumns"/>
+		FROM settlement_task_main a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.task_main_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SettlementTaskMain">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="settlementTaskMainColumns"/>
+		FROM settlement_task_main a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.task_main_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.taskMainId" keyColumn="task_main_id" useGeneratedKeys="true">
+		INSERT INTO settlement_task_main
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			task_main_id,                                      <!-- 主键 bigint(20)-->
+			name,                                              <!-- 名称(年-月-日) varchar(64)-->
+			type,                                              <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			begin_time,                                        <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			end_time,                                          <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			status,                                            <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			success_count,                                     <!-- 成功数 int(11)-->
+			error_count,                                       <!-- 失败数 int(11)-->
+			sum_count,                                         <!-- 总数 int(11)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.taskMainId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">settlement_task_main_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.name},                                    <!-- 名称(年-月-日) varchar(64)-->
+			#{entity.type},                                    <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			#{entity.beginTime},                               <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			#{entity.endTime},                                 <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			#{entity.status},                                  <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			#{entity.successCount},                            <!-- 成功数 int(11)-->
+			#{entity.errorCount},                              <!-- 失败数 int(11)-->
+			#{entity.sumCount},                                <!-- 总数 int(11)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.taskMainId" keyColumn="task_main_id" useGeneratedKeys="true">
+		INSERT INTO settlement_task_main
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.taskMainId != null">task_main_id,</if></if>
+			<if test="entity.pkMode==2">task_main_id,</if>
+			<if test="entity.name != null">name,</if>                                          <!-- 名称(年-月-日) varchar(64)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.beginTime != null">begin_time,</if>                               <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			<if test="entity.endTime != null">end_time,</if>                                   <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			<if test="entity.status != null">status,</if>                                      <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			<if test="entity.successCount != null">success_count,</if>                         <!-- 成功数 int(11)-->
+			<if test="entity.errorCount != null">error_count,</if>                             <!-- 失败数 int(11)-->
+			<if test="entity.sumCount != null">sum_count,</if>                                 <!-- 总数 int(11)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.taskMainId != null">#{entity.taskMainId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">settlement_task_main_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 名称(年-月-日) varchar(64)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.beginTime != null">#{entity.beginTime},</if>                                <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			<if test="entity.endTime != null">#{entity.endTime},</if>                                    <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			<if test="entity.successCount != null">#{entity.successCount},</if>                          <!-- 成功数 int(11)-->
+			<if test="entity.errorCount != null">#{entity.errorCount},</if>                              <!-- 失败数 int(11)-->
+			<if test="entity.sumCount != null">#{entity.sumCount},</if>                                  <!-- 总数 int(11)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE settlement_task_main 
+		<set>
+			name = #{entity.name},                                          <!-- 名称(年-月-日) varchar(64)-->
+			type = #{entity.type},                                          <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			begin_time = #{entity.beginTime},                               <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			end_time = #{entity.endTime},                                   <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			status = #{entity.status},                                      <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			success_count = #{entity.successCount},                         <!-- 成功数 int(11)-->
+			error_count = #{entity.errorCount},                             <!-- 失败数 int(11)-->
+			sum_count = #{entity.sumCount},                                 <!-- 总数 int(11)-->
+
+		</set>
+		WHERE task_main_id = #{entity.taskMainId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE settlement_task_main a 
+		<set>
+			name = #{entity.name},                                          <!-- 名称(年-月-日) varchar(64)-->
+			type = #{entity.type},                                          <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			begin_time = #{entity.beginTime},                               <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			end_time = #{entity.endTime},                                   <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			status = #{entity.status},                                      <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			success_count = #{entity.successCount},                         <!-- 成功数 int(11)-->
+			error_count = #{entity.errorCount},                             <!-- 失败数 int(11)-->
+			sum_count = #{entity.sumCount},                                 <!-- 总数 int(11)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE settlement_task_main
+		<set>
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 名称(年-月-日) varchar(64)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.beginTime != null">begin_time = #{entity.beginTime},</if>                                          <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			<if test="entity.endTime != null">end_time = #{entity.endTime},</if>                                                <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			<if test="entity.successCount != null">success_count = #{entity.successCount},</if>                                 <!-- 成功数 int(11)-->
+			<if test="entity.errorCount != null">error_count = #{entity.errorCount},</if>                                       <!-- 失败数 int(11)-->
+			<if test="entity.sumCount != null">sum_count = #{entity.sumCount},</if>                                             <!-- 总数 int(11)-->
+		</set>
+		WHERE task_main_id = #{entity.taskMainId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE settlement_task_main a
+		<set>
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 名称(年-月-日) varchar(64)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.beginTime != null">begin_time = #{entity.beginTime},</if>                                          <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+			<if test="entity.endTime != null">end_time = #{entity.endTime},</if>                                                <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+			<if test="entity.successCount != null">success_count = #{entity.successCount},</if>                                 <!-- 成功数 int(11)-->
+			<if test="entity.errorCount != null">error_count = #{entity.errorCount},</if>                                       <!-- 失败数 int(11)-->
+			<if test="entity.sumCount != null">sum_count = #{entity.sumCount},</if>                                             <!-- 总数 int(11)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM settlement_task_main
+		WHERE task_main_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM settlement_task_main
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					task_main_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM settlement_task_main a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM settlement_task_main a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

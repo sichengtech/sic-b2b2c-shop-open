@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductSkuDao">
+	<cache-ref namespace="com.sicheng.admin.product.dao.ProductSkuDao"/> 
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	ProductSkuDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	ProductSkuDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	ProductSkuDao.xml文件与ProductSkuDaoBase.xml文件，在运行时会合并起来。
+	ProductSkuDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，ProductSkuDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<!-- 根据skuId添加库存 -->
+	<update id="addStockById">
+		UPDATE product_sku t
+		<set>
+			t.stock = t.stock+#{number}
+		</set>
+		WHERE sku_id =#{skuId}
+	</update>
+	
+	<!-- 根据skuId减少库存 -->
+	<update id="reduceStockById">
+		UPDATE product_sku t
+		<set>
+			t.stock = t.stock-#{number}
+		</set>
+		WHERE sku_id =#{skuId} AND t.stock&gt;=#{number}
+	</update>
+	
+	<!-- 根据skuId添加占用库存 -->
+	<update id="addOccupyStockById">
+		UPDATE product_sku t
+		<set>
+			t.occupy_stock = t.occupy_stock+#{number}
+		</set>
+		WHERE sku_id =#{skuId}
+	</update>
+	
+	<!-- 根据skuId减少占用库存 -->
+	<update id="reduceOccupyStockById">
+		UPDATE product_sku t
+		<set>
+			t.occupy_stock = t.occupy_stock-#{number}
+		</set>
+		WHERE sku_id =#{skuId} AND t.occupy_stock&gt;=#{number}
+	</update>
+	
+</mapper>

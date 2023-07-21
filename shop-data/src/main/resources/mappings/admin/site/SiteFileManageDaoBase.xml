@@ -1,0 +1,288 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.site.dao.SiteFileManageDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="siteFileManageColumns">
+	<trim suffixOverrides=",">
+		a.sf_id AS "sfId",                                                   <!-- 主键 bigint(20)-->
+		a.category AS "category",                                            <!-- 文件分类 varchar(64)-->
+		a.name AS "name",                                                    <!-- 文件名 varchar(64)-->
+		a.path AS "path",                                                    <!-- 文件地址 varchar(128)-->
+		a.remarks AS "remarks",                                              <!-- 备注 varchar(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="siteFileManageJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.sfId != null ">AND a.sf_id = #{c.sfId}</if>
+		<if test="c.category != null and c.category != ''">AND a.category = #{c.category}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.path != null and c.path != ''">AND a.path = #{c.path}</if>
+		<if test="c.remarks != null and c.remarks != ''">AND a.remarks = #{c.remarks}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SiteFileManage">
+		SELECT 
+		<include refid="siteFileManageColumns"/>
+		FROM site_file_manage a
+		<include refid="siteFileManageJoins"/>
+		WHERE a.sf_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SiteFileManage">
+		SELECT 
+		<include refid="siteFileManageColumns"/>
+		FROM site_file_manage a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.sf_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SiteFileManage">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteFileManageColumns"/>
+		FROM site_file_manage a
+		<include refid="siteFileManageJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sf_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SiteFileManage">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteFileManageColumns"/>
+		FROM site_file_manage a
+		<include refid="siteFileManageJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sf_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.sfId" keyColumn="sf_id" useGeneratedKeys="true">
+		INSERT INTO site_file_manage
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			sf_id,                                             <!-- 主键 bigint(20)-->
+			category,                                          <!-- 文件分类 varchar(64)-->
+			name,                                              <!-- 文件名 varchar(64)-->
+			path,                                              <!-- 文件地址 varchar(128)-->
+			remarks,                                           <!-- 备注 varchar(255)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.sfId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_file_manage_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.category},                                <!-- 文件分类 varchar(64)-->
+			#{entity.name},                                    <!-- 文件名 varchar(64)-->
+			#{entity.path},                                    <!-- 文件地址 varchar(128)-->
+			#{entity.remarks},                                 <!-- 备注 varchar(255)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.sfId" keyColumn="sf_id" useGeneratedKeys="true">
+		INSERT INTO site_file_manage
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.sfId != null">sf_id,</if></if>
+			<if test="entity.pkMode==2">sf_id,</if>
+			<if test="entity.category != null">category,</if>                                  <!-- 文件分类 varchar(64)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 文件名 varchar(64)-->
+			<if test="entity.path != null">path,</if>                                          <!-- 文件地址 varchar(128)-->
+			<if test="entity.remarks != null">remarks,</if>                                    <!-- 备注 varchar(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.sfId != null">#{entity.sfId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_file_manage_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.category != null">#{entity.category},</if>                                  <!-- 文件分类 varchar(64)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 文件名 varchar(64)-->
+			<if test="entity.path != null">#{entity.path},</if>                                          <!-- 文件地址 varchar(128)-->
+			<if test="entity.remarks != null">#{entity.remarks},</if>                                    <!-- 备注 varchar(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE site_file_manage 
+		<set>
+			category = #{entity.category},                                  <!-- 文件分类 varchar(64)-->
+			name = #{entity.name},                                          <!-- 文件名 varchar(64)-->
+			path = #{entity.path},                                          <!-- 文件地址 varchar(128)-->
+			remarks = #{entity.remarks},                                    <!-- 备注 varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE sf_id = #{entity.sfId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE site_file_manage a 
+		<set>
+			category = #{entity.category},                                  <!-- 文件分类 varchar(64)-->
+			name = #{entity.name},                                          <!-- 文件名 varchar(64)-->
+			path = #{entity.path},                                          <!-- 文件地址 varchar(128)-->
+			remarks = #{entity.remarks},                                    <!-- 备注 varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE site_file_manage
+		<set>
+			<if test="entity.category != null">category = #{entity.category},</if>                                              <!-- 文件分类 varchar(64)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 文件名 varchar(64)-->
+			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 文件地址 varchar(128)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- 备注 varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE sf_id = #{entity.sfId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE site_file_manage a
+		<set>
+			<if test="entity.category != null">category = #{entity.category},</if>                                              <!-- 文件分类 varchar(64)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 文件名 varchar(64)-->
+			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 文件地址 varchar(128)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- 备注 varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM site_file_manage
+		WHERE sf_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM site_file_manage
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					sf_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM site_file_manage a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM site_file_manage a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

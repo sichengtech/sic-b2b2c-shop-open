@@ -1,0 +1,622 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sso.dao.UserRepairShopDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="userRepairShopColumns">
+	<trim suffixOverrides=",">
+		a.u_id AS "uId",                                                     <!-- 主键,会员的ID number(19)-->
+		a.auth_type AS "authType",                                           <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+		a.type AS "type",                                                    <!-- 门店类型（字典）use_shop_type char(2)-->
+		a.name AS "name",                                                    <!-- 门店名称 nvarchar2(64)-->
+		a.introduce AS "introduce",                                          <!-- 门店介绍 nvarchar2(255)-->
+		a.country_id AS "countryId",                                         <!-- 门店所在地国家(关联地区表) number(19)-->
+		a.country_name AS "countryName",                                     <!-- 门店所在地国家名字 nvarchar2(64)-->
+		a.province_id AS "provinceId",                                       <!-- 门店所在地省(关联地区表) number(19)-->
+		a.province_name AS "provinceName",                                   <!-- 门店所在地省名字 nvarchar2(64)-->
+		a.city_id AS "cityId",                                               <!-- 门店所在地市(关联地区表) number(19)-->
+		a.city_name AS "cityName",                                           <!-- 门店所在地市名字 nvarchar2(64)-->
+		a.district_id AS "districtId",                                       <!-- 门店所在地县(关联地区表) number(19)-->
+		a.district_name AS "districtName",                                   <!-- 县名字 nvarchar2(64)-->
+		a.detailed_address AS "detailedAddress",                             <!-- 详细地址 nvarchar2(255)-->
+		a.burns AS "burns",                                                  <!-- 门店面积 nvarchar2(64)-->
+		a.brands AS "brands",                                                <!-- 经营品牌，号分割 nvarchar2(64)-->
+		a.open_date AS "openDate",                                           <!-- 建店日期 date(7)-->
+		a.boss_name AS "bossName",                                           <!-- 老板姓名 nvarchar2(64)-->
+		a.boss_mobile AS "bossMobile",                                       <!-- 老板电话 nvarchar2(64)-->
+		a.path1 AS "path1",                                                  <!-- 门店照片path1 nvarchar2(64)-->
+		a.path2 AS "path2",                                                  <!-- 门店照片path2 nvarchar2(64)-->
+		a.path3 AS "path3",                                                  <!-- 门店照片path3 nvarchar2(64)-->
+		a.path4 AS "path4",                                                  <!-- 门店照片path4 nvarchar2(64)-->
+		a.path5 AS "path5",                                                  <!-- 门店照片path5 nvarchar2(64)-->
+		a.people_count AS "peopleCount",                                     <!-- 门店人数（字典）user_people_count char(1)-->
+		a.business_status AS "businessStatus",                               <!-- 营业状态（字典）user_business_status char(1)-->
+		a.open_shop_date AS "openShopDate",                                  <!-- 开店营业时间 date(7)-->
+		a.close_shop_date AS "closeShopDate",                                <!-- 关店营业时间 date(7)-->
+		a.hotline AS "hotline",                                              <!-- 服务热线 nvarchar2(64)-->
+		a.shopkeeper_name AS "shopkeeperName",                               <!-- 店主姓名 nvarchar2(64)-->
+		a.shopkeeper_mobile AS "shopkeeperMobile",                           <!-- 店主手机 nvarchar2(64)-->
+		a.contacts_name AS "contactsName",                                   <!-- 联系人姓名 nvarchar2(64)-->
+		a.department AS "department",                                        <!-- 所在部门 char(2)-->
+		a.mobile AS "mobile",                                                <!-- 本人手机 nvarchar2(64)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.auth_content AS "authContent",                                     <!-- 审核内容 nvarchar2(255)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="userRepairShopJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.authType != null and c.authType != ''">AND a.auth_type = #{c.authType}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.introduce != null and c.introduce != ''">AND a.introduce = #{c.introduce}</if>
+		<if test="c.countryId != null ">AND a.country_id = #{c.countryId}</if>
+		<if test="c.countryName != null and c.countryName != ''">AND a.country_name = #{c.countryName}</if>
+		<if test="c.provinceId != null ">AND a.province_id = #{c.provinceId}</if>
+		<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+		<if test="c.cityId != null ">AND a.city_id = #{c.cityId}</if>
+		<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+		<if test="c.districtId != null ">AND a.district_id = #{c.districtId}</if>
+		<if test="c.districtName != null and c.districtName != ''">AND a.district_name = #{c.districtName}</if>
+		<if test="c.detailedAddress != null and c.detailedAddress != ''">AND a.detailed_address = #{c.detailedAddress}</if>
+		<if test="c.burns != null and c.burns != ''">AND a.burns = #{c.burns}</if>
+		<if test="c.brands != null and c.brands != ''">AND a.brands = #{c.brands}</if>
+		<if test="c.beginOpenDate != null and c.endOpenDate != null ">AND a.open_date BETWEEN #{c.beginOpenDate} AND #{c.endOpenDate}</if>
+		<if test="c.bossName != null and c.bossName != ''">AND a.boss_name = #{c.bossName}</if>
+		<if test="c.bossMobile != null and c.bossMobile != ''">AND a.boss_mobile = #{c.bossMobile}</if>
+		<if test="c.path1 != null and c.path1 != ''">AND a.path1 = #{c.path1}</if>
+		<if test="c.path2 != null and c.path2 != ''">AND a.path2 = #{c.path2}</if>
+		<if test="c.path3 != null and c.path3 != ''">AND a.path3 = #{c.path3}</if>
+		<if test="c.path4 != null and c.path4 != ''">AND a.path4 = #{c.path4}</if>
+		<if test="c.path5 != null and c.path5 != ''">AND a.path5 = #{c.path5}</if>
+		<if test="c.peopleCount != null and c.peopleCount != ''">AND a.people_count = #{c.peopleCount}</if>
+		<if test="c.businessStatus != null and c.businessStatus != ''">AND a.business_status = #{c.businessStatus}</if>
+		<if test="c.beginOpenShopDate != null and c.endOpenShopDate != null ">AND a.open_shop_date BETWEEN #{c.beginOpenShopDate} AND #{c.endOpenShopDate}</if>
+		<if test="c.beginCloseShopDate != null and c.endCloseShopDate != null ">AND a.close_shop_date BETWEEN #{c.beginCloseShopDate} AND #{c.endCloseShopDate}</if>
+		<if test="c.hotline != null and c.hotline != ''">AND a.hotline = #{c.hotline}</if>
+		<if test="c.shopkeeperName != null and c.shopkeeperName != ''">AND a.shopkeeper_name = #{c.shopkeeperName}</if>
+		<if test="c.shopkeeperMobile != null and c.shopkeeperMobile != ''">AND a.shopkeeper_mobile = #{c.shopkeeperMobile}</if>
+		<if test="c.contactsName != null and c.contactsName != ''">AND a.contacts_name = #{c.contactsName}</if>
+		<if test="c.department != null and c.department != ''">AND a.department = #{c.department}</if>
+		<if test="c.mobile != null and c.mobile != ''">AND a.mobile = #{c.mobile}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.authContent != null and c.authContent != ''">AND a.auth_content = #{c.authContent}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="UserRepairShop">
+		SELECT 
+		<include refid="userRepairShopColumns"/>
+		FROM user_repair_shop a
+		<include refid="userRepairShopJoins"/>
+		WHERE a.u_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="UserRepairShop">
+		SELECT 
+		<include refid="userRepairShopColumns"/>
+		FROM user_repair_shop a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="UserRepairShop">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userRepairShopColumns"/>
+		FROM user_repair_shop a
+		<include refid="userRepairShopJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="UserRepairShop">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userRepairShopColumns"/>
+		FROM user_repair_shop a
+		<include refid="userRepairShopJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_repair_shop
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			u_id,                                              <!-- 主键,会员的ID number(19)-->
+			auth_type,                                         <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			type,                                              <!-- 门店类型（字典）use_shop_type char(2)-->
+			name,                                              <!-- 门店名称 nvarchar2(64)-->
+			introduce,                                         <!-- 门店介绍 nvarchar2(255)-->
+			country_id,                                        <!-- 门店所在地国家(关联地区表) number(19)-->
+			country_name,                                      <!-- 门店所在地国家名字 nvarchar2(64)-->
+			province_id,                                       <!-- 门店所在地省(关联地区表) number(19)-->
+			province_name,                                     <!-- 门店所在地省名字 nvarchar2(64)-->
+			city_id,                                           <!-- 门店所在地市(关联地区表) number(19)-->
+			city_name,                                         <!-- 门店所在地市名字 nvarchar2(64)-->
+			district_id,                                       <!-- 门店所在地县(关联地区表) number(19)-->
+			district_name,                                     <!-- 县名字 nvarchar2(64)-->
+			detailed_address,                                  <!-- 详细地址 nvarchar2(255)-->
+			burns,                                             <!-- 门店面积 nvarchar2(64)-->
+			brands,                                            <!-- 经营品牌，号分割 nvarchar2(64)-->
+			open_date,                                         <!-- 建店日期 date(7)-->
+			boss_name,                                         <!-- 老板姓名 nvarchar2(64)-->
+			boss_mobile,                                       <!-- 老板电话 nvarchar2(64)-->
+			path1,                                             <!-- 门店照片path1 nvarchar2(64)-->
+			path2,                                             <!-- 门店照片path2 nvarchar2(64)-->
+			path3,                                             <!-- 门店照片path3 nvarchar2(64)-->
+			path4,                                             <!-- 门店照片path4 nvarchar2(64)-->
+			path5,                                             <!-- 门店照片path5 nvarchar2(64)-->
+			people_count,                                      <!-- 门店人数（字典）user_people_count char(1)-->
+			business_status,                                   <!-- 营业状态（字典）user_business_status char(1)-->
+			open_shop_date,                                    <!-- 开店营业时间 date(7)-->
+			close_shop_date,                                   <!-- 关店营业时间 date(7)-->
+			hotline,                                           <!-- 服务热线 nvarchar2(64)-->
+			shopkeeper_name,                                   <!-- 店主姓名 nvarchar2(64)-->
+			shopkeeper_mobile,                                 <!-- 店主手机 nvarchar2(64)-->
+			contacts_name,                                     <!-- 联系人姓名 nvarchar2(64)-->
+			department,                                        <!-- 所在部门 char(2)-->
+			mobile,                                            <!-- 本人手机 nvarchar2(64)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			auth_content,                                      <!-- 审核内容 nvarchar2(255)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.uId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_repair_shop_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.authType},                                <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			#{entity.type},                                    <!-- 门店类型（字典）use_shop_type char(2)-->
+			#{entity.name},                                    <!-- 门店名称 nvarchar2(64)-->
+			#{entity.introduce},                               <!-- 门店介绍 nvarchar2(255)-->
+			#{entity.countryId},                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			#{entity.countryName},                             <!-- 门店所在地国家名字 nvarchar2(64)-->
+			#{entity.provinceId},                              <!-- 门店所在地省(关联地区表) number(19)-->
+			#{entity.provinceName},                            <!-- 门店所在地省名字 nvarchar2(64)-->
+			#{entity.cityId},                                  <!-- 门店所在地市(关联地区表) number(19)-->
+			#{entity.cityName},                                <!-- 门店所在地市名字 nvarchar2(64)-->
+			#{entity.districtId},                              <!-- 门店所在地县(关联地区表) number(19)-->
+			#{entity.districtName},                            <!-- 县名字 nvarchar2(64)-->
+			#{entity.detailedAddress},                         <!-- 详细地址 nvarchar2(255)-->
+			#{entity.burns},                                   <!-- 门店面积 nvarchar2(64)-->
+			#{entity.brands},                                  <!-- 经营品牌，号分割 nvarchar2(64)-->
+			#{entity.openDate},                                <!-- 建店日期 date(7)-->
+			#{entity.bossName},                                <!-- 老板姓名 nvarchar2(64)-->
+			#{entity.bossMobile},                              <!-- 老板电话 nvarchar2(64)-->
+			#{entity.path1},                                   <!-- 门店照片path1 nvarchar2(64)-->
+			#{entity.path2},                                   <!-- 门店照片path2 nvarchar2(64)-->
+			#{entity.path3},                                   <!-- 门店照片path3 nvarchar2(64)-->
+			#{entity.path4},                                   <!-- 门店照片path4 nvarchar2(64)-->
+			#{entity.path5},                                   <!-- 门店照片path5 nvarchar2(64)-->
+			#{entity.peopleCount},                             <!-- 门店人数（字典）user_people_count char(1)-->
+			#{entity.businessStatus},                          <!-- 营业状态（字典）user_business_status char(1)-->
+			#{entity.openShopDate},                            <!-- 开店营业时间 date(7)-->
+			#{entity.closeShopDate},                           <!-- 关店营业时间 date(7)-->
+			#{entity.hotline},                                 <!-- 服务热线 nvarchar2(64)-->
+			#{entity.shopkeeperName},                          <!-- 店主姓名 nvarchar2(64)-->
+			#{entity.shopkeeperMobile},                        <!-- 店主手机 nvarchar2(64)-->
+			#{entity.contactsName},                            <!-- 联系人姓名 nvarchar2(64)-->
+			#{entity.department},                              <!-- 所在部门 char(2)-->
+			#{entity.mobile},                                  <!-- 本人手机 nvarchar2(64)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.authContent},                             <!-- 审核内容 nvarchar2(255)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_repair_shop
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.uId != null">u_id,</if></if>
+			<if test="entity.pkMode==2">u_id,</if>
+			<if test="entity.authType != null">auth_type,</if>                                 <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 门店类型（字典）use_shop_type char(2)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 门店名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">introduce,</if>                                <!-- 门店介绍 nvarchar2(255)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name,</if>                           <!-- 门店所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 门店所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 门店所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 详细地址 nvarchar2(255)-->
+			<if test="entity.burns != null">burns,</if>                                        <!-- 门店面积 nvarchar2(64)-->
+			<if test="entity.brands != null">brands,</if>                                      <!-- 经营品牌，号分割 nvarchar2(64)-->
+			<if test="entity.openDate != null">open_date,</if>                                 <!-- 建店日期 date(7)-->
+			<if test="entity.bossName != null">boss_name,</if>                                 <!-- 老板姓名 nvarchar2(64)-->
+			<if test="entity.bossMobile != null">boss_mobile,</if>                             <!-- 老板电话 nvarchar2(64)-->
+			<if test="entity.path1 != null">path1,</if>                                        <!-- 门店照片path1 nvarchar2(64)-->
+			<if test="entity.path2 != null">path2,</if>                                        <!-- 门店照片path2 nvarchar2(64)-->
+			<if test="entity.path3 != null">path3,</if>                                        <!-- 门店照片path3 nvarchar2(64)-->
+			<if test="entity.path4 != null">path4,</if>                                        <!-- 门店照片path4 nvarchar2(64)-->
+			<if test="entity.path5 != null">path5,</if>                                        <!-- 门店照片path5 nvarchar2(64)-->
+			<if test="entity.peopleCount != null">people_count,</if>                           <!-- 门店人数（字典）user_people_count char(1)-->
+			<if test="entity.businessStatus != null">business_status,</if>                     <!-- 营业状态（字典）user_business_status char(1)-->
+			<if test="entity.openShopDate != null">open_shop_date,</if>                        <!-- 开店营业时间 date(7)-->
+			<if test="entity.closeShopDate != null">close_shop_date,</if>                      <!-- 关店营业时间 date(7)-->
+			<if test="entity.hotline != null">hotline,</if>                                    <!-- 服务热线 nvarchar2(64)-->
+			<if test="entity.shopkeeperName != null">shopkeeper_name,</if>                     <!-- 店主姓名 nvarchar2(64)-->
+			<if test="entity.shopkeeperMobile != null">shopkeeper_mobile,</if>                 <!-- 店主手机 nvarchar2(64)-->
+			<if test="entity.contactsName != null">contacts_name,</if>                         <!-- 联系人姓名 nvarchar2(64)-->
+			<if test="entity.department != null">department,</if>                              <!-- 所在部门 char(2)-->
+			<if test="entity.mobile != null">mobile,</if>                                      <!-- 本人手机 nvarchar2(64)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.authContent != null">auth_content,</if>                           <!-- 审核内容 nvarchar2(255)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.uId != null">#{entity.uId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_repair_shop_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.authType != null">#{entity.authType},</if>                                  <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 门店类型（字典）use_shop_type char(2)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 门店名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">#{entity.introduce},</if>                                <!-- 门店介绍 nvarchar2(255)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 门店所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 门店所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 门店所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 详细地址 nvarchar2(255)-->
+			<if test="entity.burns != null">#{entity.burns},</if>                                        <!-- 门店面积 nvarchar2(64)-->
+			<if test="entity.brands != null">#{entity.brands},</if>                                      <!-- 经营品牌，号分割 nvarchar2(64)-->
+			<if test="entity.openDate != null">#{entity.openDate},</if>                                  <!-- 建店日期 date(7)-->
+			<if test="entity.bossName != null">#{entity.bossName},</if>                                  <!-- 老板姓名 nvarchar2(64)-->
+			<if test="entity.bossMobile != null">#{entity.bossMobile},</if>                              <!-- 老板电话 nvarchar2(64)-->
+			<if test="entity.path1 != null">#{entity.path1},</if>                                        <!-- 门店照片path1 nvarchar2(64)-->
+			<if test="entity.path2 != null">#{entity.path2},</if>                                        <!-- 门店照片path2 nvarchar2(64)-->
+			<if test="entity.path3 != null">#{entity.path3},</if>                                        <!-- 门店照片path3 nvarchar2(64)-->
+			<if test="entity.path4 != null">#{entity.path4},</if>                                        <!-- 门店照片path4 nvarchar2(64)-->
+			<if test="entity.path5 != null">#{entity.path5},</if>                                        <!-- 门店照片path5 nvarchar2(64)-->
+			<if test="entity.peopleCount != null">#{entity.peopleCount},</if>                            <!-- 门店人数（字典）user_people_count char(1)-->
+			<if test="entity.businessStatus != null">#{entity.businessStatus},</if>                      <!-- 营业状态（字典）user_business_status char(1)-->
+			<if test="entity.openShopDate != null">#{entity.openShopDate},</if>                          <!-- 开店营业时间 date(7)-->
+			<if test="entity.closeShopDate != null">#{entity.closeShopDate},</if>                        <!-- 关店营业时间 date(7)-->
+			<if test="entity.hotline != null">#{entity.hotline},</if>                                    <!-- 服务热线 nvarchar2(64)-->
+			<if test="entity.shopkeeperName != null">#{entity.shopkeeperName},</if>                      <!-- 店主姓名 nvarchar2(64)-->
+			<if test="entity.shopkeeperMobile != null">#{entity.shopkeeperMobile},</if>                  <!-- 店主手机 nvarchar2(64)-->
+			<if test="entity.contactsName != null">#{entity.contactsName},</if>                          <!-- 联系人姓名 nvarchar2(64)-->
+			<if test="entity.department != null">#{entity.department},</if>                              <!-- 所在部门 char(2)-->
+			<if test="entity.mobile != null">#{entity.mobile},</if>                                      <!-- 本人手机 nvarchar2(64)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.authContent != null">#{entity.authContent},</if>                            <!-- 审核内容 nvarchar2(255)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE user_repair_shop 
+		<set>
+			u_id = #{entity.uId},                                           <!-- 主键,会员的ID number(19)-->
+			auth_type = #{entity.authType},                                 <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			type = #{entity.type},                                          <!-- 门店类型（字典）use_shop_type char(2)-->
+			name = #{entity.name},                                          <!-- 门店名称 nvarchar2(64)-->
+			introduce = #{entity.introduce},                                <!-- 门店介绍 nvarchar2(255)-->
+			country_id = #{entity.countryId},                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			country_name = #{entity.countryName},                           <!-- 门店所在地国家名字 nvarchar2(64)-->
+			province_id = #{entity.provinceId},                             <!-- 门店所在地省(关联地区表) number(19)-->
+			province_name = #{entity.provinceName},                         <!-- 门店所在地省名字 nvarchar2(64)-->
+			city_id = #{entity.cityId},                                     <!-- 门店所在地市(关联地区表) number(19)-->
+			city_name = #{entity.cityName},                                 <!-- 门店所在地市名字 nvarchar2(64)-->
+			district_id = #{entity.districtId},                             <!-- 门店所在地县(关联地区表) number(19)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 nvarchar2(255)-->
+			burns = #{entity.burns},                                        <!-- 门店面积 nvarchar2(64)-->
+			brands = #{entity.brands},                                      <!-- 经营品牌，号分割 nvarchar2(64)-->
+			open_date = #{entity.openDate},                                 <!-- 建店日期 date(7)-->
+			boss_name = #{entity.bossName},                                 <!-- 老板姓名 nvarchar2(64)-->
+			boss_mobile = #{entity.bossMobile},                             <!-- 老板电话 nvarchar2(64)-->
+			path1 = #{entity.path1},                                        <!-- 门店照片path1 nvarchar2(64)-->
+			path2 = #{entity.path2},                                        <!-- 门店照片path2 nvarchar2(64)-->
+			path3 = #{entity.path3},                                        <!-- 门店照片path3 nvarchar2(64)-->
+			path4 = #{entity.path4},                                        <!-- 门店照片path4 nvarchar2(64)-->
+			path5 = #{entity.path5},                                        <!-- 门店照片path5 nvarchar2(64)-->
+			people_count = #{entity.peopleCount},                           <!-- 门店人数（字典）user_people_count char(1)-->
+			business_status = #{entity.businessStatus},                     <!-- 营业状态（字典）user_business_status char(1)-->
+			open_shop_date = #{entity.openShopDate},                        <!-- 开店营业时间 date(7)-->
+			close_shop_date = #{entity.closeShopDate},                      <!-- 关店营业时间 date(7)-->
+			hotline = #{entity.hotline},                                    <!-- 服务热线 nvarchar2(64)-->
+			shopkeeper_name = #{entity.shopkeeperName},                     <!-- 店主姓名 nvarchar2(64)-->
+			shopkeeper_mobile = #{entity.shopkeeperMobile},                 <!-- 店主手机 nvarchar2(64)-->
+			contacts_name = #{entity.contactsName},                         <!-- 联系人姓名 nvarchar2(64)-->
+			department = #{entity.department},                              <!-- 所在部门 char(2)-->
+			mobile = #{entity.mobile},                                      <!-- 本人手机 nvarchar2(64)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			auth_content = #{entity.authContent},                           <!-- 审核内容 nvarchar2(255)-->
+
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE user_repair_shop a 
+		<set>
+			u_id = #{entity.uId},                                           <!-- 主键,会员的ID number(19)-->
+			auth_type = #{entity.authType},                                 <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			type = #{entity.type},                                          <!-- 门店类型（字典）use_shop_type char(2)-->
+			name = #{entity.name},                                          <!-- 门店名称 nvarchar2(64)-->
+			introduce = #{entity.introduce},                                <!-- 门店介绍 nvarchar2(255)-->
+			country_id = #{entity.countryId},                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			country_name = #{entity.countryName},                           <!-- 门店所在地国家名字 nvarchar2(64)-->
+			province_id = #{entity.provinceId},                             <!-- 门店所在地省(关联地区表) number(19)-->
+			province_name = #{entity.provinceName},                         <!-- 门店所在地省名字 nvarchar2(64)-->
+			city_id = #{entity.cityId},                                     <!-- 门店所在地市(关联地区表) number(19)-->
+			city_name = #{entity.cityName},                                 <!-- 门店所在地市名字 nvarchar2(64)-->
+			district_id = #{entity.districtId},                             <!-- 门店所在地县(关联地区表) number(19)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 nvarchar2(255)-->
+			burns = #{entity.burns},                                        <!-- 门店面积 nvarchar2(64)-->
+			brands = #{entity.brands},                                      <!-- 经营品牌，号分割 nvarchar2(64)-->
+			open_date = #{entity.openDate},                                 <!-- 建店日期 date(7)-->
+			boss_name = #{entity.bossName},                                 <!-- 老板姓名 nvarchar2(64)-->
+			boss_mobile = #{entity.bossMobile},                             <!-- 老板电话 nvarchar2(64)-->
+			path1 = #{entity.path1},                                        <!-- 门店照片path1 nvarchar2(64)-->
+			path2 = #{entity.path2},                                        <!-- 门店照片path2 nvarchar2(64)-->
+			path3 = #{entity.path3},                                        <!-- 门店照片path3 nvarchar2(64)-->
+			path4 = #{entity.path4},                                        <!-- 门店照片path4 nvarchar2(64)-->
+			path5 = #{entity.path5},                                        <!-- 门店照片path5 nvarchar2(64)-->
+			people_count = #{entity.peopleCount},                           <!-- 门店人数（字典）user_people_count char(1)-->
+			business_status = #{entity.businessStatus},                     <!-- 营业状态（字典）user_business_status char(1)-->
+			open_shop_date = #{entity.openShopDate},                        <!-- 开店营业时间 date(7)-->
+			close_shop_date = #{entity.closeShopDate},                      <!-- 关店营业时间 date(7)-->
+			hotline = #{entity.hotline},                                    <!-- 服务热线 nvarchar2(64)-->
+			shopkeeper_name = #{entity.shopkeeperName},                     <!-- 店主姓名 nvarchar2(64)-->
+			shopkeeper_mobile = #{entity.shopkeeperMobile},                 <!-- 店主手机 nvarchar2(64)-->
+			contacts_name = #{entity.contactsName},                         <!-- 联系人姓名 nvarchar2(64)-->
+			department = #{entity.department},                              <!-- 所在部门 char(2)-->
+			mobile = #{entity.mobile},                                      <!-- 本人手机 nvarchar2(64)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			auth_content = #{entity.authContent},                           <!-- 审核内容 nvarchar2(255)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE user_repair_shop
+		<set>
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 主键,会员的ID number(19)-->
+			<if test="entity.authType != null">auth_type = #{entity.authType},</if>                                             <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 门店类型（字典）use_shop_type char(2)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 门店名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 门店介绍 nvarchar2(255)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 门店所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 门店所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 门店所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 nvarchar2(255)-->
+			<if test="entity.burns != null">burns = #{entity.burns},</if>                                                       <!-- 门店面积 nvarchar2(64)-->
+			<if test="entity.brands != null">brands = #{entity.brands},</if>                                                    <!-- 经营品牌，号分割 nvarchar2(64)-->
+			<if test="entity.openDate != null">open_date = #{entity.openDate},</if>                                             <!-- 建店日期 date(7)-->
+			<if test="entity.bossName != null">boss_name = #{entity.bossName},</if>                                             <!-- 老板姓名 nvarchar2(64)-->
+			<if test="entity.bossMobile != null">boss_mobile = #{entity.bossMobile},</if>                                       <!-- 老板电话 nvarchar2(64)-->
+			<if test="entity.path1 != null">path1 = #{entity.path1},</if>                                                       <!-- 门店照片path1 nvarchar2(64)-->
+			<if test="entity.path2 != null">path2 = #{entity.path2},</if>                                                       <!-- 门店照片path2 nvarchar2(64)-->
+			<if test="entity.path3 != null">path3 = #{entity.path3},</if>                                                       <!-- 门店照片path3 nvarchar2(64)-->
+			<if test="entity.path4 != null">path4 = #{entity.path4},</if>                                                       <!-- 门店照片path4 nvarchar2(64)-->
+			<if test="entity.path5 != null">path5 = #{entity.path5},</if>                                                       <!-- 门店照片path5 nvarchar2(64)-->
+			<if test="entity.peopleCount != null">people_count = #{entity.peopleCount},</if>                                    <!-- 门店人数（字典）user_people_count char(1)-->
+			<if test="entity.businessStatus != null">business_status = #{entity.businessStatus},</if>                           <!-- 营业状态（字典）user_business_status char(1)-->
+			<if test="entity.openShopDate != null">open_shop_date = #{entity.openShopDate},</if>                                <!-- 开店营业时间 date(7)-->
+			<if test="entity.closeShopDate != null">close_shop_date = #{entity.closeShopDate},</if>                             <!-- 关店营业时间 date(7)-->
+			<if test="entity.hotline != null">hotline = #{entity.hotline},</if>                                                 <!-- 服务热线 nvarchar2(64)-->
+			<if test="entity.shopkeeperName != null">shopkeeper_name = #{entity.shopkeeperName},</if>                           <!-- 店主姓名 nvarchar2(64)-->
+			<if test="entity.shopkeeperMobile != null">shopkeeper_mobile = #{entity.shopkeeperMobile},</if>                     <!-- 店主手机 nvarchar2(64)-->
+			<if test="entity.contactsName != null">contacts_name = #{entity.contactsName},</if>                                 <!-- 联系人姓名 nvarchar2(64)-->
+			<if test="entity.department != null">department = #{entity.department},</if>                                        <!-- 所在部门 char(2)-->
+			<if test="entity.mobile != null">mobile = #{entity.mobile},</if>                                                    <!-- 本人手机 nvarchar2(64)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.authContent != null">auth_content = #{entity.authContent},</if>                                    <!-- 审核内容 nvarchar2(255)-->
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE user_repair_shop a
+		<set>
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 主键,会员的ID number(19)-->
+			<if test="entity.authType != null">auth_type = #{entity.authType},</if>                                             <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 门店类型（字典）use_shop_type char(2)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 门店名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 门店介绍 nvarchar2(255)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 门店所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 门店所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 门店所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 nvarchar2(255)-->
+			<if test="entity.burns != null">burns = #{entity.burns},</if>                                                       <!-- 门店面积 nvarchar2(64)-->
+			<if test="entity.brands != null">brands = #{entity.brands},</if>                                                    <!-- 经营品牌，号分割 nvarchar2(64)-->
+			<if test="entity.openDate != null">open_date = #{entity.openDate},</if>                                             <!-- 建店日期 date(7)-->
+			<if test="entity.bossName != null">boss_name = #{entity.bossName},</if>                                             <!-- 老板姓名 nvarchar2(64)-->
+			<if test="entity.bossMobile != null">boss_mobile = #{entity.bossMobile},</if>                                       <!-- 老板电话 nvarchar2(64)-->
+			<if test="entity.path1 != null">path1 = #{entity.path1},</if>                                                       <!-- 门店照片path1 nvarchar2(64)-->
+			<if test="entity.path2 != null">path2 = #{entity.path2},</if>                                                       <!-- 门店照片path2 nvarchar2(64)-->
+			<if test="entity.path3 != null">path3 = #{entity.path3},</if>                                                       <!-- 门店照片path3 nvarchar2(64)-->
+			<if test="entity.path4 != null">path4 = #{entity.path4},</if>                                                       <!-- 门店照片path4 nvarchar2(64)-->
+			<if test="entity.path5 != null">path5 = #{entity.path5},</if>                                                       <!-- 门店照片path5 nvarchar2(64)-->
+			<if test="entity.peopleCount != null">people_count = #{entity.peopleCount},</if>                                    <!-- 门店人数（字典）user_people_count char(1)-->
+			<if test="entity.businessStatus != null">business_status = #{entity.businessStatus},</if>                           <!-- 营业状态（字典）user_business_status char(1)-->
+			<if test="entity.openShopDate != null">open_shop_date = #{entity.openShopDate},</if>                                <!-- 开店营业时间 date(7)-->
+			<if test="entity.closeShopDate != null">close_shop_date = #{entity.closeShopDate},</if>                             <!-- 关店营业时间 date(7)-->
+			<if test="entity.hotline != null">hotline = #{entity.hotline},</if>                                                 <!-- 服务热线 nvarchar2(64)-->
+			<if test="entity.shopkeeperName != null">shopkeeper_name = #{entity.shopkeeperName},</if>                           <!-- 店主姓名 nvarchar2(64)-->
+			<if test="entity.shopkeeperMobile != null">shopkeeper_mobile = #{entity.shopkeeperMobile},</if>                     <!-- 店主手机 nvarchar2(64)-->
+			<if test="entity.contactsName != null">contacts_name = #{entity.contactsName},</if>                                 <!-- 联系人姓名 nvarchar2(64)-->
+			<if test="entity.department != null">department = #{entity.department},</if>                                        <!-- 所在部门 char(2)-->
+			<if test="entity.mobile != null">mobile = #{entity.mobile},</if>                                                    <!-- 本人手机 nvarchar2(64)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.authContent != null">auth_content = #{entity.authContent},</if>                                    <!-- 审核内容 nvarchar2(255)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM user_repair_shop
+		WHERE u_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM user_repair_shop
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM user_repair_shop a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM user_repair_shop a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

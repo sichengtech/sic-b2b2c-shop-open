@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% 
+		var cid=parameter.cid;
+		var k=parameter.k;
+		var sid=parameter.sid;
+		var storeCategoryId=parameter.storeCategoryId;
+		var sDate=parameter.sDate;
+		var eDate=parameter.eDate;
+	%>
+	<script type="text/javascript">
+		var cid = '${cid!}';
+		var k = '${k!}';
+		var storeId = '${sid!}';
+		var storeCategoryId = '${storeCategoryId!}';
+		var sDate = '${sDate!}';
+		var eDate = '${eDate!}';
+	</script>
+	<!-- 参数管理器 -->
+	<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/productList.js"></script>
+	<!-- <style type="text/css">
+		.sui-page, .sui-page-group{position: absolute;}
+	</style> -->
+</head>
+<body class="prod_list">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id='prod_list'>
+			<div class="content">
+				<div class="page-search-box weui-border-b">	
+					<a href="javascript:void(0);" class="icon l icon-arrowleft" onclick="javascript:window.history.go(-1);"></a>
+					<a href="${ctxw}/index.htm" class="icon icon-wxbzhuye r"></a>
+					<a href="#page-search" class="use-router" id="gosearch-box">
+						<div class="word-text weui-border-radius">
+							<span class="icon icon-wxbsousuotuiguang"></span>
+							<span class="search-k">热水器</span>
+						</div>
+					</a>
+				</div>
+				<div class="sift-expand-mongolia"></div>
+				<div class="sift-expand">
+					<div class="header-default-box weui-border-b" style="border-bottom: 1px solid #efefef;">
+						<a href="javascript:void(0);" class="icon icon-arrowleft l back"></a>
+						<h1>筛选</h1>
+					</div>
+					<div class="sift-iscroll" style="padding-top: 0;padding-bottom: 75px;">
+						<dl class="deal-price weui-border-b">
+							<dt>价格区间</dt>
+							<dd class="clearfix">
+								<span><input type="number" class="start-price" data-eventvalue="from_price" placeholder="请输入数字"/></span>
+								<span><input type="number" class="end-price" data-eventvalue="to_price" placeholder="请输入数字"/></span>
+							</dd>
+						</dl>
+					</div>
+					<div class="bottom-btn" style="position: fixed;">
+						<span><a id="btn-reset" class="reset weui-border-radius" data-eventvalue="reset">重置</a></span>
+						<span><a id="btn-finish" class="finish weui-border-radius" data-eventvalue="finish">完成</a></span>
+					</div>
+				</div>
+				<ul class="weui_panel_hd search_list_tool clearfix">
+					<div class="screen-button">|<a href="javascript:void(0);">筛选 <span class="icon icon-filter"></span></a></div>
+					<li class="sift">
+						<a href="javaScript:;">综合 <span class="icon icon-xiangshang1"></span></a>
+						<ul class="sorts">
+							<li class="click-filter weui-border-b" data-text="默认">默认<i class="icon"></i></li>
+							<li class="click-filter weui-border-b" data-text="新品优先">新品优先<i class="icon"></i></li>
+							<li class="click-filter weui-border-b" data-text="好评数从高到低">好评数从高到低<i class="icon"></i></li>
+						</ul>
+					</li>
+					<li class="sift">
+						<a href="javaScript:;">销量 <span class="icon icon-xiangshang1"></span></a>
+						<ul class="sorts">
+							<li class="click-filter weui-border-b" data-text="销量从低到高">从低到高<i class="icon"></i></li>
+							<li class="click-filter weui-border-b" data-text="销量从高到低">从高到低<i class="icon"></i></li>
+						</ul>
+					</li>
+					<li class="sift">
+						<a href="javaScript:;">价格 <span class="icon icon-xiangshang1"></span></a>
+						<ul class="sorts">
+							<li class="click-filter weui-border-b" data-text="价格从低到高">从低到高<i class="icon"></i></li>
+							<li class="click-filter weui-border-b" data-text="价格从低到高">从高到低<i class="icon"></i></li>
+						</ul>
+					</li>
+				</ul>
+				<div class="blackbg"></div>
+				<div class="weui_panel weui_panel_access mt0">
+					<div class="noList hide" style="padding-top: 35%;"></div>
+					<div class="weui_panel_bd"></div>
+				</div>	
+			</div>
+		</div>
+		<div class="sui-page" id="page-search" style="position: absolute;">
+			<% include("productSearch.html"){}%>
+		</div>
+	</div>
+	<% include("/include/foot-nav.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/viewTradePrice.html"){}%>
+	<script type="text/template" id="product_Tpl" info="商品信息模板">
+		<div class="weui_media_box weui_media_appmsg">
+			<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+				<div class="weui_media_hd weui-border-radius">
+					<img class="weui_media_appmsg_thumb" data-src="{{d.imgPath}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+				</div>
+			</a>
+			<div class="weui_media_bd">
+				<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+					<p class="p-name"><span class="storetype" style="{{d.storeTypeClass}}">{{d.storeType}}</span>{{d.name}}</p>
+				</a>
+				<p class="p-price">
+					<span class="p-price1">¥{{d.price}}</span>
+					<span class="p-type">{{d.type}}</span>
+				</p>
+			</div>
+		</div>		
+	</script>
+	<script type="text/template" id="product_screen_Tpl" info="筛选模板">
+		<dl class="{{d.screenCla}} weui-border-b screening-height">
+			<dt class=""><span class="icon icon-xiangshang2"> 全部</span><p>{{d.screenName}}</p></dt>
+			{{d.screenDetail}}
+		</dl>
+	</script>
+	<script type="text/template" id="product_screen_detail_Tpl" info="筛选详情模板">
+		<dd class="{{d.cla}}" id="{{d.id}}">{{d.screenDetail}}</dd>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="无商品模板">
+		<div class="noList-div">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>当前搜索无商品哦~</span>
+		</div>
+	</script>
+</body>
+</html>

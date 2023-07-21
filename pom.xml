@@ -1,0 +1,959 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.sicheng</groupId>
+    <artifactId>shop-all</artifactId>
+    <!-- 这个版本号不重要，jenkins构建不再依赖这个版本号。
+    jenkins构建时已改为读取fdp.p配置文件中的version=2.0.x版本号，并自动把x替换为编译号，用于Docker镜像的命名加入版本号-->
+    <version>2.0</version>
+    <packaging>pom</packaging>
+    <modules>
+        <module>shop-data</module><!-- 公共模块，被其它模块依赖（jar包）-->
+        <module>shop-web-admin</module><!-- 运营后台模块（war包） -->
+        <module>shop-web-front</module><!-- 前台模块，包含：商城前台、会员中心、商家中心（war包） -->
+        <module>shop-web-wap</module><!-- 移动端模块，为App\H5\小程序提供API接口（war包） -->
+        <module>shop-web-static</module><!-- 静态资源模块（war包） -->
+        <module>shop-web-upload</module><!-- 上传与存储模块（war包） -->
+        <module>shop-junit-jacoco</module><!-- 是一个空模块，主要存放汇总的覆盖率报告（不打包） -->
+    </modules>
+
+    <profiles>
+        <!-- Maven多环境配置，第一部分，定义profile-->
+        <profile>
+            <!-- 中文商城开发环境 -->
+            <id>env-cn</id>
+            <properties>
+                <package.environment>env-cn</package.environment>
+            </properties>
+            <activation>
+                <!-- 默认激活,如果不指定profile时默认使用本环境 -->
+                <activeByDefault>true</activeByDefault>
+            </activation>
+        </profile>
+        <profile>
+            <!-- 英文商城开发环境 -->
+            <id>env-en</id>
+            <properties>
+                <package.environment>env-en</package.environment>
+            </properties>
+        </profile>
+        <profile>
+            <!-- 生产环境，给你未来扩展留一个空位置 -->
+            <id>env-prod</id>
+            <properties>
+                <package.environment>env-prod</package.environment>
+            </properties>
+        </profile>
+    </profiles>
+
+    <!-- 项目属性 -->
+    <properties>
+
+        <!-- main version setting -->
+        <spring.version>4.3.25.RELEASE</spring.version>
+        <validator.version>5.4.1.Final</validator.version>
+        <mybatis.version>3.4.6</mybatis.version>
+        <mybatis-spring.version>1.3.3</mybatis-spring.version>
+        <mybatis-ehcache.version>1.1.0</mybatis-ehcache.version>
+        <druid.version>1.2.18</druid.version>
+        <ehcache.version>2.6.11</ehcache.version>
+        <ehcache-web.version>2.0.4</ehcache-web.version>
+        <shiro.version>1.3.2</shiro.version>
+        <sitemesh.version>2.4.2</sitemesh.version>
+        <activiti.version>5.15.1</activiti.version>
+        <junit.version>4.12</junit.version>
+
+        <!-- tools version setting -->
+        <slf4j.version>1.7.29</slf4j.version>
+        <commons-lang3.version>3.3.2</commons-lang3.version>
+        <commons-io.version>2.4</commons-io.version>
+        <commons-codec.version>1.10</commons-codec.version>
+        <commons-fileupload.version>1.3.1</commons-fileupload.version>
+        <commons-beanutils.version>1.9.1</commons-beanutils.version>
+        <jackson.version>2.9.10</jackson.version>
+        <fastjson.version>1.2.62</fastjson.version>
+        <xstream.version>1.4.20</xstream.version>
+        <guava.version>19.0</guava.version>
+        <dozer.version>5.5.1</dozer.version>
+        <poi.version>3.9</poi.version>
+        <freemarker.version>2.3.29</freemarker.version>
+
+        <!-- jdbc driver setting -->
+        <mysql.driver.version>8.0.28</mysql.driver.version>
+        <oracle.driver.version>12.1.0.2.0</oracle.driver.version>
+        <mssql.driver.version>1.3.1</mssql.driver.version>
+
+        <!-- environment setting -->
+        <jdk.version>8</jdk.version>
+        <webserver.port>8080</webserver.port>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <downloadSources>true</downloadSources>
+    </properties>
+
+    <!-- 设定主仓库，按设定顺序进行查找。 -->
+
+    <repositories>
+        <!-- 我公司的Nexus代理仓库 -->
+        <repository>
+            <id>sicheng-repos</id>
+            <name>Sicheng公司的代理仓库，它代理多个重要的仓库。只可从公司内网访问。</name>
+            <url>https://nexus.sicheng.net:8443/repository/maven-public/</url>
+        </repository>
+        <!-- 阿里云公共仓库 , http://maven.aliyun.com/mvn/view 这里可浏览仓库的内容 -->
+        <repository>
+            <id>aliyunmaven</id>
+            <name>阿里云公共仓库</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
+        </repository>
+        <!-- 个推的仓库 -->
+        <repository>
+            <id>getui-nexus</id>
+            <url>http://mvn.gt.igexin.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </repositories>
+
+    <!-- 我公司的插件仓库 -->
+    <pluginRepositories>
+        <pluginRepository>
+            <id>sicheng-repos-plugin</id>
+            <name>Sicheng Public PluginRepository</name>
+            <url>https://nexus.sicheng.net:8443/repository/maven-public/</url>
+        </pluginRepository>
+    </pluginRepositories>
+
+    <!--指定Maven分发构件Deploy上传jar包时的nexus仓库地址-->
+    <distributionManagement>
+        <repository>
+            <id>sicheng-repos</id>
+            <url>https://nexus.sicheng.net:8443/repository/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>sicheng-repos</id>
+            <url>https://nexus.sicheng.net:8443/repository/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <!-- 依赖项定义 -->
+    <dependencies>
+
+        <!-- fdp-core基础工具库 start -->
+        <dependency>
+            <groupId>com.sicheng</groupId>
+    <artifactId>fdp-core-open</artifactId>
+            <version>3.6.1-SNAPSHOT</version>
+        </dependency>
+        <!-- fdp-core基础工具库 end -->
+
+        <!-- SPRING begin -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-beans</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context-support</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- spring orm -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-jdbc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <!-- bean validate -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${validator.version}</version>
+        </dependency>
+        <!-- SPRING end -->
+
+        <!-- AOP begin -->
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjrt</artifactId>
+            <version>1.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.aspectj</groupId>
+            <artifactId>aspectjweaver</artifactId>
+            <version>1.7.4</version>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>3.1</version>
+        </dependency>
+        <!-- AOP end -->
+
+        <!-- PERSISTENCE begin -->
+
+        <!-- MyBatis -->
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis</artifactId>
+            <version>${mybatis.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis</groupId>
+            <artifactId>mybatis-spring</artifactId>
+            <version>${mybatis-spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mybatis.caches</groupId>
+            <artifactId>mybatis-ehcache</artifactId>
+            <version>${mybatis-ehcache.version}</version>
+        </dependency>
+
+        <!-- connection pool -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>${druid.version}</version>
+        </dependency>
+
+        <!-- jdbc driver -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.driver.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>cn.easyproject</groupId>
+            <artifactId>ojdbc6</artifactId>
+            <version>${oracle.driver.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>net.sourceforge.jtds</groupId>
+            <artifactId>jtds</artifactId>
+            <version>${mssql.driver.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- PERSISTENCE end -->
+
+        <!-- WEB begin -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>opensymphony</groupId>
+            <artifactId>sitemesh</artifactId>
+            <version>${sitemesh.version}</version>
+        </dependency>
+        <!--
+        standard.jar的作用是与jstl.jar一起使用，但是jstl 1.2版本的就不需要这个jar包了。
+        去掉standard.jar文件后重启tomcat就不会再出现下述信息(实际减少了3分之2，还有一少部分)
+        信息: TLD skipped. URI: http://java.sun.com/jstl/core is already defined
+        <dependency>
+            <groupId>taglibs</groupId>
+            <artifactId>standard</artifactId>
+            <version>1.1.2</version>
+            <type>jar</type>
+        </dependency>
+         -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+            <version>1.2</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <version>3.1.0</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet.jsp</groupId>
+            <artifactId>jsp-api</artifactId>
+            <version>2.1</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- CACHE begin -->
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+            <version>${ehcache.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-web</artifactId>
+            <version>${ehcache-web.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>2.9.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-redis</artifactId>
+            <version>1.8.23.RELEASE</version>
+        </dependency>
+        <!-- CACHE end -->
+
+        <!-- SECURITY begin -->
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-core</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-spring</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-cas</artifactId>
+            <version>${shiro.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-web</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.shiro</groupId>
+            <artifactId>shiro-ehcache</artifactId>
+            <version>${shiro.version}</version>
+        </dependency>
+        <!-- SECURITY end -->
+
+        <!-- Activiti -->
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-engine</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-spring</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-explorer</artifactId>
+            <version>${activiti.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>vaadin</artifactId>
+                    <groupId>com.vaadin</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>dcharts-widget</artifactId>
+                    <groupId>org.vaadin.addons</groupId>
+                </exclusion>
+                <exclusion>
+                    <artifactId>activiti-simple-workflow</artifactId>
+                    <groupId>org.activiti</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-modeler</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-diagram-rest</artifactId>
+            <version>${activiti.version}</version>
+        </dependency>
+
+        <!-- LOGGING begin -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- common-logging 实际调用slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- java.util.logging 实际调用slf4j -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <!-- LOGGING end -->
+
+        <!-- GENERAL UTILS begin -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
+            <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${commons-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>${commons-codec.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+            <version>${commons-fileupload.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons-beanutils.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>commons-logging</groupId>
+                    <artifactId>commons-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- GENERAL UTILS end -->
+
+        <!-- google java lib -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${guava.version}</version>
+        </dependency>
+
+        <!-- jackson json -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-core</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.module</groupId>
+            <artifactId>jackson-module-jaxb-annotations</artifactId>
+            <version>${jackson.version}</version>
+        </dependency>
+
+        <!-- fastjson json，已引入另一个spring必须依赖的json处理jar包jackson
+            由于要使用alibaba的fastjson，张加利放开了alibaba的fastjson的注释
+        -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>${fastjson.version}</version>
+        </dependency>
+
+        <!-- xstream xml -->
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
+        </dependency>
+
+        <!-- pojo copy -->
+        <dependency>
+            <groupId>net.sf.dozer</groupId>
+            <artifactId>dozer</artifactId>
+            <version>${dozer.version}</version>
+        </dependency>
+
+        <!-- freemarker engine -->
+        <dependency>
+            <groupId>org.freemarker</groupId>
+            <artifactId>freemarker</artifactId>
+            <version>${freemarker.version}</version>
+        </dependency>
+
+        <!-- email -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+            <version>1.4.7</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <version>1.1.1</version>
+        </dependency>
+
+        <!-- poi office -->
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml-schemas</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+
+        <!-- image util -->
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>2.6.2</version>
+        </dependency>
+
+        <!-- 条形码、二维码生成  -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>2.2</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>2.2</version>
+        </dependency>
+
+        <!-- 中文分词器
+        <dependency>
+            <groupId>org.wltea</groupId>
+            <artifactId>analyzer</artifactId>
+            <version>2012_u6</version>
+        </dependency>
+        -->
+
+        <!-- 单元测试 begin -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+        <!-- 单元测试 end -->
+
+        <!-- User Agent -->
+        <dependency>
+            <groupId>eu.bitwalker</groupId>
+            <artifactId>UserAgentUtils</artifactId>
+            <version>1.20</version>
+        </dependency>
+
+        <!-- solr客户端 -->
+        <dependency>
+            <groupId>org.apache.solr</groupId>
+            <artifactId>solr-solrj</artifactId>
+            <!--            <version>8.1.1</version>-->
+            <version>8.7.0</version>
+        </dependency>
+
+        <!-- jsoup 通过富文件编辑器提交上来的html代码中可能包含危险字符，
+        使用jsoup的“白名单”进行过滤，防止xss攻击 -->
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.9.2</version>
+        </dependency>
+        <!-- pinyin4j  处理汉字转拼音 -->
+        <dependency>
+            <groupId>com.belerweb</groupId>
+            <artifactId>pinyin4j</artifactId>
+            <version>2.5.0</version>
+        </dependency>
+
+        <!-- 阿里云短信网关的SDK -->
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-core</artifactId>
+            <version>3.7.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.aliyun</groupId>
+            <artifactId>aliyun-java-sdk-dysmsapi</artifactId>
+            <version>1.1.0</version>
+        </dependency>
+
+        <!-- Beetl模板引擎 start -->
+        <!-- 排除低版本antlr4-runtime引入4.7.2不能再高了 -->
+        <dependency>
+            <groupId>com.ibeetl</groupId>
+            <artifactId>beetl</artifactId>
+            <version>2.9.10</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>antlr4-runtime</artifactId>
+                    <groupId>org.antlr</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.antlr</groupId>
+            <artifactId>antlr4-runtime</artifactId>
+            <version>4.7.2</version>
+        </dependency>
+        <!-- Beetl模板引擎 end-->
+
+        <!-- Apache Ant Core,使用了它的zip压缩功能 -->
+        <dependency>
+            <groupId>org.apache.ant</groupId>
+            <artifactId>ant</artifactId>
+            <version>1.9.7</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.5.2</version>
+        </dependency>
+
+        <!-- swagger2 接口文档 -->
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger2</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.springfox</groupId>
+            <artifactId>springfox-swagger-ui</artifactId>
+            <version>2.6.1</version>
+        </dependency>
+
+        <!-- RSF远程服务调用框架 -->
+        <dependency>
+            <groupId>com.hc360</groupId>
+            <artifactId>rsf-client</artifactId>
+            <version>1.3.6</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.mina</groupId>
+            <artifactId>mina-core</artifactId>
+            <version>2.0.16</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.hc360</groupId>
+            <artifactId>weixin-pay-sdk</artifactId>
+            <version>0.0.3</version>
+        </dependency>
+
+        <!-- 支付宝-alipay-sdk jar包 -->
+        <dependency>
+            <groupId>com.alipay</groupId>
+            <artifactId>alipay-sdk-java</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+        <!-- 微信支付退款通知解密  -->
+        <dependency>
+            <groupId>org.bouncycastle</groupId>
+            <artifactId>bcprov-jdk16</artifactId>
+            <version>1.45</version>
+        </dependency>
+
+        <!-- 个推 jar包 -->
+        <dependency>
+            <groupId>com.gexin.platform</groupId>
+            <artifactId>gexin-rp-sdk-http</artifactId>
+            <version>4.1.0.5</version>
+        </dependency>
+
+        <!--        解决无法在Java 11中使用@PostConstruct和@PostDestroy-->
+        <!--        请注意，@PostConstruct和@PreDestroy注释都是Java EE的一部分。而且由于Java EE在Java-->
+        <!--        9中已被弃用，而在Java 11中已被删除，因此我们必须添加一个附加依赖项才能使用这些注释：-->
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <version>1.3.2</version>
+        </dependency>
+
+        <!--
+        问：为什么要引入tomcat-jasper？
+        答：因为在web.xml中我使用 org.apache.jasper.servlet.JspServlet 来过滤掉jsp中的空行。
+        只在编译阶段需要，因为在运行阶段会由tomcat容器来本依赖包。所以使用了<scope>provided</scope>
+        -->
+        <dependency>
+            <groupId>org.apache.tomcat</groupId>
+            <artifactId>tomcat-jasper</artifactId>
+            <version>8.5.90</version>
+            <scope>provided</scope><!-- provided意味着打包的时候可以不用包进去，别的设施(Web Container)会提供。 -->
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <outputDirectory>${project.basedir}/src/main/webapp/WEB-INF/classes/</outputDirectory>
+
+
+        <!-- Maven多环境配置，第二部分，资源根目录排除各环境的配置-->
+        <resources>
+            <!-- maven生成指定环境的jar包，根据环境决定shop-data.jar中的配置文件使用哪个环境的文件 -->
+            <resource>
+                <directory>src/main/resources/${package.environment}</directory>
+            </resource>
+            <resource>
+                <directory>src/main/resources</directory>
+                <excludes>
+                    <exclude>env-en/*</exclude>
+                    <exclude>env-cn/*</exclude>
+                    <exclude>env-prod/*</exclude>
+                </excludes>
+            </resource>
+        </resources>
+
+        <plugins>
+            <!-- Compiler 插件, 设定JDK版本 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <meminitial>128m</meminitial>
+                    <maxmem>512m</maxmem>
+                    <showWarnings>false</showWarnings>
+                </configuration>
+            </plugin>
+
+            <!-- 打包jar文件时，配置manifest文件，加入lib包的jar依赖 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <excludes>
+                        <!-- 打jar包时，不包含以下文件，排除MapperRefresh类（自动加载被修改的MyBatis Mapper XML文件） -->
+                        <exclude>org/**</exclude>
+                        <!-- 打jar包时，不包含以下文件，排除同上 -->
+                        <exclude>**/mybatis-refresh.properties</exclude>
+                        <!-- 打jar包时，不包含以下文件，排除uml图 -->
+                        <exclude>uml/**</exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- war 打包插件, 设定war包名称不带版本号 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.2.3</version>
+                <configuration>
+                    <!--
+                    排除位于src/main/webapp目录中的文件
+                    warSourceExcludes是在复制文件到targe目录时忽略
+                    -->
+                    <warSourceExcludes>test/**</warSourceExcludes>
+                    <!--
+                    排除位于src/main/webapp目录中的文件
+                    packagingExcludes是在打包时忽略,文件不打进包中
+                     -->
+                    <packagingExcludes>
+                        WEB-INF/classes/templates/**
+                    </packagingExcludes>
+
+                    <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory><!--
+					<webXml>${project.basedir}/target/jspweb.xml</webXml> -->
+                    <warName>${project.artifactId}</warName>
+
+                    <!-- Maven多环境配置，第三部分，打war包时进行配置文件替换覆盖
+                    注释原因：因war包中没有根据环境替换的配置文件，所以要注掉，不然会报错。
+                    <webResources>
+                        <resource>
+                            <directory>src/main/resources/${package.environment}</directory>
+                            <targetPath>WEB-INF/classes</targetPath>
+                            <filtering>true</filtering>
+                        </resource>
+                    </webResources>
+                    -->
+                </configuration>
+            </plugin>
+
+            <!-- tomcat7插件 -->
+            <plugin>
+                <groupId>org.apache.tomcat.maven</groupId>
+                <artifactId>tomcat7-maven-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <port>${webserver.port}</port>
+                    <path>/${project.artifactId}</path>
+                    <uriEncoding>${project.build.sourceEncoding}</uriEncoding>
+                </configuration>
+            </plugin>
+
+            <!-- jetty插件 -->
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.9.v20130131</version>
+                <configuration>
+                    <connectors>
+                        <connector implementation="org.eclipse.jetty.server.nio.SelectChannelConnector">
+                            <port>${webserver.port}</port>
+                        </connector>
+                    </connectors>
+                    <webAppConfig>
+                        <contextPath>/${project.artifactId}</contextPath>
+                    </webAppConfig>
+                    <systemProperties>
+                        <systemProperty>
+                            <name>org.mortbay.util.URI.charset</name>
+                            <value>${project.build.sourceEncoding}</value>
+                        </systemProperty>
+                    </systemProperties>
+                </configuration>
+            </plugin>
+
+            <!-- resource插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+
+            <!-- install插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-install-plugin</artifactId>
+                <version>2.5.2</version>
+            </plugin>
+
+            <!-- clean插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+
+            <!-- dependency插件 -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.1.1</version>
+            </plugin>
+
+            <!-- 测试运行器（Test Runner）
+            问：maven-surefire-plugin是什么插件？
+            答：它是maven里执行测试用例的插件，可以通过一些参数设置方便的在testNG或junit下对”测试阶段“进行自定义。
+            问：maven已经有了maven-surefire-plugin的默认配置，我还有必要了解maven-surefire-plugin的配置么？
+            答：是的。虽说maven-surefire-plugin有默认配置，但是当需要修改一些测试执行的策略时，就有必要我们去重新配置这个插件了。
+            -->
+            <!-- 测试报告
+            默认情况下，maven-surefire-plugin 会在项目的 target/surefire-reports 目录下生成两种格式的错误报告。
+            简单文本格式内容十分简单，可以看出哪个测试项出错。
+            与JUnit兼容的XML格式，XML格式已经成为了Java单元测试报告的事实标准，这个文件可以用其他的工具如IDE来查看。
+            -->
+            <!-- 执行单个测试文件：mvn test -Dtest=App2Test指定执行App2Test这个单元测试. -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.1.2</version>
+                <configuration>
+                    <!-- true表示跳过测试，手动执行 mvn test 也会跳过测试，所以设置了为false-->
+                    <skipTests>false</skipTests>
+                    <!-- 忽略单元测试失败,建议加上，否则如果单元测试失败就会直接中断运行 -->
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+
+            <!-- sonar插件 -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
+            </plugin>
+            <!-- Jacoco 是一个开源的 Java 代码覆盖率工具，Jacoco 可以嵌入到 Ant 、Maven 中。很多第三方的工具提供了对 Jacoco 的集成，如 sonar、Jenkins 等。 -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <executions>
+                    <execution>
+                        <id>prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal> <!--必须加，若不加产出覆盖率全是0% -->
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>

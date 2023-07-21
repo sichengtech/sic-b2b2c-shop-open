@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sso.dao.UserMainDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="userMainColumns">
+	<trim suffixOverrides=",">
+		a.u_id AS "uId",                                                     <!-- 主键,会员的ID number(19)-->
+		a.parent_uid AS "parentUid",                                         <!-- 父ID，为0表示是主账号 number(19)-->
+		a.login_name AS "loginName",                                         <!-- 用户名、登录名 nvarchar2(64)-->
+		a.password AS "password",                                            <!-- 密码 nvarchar2(64)-->
+		a.salt AS "salt",                                                    <!-- 盐 nvarchar2(64)-->
+		a.is_locked AS "isLocked",                                           <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+		a.email AS "email",                                                  <!-- 邮箱 nvarchar2(64)-->
+		a.email_validate AS "emailValidate",                                 <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+		a.mobile AS "mobile",                                                <!-- 手机号 nvarchar2(64)-->
+		a.mobile_validate AS "mobileValidate",                               <!-- 手机号是否通过验证(0否，1是) char(1)-->
+		a.type_user AS "typeUser",                                           <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+		a.type_account AS "typeAccount",                                     <!-- 账号类型 (1主账号,2子账号) char(1)-->
+		a.register_ip AS "registerIp",                                       <!-- 注册ip nvarchar2(64)-->
+		a.register_date AS "registerDate",                                   <!-- 注册日期 date(7)-->
+		a.login_ip AS "loginIp",                                             <!-- 最后登录ip nvarchar2(64)-->
+		a.login_date AS "loginDate",                                         <!-- 最后登录日期 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.modify_date AS "modifyDate",                                       <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+		a.modify_count AS "modifyCount",                                     <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="userMainJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.parentUid != null ">AND a.parent_uid = #{c.parentUid}</if>
+		<if test="c.loginName != null and c.loginName != ''">AND a.login_name = #{c.loginName}</if>
+		<if test="c.password != null and c.password != ''">AND a.password = #{c.password}</if>
+		<if test="c.salt != null and c.salt != ''">AND a.salt = #{c.salt}</if>
+		<if test="c.isLocked != null and c.isLocked != ''">AND a.is_locked = #{c.isLocked}</if>
+		<if test="c.email != null and c.email != ''">AND a.email = #{c.email}</if>
+		<if test="c.emailValidate != null and c.emailValidate != ''">AND a.email_validate = #{c.emailValidate}</if>
+		<if test="c.mobile != null and c.mobile != ''">AND a.mobile = #{c.mobile}</if>
+		<if test="c.mobileValidate != null and c.mobileValidate != ''">AND a.mobile_validate = #{c.mobileValidate}</if>
+		<if test="c.typeUser != null and c.typeUser != ''">AND a.type_user = #{c.typeUser}</if>
+		<if test="c.typeAccount != null and c.typeAccount != ''">AND a.type_account = #{c.typeAccount}</if>
+		<if test="c.registerIp != null and c.registerIp != ''">AND a.register_ip = #{c.registerIp}</if>
+		<if test="c.beginRegisterDate != null and c.endRegisterDate != null ">AND a.register_date BETWEEN #{c.beginRegisterDate} AND #{c.endRegisterDate}</if>
+		<if test="c.loginIp != null and c.loginIp != ''">AND a.login_ip = #{c.loginIp}</if>
+		<if test="c.beginLoginDate != null and c.endLoginDate != null ">AND a.login_date BETWEEN #{c.beginLoginDate} AND #{c.endLoginDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.modifyDate != null and c.modifyDate != ''">AND a.modify_date = #{c.modifyDate}</if>
+		<if test="c.modifyCount != null ">AND a.modify_count = #{c.modifyCount}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="UserMain">
+		SELECT 
+		<include refid="userMainColumns"/>
+		FROM user_main a
+		<include refid="userMainJoins"/>
+		WHERE a.u_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="UserMain">
+		SELECT 
+		<include refid="userMainColumns"/>
+		FROM user_main a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="UserMain">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userMainColumns"/>
+		FROM user_main a
+		<include refid="userMainJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="UserMain">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userMainColumns"/>
+		FROM user_main a
+		<include refid="userMainJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_main
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			u_id,                                              <!-- 主键,会员的ID number(19)-->
+			parent_uid,                                        <!-- 父ID，为0表示是主账号 number(19)-->
+			login_name,                                        <!-- 用户名、登录名 nvarchar2(64)-->
+			password,                                          <!-- 密码 nvarchar2(64)-->
+			salt,                                              <!-- 盐 nvarchar2(64)-->
+			is_locked,                                         <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			email,                                             <!-- 邮箱 nvarchar2(64)-->
+			email_validate,                                    <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			mobile,                                            <!-- 手机号 nvarchar2(64)-->
+			mobile_validate,                                   <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			type_user,                                         <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			type_account,                                      <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			register_ip,                                       <!-- 注册ip nvarchar2(64)-->
+			register_date,                                     <!-- 注册日期 date(7)-->
+			login_ip,                                          <!-- 最后登录ip nvarchar2(64)-->
+			login_date,                                        <!-- 最后登录日期 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			modify_date,                                       <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			modify_count,                                      <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.uId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_main_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.parentUid},                               <!-- 父ID，为0表示是主账号 number(19)-->
+			#{entity.loginName},                               <!-- 用户名、登录名 nvarchar2(64)-->
+			#{entity.password},                                <!-- 密码 nvarchar2(64)-->
+			#{entity.salt},                                    <!-- 盐 nvarchar2(64)-->
+			#{entity.isLocked},                                <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			#{entity.email},                                   <!-- 邮箱 nvarchar2(64)-->
+			#{entity.emailValidate},                           <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			#{entity.mobile},                                  <!-- 手机号 nvarchar2(64)-->
+			#{entity.mobileValidate},                          <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			#{entity.typeUser},                                <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			#{entity.typeAccount},                             <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			#{entity.registerIp},                              <!-- 注册ip nvarchar2(64)-->
+			#{entity.registerDate},                            <!-- 注册日期 date(7)-->
+			#{entity.loginIp},                                 <!-- 最后登录ip nvarchar2(64)-->
+			#{entity.loginDate},                               <!-- 最后登录日期 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.modifyDate},                              <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			#{entity.modifyCount},                             <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_main
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.uId != null">u_id,</if></if>
+			<if test="entity.pkMode==2">u_id,</if>
+			<if test="entity.parentUid != null">parent_uid,</if>                               <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.loginName != null">login_name,</if>                               <!-- 用户名、登录名 nvarchar2(64)-->
+			<if test="entity.password != null">password,</if>                                  <!-- 密码 nvarchar2(64)-->
+			<if test="entity.salt != null">salt,</if>                                          <!-- 盐 nvarchar2(64)-->
+			<if test="entity.isLocked != null">is_locked,</if>                                 <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			<if test="entity.email != null">email,</if>                                        <!-- 邮箱 nvarchar2(64)-->
+			<if test="entity.emailValidate != null">email_validate,</if>                       <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			<if test="entity.mobile != null">mobile,</if>                                      <!-- 手机号 nvarchar2(64)-->
+			<if test="entity.mobileValidate != null">mobile_validate,</if>                     <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			<if test="entity.typeUser != null">type_user,</if>                                 <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			<if test="entity.typeAccount != null">type_account,</if>                           <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			<if test="entity.registerIp != null">register_ip,</if>                             <!-- 注册ip nvarchar2(64)-->
+			<if test="entity.registerDate != null">register_date,</if>                         <!-- 注册日期 date(7)-->
+			<if test="entity.loginIp != null">login_ip,</if>                                   <!-- 最后登录ip nvarchar2(64)-->
+			<if test="entity.loginDate != null">login_date,</if>                               <!-- 最后登录日期 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">modify_date,</if>                             <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			<if test="entity.modifyCount != null">modify_count,</if>                           <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.uId != null">#{entity.uId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_main_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.parentUid != null">#{entity.parentUid},</if>                                <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.loginName != null">#{entity.loginName},</if>                                <!-- 用户名、登录名 nvarchar2(64)-->
+			<if test="entity.password != null">#{entity.password},</if>                                  <!-- 密码 nvarchar2(64)-->
+			<if test="entity.salt != null">#{entity.salt},</if>                                          <!-- 盐 nvarchar2(64)-->
+			<if test="entity.isLocked != null">#{entity.isLocked},</if>                                  <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			<if test="entity.email != null">#{entity.email},</if>                                        <!-- 邮箱 nvarchar2(64)-->
+			<if test="entity.emailValidate != null">#{entity.emailValidate},</if>                        <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			<if test="entity.mobile != null">#{entity.mobile},</if>                                      <!-- 手机号 nvarchar2(64)-->
+			<if test="entity.mobileValidate != null">#{entity.mobileValidate},</if>                      <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			<if test="entity.typeUser != null">#{entity.typeUser},</if>                                  <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			<if test="entity.typeAccount != null">#{entity.typeAccount},</if>                            <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			<if test="entity.registerIp != null">#{entity.registerIp},</if>                              <!-- 注册ip nvarchar2(64)-->
+			<if test="entity.registerDate != null">#{entity.registerDate},</if>                          <!-- 注册日期 date(7)-->
+			<if test="entity.loginIp != null">#{entity.loginIp},</if>                                    <!-- 最后登录ip nvarchar2(64)-->
+			<if test="entity.loginDate != null">#{entity.loginDate},</if>                                <!-- 最后登录日期 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">#{entity.modifyDate},</if>                              <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			<if test="entity.modifyCount != null">#{entity.modifyCount},</if>                            <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE user_main 
+		<set>
+			parent_uid = #{entity.parentUid},                               <!-- 父ID，为0表示是主账号 number(19)-->
+			login_name = #{entity.loginName},                               <!-- 用户名、登录名 nvarchar2(64)-->
+			password = #{entity.password},                                  <!-- 密码 nvarchar2(64)-->
+			salt = #{entity.salt},                                          <!-- 盐 nvarchar2(64)-->
+			is_locked = #{entity.isLocked},                                 <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			email = #{entity.email},                                        <!-- 邮箱 nvarchar2(64)-->
+			email_validate = #{entity.emailValidate},                       <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			mobile = #{entity.mobile},                                      <!-- 手机号 nvarchar2(64)-->
+			mobile_validate = #{entity.mobileValidate},                     <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			type_user = #{entity.typeUser},                                 <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			type_account = #{entity.typeAccount},                           <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			register_ip = #{entity.registerIp},                             <!-- 注册ip nvarchar2(64)-->
+			register_date = #{entity.registerDate},                         <!-- 注册日期 date(7)-->
+			login_ip = #{entity.loginIp},                                   <!-- 最后登录ip nvarchar2(64)-->
+			login_date = #{entity.loginDate},                               <!-- 最后登录日期 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			modify_date = #{entity.modifyDate},                             <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			modify_count = #{entity.modifyCount},                           <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE user_main a 
+		<set>
+			parent_uid = #{entity.parentUid},                               <!-- 父ID，为0表示是主账号 number(19)-->
+			login_name = #{entity.loginName},                               <!-- 用户名、登录名 nvarchar2(64)-->
+			password = #{entity.password},                                  <!-- 密码 nvarchar2(64)-->
+			salt = #{entity.salt},                                          <!-- 盐 nvarchar2(64)-->
+			is_locked = #{entity.isLocked},                                 <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			email = #{entity.email},                                        <!-- 邮箱 nvarchar2(64)-->
+			email_validate = #{entity.emailValidate},                       <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			mobile = #{entity.mobile},                                      <!-- 手机号 nvarchar2(64)-->
+			mobile_validate = #{entity.mobileValidate},                     <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			type_user = #{entity.typeUser},                                 <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			type_account = #{entity.typeAccount},                           <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			register_ip = #{entity.registerIp},                             <!-- 注册ip nvarchar2(64)-->
+			register_date = #{entity.registerDate},                         <!-- 注册日期 date(7)-->
+			login_ip = #{entity.loginIp},                                   <!-- 最后登录ip nvarchar2(64)-->
+			login_date = #{entity.loginDate},                               <!-- 最后登录日期 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			modify_date = #{entity.modifyDate},                             <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			modify_count = #{entity.modifyCount},                           <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE user_main
+		<set>
+			<if test="entity.parentUid != null">parent_uid = #{entity.parentUid},</if>                                          <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 用户名、登录名 nvarchar2(64)-->
+			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 nvarchar2(64)-->
+			<if test="entity.salt != null">salt = #{entity.salt},</if>                                                          <!-- 盐 nvarchar2(64)-->
+			<if test="entity.isLocked != null">is_locked = #{entity.isLocked},</if>                                             <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			<if test="entity.email != null">email = #{entity.email},</if>                                                       <!-- 邮箱 nvarchar2(64)-->
+			<if test="entity.emailValidate != null">email_validate = #{entity.emailValidate},</if>                              <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			<if test="entity.mobile != null">mobile = #{entity.mobile},</if>                                                    <!-- 手机号 nvarchar2(64)-->
+			<if test="entity.mobileValidate != null">mobile_validate = #{entity.mobileValidate},</if>                           <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			<if test="entity.typeUser != null">type_user = #{entity.typeUser},</if>                                             <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			<if test="entity.typeAccount != null">type_account = #{entity.typeAccount},</if>                                    <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			<if test="entity.registerIp != null">register_ip = #{entity.registerIp},</if>                                       <!-- 注册ip nvarchar2(64)-->
+			<if test="entity.registerDate != null">register_date = #{entity.registerDate},</if>                                 <!-- 注册日期 date(7)-->
+			<if test="entity.loginIp != null">login_ip = #{entity.loginIp},</if>                                                <!-- 最后登录ip nvarchar2(64)-->
+			<if test="entity.loginDate != null">login_date = #{entity.loginDate},</if>                                          <!-- 最后登录日期 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">modify_date = #{entity.modifyDate},</if>                                       <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			<if test="entity.modifyCount != null">modify_count = #{entity.modifyCount},</if>                                    <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE user_main a
+		<set>
+			<if test="entity.parentUid != null">parent_uid = #{entity.parentUid},</if>                                          <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 用户名、登录名 nvarchar2(64)-->
+			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 nvarchar2(64)-->
+			<if test="entity.salt != null">salt = #{entity.salt},</if>                                                          <!-- 盐 nvarchar2(64)-->
+			<if test="entity.isLocked != null">is_locked = #{entity.isLocked},</if>                                             <!-- 是否锁定(0否，1是)锁定后不能登录 char(1)-->
+			<if test="entity.email != null">email = #{entity.email},</if>                                                       <!-- 邮箱 nvarchar2(64)-->
+			<if test="entity.emailValidate != null">email_validate = #{entity.emailValidate},</if>                              <!-- 邮箱是否通过验证(0否，1是) char(1)-->
+			<if test="entity.mobile != null">mobile = #{entity.mobile},</if>                                                    <!-- 手机号 nvarchar2(64)-->
+			<if test="entity.mobileValidate != null">mobile_validate = #{entity.mobileValidate},</if>                           <!-- 手机号是否通过验证(0否，1是) char(1)-->
+			<if test="entity.typeUser != null">type_user = #{entity.typeUser},</if>                                             <!-- 用户类型（个人买家、采购商、门店服务商、卖家） nvarchar2(64)-->
+			<if test="entity.typeAccount != null">type_account = #{entity.typeAccount},</if>                                    <!-- 账号类型 (1主账号,2子账号) char(1)-->
+			<if test="entity.registerIp != null">register_ip = #{entity.registerIp},</if>                                       <!-- 注册ip nvarchar2(64)-->
+			<if test="entity.registerDate != null">register_date = #{entity.registerDate},</if>                                 <!-- 注册日期 date(7)-->
+			<if test="entity.loginIp != null">login_ip = #{entity.loginIp},</if>                                                <!-- 最后登录ip nvarchar2(64)-->
+			<if test="entity.loginDate != null">login_date = #{entity.loginDate},</if>                                          <!-- 最后登录日期 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">modify_date = #{entity.modifyDate},</if>                                       <!-- 用户名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+			<if test="entity.modifyCount != null">modify_count = #{entity.modifyCount},</if>                                    <!-- 用户名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM user_main
+		WHERE u_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM user_main
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM user_main a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM user_main a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

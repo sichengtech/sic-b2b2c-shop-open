@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeReturnOrderVoucherDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="tradeReturnOrderVoucherColumns">
+		a.ci_id AS "ciId",                                                   <!-- 主键 number(19)-->
+		a.return_order_id AS "returnOrderId",                                <!-- 退货订单id number(19)-->
+		a.name AS "name",                                                    <!-- 图片名称 nvarchar2(64)-->
+		a.path AS "path",                                                    <!-- 图片地址 nvarchar2(64)-->
+		a.voucher_size AS "voucherSize",                                     <!-- 图片大小 number(19)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5"                                                    <!-- 备用字段5 nvarchar2(64)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="tradeReturnOrderVoucherJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.ciId != null ">AND a.ci_id = #{c.ciId}</if>
+		<if test="c.returnOrderId != null ">AND a.return_order_id = #{c.returnOrderId}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.path != null and c.path != ''">AND a.path = #{c.path}</if>
+		<if test="c.voucherSize != null ">AND a.voucher_size = #{c.voucherSize}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="TradeReturnOrderVoucher">
+		SELECT 
+		<include refid="tradeReturnOrderVoucherColumns"/>
+		FROM trade_return_order_voucher a
+		<include refid="tradeReturnOrderVoucherJoins"/>
+		WHERE a.ci_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="TradeReturnOrderVoucher">
+		SELECT
+		<include refid="tradeReturnOrderVoucherColumns"/>
+		FROM trade_return_order_voucher a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.ci_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="TradeReturnOrderVoucher">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeReturnOrderVoucherColumns"/>
+		FROM trade_return_order_voucher a
+		<include refid="tradeReturnOrderVoucherJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ci_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="TradeReturnOrderVoucher">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeReturnOrderVoucherColumns"/>
+		FROM trade_return_order_voucher a
+		<include refid="tradeReturnOrderVoucherJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ci_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.ciId" keyColumn="ci_id" useGeneratedKeys="true">
+		INSERT INTO trade_return_order_voucher(
+			ci_id,                                             <!-- 主键 number(19)-->
+			return_order_id,                                   <!-- 退货订单id number(19)-->
+			name,                                              <!-- 图片名称 nvarchar2(64)-->
+			path,                                              <!-- 图片地址 nvarchar2(64)-->
+			voucher_size,                                      <!-- 图片大小 number(19)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.ciId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_return_order_voucher_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.returnOrderId},                           <!-- 退货订单id number(19)-->
+			#{entity.name},                                    <!-- 图片名称 nvarchar2(64)-->
+			#{entity.path},                                    <!-- 图片地址 nvarchar2(64)-->
+			#{entity.voucherSize},                             <!-- 图片大小 number(19)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5}                                    <!-- 备用字段5 nvarchar2(64)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.ciId" keyColumn="ci_id" useGeneratedKeys="true">
+		INSERT INTO trade_return_order_voucher
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.ciId != null">ci_id,</if></if>
+			<if test="entity.pkMode==2">ci_id,</if>
+			<if test="entity.returnOrderId != null">return_order_id,</if>                      <!-- 退货订单id number(19)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 图片名称 nvarchar2(64)-->
+			<if test="entity.path != null">path,</if>                                          <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.voucherSize != null">voucher_size,</if>                           <!-- 图片大小 number(19)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.ciId != null">#{entity.ciId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_return_order_voucher_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.returnOrderId != null">#{entity.returnOrderId},</if>                        <!-- 退货订单id number(19)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 图片名称 nvarchar2(64)-->
+			<if test="entity.path != null">#{entity.path},</if>                                          <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.voucherSize != null">#{entity.voucherSize},</if>                            <!-- 图片大小 number(19)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE trade_return_order_voucher SET
+			return_order_id = #{entity.returnOrderId},                      <!-- 退货订单id number(19)-->
+			name = #{entity.name},                                          <!-- 图片名称 nvarchar2(64)-->
+			path = #{entity.path},                                          <!-- 图片地址 nvarchar2(64)-->
+			voucher_size = #{entity.voucherSize},                           <!-- 图片大小 number(19)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		WHERE ci_id = #{entity.ciId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE trade_return_order_voucher a SET
+			return_order_id = #{entity.returnOrderId},                      <!-- 退货订单id number(19)-->
+			name = #{entity.name},                                          <!-- 图片名称 nvarchar2(64)-->
+			path = #{entity.path},                                          <!-- 图片地址 nvarchar2(64)-->
+			voucher_size = #{entity.voucherSize},                           <!-- 图片大小 number(19)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE trade_return_order_voucher
+		<set>
+			<if test="entity.returnOrderId != null">return_order_id = #{entity.returnOrderId},</if>                             <!-- 退货订单id number(19)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 图片名称 nvarchar2(64)-->
+			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.voucherSize != null">voucher_size = #{entity.voucherSize},</if>                                    <!-- 图片大小 number(19)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE ci_id = #{entity.ciId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE trade_return_order_voucher a
+		<set>
+			<if test="entity.returnOrderId != null">return_order_id = #{entity.returnOrderId},</if>                             <!-- 退货订单id number(19)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 图片名称 nvarchar2(64)-->
+			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片地址 nvarchar2(64)-->
+			<if test="entity.voucherSize != null">voucher_size = #{entity.voucherSize},</if>                                    <!-- 图片大小 number(19)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM trade_return_order_voucher
+		WHERE ci_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM trade_return_order_voucher 
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					ci_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM trade_return_order_voucher a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM trade_return_order_voucher a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

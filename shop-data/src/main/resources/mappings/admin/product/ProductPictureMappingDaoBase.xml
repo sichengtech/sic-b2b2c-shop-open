@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductPictureMappingDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productPictureMappingColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- 主键id bigint(20)-->
+		a.p_id AS "pId",                                                     <!-- 商品ID bigint(20)-->
+		a.color AS "color",                                                  <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+		a.img_id AS "imgId",                                                 <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+		a.sort AS "sort",                                                    <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productPictureMappingJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.color != null and c.color != ''">AND a.color = #{c.color}</if>
+		<if test="c.imgId != null ">AND a.img_id = #{c.imgId}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductPictureMapping">
+		SELECT 
+		<include refid="productPictureMappingColumns"/>
+		FROM product_picture_mapping a
+		<include refid="productPictureMappingJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductPictureMapping">
+		SELECT 
+		<include refid="productPictureMappingColumns"/>
+		FROM product_picture_mapping a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductPictureMapping">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productPictureMappingColumns"/>
+		FROM product_picture_mapping a
+		<include refid="productPictureMappingJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductPictureMapping">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productPictureMappingColumns"/>
+		FROM product_picture_mapping a
+		<include refid="productPictureMappingJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO product_picture_mapping
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- 主键id bigint(20)-->
+			p_id,                                              <!-- 商品ID bigint(20)-->
+			color,                                             <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			img_id,                                            <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			sort,                                              <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_picture_mapping_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.pId},                                     <!-- 商品ID bigint(20)-->
+			#{entity.color},                                   <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			#{entity.imgId},                                   <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			#{entity.sort},                                    <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO product_picture_mapping
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品ID bigint(20)-->
+			<if test="entity.color != null">color,</if>                                        <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			<if test="entity.imgId != null">img_id,</if>                                       <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_picture_mapping_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品ID bigint(20)-->
+			<if test="entity.color != null">#{entity.color},</if>                                        <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			<if test="entity.imgId != null">#{entity.imgId},</if>                                        <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_picture_mapping 
+		<set>
+			p_id = #{entity.pId},                                           <!-- 商品ID bigint(20)-->
+			color = #{entity.color},                                        <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			img_id = #{entity.imgId},                                       <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			sort = #{entity.sort},                                          <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_picture_mapping a 
+		<set>
+			p_id = #{entity.pId},                                           <!-- 商品ID bigint(20)-->
+			color = #{entity.color},                                        <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			img_id = #{entity.imgId},                                       <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			sort = #{entity.sort},                                          <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_picture_mapping
+		<set>
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID bigint(20)-->
+			<if test="entity.color != null">color = #{entity.color},</if>                                                       <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			<if test="entity.imgId != null">img_id = #{entity.imgId},</if>                                                      <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_picture_mapping a
+		<set>
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID bigint(20)-->
+			<if test="entity.color != null">color = #{entity.color},</if>                                                       <!-- 颜色，商品的每种颜色都有一套图片。(由规格1决定，规格1的值有几种，就有几套图片 varchar(64)-->
+			<if test="entity.imgId != null">img_id = #{entity.imgId},</if>                                                      <!-- 图片的ID，商家相册空间中的图片ID bigint(20)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序，排序从1起，为1的表示首图 int(11)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_picture_mapping
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_picture_mapping
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_picture_mapping a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_picture_mapping a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

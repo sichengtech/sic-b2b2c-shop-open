@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>出错了</title>
+	<% include("/include/head.html"){}%>
+</head>
+<body class="error_body">
+	<div class="weui_cells">
+		<img src="${ctx}/views/wap/default/images/404.png" style="margin:auto;">
+		<h1 class="index">${isEmpty (message!) ? '网络发生异常' : (message!)}</h1>
+		<h2 style="font-size: 0.35rem;"><a href="${ctxw}/index.htm">返回首页</a></h2>
+	</div>
+</body>
+</html>

@@ -1,0 +1,355 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.site.dao.SiteRecommendItemDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="siteRecommendItemColumns">
+	<trim suffixOverrides=",">
+		a.ri_id AS "riId",                                                   <!-- 主键 number(19)-->
+		a.recommend_id AS "recommendId",                                     <!-- 推荐位表id number(19)-->
+		a.path AS "path",                                                    <!-- 图片地址 nvarchar2(128)-->
+		a.p_id AS "pId",                                                     <!-- 商品id number(19)-->
+		a.operation_type AS "operationType",                                 <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+		a.operation_content AS "operationContent",                           <!-- 操作内容 nvarchar2(255)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(19)-->
+		a.add_info1 AS "addInfo1",                                           <!-- 附加值1 nvarchar2(255)-->
+		a.add_info2 AS "addInfo2",                                           <!-- 附加值2 nvarchar2(255)-->
+		a.add_info3 AS "addInfo3",                                           <!-- 附加值3 nvarchar2(255)-->
+		a.add_info4 AS "addInfo4",                                           <!-- 附加值4 nvarchar2(255)-->
+		a.add_info5 AS "addInfo5",                                           <!-- 附加值5 nvarchar2(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="siteRecommendItemJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.riId != null ">AND a.ri_id = #{c.riId}</if>
+		<if test="c.recommendId != null ">AND a.recommend_id = #{c.recommendId}</if>
+		<if test="c.path != null and c.path != ''">AND a.path = #{c.path}</if>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.operationType != null and c.operationType != ''">AND a.operation_type = #{c.operationType}</if>
+		<if test="c.operationContent != null and c.operationContent != ''">AND a.operation_content = #{c.operationContent}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.addInfo1 != null and c.addInfo1 != ''">AND a.add_info1 = #{c.addInfo1}</if>
+		<if test="c.addInfo2 != null and c.addInfo2 != ''">AND a.add_info2 = #{c.addInfo2}</if>
+		<if test="c.addInfo3 != null and c.addInfo3 != ''">AND a.add_info3 = #{c.addInfo3}</if>
+		<if test="c.addInfo4 != null and c.addInfo4 != ''">AND a.add_info4 = #{c.addInfo4}</if>
+		<if test="c.addInfo5 != null and c.addInfo5 != ''">AND a.add_info5 = #{c.addInfo5}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SiteRecommendItem">
+		SELECT 
+		<include refid="siteRecommendItemColumns"/>
+		FROM site_recommend_item a
+		<include refid="siteRecommendItemJoins"/>
+		WHERE a.ri_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SiteRecommendItem">
+		SELECT 
+		<include refid="siteRecommendItemColumns"/>
+		FROM site_recommend_item a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.ri_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SiteRecommendItem">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteRecommendItemColumns"/>
+		FROM site_recommend_item a
+		<include refid="siteRecommendItemJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ri_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SiteRecommendItem">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteRecommendItemColumns"/>
+		FROM site_recommend_item a
+		<include refid="siteRecommendItemJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ri_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.riId" keyColumn="ri_id" useGeneratedKeys="true">
+		INSERT INTO site_recommend_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ri_id,                                             <!-- 主键 number(19)-->
+			recommend_id,                                      <!-- 推荐位表id number(19)-->
+			path,                                              <!-- 图片地址 nvarchar2(128)-->
+			p_id,                                              <!-- 商品id number(19)-->
+			operation_type,                                    <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			operation_content,                                 <!-- 操作内容 nvarchar2(255)-->
+			sort,                                              <!-- 排序 number(19)-->
+			add_info1,                                         <!-- 附加值1 nvarchar2(255)-->
+			add_info2,                                         <!-- 附加值2 nvarchar2(255)-->
+			add_info3,                                         <!-- 附加值3 nvarchar2(255)-->
+			add_info4,                                         <!-- 附加值4 nvarchar2(255)-->
+			add_info5,                                         <!-- 附加值5 nvarchar2(255)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.riId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_recommend_item_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.recommendId},                             <!-- 推荐位表id number(19)-->
+			#{entity.path},                                    <!-- 图片地址 nvarchar2(128)-->
+			#{entity.pId},                                     <!-- 商品id number(19)-->
+			#{entity.operationType},                           <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			#{entity.operationContent},                        <!-- 操作内容 nvarchar2(255)-->
+			#{entity.sort},                                    <!-- 排序 number(19)-->
+			#{entity.addInfo1},                                <!-- 附加值1 nvarchar2(255)-->
+			#{entity.addInfo2},                                <!-- 附加值2 nvarchar2(255)-->
+			#{entity.addInfo3},                                <!-- 附加值3 nvarchar2(255)-->
+			#{entity.addInfo4},                                <!-- 附加值4 nvarchar2(255)-->
+			#{entity.addInfo5},                                <!-- 附加值5 nvarchar2(255)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.riId" keyColumn="ri_id" useGeneratedKeys="true">
+		INSERT INTO site_recommend_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.riId != null">ri_id,</if></if>
+			<if test="entity.pkMode==2">ri_id,</if>
+			<if test="entity.recommendId != null">recommend_id,</if>                           <!-- 推荐位表id number(19)-->
+			<if test="entity.path != null">path,</if>                                          <!-- 图片地址 nvarchar2(128)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品id number(19)-->
+			<if test="entity.operationType != null">operation_type,</if>                       <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			<if test="entity.operationContent != null">operation_content,</if>                 <!-- 操作内容 nvarchar2(255)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.addInfo1 != null">add_info1,</if>                                 <!-- 附加值1 nvarchar2(255)-->
+			<if test="entity.addInfo2 != null">add_info2,</if>                                 <!-- 附加值2 nvarchar2(255)-->
+			<if test="entity.addInfo3 != null">add_info3,</if>                                 <!-- 附加值3 nvarchar2(255)-->
+			<if test="entity.addInfo4 != null">add_info4,</if>                                 <!-- 附加值4 nvarchar2(255)-->
+			<if test="entity.addInfo5 != null">add_info5,</if>                                 <!-- 附加值5 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.riId != null">#{entity.riId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_recommend_item_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.recommendId != null">#{entity.recommendId},</if>                            <!-- 推荐位表id number(19)-->
+			<if test="entity.path != null">#{entity.path},</if>                                          <!-- 图片地址 nvarchar2(128)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品id number(19)-->
+			<if test="entity.operationType != null">#{entity.operationType},</if>                        <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			<if test="entity.operationContent != null">#{entity.operationContent},</if>                  <!-- 操作内容 nvarchar2(255)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.addInfo1 != null">#{entity.addInfo1},</if>                                  <!-- 附加值1 nvarchar2(255)-->
+			<if test="entity.addInfo2 != null">#{entity.addInfo2},</if>                                  <!-- 附加值2 nvarchar2(255)-->
+			<if test="entity.addInfo3 != null">#{entity.addInfo3},</if>                                  <!-- 附加值3 nvarchar2(255)-->
+			<if test="entity.addInfo4 != null">#{entity.addInfo4},</if>                                  <!-- 附加值4 nvarchar2(255)-->
+			<if test="entity.addInfo5 != null">#{entity.addInfo5},</if>                                  <!-- 附加值5 nvarchar2(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE site_recommend_item 
+		<set>
+			recommend_id = #{entity.recommendId},                           <!-- 推荐位表id number(19)-->
+			path = #{entity.path},                                          <!-- 图片地址 nvarchar2(128)-->
+			p_id = #{entity.pId},                                           <!-- 商品id number(19)-->
+			operation_type = #{entity.operationType},                       <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			operation_content = #{entity.operationContent},                 <!-- 操作内容 nvarchar2(255)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			add_info1 = #{entity.addInfo1},                                 <!-- 附加值1 nvarchar2(255)-->
+			add_info2 = #{entity.addInfo2},                                 <!-- 附加值2 nvarchar2(255)-->
+			add_info3 = #{entity.addInfo3},                                 <!-- 附加值3 nvarchar2(255)-->
+			add_info4 = #{entity.addInfo4},                                 <!-- 附加值4 nvarchar2(255)-->
+			add_info5 = #{entity.addInfo5},                                 <!-- 附加值5 nvarchar2(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+
+		</set>
+		WHERE ri_id = #{entity.riId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE site_recommend_item a 
+		<set>
+			recommend_id = #{entity.recommendId},                           <!-- 推荐位表id number(19)-->
+			path = #{entity.path},                                          <!-- 图片地址 nvarchar2(128)-->
+			p_id = #{entity.pId},                                           <!-- 商品id number(19)-->
+			operation_type = #{entity.operationType},                       <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			operation_content = #{entity.operationContent},                 <!-- 操作内容 nvarchar2(255)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			add_info1 = #{entity.addInfo1},                                 <!-- 附加值1 nvarchar2(255)-->
+			add_info2 = #{entity.addInfo2},                                 <!-- 附加值2 nvarchar2(255)-->
+			add_info3 = #{entity.addInfo3},                                 <!-- 附加值3 nvarchar2(255)-->
+			add_info4 = #{entity.addInfo4},                                 <!-- 附加值4 nvarchar2(255)-->
+			add_info5 = #{entity.addInfo5},                                 <!-- 附加值5 nvarchar2(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE site_recommend_item
+		<set>
+			<if test="entity.recommendId != null">recommend_id = #{entity.recommendId},</if>                                    <!-- 推荐位表id number(19)-->
+			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片地址 nvarchar2(128)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id number(19)-->
+			<if test="entity.operationType != null">operation_type = #{entity.operationType},</if>                              <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			<if test="entity.operationContent != null">operation_content = #{entity.operationContent},</if>                     <!-- 操作内容 nvarchar2(255)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.addInfo1 != null">add_info1 = #{entity.addInfo1},</if>                                             <!-- 附加值1 nvarchar2(255)-->
+			<if test="entity.addInfo2 != null">add_info2 = #{entity.addInfo2},</if>                                             <!-- 附加值2 nvarchar2(255)-->
+			<if test="entity.addInfo3 != null">add_info3 = #{entity.addInfo3},</if>                                             <!-- 附加值3 nvarchar2(255)-->
+			<if test="entity.addInfo4 != null">add_info4 = #{entity.addInfo4},</if>                                             <!-- 附加值4 nvarchar2(255)-->
+			<if test="entity.addInfo5 != null">add_info5 = #{entity.addInfo5},</if>                                             <!-- 附加值5 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+		</set>
+		WHERE ri_id = #{entity.riId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE site_recommend_item a
+		<set>
+			<if test="entity.recommendId != null">recommend_id = #{entity.recommendId},</if>                                    <!-- 推荐位表id number(19)-->
+			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片地址 nvarchar2(128)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id number(19)-->
+			<if test="entity.operationType != null">operation_type = #{entity.operationType},</if>                              <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
+			<if test="entity.operationContent != null">operation_content = #{entity.operationContent},</if>                     <!-- 操作内容 nvarchar2(255)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.addInfo1 != null">add_info1 = #{entity.addInfo1},</if>                                             <!-- 附加值1 nvarchar2(255)-->
+			<if test="entity.addInfo2 != null">add_info2 = #{entity.addInfo2},</if>                                             <!-- 附加值2 nvarchar2(255)-->
+			<if test="entity.addInfo3 != null">add_info3 = #{entity.addInfo3},</if>                                             <!-- 附加值3 nvarchar2(255)-->
+			<if test="entity.addInfo4 != null">add_info4 = #{entity.addInfo4},</if>                                             <!-- 附加值4 nvarchar2(255)-->
+			<if test="entity.addInfo5 != null">add_info5 = #{entity.addInfo5},</if>                                             <!-- 附加值5 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM site_recommend_item
+		WHERE ri_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM site_recommend_item
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					ri_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM site_recommend_item a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM site_recommend_item a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

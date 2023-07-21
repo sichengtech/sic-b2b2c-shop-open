@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+	<%var confirmPay =fy.getMsg({key:'确认支付'});%>
+	${confirmPay!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/default/tradeCheckorder.js"></script>
+<style type="text/css">
+	.sel_pay_way{border: solid 1px red!important;}
+	.pay_way{float: left;margin-right: 8px;border: solid 1px #fff;}
+</style>
+</head>
+<body class="bgfff checkOrderBody">
+	<% include("/include/header.html"){}%>
+	<div class="sui-container checkorder">
+		<input type="hidden" name="payWayId" class="payWay" value="${payWayId!}"/>
+		<input type="hidden" name="payWayNum" class="payWayNum" value="${payWayNum!}"/>
+		<input type="hidden" name="outTradeNo" class="outTradeNo" value="${outTradeNo!}"/>
+		<%var returnOrderList =fy.getMsg({key:'返回订单列表'});
+			var paySubmit=fy.getMsg({key:'支付提交'});
+		%>
+		<div class="title"><span><a href="${ctxm}/trade/tradeOrder/list.htm">${returnOrderList!}</a></span><strong>${paySubmit!}</strong></div>
+		<dl class="checkorder-content">
+			<%var cancelOrderTip =fy.getMsg({key:'请您在24小时内完成支付，逾期订单将自动取消'});
+			var amountPayable=fy.getMsg({key:'应付金额'});
+			var yuan=fy.getMsg({key:'元'});
+			%>
+			<dt>${cancelOrderTip!} ${amountPayable} ${yuan!}<span class="sui-text-danger">${orderPrice!}</span></dt>
+			<dd class="" style="border-bottom: none;">
+				<table class="sui-table table-bordered-simple" id="productTable">
+					<thead>
+						<tr>
+							<%var orderNo =fy.getMsg({key:'订单号'});
+							var paymentMethod =fy.getMsg({key:'支付方式'});
+							var amount =fy.getMsg({key:'金额'});
+							%>
+							<th class="center">${orderNo!}</th>
+							<th class="center">${paymentMethod!}</th>
+							<th class="center">${amount!}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% for(order in orderList!){%>
+							<tr>
+								<td width="45%" class="center orderId">${order.orderId!}</td>
+								<td width="10%" class="center"><%var onlinePayments =fy.getMsg({key:'在线支付'});%> ${onlinePayments!}</td>
+								<td width="8%" class="center amount" outTradeOrder="${order.outTradeNo!}">${isNotEmpty(order.offsetAmount!)?order.offsetAmount!:order.amountPaid!}</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+				<!-- <dl>
+					<dt>使用余额支付</dt>
+					<dd style="border-bottom: none; padding-bottom: 0;">
+						<input type="radio"/>
+						<label>
+							使用预存款支付 （可用余额：0元，
+							目前还需在线支付0.0元。）余额不足？
+							<a href="${ctxm}/finance/financeRecharge/save1.htm" class="sui-btn btn-bordered btn-primary invoiceBtn">马上充值</a>
+						</label>
+					</dd>
+				</dl> -->
+			</dd>
+			<dt>支付方式</dt>
+			<dd class="payment">
+				<ul>
+				<% for(payWay in payWayList!){%>
+					<li id="${payWay.id!}" payWayNum="${payWay.payWayNum!}" class="pay_way">
+						<a href="javascript:">
+							<b style="font-size: 20px;line-height:${isEmpty (payWay.payWayLogo!)?'48px':''}">${isEmpty (payWay.payWayLogo!)?payWay.name!:""}</b>
+							<img style="display:${isEmpty (payWay.payWayLogo!)?'none':''}" src="${ctxfs}${payWay.payWayLogo}@120x50">
+						</a>
+					</li>
+				<%}%>
+				</ul>
+				<% if(isEmpty (payWayList!)){%>
+					<p><%var noPayments =fy.getMsg({key:'暂无支付方式'});%> ${noPayments!}</p>
+				<%}%>
+			</dd>
+		</dl>
+		<% var maoHao=fy.getMsg({key:'：'});
+		var totalDue =fy.getMsg({key:'应付总额'});
+		var ShippingTo=fy.getMsg({key:'寄送至'});
+		var phone =fy.getMsg({key:'电话'});
+		%>
+		<div class="price">${totalDue!}${maoHao!}<span>${yuan!}${orderPrice!}</span><p>${ShippingTo!} ${address.name!} ${address.provinceName!}${address.cityName!}${address.districtName!}${address.detailedAddress!}  ${phone!} ${address.mobile!}</p></div>
+		<div class="btn"><a href="javascript:" class="payOrders">${confirmPay!}</a></div>
+		<div class="clear"></div>
+	</div>
+	<div class="footer-simple"></div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% if(isNotEmpty(message!)){%>
+		<script type="text/javascript">
+			var content='${message!}';
+			var type='${type!}';
+			sysMessage(content,type);
+		</script>
+	<%}%>
+	<script type="text/javascript" src="${ctxStatic}/sui/1.5.1/sui.min.js"></script></body>
+</html>

@@ -1,0 +1,345 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.logistics.dao.LogisticsCompanyDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="logisticsCompanyColumns">
+		a.lc_id AS "lcId",                                                   <!-- 主键id number(19)-->
+		a.large_area AS "largeArea",                                         <!-- 首字母 char(2)-->
+		a.company_name AS "companyName",                                     <!-- 公司名称 nvarchar2(64)-->
+		a.company_number AS "companyNumber",                                 <!-- 公司编号 nvarchar2(64)-->
+		a.companyurl AS "companyurl",                                        <!-- 公司网址 nvarchar2(64)-->
+		a.status AS "status",                                                <!-- 状态，0禁用、1启用 char(1)-->
+		a.is_common_use AS "isCommonUse",                                    <!-- 是否是常用快递，0否、1是 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(255)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(255)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(255)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(255)-->
+		a.bak5 AS "bak5"                                                    <!-- 备用字段5 nvarchar2(255)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="logisticsCompanyJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.lcId != null ">AND a.lc_id = #{c.lcId}</if>
+		<if test="c.largeArea != null and c.largeArea != ''">AND a.large_area = #{c.largeArea}</if>
+		<if test="c.companyName != null and c.companyName != ''">				
+			<bind name="pattern" value="'%' + c.companyName + '%'" />				
+			AND lower(a.company_name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.companyNumber != null and c.companyNumber != ''">AND a.company_number = #{c.companyNumber}</if>
+		<if test="c.companyurl != null and c.companyurl != ''">AND a.companyurl = #{c.companyurl}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.isCommonUse != null and c.isCommonUse != ''">AND a.is_common_use = #{c.isCommonUse}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="LogisticsCompany">
+		SELECT 
+		<include refid="logisticsCompanyColumns"/>
+		FROM logistics_company a
+		<include refid="logisticsCompanyJoins"/>
+		WHERE a.lc_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="LogisticsCompany">
+		SELECT
+		<include refid="logisticsCompanyColumns"/>
+		FROM logistics_company a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.lc_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="LogisticsCompany">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="logisticsCompanyColumns"/>
+		FROM logistics_company a
+		<include refid="logisticsCompanyJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.lc_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="LogisticsCompany">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="logisticsCompanyColumns"/>
+		FROM logistics_company a
+		<include refid="logisticsCompanyJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.lc_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.lcId" keyColumn="lc_id" useGeneratedKeys="true">
+		INSERT INTO logistics_company(
+			lc_id,                                             <!-- 主键id number(19)-->
+			large_area,                                        <!-- 首字母 char(2)-->
+			company_name,                                      <!-- 公司名称 nvarchar2(64)-->
+			company_number,                                    <!-- 公司编号 nvarchar2(64)-->
+			companyurl,                                        <!-- 公司网址 nvarchar2(64)-->
+			status,                                            <!-- 状态，0禁用、1启用 char(1)-->
+			is_common_use,                                     <!-- 是否是常用快递，0否、1是 char(1)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(255)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(255)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(255)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(255)-->
+			bak5                                              <!-- 备用字段5 nvarchar2(255)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.lcId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">logistics_company_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.largeArea},                               <!-- 首字母 char(2)-->
+			#{entity.companyName},                             <!-- 公司名称 nvarchar2(64)-->
+			#{entity.companyNumber},                           <!-- 公司编号 nvarchar2(64)-->
+			#{entity.companyurl},                              <!-- 公司网址 nvarchar2(64)-->
+			#{entity.status},                                  <!-- 状态，0禁用、1启用 char(1)-->
+			#{entity.isCommonUse},                             <!-- 是否是常用快递，0否、1是 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(255)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(255)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(255)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(255)-->
+			#{entity.bak5}                                    <!-- 备用字段5 nvarchar2(255)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.lcId" keyColumn="lc_id" useGeneratedKeys="true">
+		INSERT INTO logistics_company
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.lcId != null">lc_id,</if></if>
+			<if test="entity.pkMode==2">lc_id,</if>
+			<if test="entity.largeArea != null">large_area,</if>                               <!-- 首字母 char(2)-->
+			<if test="entity.companyName != null">company_name,</if>                           <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.companyNumber != null">company_number,</if>                       <!-- 公司编号 nvarchar2(64)-->
+			<if test="entity.companyurl != null">companyurl,</if>                              <!-- 公司网址 nvarchar2(64)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 状态，0禁用、1启用 char(1)-->
+			<if test="entity.isCommonUse != null">is_common_use,</if>                          <!-- 是否是常用快递，0否、1是 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(255)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(255)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(255)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(255)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(255)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.lcId != null">#{entity.lcId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">logistics_company_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.largeArea != null">#{entity.largeArea},</if>                                <!-- 首字母 char(2)-->
+			<if test="entity.companyName != null">#{entity.companyName},</if>                            <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.companyNumber != null">#{entity.companyNumber},</if>                        <!-- 公司编号 nvarchar2(64)-->
+			<if test="entity.companyurl != null">#{entity.companyurl},</if>                              <!-- 公司网址 nvarchar2(64)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态，0禁用、1启用 char(1)-->
+			<if test="entity.isCommonUse != null">#{entity.isCommonUse},</if>                            <!-- 是否是常用快递，0否、1是 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(255)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(255)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(255)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(255)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(255)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE logistics_company SET
+			large_area = #{entity.largeArea},                               <!-- 首字母 char(2)-->
+			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
+			company_number = #{entity.companyNumber},                       <!-- 公司编号 nvarchar2(64)-->
+			companyurl = #{entity.companyurl},                              <!-- 公司网址 nvarchar2(64)-->
+			status = #{entity.status},                                      <!-- 状态，0禁用、1启用 char(1)-->
+			is_common_use = #{entity.isCommonUse},                          <!-- 是否是常用快递，0否、1是 char(1)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(255)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(255)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(255)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(255)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(255)-->
+
+		WHERE lc_id = #{entity.lcId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE logistics_company a SET
+			large_area = #{entity.largeArea},                               <!-- 首字母 char(2)-->
+			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
+			company_number = #{entity.companyNumber},                       <!-- 公司编号 nvarchar2(64)-->
+			companyurl = #{entity.companyurl},                              <!-- 公司网址 nvarchar2(64)-->
+			status = #{entity.status},                                      <!-- 状态，0禁用、1启用 char(1)-->
+			is_common_use = #{entity.isCommonUse},                          <!-- 是否是常用快递，0否、1是 char(1)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(255)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(255)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(255)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(255)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(255)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE logistics_company
+		<set>
+			<if test="entity.largeArea != null">large_area = #{entity.largeArea},</if>                                          <!-- 首字母 char(2)-->
+			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.companyNumber != null">company_number = #{entity.companyNumber},</if>                              <!-- 公司编号 nvarchar2(64)-->
+			<if test="entity.companyurl != null">companyurl = #{entity.companyurl},</if>                                        <!-- 公司网址 nvarchar2(64)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，0禁用、1启用 char(1)-->
+			<if test="entity.isCommonUse != null">is_common_use = #{entity.isCommonUse},</if>                                   <!-- 是否是常用快递，0否、1是 char(1)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(255)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(255)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(255)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(255)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(255)-->
+		</set>
+		WHERE lc_id = #{entity.lcId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE logistics_company a
+		<set>
+			<if test="entity.largeArea != null">large_area = #{entity.largeArea},</if>                                          <!-- 首字母 char(2)-->
+			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.companyNumber != null">company_number = #{entity.companyNumber},</if>                              <!-- 公司编号 nvarchar2(64)-->
+			<if test="entity.companyurl != null">companyurl = #{entity.companyurl},</if>                                        <!-- 公司网址 nvarchar2(64)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，0禁用、1启用 char(1)-->
+			<if test="entity.isCommonUse != null">is_common_use = #{entity.isCommonUse},</if>                                   <!-- 是否是常用快递，0否、1是 char(1)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(255)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(255)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(255)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(255)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(255)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM logistics_company
+		WHERE lc_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM logistics_company
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					lc_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM logistics_company a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM logistics_company a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

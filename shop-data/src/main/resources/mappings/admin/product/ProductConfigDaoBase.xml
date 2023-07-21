@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductConfigDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productConfigColumns">
+		a.id AS "id",                                                        <!-- 主键ID number(19)-->
+		a.set1 AS "set1",                                                    <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+		a.set2 AS "set2",                                                    <!-- 设置2 nvarchar2(64)-->
+		a.set3 AS "set3",                                                    <!-- 设置3 nvarchar2(64)-->
+		a.set4 AS "set4",                                                    <!-- 设置4 nvarchar2(64)-->
+		a.set5 AS "set5",                                                    <!-- 设置5 nvarchar2(64)-->
+		a.set6 AS "set6",                                                    <!-- 设置6 nvarchar2(64)-->
+		a.set7 AS "set7",                                                    <!-- 设置7 nvarchar2(64)-->
+		a.set8 AS "set8",                                                    <!-- 设置8 nvarchar2(64)-->
+		a.set9 AS "set9",                                                    <!-- 设置9 nvarchar2(64)-->
+		a.set10 AS "set10"                                                  <!-- 设置10 nvarchar2(64)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productConfigJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.set1 != null and c.set1 != ''">AND a.set1 = #{c.set1}</if>
+		<if test="c.set2 != null and c.set2 != ''">AND a.set2 = #{c.set2}</if>
+		<if test="c.set3 != null and c.set3 != ''">AND a.set3 = #{c.set3}</if>
+		<if test="c.set4 != null and c.set4 != ''">AND a.set4 = #{c.set4}</if>
+		<if test="c.set5 != null and c.set5 != ''">AND a.set5 = #{c.set5}</if>
+		<if test="c.set6 != null and c.set6 != ''">AND a.set6 = #{c.set6}</if>
+		<if test="c.set7 != null and c.set7 != ''">AND a.set7 = #{c.set7}</if>
+		<if test="c.set8 != null and c.set8 != ''">AND a.set8 = #{c.set8}</if>
+		<if test="c.set9 != null and c.set9 != ''">AND a.set9 = #{c.set9}</if>
+		<if test="c.set10 != null and c.set10 != ''">AND a.set10 = #{c.set10}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductConfig">
+		SELECT 
+		<include refid="productConfigColumns"/>
+		FROM product_config a
+		<include refid="productConfigJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductConfig">
+		SELECT
+		<include refid="productConfigColumns"/>
+		FROM product_config a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductConfig">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productConfigColumns"/>
+		FROM product_config a
+		<include refid="productConfigJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductConfig">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productConfigColumns"/>
+		FROM product_config a
+		<include refid="productConfigJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO product_config(
+			id,                                                <!-- 主键ID number(19)-->
+			set1,                                              <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			set2,                                              <!-- 设置2 nvarchar2(64)-->
+			set3,                                              <!-- 设置3 nvarchar2(64)-->
+			set4,                                              <!-- 设置4 nvarchar2(64)-->
+			set5,                                              <!-- 设置5 nvarchar2(64)-->
+			set6,                                              <!-- 设置6 nvarchar2(64)-->
+			set7,                                              <!-- 设置7 nvarchar2(64)-->
+			set8,                                              <!-- 设置8 nvarchar2(64)-->
+			set9,                                              <!-- 设置9 nvarchar2(64)-->
+			set10                                             <!-- 设置10 nvarchar2(64)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_config_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.set1},                                    <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			#{entity.set2},                                    <!-- 设置2 nvarchar2(64)-->
+			#{entity.set3},                                    <!-- 设置3 nvarchar2(64)-->
+			#{entity.set4},                                    <!-- 设置4 nvarchar2(64)-->
+			#{entity.set5},                                    <!-- 设置5 nvarchar2(64)-->
+			#{entity.set6},                                    <!-- 设置6 nvarchar2(64)-->
+			#{entity.set7},                                    <!-- 设置7 nvarchar2(64)-->
+			#{entity.set8},                                    <!-- 设置8 nvarchar2(64)-->
+			#{entity.set9},                                    <!-- 设置9 nvarchar2(64)-->
+			#{entity.set10}                                   <!-- 设置10 nvarchar2(64)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO product_config
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.set1 != null">set1,</if>                                          <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			<if test="entity.set2 != null">set2,</if>                                          <!-- 设置2 nvarchar2(64)-->
+			<if test="entity.set3 != null">set3,</if>                                          <!-- 设置3 nvarchar2(64)-->
+			<if test="entity.set4 != null">set4,</if>                                          <!-- 设置4 nvarchar2(64)-->
+			<if test="entity.set5 != null">set5,</if>                                          <!-- 设置5 nvarchar2(64)-->
+			<if test="entity.set6 != null">set6,</if>                                          <!-- 设置6 nvarchar2(64)-->
+			<if test="entity.set7 != null">set7,</if>                                          <!-- 设置7 nvarchar2(64)-->
+			<if test="entity.set8 != null">set8,</if>                                          <!-- 设置8 nvarchar2(64)-->
+			<if test="entity.set9 != null">set9,</if>                                          <!-- 设置9 nvarchar2(64)-->
+			<if test="entity.set10 != null">set10,</if>                                        <!-- 设置10 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_config_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.set1 != null">#{entity.set1},</if>                                          <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			<if test="entity.set2 != null">#{entity.set2},</if>                                          <!-- 设置2 nvarchar2(64)-->
+			<if test="entity.set3 != null">#{entity.set3},</if>                                          <!-- 设置3 nvarchar2(64)-->
+			<if test="entity.set4 != null">#{entity.set4},</if>                                          <!-- 设置4 nvarchar2(64)-->
+			<if test="entity.set5 != null">#{entity.set5},</if>                                          <!-- 设置5 nvarchar2(64)-->
+			<if test="entity.set6 != null">#{entity.set6},</if>                                          <!-- 设置6 nvarchar2(64)-->
+			<if test="entity.set7 != null">#{entity.set7},</if>                                          <!-- 设置7 nvarchar2(64)-->
+			<if test="entity.set8 != null">#{entity.set8},</if>                                          <!-- 设置8 nvarchar2(64)-->
+			<if test="entity.set9 != null">#{entity.set9},</if>                                          <!-- 设置9 nvarchar2(64)-->
+			<if test="entity.set10 != null">#{entity.set10},</if>                                        <!-- 设置10 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_config SET
+			set1 = #{entity.set1},                                          <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			set2 = #{entity.set2},                                          <!-- 设置2 nvarchar2(64)-->
+			set3 = #{entity.set3},                                          <!-- 设置3 nvarchar2(64)-->
+			set4 = #{entity.set4},                                          <!-- 设置4 nvarchar2(64)-->
+			set5 = #{entity.set5},                                          <!-- 设置5 nvarchar2(64)-->
+			set6 = #{entity.set6},                                          <!-- 设置6 nvarchar2(64)-->
+			set7 = #{entity.set7},                                          <!-- 设置7 nvarchar2(64)-->
+			set8 = #{entity.set8},                                          <!-- 设置8 nvarchar2(64)-->
+			set9 = #{entity.set9},                                          <!-- 设置9 nvarchar2(64)-->
+			set10 = #{entity.set10}                                        <!-- 设置10 nvarchar2(64)-->
+
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_config a SET
+			set1 = #{entity.set1},                                          <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			set2 = #{entity.set2},                                          <!-- 设置2 nvarchar2(64)-->
+			set3 = #{entity.set3},                                          <!-- 设置3 nvarchar2(64)-->
+			set4 = #{entity.set4},                                          <!-- 设置4 nvarchar2(64)-->
+			set5 = #{entity.set5},                                          <!-- 设置5 nvarchar2(64)-->
+			set6 = #{entity.set6},                                          <!-- 设置6 nvarchar2(64)-->
+			set7 = #{entity.set7},                                          <!-- 设置7 nvarchar2(64)-->
+			set8 = #{entity.set8},                                          <!-- 设置8 nvarchar2(64)-->
+			set9 = #{entity.set9},                                          <!-- 设置9 nvarchar2(64)-->
+			set10 = #{entity.set10}                                        <!-- 设置10 nvarchar2(64)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_config
+		<set>
+			<if test="entity.set1 != null">set1 = #{entity.set1},</if>                                                          <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			<if test="entity.set2 != null">set2 = #{entity.set2},</if>                                                          <!-- 设置2 nvarchar2(64)-->
+			<if test="entity.set3 != null">set3 = #{entity.set3},</if>                                                          <!-- 设置3 nvarchar2(64)-->
+			<if test="entity.set4 != null">set4 = #{entity.set4},</if>                                                          <!-- 设置4 nvarchar2(64)-->
+			<if test="entity.set5 != null">set5 = #{entity.set5},</if>                                                          <!-- 设置5 nvarchar2(64)-->
+			<if test="entity.set6 != null">set6 = #{entity.set6},</if>                                                          <!-- 设置6 nvarchar2(64)-->
+			<if test="entity.set7 != null">set7 = #{entity.set7},</if>                                                          <!-- 设置7 nvarchar2(64)-->
+			<if test="entity.set8 != null">set8 = #{entity.set8},</if>                                                          <!-- 设置8 nvarchar2(64)-->
+			<if test="entity.set9 != null">set9 = #{entity.set9},</if>                                                          <!-- 设置9 nvarchar2(64)-->
+			<if test="entity.set10 != null">set10 = #{entity.set10},</if>                                                       <!-- 设置10 nvarchar2(64)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_config a
+		<set>
+			<if test="entity.set1 != null">set1 = #{entity.set1},</if>                                                          <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
+			<if test="entity.set2 != null">set2 = #{entity.set2},</if>                                                          <!-- 设置2 nvarchar2(64)-->
+			<if test="entity.set3 != null">set3 = #{entity.set3},</if>                                                          <!-- 设置3 nvarchar2(64)-->
+			<if test="entity.set4 != null">set4 = #{entity.set4},</if>                                                          <!-- 设置4 nvarchar2(64)-->
+			<if test="entity.set5 != null">set5 = #{entity.set5},</if>                                                          <!-- 设置5 nvarchar2(64)-->
+			<if test="entity.set6 != null">set6 = #{entity.set6},</if>                                                          <!-- 设置6 nvarchar2(64)-->
+			<if test="entity.set7 != null">set7 = #{entity.set7},</if>                                                          <!-- 设置7 nvarchar2(64)-->
+			<if test="entity.set8 != null">set8 = #{entity.set8},</if>                                                          <!-- 设置8 nvarchar2(64)-->
+			<if test="entity.set9 != null">set9 = #{entity.set9},</if>                                                          <!-- 设置9 nvarchar2(64)-->
+			<if test="entity.set10 != null">set10 = #{entity.set10},</if>                                                       <!-- 设置10 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_config
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_config
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_config a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_config a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.logistics.dao.LogisticsTemplateItemDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="logisticsTemplateItemColumns">
+	<trim suffixOverrides=",">
+		a.lti_id AS "ltiId",                                                 <!-- 主键 number(19)-->
+		a.lt_id AS "ltId",                                                   <!-- 运费模板id number(19)-->
+		a.names AS "names",                                                  <!-- 地区名(冗余字段) nvarchar2(521)-->
+		a.first_item AS "firstItem",                                         <!-- 首件(件) number(10)-->
+		a.first_price AS "firstPrice",                                       <!-- 首重(元) number(12,3)-->
+		a.continue_item AS "continueItem",                                   <!-- 续件(件) number(10)-->
+		a.continue_price AS "continuePrice",                                 <!-- 续重(元) number(12,3)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.ids AS "ids",                                                      <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="logisticsTemplateItemJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.ltiId != null ">AND a.lti_id = #{c.ltiId}</if>
+		<if test="c.ltId != null ">AND a.lt_id = #{c.ltId}</if>
+		<if test="c.names != null and c.names != ''">AND a.names = #{c.names}</if>
+		<if test="c.firstItem != null ">AND a.first_item = #{c.firstItem}</if>
+		<if test="c.firstPrice != null ">AND a.first_price = #{c.firstPrice}</if>
+		<if test="c.continueItem != null ">AND a.continue_item = #{c.continueItem}</if>
+		<if test="c.continuePrice != null ">AND a.continue_price = #{c.continuePrice}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.ids != null and c.ids != ''">AND a.ids = #{c.ids}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="LogisticsTemplateItem">
+		SELECT 
+		<include refid="logisticsTemplateItemColumns"/>
+		FROM logistics_template_item a
+		<include refid="logisticsTemplateItemJoins"/>
+		WHERE a.lti_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="LogisticsTemplateItem">
+		SELECT 
+		<include refid="logisticsTemplateItemColumns"/>
+		FROM logistics_template_item a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.lti_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="LogisticsTemplateItem">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="logisticsTemplateItemColumns"/>
+		FROM logistics_template_item a
+		<include refid="logisticsTemplateItemJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.lti_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="LogisticsTemplateItem">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="logisticsTemplateItemColumns"/>
+		FROM logistics_template_item a
+		<include refid="logisticsTemplateItemJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.lti_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.ltiId" keyColumn="lti_id" useGeneratedKeys="true">
+		INSERT INTO logistics_template_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			lti_id,                                            <!-- 主键 number(19)-->
+			lt_id,                                             <!-- 运费模板id number(19)-->
+			names,                                             <!-- 地区名(冗余字段) nvarchar2(521)-->
+			first_item,                                        <!-- 首件(件) number(10)-->
+			first_price,                                       <!-- 首重(元) number(12,3)-->
+			continue_item,                                     <!-- 续件(件) number(10)-->
+			continue_price,                                    <!-- 续重(元) number(12,3)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			ids,                                               <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.ltiId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">logistics_template_item_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.ltId},                                    <!-- 运费模板id number(19)-->
+			#{entity.names},                                   <!-- 地区名(冗余字段) nvarchar2(521)-->
+			#{entity.firstItem},                               <!-- 首件(件) number(10)-->
+			#{entity.firstPrice},                              <!-- 首重(元) number(12,3)-->
+			#{entity.continueItem},                            <!-- 续件(件) number(10)-->
+			#{entity.continuePrice},                           <!-- 续重(元) number(12,3)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.ids},                                     <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.ltiId" keyColumn="lti_id" useGeneratedKeys="true">
+		INSERT INTO logistics_template_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.ltiId != null">lti_id,</if></if>
+			<if test="entity.pkMode==2">lti_id,</if>
+			<if test="entity.ltId != null">lt_id,</if>                                         <!-- 运费模板id number(19)-->
+			<if test="entity.names != null">names,</if>                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
+			<if test="entity.firstItem != null">first_item,</if>                               <!-- 首件(件) number(10)-->
+			<if test="entity.firstPrice != null">first_price,</if>                             <!-- 首重(元) number(12,3)-->
+			<if test="entity.continueItem != null">continue_item,</if>                         <!-- 续件(件) number(10)-->
+			<if test="entity.continuePrice != null">continue_price,</if>                       <!-- 续重(元) number(12,3)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.ids != null">ids,</if>                                            <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.ltiId != null">#{entity.ltiId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">logistics_template_item_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.ltId != null">#{entity.ltId},</if>                                          <!-- 运费模板id number(19)-->
+			<if test="entity.names != null">#{entity.names},</if>                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
+			<if test="entity.firstItem != null">#{entity.firstItem},</if>                                <!-- 首件(件) number(10)-->
+			<if test="entity.firstPrice != null">#{entity.firstPrice},</if>                              <!-- 首重(元) number(12,3)-->
+			<if test="entity.continueItem != null">#{entity.continueItem},</if>                          <!-- 续件(件) number(10)-->
+			<if test="entity.continuePrice != null">#{entity.continuePrice},</if>                        <!-- 续重(元) number(12,3)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.ids != null">#{entity.ids},</if>                                            <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE logistics_template_item 
+		<set>
+			lt_id = #{entity.ltId},                                         <!-- 运费模板id number(19)-->
+			names = #{entity.names},                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
+			first_item = #{entity.firstItem},                               <!-- 首件(件) number(10)-->
+			first_price = #{entity.firstPrice},                             <!-- 首重(元) number(12,3)-->
+			continue_item = #{entity.continueItem},                         <!-- 续件(件) number(10)-->
+			continue_price = #{entity.continuePrice},                       <!-- 续重(元) number(12,3)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			ids = #{entity.ids},                                            <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+
+		</set>
+		WHERE lti_id = #{entity.ltiId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE logistics_template_item a 
+		<set>
+			lt_id = #{entity.ltId},                                         <!-- 运费模板id number(19)-->
+			names = #{entity.names},                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
+			first_item = #{entity.firstItem},                               <!-- 首件(件) number(10)-->
+			first_price = #{entity.firstPrice},                             <!-- 首重(元) number(12,3)-->
+			continue_item = #{entity.continueItem},                         <!-- 续件(件) number(10)-->
+			continue_price = #{entity.continuePrice},                       <!-- 续重(元) number(12,3)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			ids = #{entity.ids},                                            <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE logistics_template_item
+		<set>
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板id number(19)-->
+			<if test="entity.names != null">names = #{entity.names},</if>                                                       <!-- 地区名(冗余字段) nvarchar2(521)-->
+			<if test="entity.firstItem != null">first_item = #{entity.firstItem},</if>                                          <!-- 首件(件) number(10)-->
+			<if test="entity.firstPrice != null">first_price = #{entity.firstPrice},</if>                                       <!-- 首重(元) number(12,3)-->
+			<if test="entity.continueItem != null">continue_item = #{entity.continueItem},</if>                                 <!-- 续件(件) number(10)-->
+			<if test="entity.continuePrice != null">continue_price = #{entity.continuePrice},</if>                              <!-- 续重(元) number(12,3)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.ids != null">ids = #{entity.ids},</if>                                                             <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+		</set>
+		WHERE lti_id = #{entity.ltiId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE logistics_template_item a
+		<set>
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板id number(19)-->
+			<if test="entity.names != null">names = #{entity.names},</if>                                                       <!-- 地区名(冗余字段) nvarchar2(521)-->
+			<if test="entity.firstItem != null">first_item = #{entity.firstItem},</if>                                          <!-- 首件(件) number(10)-->
+			<if test="entity.firstPrice != null">first_price = #{entity.firstPrice},</if>                                       <!-- 首重(元) number(12,3)-->
+			<if test="entity.continueItem != null">continue_item = #{entity.continueItem},</if>                                 <!-- 续件(件) number(10)-->
+			<if test="entity.continuePrice != null">continue_price = #{entity.continuePrice},</if>                              <!-- 续重(元) number(12,3)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.ids != null">ids = #{entity.ids},</if>                                                             <!-- 运送到（地区表id，用逗号分割） nvarchar2(521)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM logistics_template_item
+		WHERE lti_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM logistics_template_item
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					lti_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM logistics_template_item a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM logistics_template_item a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

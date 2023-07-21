@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysApiParamDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysApiParamColumns">
+	<trim suffixOverrides=",">
+		a.param_id AS "paramId",                                             <!-- 参数id bigint(20)-->
+		a.api_id AS "apiId",                                                 <!-- 所属接口id bigint(20)-->
+		a.param_name AS "paramName",                                         <!-- 参数名 varchar(64)-->
+		a.param_type AS "paramType",                                         <!-- 参数类型 char(1)-->
+		a.is_required AS "isRequired",                                       <!-- 是否必填 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.param_describe AS "paramDescribe",                                 <!-- 参数描述 varchar(256)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysApiParamJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.paramId != null ">AND a.param_id = #{c.paramId}</if>
+		<if test="c.apiId != null ">AND a.api_id = #{c.apiId}</if>
+		<if test="c.paramName != null and c.paramName != ''">AND a.param_name = #{c.paramName}</if>
+		<if test="c.paramType != null and c.paramType != ''">AND a.param_type = #{c.paramType}</if>
+		<if test="c.isRequired != null and c.isRequired != ''">AND a.is_required = #{c.isRequired}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.paramDescribe != null and c.paramDescribe != ''">AND a.param_describe = #{c.paramDescribe}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysApiParam">
+		SELECT 
+		<include refid="sysApiParamColumns"/>
+		FROM sys_api_param a
+		<include refid="sysApiParamJoins"/>
+		WHERE a.param_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysApiParam">
+		SELECT 
+		<include refid="sysApiParamColumns"/>
+		FROM sys_api_param a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.param_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysApiParam">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysApiParamColumns"/>
+		FROM sys_api_param a
+		<include refid="sysApiParamJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.param_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysApiParam">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysApiParamColumns"/>
+		FROM sys_api_param a
+		<include refid="sysApiParamJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.param_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.paramId" keyColumn="param_id" useGeneratedKeys="true">
+		INSERT INTO sys_api_param
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			param_id,                                          <!-- 参数id bigint(20)-->
+			api_id,                                            <!-- 所属接口id bigint(20)-->
+			param_name,                                        <!-- 参数名 varchar(64)-->
+			param_type,                                        <!-- 参数类型 char(1)-->
+			is_required,                                       <!-- 是否必填 char(1)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			param_describe,                                    <!-- 参数描述 varchar(256)-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.paramId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_api_param_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.apiId},                                   <!-- 所属接口id bigint(20)-->
+			#{entity.paramName},                               <!-- 参数名 varchar(64)-->
+			#{entity.paramType},                               <!-- 参数类型 char(1)-->
+			#{entity.isRequired},                              <!-- 是否必填 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.paramDescribe},                           <!-- 参数描述 varchar(256)-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.paramId" keyColumn="param_id" useGeneratedKeys="true">
+		INSERT INTO sys_api_param
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.paramId != null">param_id,</if></if>
+			<if test="entity.pkMode==2">param_id,</if>
+			<if test="entity.apiId != null">api_id,</if>                                       <!-- 所属接口id bigint(20)-->
+			<if test="entity.paramName != null">param_name,</if>                               <!-- 参数名 varchar(64)-->
+			<if test="entity.paramType != null">param_type,</if>                               <!-- 参数类型 char(1)-->
+			<if test="entity.isRequired != null">is_required,</if>                             <!-- 是否必填 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.paramDescribe != null">param_describe,</if>                       <!-- 参数描述 varchar(256)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.paramId != null">#{entity.paramId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_api_param_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.apiId != null">#{entity.apiId},</if>                                        <!-- 所属接口id bigint(20)-->
+			<if test="entity.paramName != null">#{entity.paramName},</if>                                <!-- 参数名 varchar(64)-->
+			<if test="entity.paramType != null">#{entity.paramType},</if>                                <!-- 参数类型 char(1)-->
+			<if test="entity.isRequired != null">#{entity.isRequired},</if>                              <!-- 是否必填 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.paramDescribe != null">#{entity.paramDescribe},</if>                        <!-- 参数描述 varchar(256)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_api_param 
+		<set>
+			api_id = #{entity.apiId},                                       <!-- 所属接口id bigint(20)-->
+			param_name = #{entity.paramName},                               <!-- 参数名 varchar(64)-->
+			param_type = #{entity.paramType},                               <!-- 参数类型 char(1)-->
+			is_required = #{entity.isRequired},                             <!-- 是否必填 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			param_describe = #{entity.paramDescribe},                       <!-- 参数描述 varchar(256)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE param_id = #{entity.paramId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_api_param a 
+		<set>
+			api_id = #{entity.apiId},                                       <!-- 所属接口id bigint(20)-->
+			param_name = #{entity.paramName},                               <!-- 参数名 varchar(64)-->
+			param_type = #{entity.paramType},                               <!-- 参数类型 char(1)-->
+			is_required = #{entity.isRequired},                             <!-- 是否必填 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			param_describe = #{entity.paramDescribe},                       <!-- 参数描述 varchar(256)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_api_param
+		<set>
+			<if test="entity.apiId != null">api_id = #{entity.apiId},</if>                                                      <!-- 所属接口id bigint(20)-->
+			<if test="entity.paramName != null">param_name = #{entity.paramName},</if>                                          <!-- 参数名 varchar(64)-->
+			<if test="entity.paramType != null">param_type = #{entity.paramType},</if>                                          <!-- 参数类型 char(1)-->
+			<if test="entity.isRequired != null">is_required = #{entity.isRequired},</if>                                       <!-- 是否必填 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.paramDescribe != null">param_describe = #{entity.paramDescribe},</if>                              <!-- 参数描述 varchar(256)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE param_id = #{entity.paramId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_api_param a
+		<set>
+			<if test="entity.apiId != null">api_id = #{entity.apiId},</if>                                                      <!-- 所属接口id bigint(20)-->
+			<if test="entity.paramName != null">param_name = #{entity.paramName},</if>                                          <!-- 参数名 varchar(64)-->
+			<if test="entity.paramType != null">param_type = #{entity.paramType},</if>                                          <!-- 参数类型 char(1)-->
+			<if test="entity.isRequired != null">is_required = #{entity.isRequired},</if>                                       <!-- 是否必填 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.paramDescribe != null">param_describe = #{entity.paramDescribe},</if>                              <!-- 参数描述 varchar(256)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_api_param
+		WHERE param_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_api_param
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					param_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_api_param a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_api_param a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

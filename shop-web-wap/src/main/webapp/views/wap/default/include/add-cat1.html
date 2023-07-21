@@ -1,0 +1,47 @@
+<div class="widgets-cover productRetail">
+	<div class="cover-bg" aria-label="关闭弹层"></div>
+	<div class="cover-content" role="dialog">
+		<div class="sku-wrap">
+			<div class="header">
+				<div class="img-wrap">
+					<img src="${ctxStatic}/images/default_goods.png" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');" class="j-summary-img" aria-label="选中的商品图">
+				</div>
+				<div class="main">
+					<div class="price"> ¥0</div>
+					<div class="stock"><span>有货</span>
+						<input type="hidden" class="productStock" value=""/>
+						<input type="hidden" class="purchasingAmount" value="1"/>
+					</div>		
+					<div class="sku-info">请选择规格
+					</div>
+				</div>
+				<a class="sku-close" aria-label="关闭"><span class="icon icon-73"></span></a>
+			</div>
+			<div class="body">
+				<div class="pre-mods-wrap"></div>
+				<div class="address-wrap"></div>
+				<ul class="sku-list-wrap">
+				</ul>
+				<ul class="bundle-sku-wrap"></ul>
+				<div class="mods-wrap"></div>
+				<div class="pickup-wrap"><section id="s-pickup"></section></div>
+				<div class="bundle-wrap"></div>
+				<div class="services-wrap"></div>
+				<div class="number-wrap">
+					<div class="number-line">
+						<label for="number">购买数量</label><span class="J_limitTxt limit-txt"></span>
+						<div class="number">
+							<button class="decrease disabled weui-number-sub" iswholesale="0">-</button>
+							<input class="number_input" type="number" value='1'  data-min="1" data-step="1" data-max="">
+							<button class="increase weui-number-plus" iswholesale="0">+</button>
+						</div>
+					</div>
+					<input type="hidden" name="skuId" class="skuId" value=""/>
+				</div>
+			</div>
+			<div class="footer trade">
+		    	<a class="ok " role="button">确定</a>
+			</div>
+		</div>
+	</div>
+</div>

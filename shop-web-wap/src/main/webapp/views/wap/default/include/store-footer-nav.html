@@ -1,0 +1,69 @@
+<!-- <script type='text/javascript' src="${ctx}/views/wap/default/weui/select.js"></script> -->
+<script type='text/javascript' src="${ctx}/views/wap/default/include/store-footer-nav.js"></script>
+<div class="weui_tabbar">
+	<a href="${ctxw}/store/index.htm?storeId=${storeId}" class="weui_tabbar_item weui_bar_item_on">
+		<div class="weui_tabbar_icon">
+			<span class="icon icon-wxbmingxingdianpu"></span>
+		</div>
+		<p class="weui_tabbar_label">店铺首页</p>
+	</a>
+	<a href="${ctxw}/product/list.htm?sid=${storeId}" class="weui_tabbar_item">
+		<div class="weui_tabbar_icon">
+			<span class="icon icon-training"></span>
+		</div>
+		<p class="weui_tabbar_label">店铺商品</p>
+	</a>
+	<a href="javaScript:;" class="weui_tabbar_item foot-storeCategory">
+		<div class="weui_tabbar_icon">
+			<span class="icon icon-all1"></span>
+		</div>
+		<p class="weui_tabbar_label">商品分类</p>
+	</a>
+	<a href="javaScript:;" class="weui_tabbar_item foot-contactUs">
+		<div class="weui_tabbar_icon">
+			<span class="icon icon-xiaoxi3"></span>
+		</div>
+		<p class="weui_tabbar_label">联系卖家</p>
+	</a>
+</div>
+<div id="popup1" style="display: none;">
+	<div class="weui_article">
+		<h2 class="title" style="text-align: center;">商品分类
+			<span class="icon icon-73" style="float: right;font-size: 20px;"></span>
+		</h2>
+		<section id="agreementContent">
+			<div class="array-div" style="overflow-y: scroll;padding: 15px;height: 420px;">
+				<div class="array-msg-div"></div>
+			</div>
+		</section>
+	</div>
+</div> 
+<div id="popup2" style="display: none;">
+	<div class="weui_article">
+		<h2 class="title" style="text-align: center;">联系卖家
+			<span class="icon icon-73" style="float: right;font-size: 20px;"></span>
+		</h2>
+		<div class="array-div" style="padding: 15px;"></div>
+	</div>
+</div>
+<script type="text/template" id="noStoreCategory_Tpl" info="无店铺商品分类模板">
+	<div class="noStoreCategory" style="text-align: center;color: #999;padding-top: 160px;">当前店铺无分类</div>
+</script>
+<script type="text/template" id="storeCategoryParent_Tpl" info="店铺商品第一级别分类模板">
+	<div class="storeParent" style="padding-top: 5px;">
+    	<a href="${ctxw}/product/list.htm?storeId={{d.storeId}}&storeCategoryId={{d.storeCategoryId}}">{{d.name}}</a>
+	</div>
+</script>
+<script type="text/template" id="storeCategoryChild_Tpl" info="店铺商品第二级别分类模板">
+    <div class="storeChild" style="font-size:12px;margin-left: 15px;">
+		<i class="icon icon-xiangxia-child"></i>
+		<span>
+			<a href="${ctxw}/product/list.htm?sid={{d.storeId}}&storeCategoryId={{d.storeCategoryId}}">{{d.name}}</a>
+		</span>
+	</div>
+</script>
+<script type="text/template" id="storeContactTheSeller_Tpl" info="联系卖家模板">
+    <div class="array-msg-div" style="margin-top: 5px;">
+		<span class="content_title">{{d.title}}</span><span class="content_value">{{d.value}}</span>
+	</div>
+</script>

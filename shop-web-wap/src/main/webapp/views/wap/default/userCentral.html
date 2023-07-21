@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 业务js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/userCentral.js"></script>
+</head>
+<body class="user userIndex-body">
+<% include("/include/foot-nav.html"){}%>
+<div class="content">
+	<div class="header clearfix">
+	<div class="security"><!-- <span class="icon icon-101"></span> --></div>
+		<div class="my-face"><img src="" alt=""/></div>
+		<div class="my-text">
+			<div class="my-name"></div>
+			<div class="my-info"><span></span></div>
+		</div>
+		<div class="clear"></div>
+		<svg version="1.1" id="line-1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 1080 50" enable-background="new 0 0 1080 50" xml:space="preserve"><path fill="#FFFFFF" d="M1080,50H0V0c0,0,161,44,540,44s540-44,540-44V50z"/></svg>
+	</div>
+	<div class="my-button weui-border-b">
+		<div class="weui-flex">
+            <a href="${ctxw}/trade/order/list.htm?status=10">
+	            <div class="weui-flex-item">
+		            <b id="orderStatus10" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-12"></span></div>
+		            <p>待付款</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/trade/order/list.htm?status=20">
+	            <div class="weui-flex-item">
+		            <b id="orderStatus20" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-shouhuo"></span></div>
+		            <p>待发货</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/trade/order/list.htm?status=30">
+	            <div class="weui-flex-item">
+		            <b id="orderStatus30" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-pingjia"></div>
+		            <p>待收货</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/trade/order/list.htm?status=40">
+	            <div class="weui-flex-item">
+		            <b id="orderStatus40" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-yiwancheng"></div>
+		            <p>待评价</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/trade/cart/list.htm">
+	            <div class="weui-flex-item">
+		            <b id="tradeCarts" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-cart"></div>
+		            <p>购物车</p>
+	            </div>
+            </a>
+		</div>
+		<div class="weui-flex">
+			<a href="${ctxw}/user/collectionStore/list.htm">
+	            <div class="weui-flex-item">
+		            <b id="collectionStores" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-wxbmingxingdianpu"></div>
+		            <p>收藏店铺</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/user/collectionProduct/list.htm">
+	            <div class="weui-flex-item">
+		            <b id="collectionProducts" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-favorite1"></div>
+		            <p>收藏商品</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/user/userMessage/list.htm">
+	            <div class="weui-flex-item">
+		            <b id="messages" class="countHide">
+		            </b><div class="weui-border-radius"><span class="icon icon-xiaoxi6"></div>
+		            <p>消息</p>
+	            </div>
+            </a>
+            <a href="${ctxw}/trade/myComment/list.htm">
+	           	<div class="weui-flex-item">
+		           	<b id="tradeComments" class="countHide"></b>
+		           	<div class="weui-border-radius"><span class="icon icon-sps"></div>
+		           	<p>评价</p>
+	           	</div>
+           	</a>
+           	<a href="${ctxw}/trade/myConsultation/list.htm">
+	            <div class="weui-flex-item">
+		            <b id="tradeConsultations" class="countHide"></b>
+		            <div class="weui-border-radius"><span class="icon icon-zixun"></div>
+		            <p>咨询</p>
+	            </div>
+            </a>
+		</div>
+	</div>
+	<div class="weui_cells_title"><span class="icon icon-85"></span> 会员资料</div>
+	<div class="weui_cells weui_cells_access my-panel">
+		<a class="weui_cell" href="${ctxw}/user/userInfo/form.htm">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>账户信息</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a>
+		<!-- <a class="weui_cell" href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>账户安全</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a> -->
+		<a class="weui_cell" href="${ctxw}/user/address/list.htm?entry=0">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>收货地址</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a>
+		<a class="weui_cell" href="${ctxw}/user/userMessage/list.htm">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>我的消息</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a>
+	</div>
+
+	<!-- <div class="weui_cells_title"><span class="icon icon-85"></span> 财务中心</div>
+	<div class="weui_cells weui_cells_access my-panel">
+		<a class="weui_cell" href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>账户余额</p>
+			</div>
+			<div class="weui_cell_ft">¥3800.00</div>
+		</a>
+		<a class="weui_cell" href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>账户充值</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a>
+		<a class="weui_cell" href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>账户提现</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a>
+		<a class="weui_cell" href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p><span class="dot">●</span>我的慧付宝</p>
+			</div>
+			<div class="weui_cell_ft"></div>
+		</a>
+	</div> -->
+	<div class="weui_cells weui_cells_access my-panel">
+		<a class="weui_cell" href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary signOut">
+				<p>退出登录</p>
+			</div>
+		</a>
+	</div>
+</div>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

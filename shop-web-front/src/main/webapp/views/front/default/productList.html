@@ -1,0 +1,422 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% var seo=seo.one({type:"商品列表页"});%>
+<title>${seo.title!} Powered by SiC</title>
+<meta name="Keywords" content="${seo.keywords!}"/>
+<meta name="description" content="${seo.description!}"/>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/default/productList.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/default/collection.js"></script>
+<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+<style>
+	.goods-list ul.goods-pic-list li .allSalesAndCommentCount{height: 18px; overflow:hidden; color:#000}
+	.goods-list ul.goods-pic-list li .allSalesAndCommentCount span{ width:50%; display:inline-block; float:left; padding: 0}
+	.goods-list ul.goods-pic-list li .p-name.hover {margin-top: 23px;}
+	/*.goods-list ul.goods-pic-list li .text.pifa p.p-name.nohover { margin-bottom: 11px!important; }*/
+	.goods-list ul.goods-pic-list li .text.pifa p.p-name.hover { margin-top: 22px; }
+</style>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<% include("/include/nav.html"){}%>
+	<% 
+		var cid=parameter.cid;
+		var cname=parameter.cname;
+		var k=parameter.k;
+		var sid=parameter.sid;
+		var models=parameter.models;
+		var pids=parameter.pids;
+		var price=parameter.price;
+		var bid=parameter.bid;
+		var bname=parameter.bname;
+		var pageNo=parameter.pageNo;
+		var pageSize=parameter.pageSize;
+		var pageCount=parameter.pageCount;
+		var attr=parameter.attr;
+		var sort=parameter.sort;
+		var sortMode=parameter.sortMode;
+		var minPrice="";
+		var manPrice="";
+		if(isNotEmpty(price)){
+			var index=strutil.index(price,"-");
+			minPrice=strutil.subStringTo(price,0,index);
+			maxPrice=strutil.subString(price,index+1);
+		}
+		var resultMap=product.page({cid:cid,cname:cname,k:k,sid:sid,models:models,pids:pids,
+	 		price:price,bid:bid,bname:bname,pageNo:pageNo,pageSize:pageSize,pageCount:pageCount,
+	 		attr:attr,sort:sort,sortMode:sortMode});
+	 	var user=user.current();
+	 %>
+	<div class="crumbs wp mt10" style="min-height: 40px;">
+		<span style="float: left">全部结果 ></span>
+		<%if(cid!=null){
+			var category_leve3=product.category({cid:cid});
+			var category_leve2=product.category({cid:category_leve3.parentId!});
+			var category_leve1=product.category({cid:category_leve2.parentId!});%>
+			
+			<% if(category_leve1!=null){%>
+				<ul id="navul" class="cl categoryMsg" style="float: none;">
+					<li class="li_1" style="background-image: url('');margin: 7px 10px 0 10px;height: 24px;line-height: 24px;border: 1px solid #e6e6e6;">
+						<a href="#" style="color: #000;">${category_leve1.name!}<i class="sui-icon icon-tb-unfold"></i></a>
+						<ul style="width: 320px;">
+							<% var cate1List=product.categoryList({parentId:0});
+							for(cate1 in cate1List){%>
+								<li style="width: 18%;">
+									<a href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" categoryId=${cate1.categoryId!} style="color: #000;">${cate1.name!}</a>
+								</li>
+							<%}%>
+						</ul>	
+					</li>
+				</ul>
+			<%}%>
+			<% if(category_leve2!=null){%>
+				<ul id="navul" class="cl" style="float: none;;">
+					<li class="li_1" style="background-image: url('');margin: 7px 10px 0px 0px;height: 24px;line-height: 24px;border: 1px solid #e6e6e6;">
+						<a href="#" style="color: #000;">${category_leve2.name!}<i class="sui-icon icon-tb-unfold"></i></a>
+						<ul style="width: 320px;">
+							<% var cate2List=product.categoryList({parentId:category_leve2.parentId!});
+							for(cate2 in cate2List){%>
+								<li style="width: 18%;">
+									<a href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}" categoryId=${cate2.categoryId!} style="color: #000;">${cate2.name!}</a>
+								</li>
+							<%}%>
+						</ul>	
+					</li>
+				</ul>
+			<%}%>
+			<% if(category_leve3!=null){%>
+				<ul id="navul" class="cl" style="float: none;;">
+					<li class="li_1" style="background-image: url('');margin: 7px 10px 0px 0px;height: 24px;line-height: 24px;border: 1px solid #e6e6e6;">
+						<a href="#" style="color: #000;">${category_leve3.name!}<i class="sui-icon icon-tb-unfold"></i></a>
+						<ul style="width: 320px;">
+							<%var cate3List=product.categoryList({parentId:category_leve3.parentId!});
+							for(cate3 in cate3List){%>
+								<li style="width: 18%;">
+									<a href="${ctxf}/product/list.htm?cid=${cate3.categoryId!}" categoryId=${cate3.categoryId!} style="color: #000;">${cate3.name!}</a>
+								</li>
+							<%}%>
+						</ul>	
+					</li>
+				</ul>
+			<%}%>
+		<%}%>
+		<%if(k!=null){%>
+			<div class="selected" href="javascript:;">关键字：
+				<em>${k}</em>
+			</div>
+		<%}%>
+		
+		<%if(bid!=null){%>
+			<div class="selected" href="javascript:;">品牌：
+				<% var bids=strutil.split(bid,",");
+				var bnames="";
+				if(bids.~size>0){
+					for(id in bids){
+						var brand=product.brand({bid:id,bname:bname});
+						bnames=bnames+brand.name!+"、";
+					}
+				}%>
+				<em> ${strutil.subStringTo(bnames!,0,strutil.length(bnames!)-1)}</em>
+				<span id="bid" class="removeParam"><i class="sui-icon icon-pc-error"></i></span>
+			</div>
+		<%}%>
+		
+		<%var paramIds="";
+		if(isNotEmpty(attr)){
+			var params=strutil.split(attr,",");
+			if(isNotEmpty(params)){
+				for(param in params){
+					var pa=strutil.split(param,"_");
+					if(pa.~size >=1){
+						paramIds=paramIds+pa[0]+",";
+						var paramValue=pa[1];%>
+						<div class="selected" href="javascript:;">${pa[0]}：
+							<!-- <em>${strutil.subStringTo(paramValue,0,strutil.length(paramValue)-1)}</em> -->
+							<em>
+								${strutil.replace (paramValue,":","、")}
+							</em>
+							<span id="attr" class="removeParam" paramId="${pa[0]}"><i class="sui-icon icon-pc-error"></i></span>
+						</div>
+					<%}
+				}
+			}
+		}%>
+	</div>
+	<% if(isNotEmpty(resultMap["suggestionWordList"])){%>
+		<div class="wp">
+			<div class="search-prompt">
+				您要找的是不是：
+				<% for(sugg in resultMap["suggestionWordList"]){%>
+					<a href="${ctxf}/product/list.htm?k=${sugg!}">${sugg!}</a>
+				<%}%>
+			</div>
+		</div>
+	<%}%>
+	<% if(isNotEmpty(resultMap["brandList"]) || isNotEmpty(resultMap["categoryList"]) || isNotEmpty(resultMap["paramValueMap"])){%>
+		<div id="search-list-box" class="screen wp mt10 attr-list-box">
+			<!-- 商品品牌开始 -->
+			<% if(isNotEmpty(resultMap["brandList"])){%>
+				<dl class="param productBrand attr-none-more" id="brand" isBrand="1" style="display:${isNotEmpty(bid!)?'none':''};">
+					<dt>品牌：</dt>
+					<div class="more" multiselect="N">
+						<a href="javascript:" class="moreA">更多 <i class="sui-icon icon-tb-right"></i></a>
+						<a href="javascript:" class="retractA" style="display:none;">收起 <i class="sui-icon icon-tb-unfold"></i></a>
+						<a href="javascript:" class="multiselect">多选 <i class="sui-icon icon-tb-add"></i></a>
+					</div>
+					<dd>
+						<ul class="brandUl clearfix">
+							<% for(brand in resultMap["brandList"]){
+								if((brand.status!) =='1'){%>
+									<li brandId="${brand.brandId!}" brandName="${brand.name!}" class="">
+										<a href="javascript:">
+											${brand.name!}
+										</a>
+										<em></em>
+									</li>
+								<%}
+							}%>
+						</ul>
+						<div class="selectCondition">
+							<div class="select-btn">
+								<button class="sui-btn btn-danger sureAttr" id="brand">确定</button>
+								<button class="sui-btn btn-bordered cancleMultiselect">取消</button>
+							</div>
+						</div>
+					</dd>
+				</dl>
+			<%}%>
+			<!-- 商品品牌结束 -->
+			<!-- 商品分类开始 -->
+			<% if(isNotEmpty(resultMap["categoryList"])){%>
+				<dl class="param attr-none-more" id="category">
+					<dt>分类：</dt>
+					<div class="more" multiselect="N">
+						<a href="javascript:" class="moreA">更多 <i class="sui-icon icon-tb-right"></i></a>
+						<a href="javascript:" class="retractA" style="display:none;">收起 <i class="sui-icon icon-tb-unfold"></i></a>
+					</div>
+					<dd>
+						<ul class="cateUl">
+							<% for(category in resultMap["categoryList"]){%>
+								<li categoryId="${category.categoryId!}" class=""><a href="javascript:">${category.name!}</a></li>
+							<%}%>
+							<div class="clear"></div>
+						</ul>
+					</dd>
+				</dl>
+			<%}%>
+			<!-- 商品分类结束 -->
+			<!-- 商品参数开始 -->
+			<% var paramIdss=[]; //用来参数的是否显示,如果当前已经查询的该参数下的商品,则不显示该参数
+			if(isNotEmpty(paramIds!)){
+				paramIdss=strutil.split(paramIds!,",");
+			}%>
+			<% for(param in resultMap["paramValueMap"]){ %>
+				<% if(!array.contain(paramIdss!,param.key!+"")){ %>
+					<dl class="param attr-none-more" id="attr" style=''>
+						<dt>${param.key!}：</dt>
+						<div class="more" multiselect="N">
+							<a href="javascript:" class="moreA">更多 <i class="sui-icon icon-tb-right"></i></a>
+							<a href="javascript:" class="retractA" style="display:none;">收起 <i class="sui-icon icon-tb-unfold"></i></a>
+							<a href="javascript:" class="multiselect">多选 <i class="sui-icon icon-tb-add"></i></a>
+						</div>
+						<dd>
+							<ul>
+								<% for(paramv in param.value){ %>
+									<li attrId="${param.key!}" class=""><a href="javascript:">${paramv!}</a></li>
+								<%}%>
+								<div class="clear"></div>
+							</ul>
+							<div class="selectCondition">
+								<div class="select-btn">
+									<button class="sui-btn btn-danger sureAttr" attrId="${param.key!}">确定</button>
+									<button class="sui-btn btn-bordered cancleMultiselect">取消</button>
+								</div>
+							</div>
+						</dd>
+					</dl>
+				<%}%>
+			<%}%>
+			<!-- 商品参数结束 -->
+				<div class="search-list-box-more"><a href="javascript:" class="search-box-show">展开 <i class="sui-icon icon-tb-unfold"></i></a><a href="javascript:" class="search-box-hide" style="display:none">收起 <i class="sui-icon icon-tb-fold"></i></a></div>
+		</div>
+	<%}%>
+	<!-- 商品参数结束 -->
+	<!-- 商品信息开始 -->
+	<div class="goods-list wp mt30">
+		<% if(isNotEmpty(resultMap["search"].items)){%>
+			<div class="sui-navbar search-tool">
+				<div class="search-navbar-inner">
+					<div class="r">共找到：${resultMap["page"].count!}个产品</div>
+					<ul class="sui-nav sortType">
+						<li class="${sort==null?'active':''} all" all" id=""><a href="javascript:"><i></i>综合</a></li>
+						<li class="${sort=='allSales'?'active':''}" id="allSales"><a href="javascript:"><i></i>销量</a></li>
+						<li class="${sort=='collectionCount'?'active':''}" id="collectionCount"><a href="javascript:"><i></i>收藏</a></li>
+						<li class="${sort=='commentCount'?'active':''}" id="commentCount"><a href="javascript:"><i></i>评论</a></li>
+						<li class="${sort=='minPrice'?'active':''}" id="minPrice">
+							<a href="javascript:">
+								价格
+								<span class="sortMode" id="${sortMode =='desc'?'asc':'desc'}">
+									${sortMode == 'desc'?'<i class="desc"></i>':'<i class="asc"></i>'}
+								</span>
+							</a>
+						</li>
+					</ul>
+					<form class="sui-form sui-form pull-left">
+						<input type="text" class="input-small" placeholder="¥" name="minPrice" value="${minPrice!}"> - 
+						<input type="text" class="input-small" placeholder="¥" name="maxPrice" value="${maxPrice!}">
+						<button class="sui-btn searchBtn" type="button">搜索</button>
+					</form>
+				</div>
+			</div>
+		<%}%>
+		<ul class="goods-pic-list">
+			<% for(product in resultMap["search"].items){ %>
+				<li>
+					<div class="p-picture">
+						<a target="_blank" href="${ctxf}/detail/${product.pId!}.htm">
+							<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+								<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}@!220X220" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+							<%}else{%>
+								<img src="${ctxfs}${product.image}@!220X220" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+							<%}%>
+						</a>
+					</div>
+					<% if(product.type!='2'){ %>
+						<div class="go-color">
+							<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+								<% for(img in product.storeAlbumPictureList2!){%>
+									<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}@!34X34" src1="${img.path!}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+								<%}%>
+							<%}%>
+						</div>
+					<%}else{%>
+						<div class="go-store hover"><a target="_blank" href="${ctxf}/store/${product.storeId!}.htm">进入店铺</a></div>
+					<%}%>
+					<div class="text ${product.type=='2'?'pifa':''}">
+						<p class="p-price ${product.type=='2'?'nohover':''}">
+							¥${product.type=='2'?product.minPrice2!+"~ ¥"+product.maxPrice2!:product.minPrice1!}<small class="${product.type=='2'?'p-type-1':'p-type-2'}"></small>
+						</p>
+						<a target="_blank" href="${ctxf}/detail/${product.pId!}.htm">
+							<% if(product.type=='2'){%>
+								<p class="p-price-ladder ladder-3 hover">
+									<% for(section in product.productSectionPriceList!){
+										if(!sectionLP.last){%>
+											<span>
+<!--												<small>${section.section!}-${parseLong(product.productSectionPriceList[sectionLP.index].section!)-1} ${isNotEmpty(product.unit!)?product.unit!:'件'}</small>-->
+												<small>≤ ${section.section!} ${isNotEmpty(product.unit!)?product.unit!:'件'}</small>
+												<small class="red">¥${section.price!}</small>
+											</span>
+										<%}else{%>
+											<span>
+												<small>≥ ${section.section!} ${isNotEmpty(product.unit!)?product.unit!:'件'}</small>
+												<small class="red">¥${section.price!}</small>
+											</span>
+										<%}
+									}%>
+								</p>
+							<%}%>
+                            <p class="nohover allSalesAndCommentCount">
+                                <span>成交量：${product.allSales!}</span><span>评价数：${product.commentCount}</span>
+                            </p>
+							<p class="p-name nohover">
+                                ${product.name!}
+                            </p>
+							<p class="p-name hover"><span>成交量：${product.allSales!}</span><span>评价数：${product.commentCount}</span></p>
+						</a>
+					</div>
+					<div class="store">
+						<a target="_blank" href="${ctxf}/store/${product.storeId!}.htm">
+							${product.storeName!}
+							<% if(product.store.storeType=='1'){ %>
+							<span class="storetype-3"></span>
+							<%}%>
+							<% if(product.store.storeType=='2'){ %>
+							<span class="storetype-2"></span>
+							<%}%>
+							<% if(product.store.storeType=='3'){ %>
+							<span class="storetype-1"></span>
+							<%}%>
+						</a>
+					</div>
+					<div class="button"><a href="javaScript:void(0);" class="fav" pId="${product.pId}"><i class="sui-icon icon-tb-favor"></i> 加入收藏</a><a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="buy"><i class="sui-icon icon-tb-goods"></i> 立即购买</a></div>
+				</li>
+			<%}elsefor{%>
+				<div style="height: 300px;line-height: 300px;text-align: center;font-size: 40px;" >
+					<i class="sui-icon icon-touch-face"></i> 很遗憾，暂无商品！
+				</div>
+			<%}%>
+			<div class="clear"></div>
+		</ul>
+		<!--分页开始-->
+		<% if(isNotEmpty(resultMap["search"].items)){include("/page.html",{'page':resultMap["page"]}){}}%>
+		<!--分页结束-->
+		<!-- 热卖橱窗开始 -->
+		<div class="wp selected-box mt20">
+			<div class="title"><span></span>热卖橱窗</div>
+			<div class="scroll-outer">
+				<div id="scroll-cc" class="owl-carousel">
+					<% var resultMap2=product.list({limit:10,sort:"allSales",sortMode:"desc"});
+					for(p in resultMap2["search"].items){%>
+						<div class="item">
+							<a target="_blank" href="${ctxf}/detail/${p.pId!}.htm">
+								<div class="p-picture" style="text-align: center;">
+									<img src="${ctxfs}/${p.image!}@!200X200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+								</div>
+							</a>
+							<div class="text">
+								<p class="p-price">
+									<% if((p.type!)=='1'){%>
+										¥${p.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((p.type!)=='2'){%>
+										¥${p.minPrice2!}~ ¥${p.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+								<a target="_blank" href="${ctxf}/detail/${p.pId!}.htm">	
+									<p class="p-name">${p.name}</p>
+								</a>
+							</div>
+							</a>
+						</div>
+					<%}%>
+				</div>
+			</div>
+			<script type="text/javascript">
+				$(function(){
+					$('#scroll-cc').owlCarousel({
+						items: 5,
+						autoPlay: false,
+						navigation: true,
+						navigationText: ["",""],
+						slideSpeed:1000,
+						autoHeight:true,
+						scrollPerPage: true,
+						responsive:false
+					});
+				});
+			</script>
+		</div>
+		<!--橱窗结束-->	
+		<!-- 您是不是要找start -->
+		<% if(isNotEmpty(resultMap["suggestionWordList"])){%>
+			<div class="hot-keywords mt20 clearfix">
+				<div class="keywords">
+					<span>您是不是要找：</span>
+					<% for(sugg in resultMap["suggestionWordList"]){%>
+						<a href="${ctxf}/product/list.htm?k=${sugg!}">${sugg!}</a>|
+					<%}%>
+				</div>
+			</div>
+		<%}%>
+		<!-- 您是不是要找end -->
+	</div>
+	<!-- 商品信息结束 -->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+</body>
+</html>

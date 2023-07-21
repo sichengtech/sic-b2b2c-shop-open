@@ -1,0 +1,274 @@
+.clear:after {
+    display: block;
+    clear: both;
+    content: "";
+    visibility: hidden;
+    height: 0
+}
+
+.clear {
+    zoom: 1
+}
+.filePicker-1 {
+    position: relative;
+    float: left;
+    padding-top: 4px;
+    width: 112px;
+    height: 104px;
+}
+.webuploader-container {
+    position: relative;
+}
+/* .webuploader-container > div{
+    top: 0!important;
+} */
+#uploader-demo {
+    display: inline-block;
+    width: auto;
+}
+
+.webuploader-element-invisible {
+    position: absolute !important;
+    clip: rect(1px 1px 1px 1px);
+    /* IE6, IE7 */
+    clip: rect(1px, 1px, 1px, 1px);
+}
+
+.filePicker-1 .webuploader-pick {
+    position: relative;
+    display: inline-block;
+    width: 106px;
+    height: 100px;
+    cursor: pointer;
+    /* background: #00b7ee; */
+    /* padding: 0 15px; */
+    margin: 2px 0 0 5px;
+    color: #fff;
+    text-align: center;
+    border-radius: 3px;
+    /* overflow: hidden; */
+    /* z-index: 10; */
+}
+
+ul.clear-back li.item-uploader {
+    display: block;
+    height: 104px;
+    border: 3px dashed transparent;
+}
+
+/* .filePicker-1 .webuploader-pick i {
+    border: 2px dashed #999;
+    border-radius: 3px;
+} */
+
+
+
+.uploader-container {
+    /* float: left; */
+    min-width: 120px;
+    min-height: 110px;
+    border: 3px dashed transparent;
+}
+
+/* 拖拽触发 */
+
+.webuploader-dnd-over {
+    border: 3px dashed #999999;
+}
+
+.webuploader-pick-hover {
+    /* background: #00a2d4; */
+}
+
+.webuploader-pick-disable {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.uploader-list-1,
+#filePicker-1 {
+    float: left;
+    padding-top: 4px;
+}
+
+
+.filePicker-1 .webuploader-pick i {
+    display: block;
+    width: 100px;
+    height: 94px;
+    font-size: 94px;
+    line-height: 94px;
+    border: 3px dashed #aaa;
+    color: #999;
+    border-radius: 5px;
+    z-index: 100;
+}
+
+i.icon-my-add1 {
+    display: block;
+    width: 100px;
+    height: 94px;
+    font-size: 94px;
+    line-height: 94px;
+    border: 3px dashed #aaa;
+    color: #999;
+    border-radius: 5px;
+    z-index: 100;
+}
+i.icon-my-add1:hover {
+    border: 3px dashed #000;
+}
+
+/* 拖拽触发 */
+
+.fuwuleibie ul.clear li.item-uploader {
+    border: 1px dashed transparent;
+    cursor: default;
+}
+
+.fuwuleibie ul li.item-uploader.webuploader-dnd-over {
+    border: 1px dashed #999 !important;
+}
+
+.file-item.thumbnail {
+    float: left;
+    position: relative;
+    margin: 0 5px 10px;
+    width: 100px;
+    height: 100px;
+    border: 1px solid #ccc;
+    overflow: hidden;
+    padding: 0px;
+}
+
+.file-item.thumbnail a img {
+    width: 100px;
+    height: 100px;
+}
+
+.file-item.thumbnail:hover {
+    border: 1px solid #3b8cff;
+}
+
+.file-item .error {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: red;
+    color: white;
+    text-align: center;
+    width: 100px;
+    height: 20px;
+    font-size: 14px;
+    line-height: 23px;
+}
+
+.file-item .success {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100px;
+    background: yellowgreen;
+    color: white;
+    text-align: center;
+    height: 20px;
+    font-size: 14px;
+    line-height: 23px;
+}
+
+.file-item .remove-this {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    right: 4px;
+    width: 30px;
+    height: 30px;
+    font-size: 12px;
+    z-index: 10;
+    display: none;
+    cursor: pointer;
+}
+.file-item .load {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100px;
+    background: yellowgreen;
+    color: white;
+    text-align: center;
+    height: 20px;
+    font-size: 14px;
+    line-height: 23px;
+}
+
+/* .file-item img {
+    width: 100px;
+    height: 100px;
+} */
+
+.file-item .remove-this .icon-my {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    display: block;
+    font-size: 18px;
+    background: #333;
+    border-radius: 3px;
+    text-align: center;
+    opacity: 0.7;
+    color: #fff;
+}
+
+.file-item:hover .remove-this {
+    display: block;
+}
+
+.file-item .remove-this .icon-my:hover {
+    background: #3b8cff;
+}
+
+.file-item>a span.preview {
+    position: absolute;
+    top: 30px;
+    color: #333;
+    line-height: 20PX;
+    white-space: normal;
+    font-size: 14px;
+}
+
+p.progress {
+    position: absolute;
+    top: 0px;
+    height: 10px;
+    width: 100px;
+    background: #e2e2e2;
+    border-radius: 5px;
+    margin-top: 3px;
+    z-index: 20;
+}
+
+p.progress span {
+    display: block;
+    height: 10px;
+    background: #28a3ef;
+    border-radius: 5px;
+}
+
+.filePicker-1 .webuploader-pick img {
+    vertical-align: baseline;;
+}
+
+.webuploader-container .webuploader-pick + div {
+    top: 0!important;
+    left: 0!important;
+    width: 100%!important;
+    height: 100%!important;
+}
+
+.uploader-container .gallery, .fileList.gallery{
+	height: auto;
+}
+
+.remove-this .icon-my img{
+	vertical-align: baseline;
+}

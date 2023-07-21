@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ehcache>
+
+	<!-- 缓存对象存储到磁盘上的路径. 
+	java.io.tmpdir在哪里，使用命令查看：System.getProperty("java.io.tmpdir");
+	还可以使用../temp/fdp/ehcache，java.io.tmpdir/ehcache
+	-->
+	<diskStore path="java.io.tmpdir" />
+	
+	<!-- 
+	cache的参数说明：
+	maxEntriesLocalHeap(必填属性) :设置缓存在本地内存中最大缓存项数量(0 表示无限)(等效于旧版本中的 maxElementsInMemory 属性)
+	eternal：缓存中对象是否为永久的，如果是，超时设置将被忽略，对象从不过期。
+	timeToIdleSeconds：缓存数据空闲的最大时间（单位:秒），也就是说如果有一个缓存有多久没有被访问(touch)就会被销毁，如果该值是 0 表示无穷长的时间。
+    timeToLiveSeconds：缓存数据存活的时间（单位:秒），缓存对象最大的的存活时间，超过这个时间就会被销毁，这只能在元素不是永久驻留时有效，如果该值是0表示无穷长的时间。
+    overflowToDisk：内存不足时，是否启用磁盘缓存。
+    memoryStoreEvictionPolicy：缓存满了之后的淘汰算法。
+    maxEntriesLocalDisk：是用来限制在磁盘上所能保存的元素的最大数量的。
+	diskPersistent： 是否在磁盘上持久化。指重启jvm后，数据是否有效。默认为false。 
+	diskExpiryThreadIntervalSeconds： 对象检测线程运行时间间隔。标识对象状态的线程多长时间运行一次。 
+	diskSpoolBufferSizeMB： DiskStore使用的磁盘大小，默认值30MB。每个cache使用各自的DiskStore。    
+	 -->		
+
+	<!-- 默认缓存配置，这是非常重要的配置。
+	这个默认配置尽量不要修改，Ehcache新建缓存分区时都是克隆这个defaultCache。
+	如果你有特殊的参数配置，请像下面的actCache一样单独配置
+	-->
+	<defaultCache 
+		maxEntriesLocalHeap="10000" 
+		eternal="false" 
+		timeToLiveSeconds="3600" 
+		overflowToDisk="false"
+		maxEntriesLocalDisk="10000"
+		memoryStoreEvictionPolicy="LRU" >
+
+		<!-- 网络多播（TCP广播）数据同步-->
+		<!-- 监听RMI同步缓存对象配置 注册相应的的缓存监听类，用于处理缓存事件，如put,remove,update,和expire -->
+		<cacheEventListenerFactory
+				class="net.sf.ehcache.distribution.RMICacheReplicatorFactory"
+				properties="replicateAsynchronously=true,
+				replicatePuts=true,
+				replicateUpdates=true,
+				replicateUpdatesViaCopy=false,
+				replicateRemovals=true "/>
+		<!-- 网络多播（TCP广播）数据同步-->
+		<bootstrapCacheLoaderFactory
+				class="net.sf.ehcache.distribution.RMIBootstrapCacheLoaderFactory"
+				properties="bootstrapAsynchronously=true">
+		</bootstrapCacheLoaderFactory>
+	</defaultCache>
+
+	<!-- 工作流模块缓存(只admin系统需要，是淘汰的功能，以后会删除) -->
+	<cache name="actCache" 
+		maxEntriesLocalHeap="10000" 
+		eternal="false" 
+		timeToLiveSeconds="3600" 
+		overflowToDisk="false" 
+		maxEntriesLocalDisk="10000"
+		memoryStoreEvictionPolicy="LRU"
+	/>
+	
+	<!-- 
+	关于session在缓存中的存储
+	shiro使用缓存技术来存储session,根据配置不同可使用EhCache、Redis缓存。
+	若使用Ehcache缓存，本段文字就值得你阅读。
+	
+	在Ehcache缓存方案中
+	shiro会克隆一份defaultCache，来做为session的专用缓存。
+	缓存的有效期配置在fdp.properties文件中session.sessionTimeout参数
+	不受Ehcache缓存的timeToIdleSeconds管理
+	只需要保证timeToIdleSeconds大于等于fdp.properties文件中session.sessionTimeout
+	 -->
+
+
+
+
+	<!-- 网络多播（TCP广播）数据同步-->
+	<!--
+	网络多播数据同步的配置，自动的成员发现
+	自动的发现方式用TCP广播机制来确定和维持一个广播组。它只需要一个简单的配置可以自动的在组中添加和移除成员。在集群中也不需要什么优化服务器的知识，这是默认推荐的。
+	成员每秒向群组发送一个“心跳”。如果一个成员 5秒种都没有发出信号它将被群组移除。如果一个新的成员发送了一个“心跳”它将被添加进群组。
+	任何一个用这个配置安装了复制功能的cache都将被其他的成员发现并标识为可用状态。
+	假设你在集群中有两台服务器。你希望同步sampleCache1和sampleCache2。每台独立的服务器都要有这样的配置：配置server1和server2
+
+		timeToLive属性的说明 搜索某个网段上的缓存
+    		0是限制在同一个服务器
+    		1是限制在同一个子网 （默认值）
+    		32是限制在同一个网站
+    		64是限制在同一个region
+   		 	128是限制在同一个大洲
+    		255是不限制
+    	我使用timeToLive=0，因为是单机部署。
+	-->
+	<cacheManagerPeerProviderFactory
+			class="net.sf.ehcache.distribution.RMICacheManagerPeerProviderFactory"
+			properties="peerDiscovery=automatic, multicastGroupAddress=230.0.0.1,
+    multicastGroupPort=63631, timeToLive=0" />
+	<!-- 网络多播（TCP广播）数据同步-->
+	<cacheManagerPeerListenerFactory class="net.sf.ehcache.distribution.RMICacheManagerPeerListenerFactory"/>
+
+</ehcache>

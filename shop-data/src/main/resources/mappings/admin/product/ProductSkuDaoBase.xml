@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductSkuDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productSkuColumns">
+	<trim suffixOverrides=",">
+		a.sku_id AS "skuId",                                                 <!-- 商品SKU ID number(19)-->
+		a.p_id AS "pId",                                                     <!-- 商品spu id number(19)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
+		a.is_not_spec AS "isNotSpec",                                        <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+		a.spec1 AS "spec1",                                                  <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+		a.spec1_v AS "spec1V",                                               <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+		a.spec2 AS "spec2",                                                  <!-- 规格2 nvarchar2(64)-->
+		a.spec2_v AS "spec2V",                                               <!-- 规格2 值 nvarchar2(64)-->
+		a.spec3 AS "spec3",                                                  <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+		a.spec3_v AS "spec3V",                                               <!-- 规格3 值 nvarchar2(64)-->
+		a.spec4 AS "spec4",                                                  <!-- 规格4 ，备用 nvarchar2(64)-->
+		a.spec4_v AS "spec4V",                                               <!-- 规格4 值，备用 nvarchar2(64)-->
+		a.price AS "price",                                                  <!-- 价格，零售模式使用本价格 number(12,3)-->
+		a.stock AS "stock",                                                  <!-- 库存 number(10)-->
+		a.occupy_stock AS "occupyStock",                                     <!-- 占用库存 number(10)-->
+		a.sn AS "sn",                                                        <!-- 商家编号 nvarchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建日期 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 修改日期 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productSkuJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.skuId != null ">AND a.sku_id = #{c.skuId}</if>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.isNotSpec != null and c.isNotSpec != ''">AND a.is_not_spec = #{c.isNotSpec}</if>
+		<if test="c.spec1 != null and c.spec1 != ''">AND a.spec1 = #{c.spec1}</if>
+		<if test="c.spec1V != null and c.spec1V != ''">AND a.spec1_v = #{c.spec1V}</if>
+		<if test="c.spec2 != null and c.spec2 != ''">AND a.spec2 = #{c.spec2}</if>
+		<if test="c.spec2V != null and c.spec2V != ''">AND a.spec2_v = #{c.spec2V}</if>
+		<if test="c.spec3 != null and c.spec3 != ''">AND a.spec3 = #{c.spec3}</if>
+		<if test="c.spec3V != null and c.spec3V != ''">AND a.spec3_v = #{c.spec3V}</if>
+		<if test="c.spec4 != null and c.spec4 != ''">AND a.spec4 = #{c.spec4}</if>
+		<if test="c.spec4V != null and c.spec4V != ''">AND a.spec4_v = #{c.spec4V}</if>
+		<if test="c.price != null ">AND a.price = #{c.price}</if>
+		<if test="c.stock != null ">AND a.stock = #{c.stock}</if>
+		<if test="c.occupyStock != null ">AND a.occupy_stock = #{c.occupyStock}</if>
+		<if test="c.sn != null and c.sn != ''">AND a.sn = #{c.sn}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductSku">
+		SELECT 
+		<include refid="productSkuColumns"/>
+		FROM product_sku a
+		<include refid="productSkuJoins"/>
+		WHERE a.sku_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductSku">
+		SELECT 
+		<include refid="productSkuColumns"/>
+		FROM product_sku a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.sku_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductSku">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSkuColumns"/>
+		FROM product_sku a
+		<include refid="productSkuJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sku_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductSku">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSkuColumns"/>
+		FROM product_sku a
+		<include refid="productSkuJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sku_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.skuId" keyColumn="sku_id" useGeneratedKeys="true">
+		INSERT INTO product_sku
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			sku_id,                                            <!-- 商品SKU ID number(19)-->
+			p_id,                                              <!-- 商品spu id number(19)-->
+			sort,                                              <!-- 排序 number(10)-->
+			is_not_spec,                                       <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			spec1,                                             <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			spec1_v,                                           <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			spec2,                                             <!-- 规格2 nvarchar2(64)-->
+			spec2_v,                                           <!-- 规格2 值 nvarchar2(64)-->
+			spec3,                                             <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			spec3_v,                                           <!-- 规格3 值 nvarchar2(64)-->
+			spec4,                                             <!-- 规格4 ，备用 nvarchar2(64)-->
+			spec4_v,                                           <!-- 规格4 值，备用 nvarchar2(64)-->
+			price,                                             <!-- 价格，零售模式使用本价格 number(12,3)-->
+			stock,                                             <!-- 库存 number(10)-->
+			occupy_stock,                                      <!-- 占用库存 number(10)-->
+			sn,                                                <!-- 商家编号 nvarchar2(64)-->
+			create_date,                                       <!-- 创建日期 date(7)-->
+			update_date,                                       <!-- 修改日期 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.skuId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_sku_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.pId},                                     <!-- 商品spu id number(19)-->
+			#{entity.sort},                                    <!-- 排序 number(10)-->
+			#{entity.isNotSpec},                               <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			#{entity.spec1},                                   <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			#{entity.spec1V},                                  <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			#{entity.spec2},                                   <!-- 规格2 nvarchar2(64)-->
+			#{entity.spec2V},                                  <!-- 规格2 值 nvarchar2(64)-->
+			#{entity.spec3},                                   <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			#{entity.spec3V},                                  <!-- 规格3 值 nvarchar2(64)-->
+			#{entity.spec4},                                   <!-- 规格4 ，备用 nvarchar2(64)-->
+			#{entity.spec4V},                                  <!-- 规格4 值，备用 nvarchar2(64)-->
+			#{entity.price},                                   <!-- 价格，零售模式使用本价格 number(12,3)-->
+			#{entity.stock},                                   <!-- 库存 number(10)-->
+			#{entity.occupyStock},                             <!-- 占用库存 number(10)-->
+			#{entity.sn},                                      <!-- 商家编号 nvarchar2(64)-->
+			#{entity.createDate},                              <!-- 创建日期 date(7)-->
+			#{entity.updateDate},                              <!-- 修改日期 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.skuId" keyColumn="sku_id" useGeneratedKeys="true">
+		INSERT INTO product_sku
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.skuId != null">sku_id,</if></if>
+			<if test="entity.pkMode==2">sku_id,</if>
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品spu id number(19)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.isNotSpec != null">is_not_spec,</if>                              <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			<if test="entity.spec1 != null">spec1,</if>                                        <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			<if test="entity.spec1V != null">spec1_v,</if>                                     <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			<if test="entity.spec2 != null">spec2,</if>                                        <!-- 规格2 nvarchar2(64)-->
+			<if test="entity.spec2V != null">spec2_v,</if>                                     <!-- 规格2 值 nvarchar2(64)-->
+			<if test="entity.spec3 != null">spec3,</if>                                        <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			<if test="entity.spec3V != null">spec3_v,</if>                                     <!-- 规格3 值 nvarchar2(64)-->
+			<if test="entity.spec4 != null">spec4,</if>                                        <!-- 规格4 ，备用 nvarchar2(64)-->
+			<if test="entity.spec4V != null">spec4_v,</if>                                     <!-- 规格4 值，备用 nvarchar2(64)-->
+			<if test="entity.price != null">price,</if>                                        <!-- 价格，零售模式使用本价格 number(12,3)-->
+			<if test="entity.stock != null">stock,</if>                                        <!-- 库存 number(10)-->
+			<if test="entity.occupyStock != null">occupy_stock,</if>                           <!-- 占用库存 number(10)-->
+			<if test="entity.sn != null">sn,</if>                                              <!-- 商家编号 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.skuId != null">#{entity.skuId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_sku_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品spu id number(19)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.isNotSpec != null">#{entity.isNotSpec},</if>                                <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			<if test="entity.spec1 != null">#{entity.spec1},</if>                                        <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			<if test="entity.spec1V != null">#{entity.spec1V},</if>                                      <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			<if test="entity.spec2 != null">#{entity.spec2},</if>                                        <!-- 规格2 nvarchar2(64)-->
+			<if test="entity.spec2V != null">#{entity.spec2V},</if>                                      <!-- 规格2 值 nvarchar2(64)-->
+			<if test="entity.spec3 != null">#{entity.spec3},</if>                                        <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			<if test="entity.spec3V != null">#{entity.spec3V},</if>                                      <!-- 规格3 值 nvarchar2(64)-->
+			<if test="entity.spec4 != null">#{entity.spec4},</if>                                        <!-- 规格4 ，备用 nvarchar2(64)-->
+			<if test="entity.spec4V != null">#{entity.spec4V},</if>                                      <!-- 规格4 值，备用 nvarchar2(64)-->
+			<if test="entity.price != null">#{entity.price},</if>                                        <!-- 价格，零售模式使用本价格 number(12,3)-->
+			<if test="entity.stock != null">#{entity.stock},</if>                                        <!-- 库存 number(10)-->
+			<if test="entity.occupyStock != null">#{entity.occupyStock},</if>                            <!-- 占用库存 number(10)-->
+			<if test="entity.sn != null">#{entity.sn},</if>                                              <!-- 商家编号 nvarchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_sku 
+		<set>
+			p_id = #{entity.pId},                                           <!-- 商品spu id number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			is_not_spec = #{entity.isNotSpec},                              <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			spec1 = #{entity.spec1},                                        <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			spec1_v = #{entity.spec1V},                                     <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			spec2 = #{entity.spec2},                                        <!-- 规格2 nvarchar2(64)-->
+			spec2_v = #{entity.spec2V},                                     <!-- 规格2 值 nvarchar2(64)-->
+			spec3 = #{entity.spec3},                                        <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			spec3_v = #{entity.spec3V},                                     <!-- 规格3 值 nvarchar2(64)-->
+			spec4 = #{entity.spec4},                                        <!-- 规格4 ，备用 nvarchar2(64)-->
+			spec4_v = #{entity.spec4V},                                     <!-- 规格4 值，备用 nvarchar2(64)-->
+			price = #{entity.price},                                        <!-- 价格，零售模式使用本价格 number(12,3)-->
+			stock = #{entity.stock},                                        <!-- 库存 number(10)-->
+			occupy_stock = #{entity.occupyStock},                           <!-- 占用库存 number(10)-->
+			sn = #{entity.sn},                                              <!-- 商家编号 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建日期 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 修改日期 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		WHERE sku_id = #{entity.skuId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_sku a 
+		<set>
+			p_id = #{entity.pId},                                           <!-- 商品spu id number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			is_not_spec = #{entity.isNotSpec},                              <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			spec1 = #{entity.spec1},                                        <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			spec1_v = #{entity.spec1V},                                     <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			spec2 = #{entity.spec2},                                        <!-- 规格2 nvarchar2(64)-->
+			spec2_v = #{entity.spec2V},                                     <!-- 规格2 值 nvarchar2(64)-->
+			spec3 = #{entity.spec3},                                        <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			spec3_v = #{entity.spec3V},                                     <!-- 规格3 值 nvarchar2(64)-->
+			spec4 = #{entity.spec4},                                        <!-- 规格4 ，备用 nvarchar2(64)-->
+			spec4_v = #{entity.spec4V},                                     <!-- 规格4 值，备用 nvarchar2(64)-->
+			price = #{entity.price},                                        <!-- 价格，零售模式使用本价格 number(12,3)-->
+			stock = #{entity.stock},                                        <!-- 库存 number(10)-->
+			occupy_stock = #{entity.occupyStock},                           <!-- 占用库存 number(10)-->
+			sn = #{entity.sn},                                              <!-- 商家编号 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建日期 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 修改日期 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_sku
+		<set>
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品spu id number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.isNotSpec != null">is_not_spec = #{entity.isNotSpec},</if>                                         <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			<if test="entity.spec1 != null">spec1 = #{entity.spec1},</if>                                                       <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			<if test="entity.spec1V != null">spec1_v = #{entity.spec1V},</if>                                                   <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			<if test="entity.spec2 != null">spec2 = #{entity.spec2},</if>                                                       <!-- 规格2 nvarchar2(64)-->
+			<if test="entity.spec2V != null">spec2_v = #{entity.spec2V},</if>                                                   <!-- 规格2 值 nvarchar2(64)-->
+			<if test="entity.spec3 != null">spec3 = #{entity.spec3},</if>                                                       <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			<if test="entity.spec3V != null">spec3_v = #{entity.spec3V},</if>                                                   <!-- 规格3 值 nvarchar2(64)-->
+			<if test="entity.spec4 != null">spec4 = #{entity.spec4},</if>                                                       <!-- 规格4 ，备用 nvarchar2(64)-->
+			<if test="entity.spec4V != null">spec4_v = #{entity.spec4V},</if>                                                   <!-- 规格4 值，备用 nvarchar2(64)-->
+			<if test="entity.price != null">price = #{entity.price},</if>                                                       <!-- 价格，零售模式使用本价格 number(12,3)-->
+			<if test="entity.stock != null">stock = #{entity.stock},</if>                                                       <!-- 库存 number(10)-->
+			<if test="entity.occupyStock != null">occupy_stock = #{entity.occupyStock},</if>                                    <!-- 占用库存 number(10)-->
+			<if test="entity.sn != null">sn = #{entity.sn},</if>                                                                <!-- 商家编号 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE sku_id = #{entity.skuId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_sku a
+		<set>
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品spu id number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.isNotSpec != null">is_not_spec = #{entity.isNotSpec},</if>                                         <!-- 是否无规格，0否，1是。商品无规格算1个sku,所以在sku表中也应有一行记录，也有库存有价格。 char(1)-->
+			<if test="entity.spec1 != null">spec1 = #{entity.spec1},</if>                                                       <!-- 规格1，格式：id_别名，示例：100_颜色，100是id用于对应product_spec表中spec_id nvarchar2(64)-->
+			<if test="entity.spec1V != null">spec1_v = #{entity.spec1V},</if>                                                   <!-- 规格1 值，默认是规格值，也可是规格值的别名 nvarchar2(64)-->
+			<if test="entity.spec2 != null">spec2 = #{entity.spec2},</if>                                                       <!-- 规格2 nvarchar2(64)-->
+			<if test="entity.spec2V != null">spec2_v = #{entity.spec2V},</if>                                                   <!-- 规格2 值 nvarchar2(64)-->
+			<if test="entity.spec3 != null">spec3 = #{entity.spec3},</if>                                                       <!-- 规格3 ，最多3个规格 nvarchar2(64)-->
+			<if test="entity.spec3V != null">spec3_v = #{entity.spec3V},</if>                                                   <!-- 规格3 值 nvarchar2(64)-->
+			<if test="entity.spec4 != null">spec4 = #{entity.spec4},</if>                                                       <!-- 规格4 ，备用 nvarchar2(64)-->
+			<if test="entity.spec4V != null">spec4_v = #{entity.spec4V},</if>                                                   <!-- 规格4 值，备用 nvarchar2(64)-->
+			<if test="entity.price != null">price = #{entity.price},</if>                                                       <!-- 价格，零售模式使用本价格 number(12,3)-->
+			<if test="entity.stock != null">stock = #{entity.stock},</if>                                                       <!-- 库存 number(10)-->
+			<if test="entity.occupyStock != null">occupy_stock = #{entity.occupyStock},</if>                                    <!-- 占用库存 number(10)-->
+			<if test="entity.sn != null">sn = #{entity.sn},</if>                                                                <!-- 商家编号 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_sku
+		WHERE sku_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_sku
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					sku_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_sku a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_sku a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

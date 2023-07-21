@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var pid=parameter.pid ;
+	var skuMsg=parameter.skuMsg ;
+	var type=parameter.type ;
+	var stat=parameter.stat ;
+	var ids=parameter.ids ;
+	var productSumPrice=parameter.productSumPrice ;
+	%>
+	<!-- 下拉选  -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/picker.js"></script>
+	<!-- <script type='text/javascript' src="${ctx}/views/wap/default/weui/picker-city.js"></script> -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/select.js"></script>
+	<!-- 选择地区js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-area.js"></script>
+	<!-- 选择地区css -->
+	<link rel="stylesheet" href="${ctx}/views/wap/default/css/wx-area.css">
+	<!-- 业务js -->
+	<script type="text/javascript">
+		//发票id
+		var deliverId = '${deliverId!}';
+		//总价格
+		var productSumPrice='${productSumPrice}';
+		//购物车id
+		var ids='${ids}';
+		//下单入口：1从购物车下单，2从订单详情页下单
+		var stat='${stat}';
+		//商品id
+		var pid='${pid}';
+		//sku信息：skuId-数量,shuId-数量,...
+		var skuMsg='${skuMsg}';
+		//商品类型：1零售，2批发
+		var type='${type}';
+	</script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeConfirmOrder.js"></script>
+	<!-- 微信支付js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wxPay.js"></script>
+</head>
+<body class="user confirm-order-body">
+	<div class="sui-page-group" style="height: 100%;overflow-y: auto;">
+		<div class="sui-page sui-page-current address-list-div" id='userOrderOk'>
+			<% include("/include/router-login.html"){}%>
+			<% include("/include/foot-nav.html"){}%>
+			<div class="content" style="position: relative;padding-bottom: 0;">
+				<div class="header-default-box weui-border-b" style="border-bottom: 1px solid #d9d9d9;">
+					<a href="javascript:history.back();" class="icon icon-arrowleft l back"></a>
+					<a href="${ctxw}/user/userMessage/list.htm" class="icon-more icon icon-xiaoxi4 r"><b>0</b></a>
+					<h1>确认订单</h1>
+				</div>
+				<div class="my-address clearfix" addressId="">
+					<span class="icon icon-69"></span>
+					<a class="text use-router" href="${ctxw}/user/address/list.htm?entry=1" data-no-cache="true">
+						<div class="my-phone"></div>
+						<div class="my-name">请选择收货地址</div>
+						<div class="my-adds">
+							<p style="text-align: left;">
+						</div>
+					</a>
+					<div class="line"></div>
+				</div>
+				<div class="weui_cells weui_cells_access invoice-div" invoiceId="">
+					<a class="weui_cell use-router hide" href="${ctxw}/trade/deliver/list.htm" data-no-cache="true">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>发票信息</p>
+						</div>
+						<div class="weui_cell_ft tradeDeliver">不需要发票</div>
+					</a>
+				</div>
+				<div class="weui-form-preview weui_cells_checkbox order-ok-list total">
+					<div class="weui-form-preview-hd">
+						<div class="weui_cell_ft moneyAll" style="padding-left:0;">合计：¥<span class="orderSumPrice">0.00</span>
+							<span class="freight_span"> (含运费：<span class="totalFreight">0.00</span>元)</span>
+						</div>
+						<a href="javascript:void(0);" class="total-button settlement addOrder" style="display: block;">立即下单</a>
+						<a href="#" class="total-button delete" style="display: none;">删除</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/template" id="order_store_tpl" info="确认订单中店铺模板">
+			<div class="weui-form-preview order-list-ok">
+				<div class="weui-form-preview-hd">
+					<label class="weui-form-preview-label storeName" storeId="{{d.storeId}}">{{d.storeName}}</label>
+					<a href="${ctxw}/store/index.htm?storeId={{d.storeId}}" class="weui-form-preview-value">进入店铺</a>
+				</div>
+				{{d.products}}
+				<div class="weui_cells weui_cells_access order-message">
+					<a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>配送方式</p>
+						</div>
+						<div class="weui_cell_ft">快递 <span class="freight" name="freight_{{d.storeId}}" freight="0">包邮</span></div>
+					</a>
+					<a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>配送时间</p>
+						</div>
+						<div class="weui_cell_ft">{{d.deliverGoodsDate}}</div>
+					</a>
+					<a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>买家留言</p>
+							<textarea id="textarea" class="weui_textarea" name="memo_{{d.storeId}}" placeholder="请输入买家留言" rows="2" maxLength="200"></textarea>
+						</div>
+					</a>
+					<a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p class="r">共{{d.orderCount}}件商品 小计:<font class="red">¥<font class="red orderPrice" name="amountPaid_{{d.storeId}}">{{d.orderPrice}}</font></font></p>
+						</div>
+					</a>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="order_product_tpl" info="确认订单中商品模板">
+			<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+				<div class="weui-form-preview-bd clearfix order-product" pid={{d.pid}} cartId={{d.cartId}}>
+					<div class="d-picture weui-border">
+						<img data-src="{{d.productImg}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');" style="width:82px;height:82px;"/>
+					</div>
+					<div class="d-text">
+						<label class="weui-form-preview-label"><span class="productName">{{d.productName}}</span><span class="spec">{{d.sku}}</span></label>
+						<span class="weui-form-preview-value">¥{{d.productPrice}}<span>x<font class="count">{{d.count}}</font></span></span>
+					</div>
+				</div>
+			</a>
+		</script>
+	</div>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

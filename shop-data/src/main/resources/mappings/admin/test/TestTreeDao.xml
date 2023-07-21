@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.test.dao.TestTreeDao">
+    
+	<sql id="testTreeColumns">
+		a.id AS "id",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.name AS "name",
+		a.sort AS "sort",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag"
+	</sql>
+	
+	<sql id="testTreeJoins">
+	</sql>
+    
+	<select id="get" resultType="TestTree">
+		SELECT 
+			<include refid="testTreeColumns"/>
+		FROM test_tree a
+		<include refid="testTreeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="TestTree">
+		SELECT 
+			<include refid="testTreeColumns"/>
+		FROM test_tree a
+		<include refid="testTreeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				<bind name="pattern" value="'%' + parentIds + '%'" />				
+				AND lower(a.parent_ids) LIKE lower(#{pattern})
+			</if>
+			<if test="name != null and name != ''">
+				<bind name="pattern" value="'%' + name + '%'" />				
+				AND lower(a.name) LIKE lower(#{pattern})
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllList" resultType="TestTree">
+		SELECT 
+			<include refid="testTreeColumns"/>
+		FROM test_tree a
+		<include refid="testTreeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="TestTree">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM test_tree a
+		<include refid="testTreeJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND lower(a.parent_ids) LIKE lower(#{parentIds})
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<insert id="insert" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO test_tree(
+			id,
+			parent_id,
+			parent_ids,
+			name,
+			sort,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			<if test="pkMode==1">#{id},</if>			
+			<if test="pkMode==2">
+				<if test="dbType$ == 'oracle'">test_tree_seq.nextval,</if>
+				<if test="dbType$ == 'mssql'">null,</if>
+				<if test="dbType$ == 'mysql'">null,</if>
+			</if>
+			#{parent.id},
+			#{parentIds},
+			#{name},
+			#{sort},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE test_tree SET 	
+			parent_id = #{parent.id},
+			parent_ids = #{parentIds},
+			name = #{name},
+			sort = #{sort},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE test_tree SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE test_tree SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+		<bind name="pattern" value="'%,' + id + ',%'" />				
+		OR lower(parent_ids) LIKE lower(#{pattern})
+	</update>
+	
+</mapper>

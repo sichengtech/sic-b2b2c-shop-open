@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.logistics.dao.LogisticsTemplateDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="logisticsTemplateColumns">
+	<trim suffixOverrides=",">
+		a.lt_id AS "ltId",                                                   <!-- 主键 number(19)-->
+		a.default_dc_id AS "defaultDcId",                                    <!-- 默认物流公司(物流公司表id) number(19)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.name AS "name",                                                    <!-- 模板名称 nvarchar2(64)-->
+		a.is_free_shipping AS "isFreeShipping",                              <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+		a.valuation_method AS "valuationMethod",                             <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="logisticsTemplateJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.ltId != null ">AND a.lt_id = #{c.ltId}</if>
+		<if test="c.defaultDcId != null ">AND a.default_dc_id = #{c.defaultDcId}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.isFreeShipping != null and c.isFreeShipping != ''">AND a.is_free_shipping = #{c.isFreeShipping}</if>
+		<if test="c.valuationMethod != null and c.valuationMethod != ''">AND a.valuation_method = #{c.valuationMethod}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="LogisticsTemplate">
+		SELECT 
+		<include refid="logisticsTemplateColumns"/>
+		FROM logistics_template a
+		<include refid="logisticsTemplateJoins"/>
+		WHERE a.lt_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="LogisticsTemplate">
+		SELECT 
+		<include refid="logisticsTemplateColumns"/>
+		FROM logistics_template a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.lt_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="LogisticsTemplate">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="logisticsTemplateColumns"/>
+		FROM logistics_template a
+		<include refid="logisticsTemplateJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.lt_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="LogisticsTemplate">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="logisticsTemplateColumns"/>
+		FROM logistics_template a
+		<include refid="logisticsTemplateJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.lt_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.ltId" keyColumn="lt_id" useGeneratedKeys="true">
+		INSERT INTO logistics_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			lt_id,                                             <!-- 主键 number(19)-->
+			default_dc_id,                                     <!-- 默认物流公司(物流公司表id) number(19)-->
+			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			name,                                              <!-- 模板名称 nvarchar2(64)-->
+			is_free_shipping,                                  <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			valuation_method,                                  <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.ltId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">logistics_template_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.defaultDcId},                             <!-- 默认物流公司(物流公司表id) number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.name},                                    <!-- 模板名称 nvarchar2(64)-->
+			#{entity.isFreeShipping},                          <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			#{entity.valuationMethod},                         <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.ltId" keyColumn="lt_id" useGeneratedKeys="true">
+		INSERT INTO logistics_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.ltId != null">lt_id,</if></if>
+			<if test="entity.pkMode==2">lt_id,</if>
+			<if test="entity.defaultDcId != null">default_dc_id,</if>                          <!-- 默认物流公司(物流公司表id) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.isFreeShipping != null">is_free_shipping,</if>                    <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			<if test="entity.valuationMethod != null">valuation_method,</if>                   <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.ltId != null">#{entity.ltId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">logistics_template_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.defaultDcId != null">#{entity.defaultDcId},</if>                            <!-- 默认物流公司(物流公司表id) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.isFreeShipping != null">#{entity.isFreeShipping},</if>                      <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			<if test="entity.valuationMethod != null">#{entity.valuationMethod},</if>                    <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE logistics_template 
+		<set>
+			default_dc_id = #{entity.defaultDcId},                          <!-- 默认物流公司(物流公司表id) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			name = #{entity.name},                                          <!-- 模板名称 nvarchar2(64)-->
+			is_free_shipping = #{entity.isFreeShipping},                    <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			valuation_method = #{entity.valuationMethod},                   <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		WHERE lt_id = #{entity.ltId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE logistics_template a 
+		<set>
+			default_dc_id = #{entity.defaultDcId},                          <!-- 默认物流公司(物流公司表id) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			name = #{entity.name},                                          <!-- 模板名称 nvarchar2(64)-->
+			is_free_shipping = #{entity.isFreeShipping},                    <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			valuation_method = #{entity.valuationMethod},                   <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE logistics_template
+		<set>
+			<if test="entity.defaultDcId != null">default_dc_id = #{entity.defaultDcId},</if>                                   <!-- 默认物流公司(物流公司表id) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.isFreeShipping != null">is_free_shipping = #{entity.isFreeShipping},</if>                          <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			<if test="entity.valuationMethod != null">valuation_method = #{entity.valuationMethod},</if>                        <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		WHERE lt_id = #{entity.ltId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE logistics_template a
+		<set>
+			<if test="entity.defaultDcId != null">default_dc_id = #{entity.defaultDcId},</if>                                   <!-- 默认物流公司(物流公司表id) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.isFreeShipping != null">is_free_shipping = #{entity.isFreeShipping},</if>                          <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
+			<if test="entity.valuationMethod != null">valuation_method = #{entity.valuationMethod},</if>                        <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM logistics_template
+		WHERE lt_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM logistics_template
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					lt_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM logistics_template a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM logistics_template a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

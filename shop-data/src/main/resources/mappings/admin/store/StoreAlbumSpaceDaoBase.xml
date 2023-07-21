@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreAlbumSpaceDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeAlbumSpaceColumns">
+		a.album_space_id AS "albumSpaceId",                                  <!-- 主键 number(19)-->
+		a.picture_count AS "pictureCount",                                   <!-- 图片数量 number(10)-->
+		a.album_count AS "albumCount",                                       <!-- 相册的数量 number(10)-->
+		a.total_space AS "totalSpace",                                       <!-- 图片总空间(单位byte) number(10)-->
+		a.picture_space AS "pictureSpace",                                   <!-- 图片占用空间(单位byte) number(10)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5"                                                    <!-- 备用字段5 nvarchar2(64)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeAlbumSpaceJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.albumSpaceId != null ">AND a.album_space_id = #{c.albumSpaceId}</if>
+		<if test="c.pictureCount != null ">AND a.picture_count = #{c.pictureCount}</if>
+		<if test="c.albumCount != null ">AND a.album_count = #{c.albumCount}</if>
+		<if test="c.totalSpace != null ">AND a.total_space = #{c.totalSpace}</if>
+		<if test="c.pictureSpace != null ">AND a.picture_space = #{c.pictureSpace}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreAlbumSpace">
+		SELECT 
+		<include refid="storeAlbumSpaceColumns"/>
+		FROM store_album_space a
+		<include refid="storeAlbumSpaceJoins"/>
+		WHERE a.album_space_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreAlbumSpace">
+		SELECT
+		<include refid="storeAlbumSpaceColumns"/>
+		FROM store_album_space a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.album_space_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreAlbumSpace">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeAlbumSpaceColumns"/>
+		FROM store_album_space a
+		<include refid="storeAlbumSpaceJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.album_space_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreAlbumSpace">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeAlbumSpaceColumns"/>
+		FROM store_album_space a
+		<include refid="storeAlbumSpaceJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.album_space_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.albumSpaceId" keyColumn="album_space_id" useGeneratedKeys="true">
+		INSERT INTO store_album_space(
+			album_space_id,                                    <!-- 主键 number(19)-->
+			picture_count,                                     <!-- 图片数量 number(10)-->
+			album_count,                                       <!-- 相册的数量 number(10)-->
+			total_space,                                       <!-- 图片总空间(单位byte) number(10)-->
+			picture_space,                                     <!-- 图片占用空间(单位byte) number(10)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.albumSpaceId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_album_space_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.pictureCount},                            <!-- 图片数量 number(10)-->
+			#{entity.albumCount},                              <!-- 相册的数量 number(10)-->
+			#{entity.totalSpace},                              <!-- 图片总空间(单位byte) number(10)-->
+			#{entity.pictureSpace},                            <!-- 图片占用空间(单位byte) number(10)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5}                                    <!-- 备用字段5 nvarchar2(64)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.albumSpaceId" keyColumn="album_space_id" useGeneratedKeys="true">
+		INSERT INTO store_album_space
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.albumSpaceId != null">album_space_id,</if></if>
+			<if test="entity.pkMode==2">album_space_id,</if>
+			<if test="entity.pictureCount != null">picture_count,</if>                         <!-- 图片数量 number(10)-->
+			<if test="entity.albumCount != null">album_count,</if>                             <!-- 相册的数量 number(10)-->
+			<if test="entity.totalSpace != null">total_space,</if>                             <!-- 图片总空间(单位byte) number(10)-->
+			<if test="entity.pictureSpace != null">picture_space,</if>                         <!-- 图片占用空间(单位byte) number(10)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.albumSpaceId != null">#{entity.albumSpaceId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_album_space_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.pictureCount != null">#{entity.pictureCount},</if>                          <!-- 图片数量 number(10)-->
+			<if test="entity.albumCount != null">#{entity.albumCount},</if>                              <!-- 相册的数量 number(10)-->
+			<if test="entity.totalSpace != null">#{entity.totalSpace},</if>                              <!-- 图片总空间(单位byte) number(10)-->
+			<if test="entity.pictureSpace != null">#{entity.pictureSpace},</if>                          <!-- 图片占用空间(单位byte) number(10)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_album_space SET
+			picture_count = #{entity.pictureCount},                         <!-- 图片数量 number(10)-->
+			album_count = #{entity.albumCount},                             <!-- 相册的数量 number(10)-->
+			total_space = #{entity.totalSpace},                             <!-- 图片总空间(单位byte) number(10)-->
+			picture_space = #{entity.pictureSpace},                         <!-- 图片占用空间(单位byte) number(10)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		WHERE album_space_id = #{entity.albumSpaceId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_album_space a SET
+			picture_count = #{entity.pictureCount},                         <!-- 图片数量 number(10)-->
+			album_count = #{entity.albumCount},                             <!-- 相册的数量 number(10)-->
+			total_space = #{entity.totalSpace},                             <!-- 图片总空间(单位byte) number(10)-->
+			picture_space = #{entity.pictureSpace},                         <!-- 图片占用空间(单位byte) number(10)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5}                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_album_space
+		<set>
+			<if test="entity.pictureCount != null">picture_count = #{entity.pictureCount},</if>                                 <!-- 图片数量 number(10)-->
+			<if test="entity.albumCount != null">album_count = #{entity.albumCount},</if>                                       <!-- 相册的数量 number(10)-->
+			<if test="entity.totalSpace != null">total_space = #{entity.totalSpace},</if>                                       <!-- 图片总空间(单位byte) number(10)-->
+			<if test="entity.pictureSpace != null">picture_space = #{entity.pictureSpace},</if>                                 <!-- 图片占用空间(单位byte) number(10)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE album_space_id = #{entity.albumSpaceId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_album_space a
+		<set>
+			<if test="entity.pictureCount != null">picture_count = #{entity.pictureCount},</if>                                 <!-- 图片数量 number(10)-->
+			<if test="entity.albumCount != null">album_count = #{entity.albumCount},</if>                                       <!-- 相册的数量 number(10)-->
+			<if test="entity.totalSpace != null">total_space = #{entity.totalSpace},</if>                                       <!-- 图片总空间(单位byte) number(10)-->
+			<if test="entity.pictureSpace != null">picture_space = #{entity.pictureSpace},</if>                                 <!-- 图片占用空间(单位byte) number(10)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_album_space
+		WHERE album_space_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_album_space
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					album_space_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_album_space a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_album_space a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

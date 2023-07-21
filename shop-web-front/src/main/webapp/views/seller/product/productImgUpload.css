@@ -1,0 +1,157 @@
+.nc-plus-album {margin:10px; position:relative; z-index:1; background-color:#F5F5F5; color:#777;}
+	.nc-plus-album .tab-nav {display:block;height:26px; padding:0 10px; margin:9px 0 10px 0; 
+		border-bottom:solid 1px #C1C1C1; background-color:#FFF;}
+	.nc-plus-album .tab-nav li {float: left; position:relative; z-index:auto; margin-bottom:-1px;}
+	.nc-plus-album .tab-nav li a {display: block; position:relative; z-index:1; height:20px; padding:3px 9px 2px 9px; 
+		border-style:solid; border-color:#C1C1C1; border-width:1px; background-color:#F5F5F5; color:#555;}
+	.nc-plus-album .tab-nav li a:hover {color: #555;}
+	.nc-plus-album .tab-nav li.file-tab a {margin-left: -1px;}
+	.nc-plus-album .tab-nav li.active a {padding: 3px 9px 3px 9px; border-width: 1px 1px 0 1px; z-index: 2; 
+		color: #0E90D2; font-weight:600;}
+	.nc-plus-album .tree-wrap {position:relative; float:left; margin-right:10px; margin-top:8px; border:solid 1px #C1C1C1; 
+		background-color:#FFF; height:268px;}
+	.nc-plus-album .tree-wrap .tree-title {margin:5px;}
+	.nc-plus-album .tree-wrap .mod-folder-tree {margin:5px; height:240px; width:170px;dth: 170px;
+    	overflow-x: hidden;overflow-y: auto;}
+	.btn-upload-box {vertical-align: top;display: inline-block;width: 114px;height: 30px;position: relative;
+	    z-index: 1;border: 1px solid #e6e6e6;border-radius: 3px;}
+	.btn-upload-box span {position: absolute;z-index: 2;top: 0;right: 0; bottom: 0;left: 0;cursor: pointer;}
+	.btn-upload-box .input-file {width: 100%;height: 30px;padding: 0;margin: 0;border: none 0;
+		opacity: 0;filter: alpha(opacity=0);cursor: pointer;}
+	input[type="file"] {line-height: 20px;background-color: #FBFBFB;}
+	.btn-upload-box a {position: absolute;z-index: 1;top: 0;right: 0;bottom: 0;left: 0;}
+	a:link, a:visited, a:active {text-decoration: none;}
+	.btn-white {background-color: #FFF;border-color: #E2E7EB;color: #333;}
+	.btn {display: inline-block;-moz-user-select: none;padding: 6px 12px;margin-bottom: 0;text-align: center;
+	    vertical-align: top;white-space: nowrap;background-image: none;border: 1px solid transparent;
+	    border-radius: 4px;cursor: pointer;font-size: 14px!important;font-weight: 400!important;line-height: 1.42857;}
+	.nc-plus-album.upload .tree-wrap {display: none; position:absolute; z-index:9; top:72px; right:10px;}
+	.nc-plus-album.upload .tree-wrap .arrow-top {position:absolute; top:-16px; right:15px; border:8px solid red;
+		border-color:transparent transparent #ccc;}
+	.nc-plus-album.upload .tree-wrap .ztree {height:184px; padding-bottom: 25px;}
+	.nc-plus-album.upload .tree-wrap .mod-folder-tree {width: 195px;}
+	.nc-plus-album.upload .create-folder-wrap {display:block; position:absolute; bottom:5px; left:5px; 
+		width: 168px; background: #fff; height: 24px; line-height: 24px; z-index: 9 }
+	.nc-plus-album.upload .create-folder-wrap .cancel-btn {color: #767676}
+	.create-folder-wrap { display: none }
+	.create-folder-wrap .folder-name, .create-folder-wrap .create-btn, .create-folder-wrap .cancel-btn { display: none }
+	.create-folder-wrap .folder-name { width: 100px; border: 1px solid #ccc; height: 18px; outline: 0; padding-left: 5px; margin-right: 3px }
+	.create-folder-wrap .create-link { display: inline }
+	.create-folder-wrap.typing .folder-name, .create-folder-wrap.typing .create-btn, .create-folder-wrap.typing .cancel-btn { display: inline }
+	.create-folder-wrap.typing .create-link { display: none }
+	.create-folder-wrap .error { position: absolute; left: 0; top: 24px }
+	
+	.upload-container {margin-left:18px; margin-right:10px; min-height:300px;}
+	.upload-container .upload-title {margin-bottom:10px; margin-top:5px; line-height:26px;}
+	.upload-container .upload-title .current-folder { color: #333; max-width: 49%; display: inline-block; 
+		overflow: hidden; height: 22px; line-height: 22px; vertical-align: middle; margin-top: -4px;font-weight: bolder;}
+	.upload-container .upload-table-container {border: 1px dashed #D7D7D7; background: #fff; height: 225px; 
+		position: relative; padding-top: 40px; text-align: center; overflow-y: auto;}
+	.upload-container .upload-table-container p {margin: 20px 0; line-height: 1.8;}
+	.upload-container .upload-table-container .icon-picture {font-size: 50px;color:#C9C9C9;}
+	.upload-container .file-name {height:20px;width:250px;overflow:hidden;display:block;text-overflow:ellipsis; 
+		white-space: nowrap;}
+	.upload-container .icon { background-image: url(//img.alicdn.com/tps/i1/T1nQhwFxhaXXcDuTff-43-31.png);
+		background-repeat: no-repeat; display: inline-block;}
+	.upload-container .icon-thumbnail { background-position: 0 0; width: 16px; height: 16px;}
+	.upload-container .icon-success { background-position: -32px -10px; width: 10px; height: 8px;}
+	.upload-container .icon-error { background-position: -15px -16px; width: 12px; height: 12px;}
+	.upload-container .error-info { margin-left: 3px;}
+	.upload-container .icon-remove { background-position: -32px 0; width: 11px; height: 10px;}
+	.upload-container .icon-loading { background: url(//img.alicdn.com/tps/i1/T1pusWFgpeXXaHNz_X-16-16.gif); 
+		height: 16px; width: 16px; text-indent: -9999em; display: inline-block;}
+	.upload-container .icon-close { background: url(//img.alicdn.com/tps/i2/T16J.YFshfXXX9g2ba-18-18.png) no-repeat 0 0; 
+		width:18px; height:18px; display: inline-block;}
+	.upload-container .upload-success .insert {display: block;}	
+	.upload-container .insert {display: none;}
+	.upload-container .preview-img {position: absolute; display: none;}
+	.upload-container .preview-img.previewing { display: block;}
+	.nc-plus-album .area-container { min-height: 300px;}
+	/*��ͼƬ�ռ�ѡ���Ҳ�����*/
+	.nc-plus-album .mod-container {margin-left: 220px;width: 617px;overflow: hidden;padding-right: 10px;}
+	/*����б���������*/
+	.nc-plus-album .search-container { position: relative; overflow: hidden; height: 26px; text-align: left;
+		padding-bottom: 7px; border-bottom: 1px solid #C1C1C1;}
+	/*��ʾ��ʽ*/
+	/* .nc-plus-album .search-container .mod-category {display: block; float: left;}
+	.nc-plus-album .search-container .mod-category a { position: relative; z-index: 1; display: block; float: left;
+		width: 20px; height: 20px; padding: 2px; text-align: center; line-height: 20px; background-color: #FFF;
+		border: solid 1px #C9C9C9; box-shadow: inset 2px 2px 2px rgba(0,0,0,0.10); color: #767676;}
+	.nc-plus-album .search-container .mod-category a i {font-size:14px;margin:0;line-height: 20px;vertical-align: top;}
+	.nc-plus-album .search-container .mod-category a.category-list {margin-left: -1px;}
+	.nc-plus-album .search-container .mod-category a.selected {background-color: #D7D7D7; box-shadow: none;} */
+	/*��ҳ*/
+	.nc-plus-album .search-container .mod-pagination {display:block;width:57px;height:26px; position: absolute; 
+		z-index: 1; top: 0; right: 0;}
+	.nc-plus-album .search-container .mod-pagination a {position: relative; z-index: 1; display: block; width:20px;
+		height: 20px; float: left ; padding: 2px 3px; text-align: center; border: solid 1px #C9C9C9; 
+		background-color: #FAFAFA; line-height: 20px; color: #767676;}
+	.nc-plus-album .search-container .mod-pagination a:hover {background-color: #FFF;}
+	.nc-plus-album .search-container .mod-pagination a.next { margin-left: -1px;}
+	.nc-plus-album .search-container .mod-pagination a.page-grep { border-color: #E4E4E4; color: #E4E4E4; z-index: -1; }
+	.nc-plus-album .search-container .mod-pagination a i { font-size: 20px; margin: 0; line-height: 20px; vertical-align: top;}
+	
+	/*����б�����*/
+	.nc-plus-album .search-result {*word-spacing:-1px/*IE6��7*/; width: 655px; overflow: hidden;}
+	.search-result .empty-data{ margin:110px auto; text-align: center;}
+	.nc-plus-album .mod-img { display: inline-block; position: relative; overflow:hidden; width: 75px;height:75px;
+		margin-right: 8px; margin-top: 8px; border: 1px solid #ddd; font-size: 0; cursor: pointer;}
+	.nc-plus-album .mod-img a {display: table-cell;overflow:hidden;width: 75px; height: 75px;text-align:center;
+		vertical-align: middle; font-size: 12px; }
+	.nc-plus-album .mod-img a img { max-width: 100%; vertical-align: middle; border:0; -ms-interpolation-mode: bicubic; }
+	.nc-plus-album .mod-img a i.sui-icon { display: none; position: absolute; right: 4px; top: 4px; width: 16px; height: 16px; 
+		text-align: center; margin: 0; font-size: 18px; color: #00ACAC; line-height: 16px;}
+	.nc-plus-album .mod-img.selected i.sui-icon { display: block;}
+	.nc-plus-album .mod-img .file-preview,
+	.nc-plus-album .mod-img .file-name, 
+	.nc-plus-album .mod-img .file-size {display: none;}
+	/*�б���ʽ����ͷ*/
+	.mod-container.list .mod-list-title {display: block;}
+	.mod-list-title {display: none; border: solid #CCC;border-width: 0 1px; background: #FFF;}
+	.mod-container.list .mod-img { display: block; width: 100%; height: 32px; line-height: 32px; margin: 0;
+		border: 0; border-bottom: 1px solid #ddd; overflow: visible }
+	.mod-container.list .mod-img a { width: 25px; height: 25px; float: left; position: relative; color: #333; 
+		cursor: default; margin-left: 8px; text-decoration: none; overflow: visible}
+	.mod-container.list .mod-img a .file-preview { display: none; position: absolute; z-index: 9; left: 28px; top: 6px; width: 100px; background: #fff; border: 1px solid #ddd; padding: 2px }
+	.mod-container.list .mod-img a .file-preview img { max-width: 100px }
+	.mod-container.list .mod-img a:hover .file-preview { display: block }
+	.mod-container.list .mod-img a img {max-height: 100%}
+	.mod-container.list .mod-img span {font-size: 12px; margin-left: 2%; display: inline-block }
+	.mod-container.list .mod-img span.file-name {display: inline-block; width: 61%; margin-left: 2%;float: left 
+		text-overflow: ellipsis; white-space: nowrap; overflow: hidden; max-width: 400px; min-width: 270px;}
+	.mod-container.list .mod-img span.file-size {display:inline-block; margin-left: 4%; width: 15% }
+	.mod-container.list .mod-img i.fa {left: 550px; top: 9px; right: 0; }
+	/*�б�ģʽ����*/
+	.mod-container.list .search-result { width: 618px; max-height: 238px; overflow-x: hidden; overflow-y: auto; background-color: #FFF; border: 1px solid #ccc; border-top: 0;}		
+	.mod-container.list .search-result .mod-img { display: block; width: 100%; height: 32px; line-height: 32px; margin: 0; border: 0; border-bottom: 1px solid #ddd; overflow: visible;}
+	.mod-container.list .search-result .pixel { display: none !important;}
+	/*ѡ��ͼ��*/
+	.nc-plus-album .mod-img .pixel { position: absolute; left: 0; bottom: 0; width: 80px; padding: 2px 0; text-overflow: ellipsis; background-color: #000; background-color: rgba(0,0,0,.5); filter: alpha(Opacity=50); color: #FFF; -webkit-transition: bottom .3s ease-out; -moz-transition: bottom .3s ease-out; -ms-transition: bottom .3s ease-out; -o-transition: bottom .3s ease-out; transition: bottom .3s ease-out; overflow: hidden }
+	.nc-plus-album .mod-img :hover .pixel { bottom: -22px }
+	.mod-selected .mod-img:hover .sui-icon { right: 5px; display: block }
+	.mod-img.list.selected { background: #EAF4FC; border-bottom-color: #fff }
+	.mod-selected { height: 83px; padding-bottom: 10px; }
+	/*��ѡͼƬ*/
+	.nc-plus-album .selected-pic-container { margin-top: 10px; text-align: left; border-bottom: 1px solid #C1C1C1; }
+	.nc-plus-album .selected-pic-container .selected-pic-title { padding: 8px 10px; border: 1px solid #C1C1C1; border-width: 1px 0; background: #FFF; color: #666; }
+	.nc-plus-album .selected-pic-container .selected-pic-title .some-tips { display: none; margin-left: 10px; color: #666; }
+	.nc-plus-album .selected-pic-container .selected-pic-title .some-error { display: none; margin-left: 10px; color: red; }
+	.nc-plus-album .selected-pic-container .selected-pic { height: 102px; padding-bottom: 10px; }
+	.nc-plus-album .ui-sortable { overflow-y: hidden; overflow-x: auto; white-space: nowrap; }
+	.selected-pic-container .file-uploading { font-size: 12px; line-height: 80px; text-align: center; overflow: visible }
+	.selected-pic-container .file-uploading .percent, 
+	.selected-pic-container .file-uploading .error { color: #ff5400; overflow: hidden; display: block }
+	.selected-pic-container .file-uploading .percent .upload-error-container, 
+	.selected-pic-container .file-uploading .error .upload-error-container { display: none; position: absolute; width: 100px; padding: 6px; left: 88px; top: 3px; text-align: left; border: 1px solid #FDC678; background: #FDEED5; border-radius: 2px; line-height: 20px; white-space: normal; z-index: 9 }
+	.selected-pic-container .file-uploading .percent .upload-error-container:before,
+	 .selected-pic-container .file-uploading .error .upload-error-container:before { content: ''; display: block; position: absolute; left: -15px; top: 40%; border: 7px solid #FDC678; border-color: transparent #FDC678 transparent transparent }
+	.selected-pic-container .file-uploading .percent i, 
+	.selected-pic-container .file-uploading .error i { font-size: 16px }
+	.selected-pic-container .file-uploading:hover .upload-error-container { display: block }
+	.none{display: none;}
+	li{list-style: none outside none;}
+	body{height: 98%;}
+	.ztree li a.curSelectedNode{background-color: #FFE6B0;color: black;height: 16px;border: 1px #FFB951 solid;}
+	.ztree li span.button.ico_docu{background-position: -110px 0px;}
+	.upload-container .upload-table-container p{margin: 18px 0;}
+	.webuploader-pick + div{left: 45.6%!important;width: 100px!important;height: 36px!important;}

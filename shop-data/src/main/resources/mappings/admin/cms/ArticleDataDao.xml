@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.cms.dao.ArticleDataDao">
+
+	<!--
+	请把你的扩展SQL写到 当前 文件中
+	AccountBalanceProorderDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountBalanceProorderDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountBalanceProorderDao.xml文件与AccountBalanceProorderDaoBase.xml文件，在运行时会合并起来。
+	AccountBalanceProorderDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountBalanceProorderDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<sql id="cmsArticleDataColumns">
+		a.id AS "id",
+		a.content AS "content",
+		a.copyfrom AS "copyfrom",
+		a.relation AS "relation",
+		a.allow_comment AS "allow_comment"
+	</sql>
+	
+	<sql id="cmsArticleDataJoins">
+	</sql>
+	
+	<select id="get" resultType="ArticleData">
+		SELECT 
+			<include refid="cmsArticleDataColumns"/>
+		FROM cms_article_data a
+		<include refid="cmsArticleDataJoins"/>
+		WHERE a.id = #{id}
+	</select>
+		
+	<insert id="insertArticleData" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_article_data(
+			id,
+			content,
+			copyfrom,
+			relation,
+			allow_comment
+		) VALUES (
+			<if test="pkMode==1">#{id},</if>			
+			<if test="pkMode==2">
+				<if test="dbType$ == 'oracle'">cms_article_data_seq.nextval,</if>
+				<if test="dbType$ == 'mssql'">null,</if>
+				<if test="dbType$ == 'mysql'">null,</if>
+			</if>
+			#{content},
+			#{copyfrom},
+			#{relation},
+			#{allowComment}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_article_data SET 	
+			content = #{content},
+			copyfrom = #{copyfrom},
+			relation = #{relation},
+			allow_comment = #{allowComment}
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,41 @@
+<!doctype html>
+
+<title>CodeMirror</title>
+<meta charset="utf-8"/>
+
+
+<textarea id="myTextarea"></textarea>
+
+<!-- Create a simple CodeMirror instance -->
+<link rel="stylesheet" href="lib/codemirror.css">
+<script src="lib/codemirror.js"></script>
+<script src="mode/sql/sql.js"></script>
+<script src="mode/javascript/javascript.js"></script>
+<script>
+  var myTextarea=document.getElementById("myTextarea");
+  var editor = CodeMirror.fromTextArea(myTextarea, {
+  //var editor = CodeMirror(document.body, {
+    lineNumbers: true,//设置行号 boolean
+    value: 'SELECT * FROM table',//编辑框初始值 string    
+    mode: 'text/x-mysql',//当前code模式 模式的选择可以在CodeMirror.modes中查看
+    height: 128,//高度
+    indentUnit: 4,//缩进块用多少个空格表示 默认是2
+    autofocus: true,
+    extraKeys: {//快捷键 可提供三种模式 sublime、emacs、vim。 使用时需要引入js支持包
+        "F9": function (editor) {
+            format(editor);
+        },
+        "F8": function (editor) {
+            query(editor);
+        }
+        }
+
+  });
+  var sql='SELECT * FROM table <textarea id="myTextarea">aaa</textarea>  666';
+  editor.setValue(sql);
+  editor.setCursor(sql.length);
+  var a=editor.getValue();
+  alert(a);
+
+</script>
+

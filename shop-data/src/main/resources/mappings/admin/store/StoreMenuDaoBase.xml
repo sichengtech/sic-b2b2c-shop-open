@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreMenuDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeMenuColumns">
+	<trim suffixOverrides=",">
+		a.menu_id AS "menuId",                                               <!-- 主键 number(19)-->
+		a.parent_id AS "parent.id",                                          <!-- 父级id（没有父级id为0） number(19)-->
+		a.parent_ids AS "parentIds",                                         <!-- 所有父级id nvarchar2(512)-->
+		a.name AS "name",                                                    <!-- 名称 nvarchar2(64)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
+		a.href AS "href",                                                    <!-- 链接 nvarchar2(2000)-->
+		a.target AS "target",                                                <!-- 目标 nvarchar2(64)-->
+		a.icon AS "icon",                                                    <!-- 图标 nvarchar2(64)-->
+		a.is_show AS "isShow",                                               <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+		a.permission AS "permission",                                        <!-- 权限标识 nvarchar2(512)-->
+		a.del_flag AS "delFlag",                                             <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.menu_num AS "menuNum",                                             <!-- 编号 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeMenuJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.menuId != null ">AND a.menu_id = #{c.menuId}</if>
+		<if test="c.parent != null and c.parent.id != null ">AND a.parent_id = #{c.parent.id}</if>
+		<if test="c.parentIds != null and c.parentIds != ''">				
+			<bind name="pattern" value="'%' + c.parentIds + '%'" />				
+			AND lower(a.parent_ids) LIKE lower(#{pattern})
+		</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.href != null and c.href != ''">AND a.href = #{c.href}</if>
+		<if test="c.target != null and c.target != ''">AND a.target = #{c.target}</if>
+		<if test="c.icon != null and c.icon != ''">AND a.icon = #{c.icon}</if>
+		<if test="c.isShow != null and c.isShow != ''">AND a.is_show = #{c.isShow}</if>
+		<if test="c.permission != null and c.permission != ''">AND a.permission = #{c.permission}</if>
+		<if test="c.delFlag != null and c.delFlag != ''">AND a.del_flag = #{c.delFlag}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.menuNum != null and c.menuNum != ''">AND a.menu_num = #{c.menuNum}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreMenu">
+		SELECT 
+		<include refid="storeMenuColumns"/>
+		FROM store_menu a
+		<include refid="storeMenuJoins"/>
+		WHERE a.menu_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreMenu">
+		SELECT 
+		<include refid="storeMenuColumns"/>
+		FROM store_menu a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.menu_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreMenu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeMenuColumns"/>
+		FROM store_menu a
+		<include refid="storeMenuJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.menu_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreMenu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeMenuColumns"/>
+		FROM store_menu a
+		<include refid="storeMenuJoins"/>
+		<where>
+			<if test="w!=null and w.e!=null">
+				<if test="w.e.delFlag != null and w.e.delFlag != ''">
+				a.del_flag =  #{w.e.delFlag}
+				</if>
+			</if>
+		</where>	
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.menu_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.menuId" keyColumn="menu_id" useGeneratedKeys="true">
+		INSERT INTO store_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			menu_id,                                           <!-- 主键 number(19)-->
+			parent_id,                                         <!-- 父级id（没有父级id为0） number(19)-->
+			parent_ids,                                        <!-- 所有父级id nvarchar2(512)-->
+			name,                                              <!-- 名称 nvarchar2(64)-->
+			sort,                                              <!-- 排序 number(10)-->
+			href,                                              <!-- 链接 nvarchar2(2000)-->
+			target,                                            <!-- 目标 nvarchar2(64)-->
+			icon,                                              <!-- 图标 nvarchar2(64)-->
+			is_show,                                           <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			permission,                                        <!-- 权限标识 nvarchar2(512)-->
+			del_flag,                                          <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段 nvarchar2(64)-->
+			menu_num,                                          <!-- 编号 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.menuId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_menu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.parent.id},                               <!-- 父级id（没有父级id为0） number(19)-->
+			#{entity.parentIds},                               <!-- 所有父级id nvarchar2(512)-->
+			#{entity.name},                                    <!-- 名称 nvarchar2(64)-->
+			#{entity.sort},                                    <!-- 排序 number(10)-->
+			#{entity.href},                                    <!-- 链接 nvarchar2(2000)-->
+			#{entity.target},                                  <!-- 目标 nvarchar2(64)-->
+			#{entity.icon},                                    <!-- 图标 nvarchar2(64)-->
+			#{entity.isShow},                                  <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			#{entity.permission},                              <!-- 权限标识 nvarchar2(512)-->
+			#{entity.delFlag},                                 <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.menuNum},                                 <!-- 编号 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.menuId" keyColumn="menu_id" useGeneratedKeys="true">
+		INSERT INTO store_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.menuId != null">menu_id,</if></if>
+			<if test="entity.pkMode==2">menu_id,</if>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- 父级id（没有父级id为0） number(19)-->
+			<if test="entity.parentIds != null">parent_ids,</if>                               <!-- 所有父级id nvarchar2(512)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 名称 nvarchar2(64)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.href != null">href,</if>                                          <!-- 链接 nvarchar2(2000)-->
+			<if test="entity.target != null">target,</if>                                      <!-- 目标 nvarchar2(64)-->
+			<if test="entity.icon != null">icon,</if>                                          <!-- 图标 nvarchar2(64)-->
+			<if test="entity.isShow != null">is_show,</if>                                     <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			<if test="entity.permission != null">permission,</if>                              <!-- 权限标识 nvarchar2(512)-->
+			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.menuNum != null">menu_num,</if>                                   <!-- 编号 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.menuId != null">#{entity.menuId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_menu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- 父级id（没有父级id为0） number(19)-->
+			<if test="entity.parentIds != null">#{entity.parentIds},</if>                                <!-- 所有父级id nvarchar2(512)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 名称 nvarchar2(64)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.href != null">#{entity.href},</if>                                          <!-- 链接 nvarchar2(2000)-->
+			<if test="entity.target != null">#{entity.target},</if>                                      <!-- 目标 nvarchar2(64)-->
+			<if test="entity.icon != null">#{entity.icon},</if>                                          <!-- 图标 nvarchar2(64)-->
+			<if test="entity.isShow != null">#{entity.isShow},</if>                                      <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			<if test="entity.permission != null">#{entity.permission},</if>                              <!-- 权限标识 nvarchar2(512)-->
+			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.menuNum != null">#{entity.menuNum},</if>                                    <!-- 编号 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_menu 
+		<set>
+			parent_id = #{entity.parent.id},                                <!-- 父级id（没有父级id为0） number(19)-->
+			parent_ids = #{entity.parentIds},                               <!-- 所有父级id nvarchar2(512)-->
+			name = #{entity.name},                                          <!-- 名称 nvarchar2(64)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			href = #{entity.href},                                          <!-- 链接 nvarchar2(2000)-->
+			target = #{entity.target},                                      <!-- 目标 nvarchar2(64)-->
+			icon = #{entity.icon},                                          <!-- 图标 nvarchar2(64)-->
+			is_show = #{entity.isShow},                                     <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			permission = #{entity.permission},                              <!-- 权限标识 nvarchar2(512)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+			menu_num = #{entity.menuNum},                                   <!-- 编号 nvarchar2(64)-->
+
+		</set>
+		WHERE menu_id = #{entity.menuId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_menu a 
+		<set>
+			parent_id = #{entity.parent.id},                                <!-- 父级id（没有父级id为0） number(19)-->
+			parent_ids = #{entity.parentIds},                               <!-- 所有父级id nvarchar2(512)-->
+			name = #{entity.name},                                          <!-- 名称 nvarchar2(64)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			href = #{entity.href},                                          <!-- 链接 nvarchar2(2000)-->
+			target = #{entity.target},                                      <!-- 目标 nvarchar2(64)-->
+			icon = #{entity.icon},                                          <!-- 图标 nvarchar2(64)-->
+			is_show = #{entity.isShow},                                     <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			permission = #{entity.permission},                              <!-- 权限标识 nvarchar2(512)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+			menu_num = #{entity.menuNum},                                   <!-- 编号 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_menu
+		<set>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级id（没有父级id为0） number(19)-->
+			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级id nvarchar2(512)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 名称 nvarchar2(64)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.href != null">href = #{entity.href},</if>                                                          <!-- 链接 nvarchar2(2000)-->
+			<if test="entity.target != null">target = #{entity.target},</if>                                                    <!-- 目标 nvarchar2(64)-->
+			<if test="entity.icon != null">icon = #{entity.icon},</if>                                                          <!-- 图标 nvarchar2(64)-->
+			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			<if test="entity.permission != null">permission = #{entity.permission},</if>                                        <!-- 权限标识 nvarchar2(512)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.menuNum != null">menu_num = #{entity.menuNum},</if>                                                <!-- 编号 nvarchar2(64)-->
+		</set>
+		WHERE menu_id = #{entity.menuId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_menu a
+		<set>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级id（没有父级id为0） number(19)-->
+			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级id nvarchar2(512)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 名称 nvarchar2(64)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.href != null">href = #{entity.href},</if>                                                          <!-- 链接 nvarchar2(2000)-->
+			<if test="entity.target != null">target = #{entity.target},</if>                                                    <!-- 目标 nvarchar2(64)-->
+			<if test="entity.icon != null">icon = #{entity.icon},</if>                                                          <!-- 图标 nvarchar2(64)-->
+			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- 是否在菜单中显示（0隐藏、1显示） char(1)-->
+			<if test="entity.permission != null">permission = #{entity.permission},</if>                                        <!-- 权限标识 nvarchar2(512)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.menuNum != null">menu_num = #{entity.menuNum},</if>                                                <!-- 编号 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE store_menu SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE menu_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_menu
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					menu_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_menu a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_menu a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

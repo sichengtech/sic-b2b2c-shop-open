@@ -1,0 +1,71 @@
+<div id="areaContent" style="display: none;">
+	<div class="wx-area-model">
+		<span class="icon icon-73 close"></span>
+		<div id="areaContent">
+			<ul class="areaContentUl">
+				<li>
+					<div class="weui-flex js-category" >
+						<a class="provinceData" href="javascript:;" style="color: red;">请选择</a>
+					</div>
+				</li>
+				<li>
+					<div class="weui-flex js-category" >
+						<a class="cityData" href="javascript:;" style="color: red;display:none;">请选择</a>
+					</div>
+				</li>
+				<li>
+					<div class="weui-flex js-category" >
+						<a class="districtData" href="javascript:;" style="color: red;display:none;">请选择</a>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<div id="areaData" class="areaData">
+			<div class="provinceList">
+				<ul>
+				
+				</ul>
+			</div>
+			<div class="cityList">
+				<ul>
+					
+				</ul>
+			</div>
+			<div class="districtList">
+				<ul>
+					
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/template" id="province_tpl" info="地区省模板">
+	<li id="{{d.provinceId}}" style="margin-bottom: 10px;" >
+		<a id="{{d.provinceId}}" class="province" href="javascript:;">
+			<div class="weui-flex js-category">
+				<div class="weui-flex-item">{{d.provinceName}}</div>
+			</div>
+		</a>
+	</li>
+</script>
+
+<script type="text/template" id="city_tpl" info="地区市模板">
+	<li style="margin-bottom: 10px;">
+		<a id="{{d.cityId}}" class="city" href="javascript:;">
+			<div class="weui-flex js-category">
+				<div class="weui-flex-item">{{d.cityName}}</div>
+			</div>
+		</a>
+	</li>
+</script>
+
+<script type="text/template" id="district_tpl" info="地区县模板">
+	<li style="margin-bottom: 10px;">
+		<a id="{{d.districtId}}" class="district" href="javascript:;">
+			<div class="weui-flex js-category">
+				<div class="weui-flex-item">{{d.districtName}}</div>
+			</div>
+		</a>
+	</li>
+</script>

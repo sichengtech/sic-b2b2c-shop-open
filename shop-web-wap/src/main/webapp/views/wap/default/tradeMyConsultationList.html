@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 页面返回js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-back.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeMyConsultationList.js"></script>
+</head>
+<body class="consultation-list-body">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current address-list-div" id='myTradeConsultationList-page'>
+			<div class="header-default-box weui-border-b">
+				<a href="javascript:;" class="icon icon-arrowleft l back click_back"></a>
+				<a href="${ctxw}/index.htm" class="icon icon-wxbzhuye r"></a>
+				<h1>我的咨询</h1>
+			</div>
+			<div class="weui_tab" id="tab2">
+				<div class="weui_navbar">
+					<div class="weui_navbar_item tab-red" consultation="all">全部咨询</div>
+					<div class="weui_navbar_item" consultation="ok">已回复咨询</div>
+					<div class="weui_navbar_item" consultation="no">未回复咨询</div>
+				</div>
+			</div>
+			<div class="noList hide"></div>
+			<div class="weui_panel">
+			    <div class="consultation-items-all"></div>
+			    <div class="consultation-items-ok" style="display: none;"></div>
+			    <div class="consultation-items-no" style="display: none;"></div>
+			</div>
+		</div>
+	</div>
+    <% include("/include/foot-nav.html"){}%>
+    <script type="text/template" id="consultation_Tpl" info="咨询模板">
+		<div class="consultation-item">
+			<div class="askAnswer-item"> 
+				<div class="consultationType">                     
+					<i class="icon-consultationType">咨询类型</i>                   
+					<div class="item-con">     
+						<p class="consultationType_p">{{d.consultationLabel}}</p> 
+					</div>               
+				</div>    
+				<div class="ask">                     
+					<i class="icon-ask">问</i>                   
+					<div class="item-con">     
+						<p class="question">{{d.ask}}</p> 
+					</div>               
+				</div>    
+				<div class="answer {{d.disabled}}">                     
+					<i class="icon-answer">答</i>                     
+					<div class="item-con">                          
+						<p class="answer">{{d.answer}}</p>                        
+					</div>                
+				</div>   
+			</div>
+			<div class="contents">
+				<div class="weui_panel_bd consultation-product">
+					<a href="${ctxw}/product/detail.htm?pid={{d.pid}}" class="weui_media_box weui_media_appmsg">
+						<div class="weui_media_hd">
+							<img data-src="{{d.image}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+						</div>
+						<div class="weui_media_bd">
+	                        <h4 class="weui_media_title">{{d.name}}</h4>
+	                    </div>
+					</a>
+				</div>
+				<p class="consultation-date">咨询时间：&nbsp;&nbsp;{{d.date}}</p> 
+			</div>
+		</div>
+	</script>
+    <script type="text/template" id="noList_Tpl" info="暂无咨询模板">
+		<div class="noList-div">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>暂时还没有咨询信息哦~</span>
+		</div>
+	</script>
+</body>
+</html>

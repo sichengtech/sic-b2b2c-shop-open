@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<%var register =fy.getMsg({key:'注册'});%>
+	<%var register1 =fy.getMsg({key:'注册买家'});%>
+	<%var register2 =fy.getMsg({key:'注册商家'});%>
+	<title>${register!} Powered by SiC</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">
+	<!-- 图标 -->
+	<link type="image/x-icon" rel="shortcut icon" href="${ctxStatic}/images/shop-ico.ico"/>
+	<!--sui-->
+	<link rel="stylesheet" type="text/css" href="${ctxStatic}/sui/1.5.1/sui.min.css"/>
+	<!--common-->
+	<link rel="stylesheet" type="text/css" href="${ctxStatic}/sicheng-sso/css/style.css"/>
+	<!-- jquery -->
+	<script type="text/javascript" src="${ctxStatic}/jquery/jquery-1.10.2.min.js"></script>
+	<!--<script type="text/javascript" src="${ctxStatic}/jquery/jquery-browser.js"></script>-->
+	<!-- layer -->
+	<script type="text/javascript" src="${ctxStatic}/layer/layer.js"></script>
+	<!-- fdp.js组件库 -->
+	<script type="text/javascript" src="${ctxStatic}/fdp/fdp.js"></script>
+	<!-- 翻译js -->
+	<script type="text/javascript" src="${ctx}/views/sso/include/fy.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/front/default/register.js"></script>
+	<!-- 全局变量 -->
+	<script type="text/javascript">
+		var jsValidate = true,ctx = '${ctx}',ctxf='${ctxf}', ctxs='${ctxs}',
+				ctxStatic='${ctxStatic}',ctxfs='${ctxfs}',
+				ctxm='${ctxm}',ctxu='${ctxu}',ctxsso='${ctxsso}';
+		var usernameMax=${siteRegister.usernameMax};
+		var usernameMin=${siteRegister.usernameMin};
+		var pwdMax=${siteRegister.pwdMax};
+		var pwdMin=${siteRegister.pwdMin};
+		var disableUsername='${siteRegister.disableUsername}';
+	</script>
+	<style type="text/css">
+		.header-simple{width: 980px;margin: auto;}
+		.array-msg-div{text-indent: 25px;margin-bottom: 20px;font-size: 14px;color: #4a4a4a;}
+		.array-div p{margin-bottom: 5px;font-size: 14px;font-weight: bold;}
+		.sso-reg-main .sso-reg-box input.input-ok{margin-left: 10px;}
+		.layui-layer-content{overflow: auto;}
+	</style>
+</head>
+<body>
+<!-- 头部 start -->
+<div class="header-simple sui-container">
+	<div class="sui-container">
+		<%var siteInfo = site.info();%>
+		<div class="logo">
+			<a href="/" target="_blank"><img src="${siteInfo.siteLogo != null ? ctxfs : ctxStatic}${siteInfo.siteLogo != null ? siteInfo.siteLogo : '/sicheng-sso/images/login.png'}"
+											 class="logo"  style="height: 60px;margin-top: 20px;"></a>
+			<span class="page-title" style="height: 80px;line-height: 95px;"><%var memberLogin =fy.getMsg({key:'会员注册'});%> ${memberLogin!}</span>
+		</div>
+	</div>
+</div>
+<!-- 头部 end -->
+<!-- 中间内容 start -->
+<div id="agree" style="display: none">${siteRegister.agreement}</div>
+<div class="sso-main sso-reg-main sui-container" style="width: 980px;">
+	<div class="sso-reg-info">
+		<%var diSanFang =fy.getMsg({key:'您可以使用第三方帐号直接登录：'});
+		var qqLogin =fy.getMsg({key:'qq登录'});
+		var weiChartLogin =fy.getMsg({key:'微信登录'});
+		%>
+		<div class="api-reg" style="margin-top: 370px;"><p>${diSanFang!}</p>
+			<a href="#"><i class="qqicon"></i>${qqLogin!}</a>
+			<a href="#"><i class="wxicon"></i>${weiChartLogin!}</a>
+		</div>
+	</div>
+	<div class="order-tabs sso-reg-box" style="margin: 60px 0px;">
+		<ul class="sui-nav nav-tabs">
+			<%var accountRegister =fy.getMsg({key:'使用帐号注册'});
+			var mobileRegister =fy.getMsg({key:'使用手机注册'});
+			%>
+			<li class="name ${ssoReg! == '1' || isEmpty(ssoReg!)?'active':''}"><a href="#nameRe" data-toggle="tab"><b></b>${accountRegister!}</a></li>
+			<li class="mobile ${ssoReg! == '2'?'active':''}"><a href="#mobileRe" data-toggle="tab"><b></b>${mobileRegister!}</a></li>
+		</ul>
+		<div class="tab-content pl20 pr20">
+			<ul id="nameRe" class="tab-pane ${ssoReg! == '1' || isEmpty(ssoReg!)?'active':''} table-css">
+				<form id="inputForm1" class="sui-form form-horizontal" action="${ctxsso}/register/save2.htm?ssoReg=1" method="post">
+					<input type="hidden" name="memberType" class="type" value="">
+					<div class="control-group info">
+						<label for="inputInfo" class="control-label v-top"><%var memberAccount =fy.getMsg({key:'用户帐号：'});%> ${memberAccount!}</label>
+						<div class="controls">
+							<%var pleaseSet =fy.getMsg({key:'请设置'});
+							var zijie =fy.getMsg({key:'字符的用户名'});
+							var help=fy.getMsg({key:'帮助'});
+							%>
+							<input type="text" name="loginName" id="loginName" class="input-xlarge" value="${userMain.loginName}" maxlength="64" placeholder="${pleaseSet!}${siteRegister.usernameMin}~${siteRegister.usernameMax}${zijie!}"><div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${pleaseSet!}${siteRegister.usernameMin}~${siteRegister.usernameMax}${zijie!}">
+							<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+						</div>
+						</div>
+					</div>
+					<div class="control-group info">
+						<%var password =fy.getMsg({key:'密码：'});
+						var zijiePass =fy.getMsg({key:'字符的密码'});
+						%>
+						<label for="inputInfo" class="control-label">${password!}</label>
+						<div class="controls">
+							<input type="password" name="password" id="password" class="input-xlarge"  placeholder="${pleaseSet!}${siteRegister.pwdMin}~${siteRegister.pwdMax}${zijiePass!}">
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${pleaseSet!}${siteRegister.pwdMin}~${siteRegister.pwdMax}${zijiePass!}">
+								<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<div class="control-group info">
+						<%var confirmPass =fy.getMsg({key:'确认密码：'});
+						var rePass =fy.getMsg({key:'重复一次上面的密码'});
+						%>
+						<label for="inputInfo" class="control-label">${confirmPass!}</label>
+						<div class="controls">
+							<input type="password" name="repassword" id="repassword" class="input-xlarge" placeholder="${rePass!}">
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${rePass!}">
+								<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<div class="control-group info">
+						<%var emailAddr =fy.getMsg({key:'邮箱地址：'});%>
+						<label for="inputInfo" class="control-label v-top">${emailAddr!}</label>
+						<div class="controls">
+							<%var usedEmailAddr =fy.getMsg({key:'请输入常用电子邮箱地址'});%>
+							<input type="text" name="email" id="email" class="input-xlarge" placeholder="${usedEmailAddr!}" value="${userMain.email}" maxlength="64">
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${usedEmailAddr!}">
+								<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<!--验证码开始-->
+					<div class="control-group info">
+						<%var emailCode =fy.getMsg({key:'邮箱验证码：'});
+						var sendEmailCode =fy.getMsg({key:'发送验证码'});
+						var enterEmailCode =fy.getMsg({key:'请输入验证码'});
+						%>
+						<label for="inputInfo" class="control-label">${emailCode!}</label>
+						<div class="controls">
+							<input type="text" id="emailCodeVerification" name="emailCodeVerification" class="input-Code" placeholder="${enterEmailCode!}" value="">
+							<button type="button" id="emailSender" class="post-code">${sendEmailCode!}</button>
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${enterEmailCode!}">
+								<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<!--验证码结束-->
+					<!--验证码开始-->
+					<!-- <div class="control-group info">
+                        <%var code =fy.getMsg({key:'验证码：'});
+                        var enterCode =fy.getMsg({key:'请输入验证码'});
+                        %>
+                        <label for="inputInfo" class="control-label">${code!}</label>
+                        <div class="controls">
+                            <input type="text" id="validateCode1" name="validateCode" class="input-Code" placeholder="${enterCode!}" value="">
+                            <a id="refresh" href="javascript:" onclick="$('.input-Code-img').attr('src','${ctx}/servlet/validateCodeServlet?'+new Date().getTime());" class="mid validateCodeRefresh"><img src="${ctx}/servlet/validateCodeServlet" id="validate_map" title="${code!}" class="input-Code-img"></a>
+                            <div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${enterCode!}">
+                                <i class="msg-icon"></i><div class="msg-con">${help!}</div>
+                            </div>
+                        </div>
+                    </div> -->
+					<!--验证码结束-->
+					<div class="control-group info">
+						<label for="inputInfo" class="control-label"></label>
+						<%var reade =fy.getMsg({key:'我已阅读并同意'});
+						var registerTerms =fy.getMsg({key:'《会员注册条款》'});
+						%>
+						<input id="agreeType1" type="checkbox"><span>${reade!}</span>
+						<a class="agreement" href="javascript:void(0);">${registerTerms!}</a>
+					</div>
+					<label class="control-label" style="width: 415px;">
+						<input type="submit" class="sui-btn btn-xlarge btn-primary input-ok" value="${register1!}" attr="1"/>
+						<input type="submit" class="sui-btn btn-xlarge btn-primary input-ok" value="${register2!}" attr="2"/>
+					</label>
+				</form>
+			</ul>
+			<ul id="mobileRe" class="tab-pane ${ssoReg! == '2'?'active':''}">
+				<form id="inputForm2" class="sui-form form-horizontal" action="${ctxsso}/register/save2.htm?ssoReg=2" method="post">
+					<input type="hidden" name="memberType" class="type" value="">
+					<div class="control-group info">
+						<%var mobileNumber =fy.getMsg({key:'手机号码：'});
+						var usedMobileNumber =fy.getMsg({key:'请输入常用手机号码'});
+						%>
+						<label for="inputInfo" class="control-label">${mobileNumber!}</label>
+						<div class="controls">
+							<input type="text" id="mobile" name="mobile" class="input-xlarge" placeholder="${usedMobileNumber!}" value="${userMain.mobile}" maxlength="11">
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${usedMobileNumber!}"><i class="msg-icon"></i>
+								<div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<!--验证码开始-->
+					<div class="control-group info">
+						<label for="inputInfo" class="control-label">${code!}</label>
+						<div class="controls">
+							<input type="text" id="validateCode2" name="validateCode" class="input-Code" placeholder="${enterCode!}" value="">
+							<a id="refresh" href="javascript:" onclick="$('.input-Code-img').attr('src','${ctx}/servlet/validateCodeServlet?'+new Date().getTime());" class="mid validateCodeRefresh">
+								<img src="${ctx}/servlet/validateCodeServlet" id="validate_map" title="${code!}" class="input-Code-img">
+							</a>
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${enterCode!}">
+								<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<!--验证码结束-->
+					<!--验证码开始-->
+					<div class="control-group info">
+						<%var smsCode =fy.getMsg({key:'短信验证码：'});
+						var sendCode =fy.getMsg({key:'发送验证码'});
+						%>
+						<label for="inputInfo" class="control-label">${smsCode!}</label>
+						<div class="controls">
+							<input type="text" id="smsVerification" name="smsVerification" class="input-Code" placeholder="${enterCode!}" value="">
+							<button type="button" id="smsSender" class="post-code">${sendCode!}</button>
+							<div class="sui-msg msg-naked msg-info" data-placement="top" data-toggle="tooltip" data-type="attention" title="" data-original-title="${enterCode!}">
+								<i class="msg-icon"></i><div class="msg-con">${help!}</div>
+							</div>
+						</div>
+					</div>
+					<!--验证码结束-->
+					<div class="control-group info">
+						<label id="checkbox2" class="">
+							<label for="inputInfo" class="control-label"></label>
+							<input id="agreeType2" type="checkbox"><span>${reade!}</span>
+							<a class="agreement" href="javascript:void(0);">${registerTerms!}</a>
+						</label>
+					</div>
+					<label class="control-label" style="width: 415px;">
+						<input type="submit" class="sui-btn btn-xlarge btn-primary input-ok" value="${register1!}" attr="1"/>
+						<input type="submit" class="sui-btn btn-xlarge btn-primary input-ok" value="${register2!}" attr="2"/>
+					</label>
+				</form>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="footer-simple"></div>
+<!-- 中间内容 end -->
+<!-- 底部 start -->
+<div class="footer-main sui-container">
+	<div class="wp shopcopy">
+		<div class="copyright">
+			${siteInfo.icp!}<br>
+			Copyright © 2016-2100 SiCheng.net All rights reserved.
+		</div>
+	</div>
+</div>
+<!-- 底部 end -->
+<!---判断是否被ifram包住,如果包住就跳出iframe--->
+<script type="text/javascript">
+	if (top.location != self.location)
+		top.location = self.location;
+</script>
+<!-- sui -->
+<script type="text/javascript" src="${ctxStatic}/sui/1.5.1/sui.min.js"></script>
+<!-- jquery.validate -->
+<script type="text/javascript" src="${ctxStatic}/jquery-validation/1.11.0/jquery.validate.min.js"></script>
+<!--jbox-->
+<!--<script type="text/javascript" src="${ctxStatic}/sicheng-admin/js/jquery-jbox/2.3/jquery.jBox-2.3.min.js"></script>-->
+<!-- common -->
+<script type="text/javascript" src="${ctx}/views/front/english/js/foot_common.js"></script>
+<script type="text/javascript">
+	var content='${message!}';
+	var type='${type!}';
+	sysMessage(content,type);
+</script>
+</body>
+</html>

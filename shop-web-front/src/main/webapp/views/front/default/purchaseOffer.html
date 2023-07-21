@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>
+	<%var fy0 =fy.getMsg({key:'立即报价'});%>
+	${fy0!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<style type="text/css">
+	label.error{/* margin-left: 80px; */}
+	.weituo-zhhneir{height: auto;}
+	.offerRemarks{height: 55px;}
+	#lib_Tab3{margin-bottom: 25px;}
+	.lib_Menubox3 ul{margin-bottom: 20px;}
+	.weituo-anniu{margin: 3px auto;}
+	.gongsimingzi li{/* height: 51px; */margin-top: 5px;}
+	.sui-form.form-horizontal .control-label {
+		width: 100px;
+		vertical-align: top;
+	}
+	.gongsimingzi li {
+		float: none;
+		margin: 0 0 0 50px;
+	}
+	.sui-form.form-horizontal .controls {
+		padding: 3px 0 0 0;
+		width: 300px;
+	}
+	.sui-form.form-horizontal .control-label { width: 165px; padding-top: 0px; display: block; }
+</style>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<%
+		var fy1 =fy.getMsg({key:'发布采购'});
+		var fy2 =fy.getMsg({key:'通过网页、电话或QQ发布'});
+		var fy3 =fy.getMsg({key:'采购需求给我们'});
+		var fy4 =fy.getMsg({key:'选择资源'});
+		var fy5 =fy.getMsg({key:'我们为您选择货物'});
+		var fy6 =fy.getMsg({key:'您来选择更合适的资源'});
+		var fy7 =fy.getMsg({key:'完成交易'});
+		var fy8 =fy.getMsg({key:'敲定合作方，完成货物'});
+		var fy9 =fy.getMsg({key:'货款交收'});
+		var fy10 =fy.getMsg({key:'采购信息：'});
+		var fy11 =fy.getMsg({key:'采购标题：'});
+		var fy12 =fy.getMsg({key:'无'});
+		var fy13 =fy.getMsg({key:'交易周期：'});
+		var fy14 =fy.getMsg({key:'报价截至日期：'});
+		var fy15 =fy.getMsg({key:'公司名称：'});
+		var fy16 =fy.getMsg({key:'联系人：'});
+		var fy17 =fy.getMsg({key:'联系方式：'});
+		var fy18 =fy.getMsg({key:'地区：'});
+		var fy19 =fy.getMsg({key:'采购说明：'});
+		var fy20 =fy.getMsg({key:'您的报价：'});
+		var fy21 =fy.getMsg({key:'产品名称'});
+		var fy22 =fy.getMsg({key:'规格型号'});
+		var fy23 =fy.getMsg({key:'品牌'});
+		var fy24 =fy.getMsg({key:'数量'});
+		var fy25 =fy.getMsg({key:'单位'});
+		var fy26 =fy.getMsg({key:'单价(元)'});
+		var fy27 =fy.getMsg({key:'备注'});
+		var fy28 =fy.getMsg({key:'立即报价'});
+	%>
+	<div>
+		<div class="wp clearfix caigou mb30">
+			<!--委托找货---->
+			<div class="weituozhaoh">
+				<dl class="fabucaigou-1">
+					<dt>${fy1!}</dt>
+					<dd>${fy2!}</dd>
+					<dd>${fy3!}</dd>
+				</dl>
+				<dl class="fabucaigou-2">
+					<dt>${fy4!}</dt>
+					<dd>${fy5!}</dd>
+					<dd>${fy6!}</dd>
+				</dl>
+				<dl class="fabucaigou-3">
+					<dt>${fy7!}</dt>
+					<dd>${fy8!}</dd>
+					<dd>${fy9!}</dd>
+				</dl>
+			</div>
+			<div class="clear mhei"></div>
+			<div class="weituo-zhhneir sui-form">
+				<p class="neirong">${fy10!}</p>
+				<ul class="gongsimingzi mb10 sui-form form-horizontal">
+					<li class="control-group">
+						<label class="control-label">${fy11!}</label>
+						<div class="controls" style="font-size: 17px; font-weight: bold; line-height: 17px; color: #0d76f5;">${isEmpty (purchase.title!)?fy12!:purchase.title!}</div>
+					</li>
+					<li class="control-group">
+						<label class="control-label">${fy13!}</label>
+						<div class="controls">${isEmpty (purchase.cycle!)?fy12!:purchase.cycle!}</div>
+						<label class="control-label">${fy14!}</label>
+						<div class="controls">${purchase.expiryTime!,dateFormat="yyyy-MM-dd"}</div>
+						<label class="control-label">${fy15!}</label>
+						<div class="controls">${storeEnter.companyName!}</div>
+					</li>
+					<li class="control-group">
+						<label class="control-label">${fy16!}</label>
+						<div class="controls">${storeEnter.contact!}</div>
+						<label class="control-label">${fy17!}</label>
+						<div class="controls">${storeEnter.contactNumber!}</div>
+						<label class="control-label">${fy18!}</label>
+						<div class="controls">${storeEnter.provinceName!}-${storeEnter.cityName!}-${storeEnter.districtName}</div>
+					</li>
+					<li class="control-group">
+						<label class="control-label">${fy19!}</label>
+						<div class="controls" style="width: 980px;">${isEmpty (purchase.purchaseExplain!)?fy12!:purchase.purchaseExplain!}</div>
+					</li>
+				</ul>
+				<div style="display: none;">
+				</div>
+				<div class="lib_Contentbox3 clear">
+					<div class="con_one_1">
+						<p class="neirong">${fy20!}</p>
+						<form id="inputForm" action="${ctxf}/purchase/release/offer2.htm" method="post" class="sui-form">
+							<input name="purchaseId" type="hidden" value="${purchase.purchaseId!}"/>
+							<table class="sui-table table-bordered-simple mt20 ml20 mr20">
+								<thead>
+									<tr>
+										<th style="width: 200px;">${fy21!}</th>
+										<th style="width: 80px;">${fy22!}</th>
+										<th style="width: 80px;">${fy23!}</th>
+										<th style="width: 100px;">${fy24!}</th>
+										<th style="width: 100px;">${fy25!}</th>
+										<th style="width: 140px;">${fy26!}</th>
+										<th>${fy27!}</th>
+									</tr>
+								</thead>
+								<tbody>
+								<% for(purchaseIte in purchaseItemList){ %>
+									<tr>
+										<td>${purchaseIte.name!}</td>
+										<td>${purchaseIte.model!}</td>
+										<td>${purchaseIte.brand!}</td>
+										<td>${purchaseIte.amount!}</td>
+										<td>${purchaseIte.unit!}</td>
+										<td><input id="offerPrice_${purchaseIte.purchaseItemId!}" name="offerPrices" value="${purchaseIte.priceRequirement!}" type="text" maxlength="12" class="input-medium input-fat" autocomplete="off"></br></td>
+										<td><input id="offerRemark_${purchaseIte.purchaseItemId!}" name="offerRemarks" value="${purchaseIte.purchaseRemarks!}" type="text" maxlength="200" class="input-xlarge input-fat" autocomplete="off"></td>
+										<input name="purchaseItemIds" type="hidden" value="${purchaseIte.purchaseItemId!}"/>
+										<input name="amounts" type="hidden" value="${purchaseIte.amount!}"/>
+									</tr>
+								<%}%>
+								</tbody>
+							</table>
+                            <div id="sub" class="weituo-anniu">
+                                <button class="sui-btn btn-xlarge btn-primary">${fy28!}</button>
+                            </div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<script type="text/javascript">
+		var content='${message!}';
+		var type='${type!}';
+		sysMessage(content,type);
+	</script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/front/default/purchaseOffer.js"></script>
+</body>
+</html>

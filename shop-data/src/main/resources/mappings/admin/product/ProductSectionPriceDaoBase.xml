@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductSectionPriceDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productSectionPriceColumns">
+	<trim suffixOverrides=",">
+		a.sc_id AS "scId",                                                   <!-- 主键 number(19)-->
+		a.p_id AS "pId",                                                     <!-- 商品ID number(19)-->
+		a.section AS "section",                                              <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+		a.price AS "price",                                                  <!-- 价格,批发模式使用本价格 number(12,3)-->
+		a.sort AS "sort",                                                    <!-- 排序，排序从1起 number(10)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productSectionPriceJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.scId != null ">AND a.sc_id = #{c.scId}</if>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.section != null and c.section != ''">AND a.section = #{c.section}</if>
+		<if test="c.price != null ">AND a.price = #{c.price}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductSectionPrice">
+		SELECT 
+		<include refid="productSectionPriceColumns"/>
+		FROM product_section_price a
+		<include refid="productSectionPriceJoins"/>
+		WHERE a.sc_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductSectionPrice">
+		SELECT 
+		<include refid="productSectionPriceColumns"/>
+		FROM product_section_price a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.sc_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductSectionPrice">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSectionPriceColumns"/>
+		FROM product_section_price a
+		<include refid="productSectionPriceJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sc_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductSectionPrice">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSectionPriceColumns"/>
+		FROM product_section_price a
+		<include refid="productSectionPriceJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.sc_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.scId" keyColumn="sc_id" useGeneratedKeys="true">
+		INSERT INTO product_section_price
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			sc_id,                                             <!-- 主键 number(19)-->
+			p_id,                                              <!-- 商品ID number(19)-->
+			section,                                           <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			price,                                             <!-- 价格,批发模式使用本价格 number(12,3)-->
+			sort,                                              <!-- 排序，排序从1起 number(10)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.scId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_section_price_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.pId},                                     <!-- 商品ID number(19)-->
+			#{entity.section},                                 <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			#{entity.price},                                   <!-- 价格,批发模式使用本价格 number(12,3)-->
+			#{entity.sort},                                    <!-- 排序，排序从1起 number(10)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.scId" keyColumn="sc_id" useGeneratedKeys="true">
+		INSERT INTO product_section_price
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.scId != null">sc_id,</if></if>
+			<if test="entity.pkMode==2">sc_id,</if>
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品ID number(19)-->
+			<if test="entity.section != null">section,</if>                                    <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			<if test="entity.price != null">price,</if>                                        <!-- 价格,批发模式使用本价格 number(12,3)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序，排序从1起 number(10)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.scId != null">#{entity.scId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_section_price_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品ID number(19)-->
+			<if test="entity.section != null">#{entity.section},</if>                                    <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			<if test="entity.price != null">#{entity.price},</if>                                        <!-- 价格,批发模式使用本价格 number(12,3)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序，排序从1起 number(10)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_section_price 
+		<set>
+			section = #{entity.section},                                    <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			price = #{entity.price},                                        <!-- 价格,批发模式使用本价格 number(12,3)-->
+			sort = #{entity.sort},                                          <!-- 排序，排序从1起 number(10)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		WHERE sc_id = #{entity.scId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_section_price a 
+		<set>
+			section = #{entity.section},                                    <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			price = #{entity.price},                                        <!-- 价格,批发模式使用本价格 number(12,3)-->
+			sort = #{entity.sort},                                          <!-- 排序，排序从1起 number(10)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_section_price
+		<set>
+			<if test="entity.section != null">section = #{entity.section},</if>                                                 <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			<if test="entity.price != null">price = #{entity.price},</if>                                                       <!-- 价格,批发模式使用本价格 number(12,3)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序，排序从1起 number(10)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE sc_id = #{entity.scId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_section_price a
+		<set>
+			<if test="entity.section != null">section = #{entity.section},</if>                                                 <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
+			<if test="entity.price != null">price = #{entity.price},</if>                                                       <!-- 价格,批发模式使用本价格 number(12,3)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序，排序从1起 number(10)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_section_price
+		WHERE sc_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_section_price
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					sc_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_section_price a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_section_price a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

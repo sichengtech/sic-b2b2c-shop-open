@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountPlatformDao">
+
+	<cache-ref namespace="com.sicheng.admin.account.dao.AccountPlatformDao"/>
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	AccountPlatformDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountPlatformDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountPlatformDao.xml文件与AccountPlatformDaoBase.xml文件，在运行时会合并起来。
+	AccountPlatformDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountPlatformDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<!-- 原子累加累减账户中的金额-->
+	<update id="updateByIdSelectiveAtom">
+		UPDATE account_platform
+		<set>
+			<if test="entity.ownMoney != null">own_money = own_money + #{entity.ownMoney},</if>                             <!-- 账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money = frozen_money + #{entity.frozenMoney},</if>                     <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE ap_id = #{entity.apId}
+	</update>
+
+	<!-- 平台申请提现（资金冻结了），原子操作，防止超额提现-->
+	<update id="withdrawApplyPlatform">
+		UPDATE account_platform
+		<set>
+			own_money = own_money - #{money},                          <!-- 账户余额 decimal(12,3)-->
+			frozen_money = frozen_money + #{money},                    <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE ap_id = #{apId}
+		AND own_money >= #{money} <!-- 防止超额提现-->
+	</update>
+
+	<!-- 平台执行提现，原子操作，防止超额提现-->
+	<update id="withdrawExecutePlatform">
+		UPDATE account_platform
+		<set>
+			frozen_money = frozen_money - #{money},                    <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE ap_id = #{apId}
+		AND frozen_money >= #{money} <!-- 防止超额提现-->
+	</update>
+
+	<!-- 拒绝平台提现（资金解冻了），原子操作，防止超额解冻-->
+	<update id="withdrawRefusePlatform">
+		UPDATE account_platform
+		<set>
+			own_money = own_money + #{money},                          <!-- 账户余额 decimal(12,3)-->
+			frozen_money = frozen_money - #{money},                    <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE ap_id = #{apId}
+		AND frozen_money >= #{money} <!-- 防止超额解冻-->
+	</update>
+
+	<!--
+		 统计 平台现有资金总额
+		 平台现有资金总额 = 平台未结账户金额 + 平台营收账户余额  + 平台营收账户冻结金额 + 每个会员账户余额 + 每个会员账户冻结金额 - 补贴账户 。（商家支付服务费用）
+		 平台现有资金总额 = 平台未结账户金额 + 平台营收账户余额  + 平台营收账户冻结金额 + 每个会员账户余额 + 每个会员账户冻结金额 - 补贴账户 。（平台支付服务费用）
+		 1、不支持买家账户，无需要计算买家账户
+		 2、平台手续费账户中的钱不计算在内
+	 -->
+	<select id="countAllMoney" resultType="java.math.BigDecimal" useCache="false">
+		SELECT (
+		(SELECT SUM(ap.own_money)+SUM(ap.frozen_money) AS ap_money FROM account_platform ap WHERE ap.ap_id!=14)
+		+
+		(SELECT SUM(au.own_money)+SUM(au.frozen_money) AS au_money FROM account_user au)
+		-
+		(SELECT SUM(ap.own_money)+SUM(ap.frozen_money) AS ap_money FROM account_platform ap WHERE ap.ap_id=14)
+		)FROM DUAL
+	</select>
+
+	<!--
+		 计算各个账户钱
+		 10：未结算账户(临时)总额
+		 11：营收账户(收入)总额
+		 14：补贴账户(支出)总额
+		 20：商家账户总额
+	 -->
+	<select id="sumMoney" resultType="java.math.BigDecimal" useCache="false">
+		SELECT (
+		<if test='v=="10"'>
+			(SELECT SUM(ap.own_money)+SUM(ap.frozen_money) AS ap_money FROM account_platform ap WHERE ap.ap_id=10)
+		</if>
+		<if test='v=="11"'>
+			(SELECT SUM(ap.own_money)+SUM(ap.frozen_money) AS ap_money FROM account_platform ap WHERE ap.ap_id=11)
+		</if>
+		<if test='v=="14"'>
+			(SELECT SUM(ap.own_money)+SUM(ap.frozen_money) AS ap_money FROM account_platform ap WHERE ap.ap_id=14)
+		</if>
+		<if test='v=="20"'>
+			(SELECT SUM(au.own_money)+SUM(au.frozen_money) AS au_money FROM account_user au)
+		</if>
+		)FROM DUAL
+	</select>
+
+</mapper>

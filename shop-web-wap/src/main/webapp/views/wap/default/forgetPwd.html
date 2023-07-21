@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/forgetPwd.js"></script>
+</head>
+<body class="sso forgetPwd-body">
+<div class="header-default-box weui-border-b">
+	<a href="javascript:history.back();" class="icon icon-arrowleft l back"></a>
+	<a href="${ctxw}/index.htm" class="icon icon-wxbzhuye"></a>
+	<h1>找回密码</h1>
+</div>
+
+<div class="weui_tab " style="height:44px;" id="tab2">
+	<div class="weui_navbar" style="height:44px;">
+		<div class="weui_navbar_item" id="mobileNum">手机号找回</div>
+		<div class="weui_navbar_item" id="emailNum">邮箱地址找回</div>
+	</div>
+</div>
+
+<div class="content">
+	<form id="form1">
+		<input name="type" value="2" class="weui_input text_size" type="hidden"/>
+	    <div class="weui_cells weui_cells_form weui-border-radius" style="margin: 1.17647059em 15px;">
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">手机号</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="mobile" name="mobile" class="weui_input text_size" type="tel" maxlength="20" placeholder="输入你现在的手机号" emptyTips="请输入手机号" required pattern="^(\+\d{2})?(1[0-9]\d{9})$" notMatchTips="请输入正确的手机号"/>
+	            </div>
+	            <div class="weui_cell_ft">
+	                <i class="weui_icon_warn"></i>
+	            </div>
+	        </div>
+	        <div class="weui_cell weui_vcode">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">短信验证码</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="mcode" name="mcode" class="weui_input text_size" type="text" required placeholder="请输入短信验证码" tips="请输入验证码"/>
+	            </div>
+	            <div class="weui_cell_ft">
+	                <i class="weui_icon_warn"></i>
+	                <a id="getSmsCode" href="javascript:;" class="weui-vcode-btn text_size infoCode">获取验证码</a>
+	            </div>
+	        </div>
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">设置密码</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="mpassword" name="mpassword" class="weui_input text_size" type="password" required placeholder="输入新密码" emptyTips="请输入新密码" maxlength="20"/>
+	            </div>
+	           	<div class="weui_cell_ft">
+					<span id="span1" class="icon icon-display"></span>
+	               	<i class="weui_icon_warn"></i>
+	           	</div>
+	        </div>
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">确认密码</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="mnextPassword" name="mnextPassword" class="weui_input text_size" type="password" required placeholder="输入确认新密码" emptyTips="请输入新确认密码" maxlength="20"/>
+	            </div>
+	           	<div class="weui_cell_ft">
+					<span id="span2" class="icon icon-display"></span>
+	               	<i class="weui_icon_warn"></i>
+	           	</div>
+	        </div>
+	    </div>
+	    <div class="weui_btn_area">
+	        <a href="javascript:;" class="weui_btn weui_btn_default weui_btn_disabled">确定</a>
+	    </div>
+	</form>
+	<form id="form2" action="" method="post" style="display:none">
+		<input name="type" value="1" class="weui_input text_size" type="hidden"/>
+	    <div class="weui_cells weui_cells_form weui-border-radius" style="margin: 1.17647059em 15px;">
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">邮箱地址</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id ="email" name="email" class="weui_input text_size" type="text" required maxlength="20" placeholder="输入你现在的邮箱地址" emptyTips="请输入邮箱地址" required pattern="\w+@\w+\.[a-z]+(\.[a-z]+)?" notMatchTips="请输入正确的邮箱地址"/>
+	            </div>
+	            <div class="weui_cell_ft">
+	                <i class="weui_icon_warn"></i>
+	            </div>
+	        </div>
+	        <div class="weui_cell weui_vcode">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">邮箱验证码</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="ecode" name="ecode" class="weui_input text_size" type="text" required placeholder="请输入邮箱验证码" tips="请输入验证码"/>
+	            </div>
+	            <div class="weui_cell_ft">
+	                <i class="weui_icon_warn"></i>
+	                <a id="getEmailCode" href="javascript:;" class="weui-vcode-btn text_size infoCode">获取验证码</a>
+	            </div>
+	        </div>
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">设置密码</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="epassword" name="epassword" class="weui_input text_size" type="password" required placeholder="输入新密码" emptyTips="请输入新密码" maxlength="20"/>
+	            </div>
+	           	<div class="weui_cell_ft">
+					<span id="span3" class="icon icon-display"></span>
+	               	<i class="weui_icon_warn"></i>
+	           	</div>
+	        </div>
+	        <div class="weui_cell">
+	            <div class="weui_cell_hd"><label class="weui_label text_size">确认密码</label></div>
+	            <div class="weui_cell_bd weui_cell_primary">
+	                <input id="enextPassword" name="enextPassword" class="weui_input text_size" type="password" required placeholder="输入确认新密码" emptyTips="请输入确认新密码" maxlength="20"/>
+	            </div>
+	           	<div class="weui_cell_ft">
+					<span id="span4" class="icon icon-display"></span>
+	               	<i class="weui_icon_warn"></i>
+	           	</div>
+	        </div>
+	    </div>
+	    <div class="weui_btn_area">
+	        <a id="formSubmitBtn" href="javascript:;" class="weui_btn weui_btn_default weui_btn_disabled">确定</a>
+	    </div>
+	</form>
+</div>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

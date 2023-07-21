@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.sicheng</groupId>
+        <artifactId>shop-all</artifactId>
+        <version>2.0</version>
+    </parent>
+    <artifactId>shop-junit-jacoco</artifactId>
+
+    <properties>
+        <!--
+        我需要跳过sonar扫描shop-web-static子模块
+        SonarQube排除扫描的模块,pom.xml文件的 <sonar.skip>true</sonar.skip> 定义要排除的模块的属性
+        -->
+        <sonar.skip>true</sonar.skip>
+    </properties>
+
+    <!-- 在依赖中添加需要进行单元测试的模块的artifactId，这是必须的添加的。如果不添加这段配置，则生成的汇总报告是空的 -->
+    <dependencies>
+        <dependency>
+            <groupId>com.sicheng</groupId>
+            <artifactId>shop-data</artifactId><!-- 公共模块，打jar包，被其它模块依赖 -->
+            <version>${project.version}</version>
+            <type>jar</type> <!--注意这里模块是jar包-->
+        </dependency>
+        <dependency>
+            <groupId>com.sicheng</groupId>
+            <artifactId>admin</artifactId><!-- 运营后台模块 -->
+            <version>${project.version}</version>
+            <type>war</type> <!--注意这里模块是war包-->
+        </dependency>
+        <dependency>
+            <groupId>com.sicheng</groupId>
+            <artifactId>front</artifactId><!-- 前台模块，包含：商城前台、会员中心、商家中心 -->
+            <version>${project.version}</version>
+            <type>war</type> <!--注意这里模块是war包-->
+        </dependency>
+        <dependency>
+            <groupId>com.sicheng</groupId>
+            <artifactId>wap</artifactId><!-- 移动端模块，为App\H5\小程序提供API接口 -->
+            <version>${project.version}</version>
+            <type>war</type> <!--注意这里模块是war包-->
+        </dependency>
+        <dependency>
+            <groupId>com.sicheng</groupId>
+            <artifactId>upload</artifactId><!-- 上传与存储模块 -->
+            <version>${project.version}</version>
+            <type>war</type> <!--注意这里模块是war包-->
+        </dependency>
+
+    </dependencies>
+    <build>
+        <plugins>
+            <!-- Jacoco 是一个开源的 Java 代码覆盖率工具，Jacoco 可以嵌入到 Ant 、Maven 中，并提供了 EclEmma Eclipse 插件，也可以使用 JavaAgent 技术监控 Java 程序。很多第三方的工具提供了对 Jacoco 的集成，如 sonar、Jenkins 等。 -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.8</version>
+                <executions>
+                    <!-- 在maven的多模块项目中配置Jacoco插件，显示多个模块的单元测试覆盖率汇总报告
+                    goal为report-aggregate ，这个goal是jacoco 0.7.7版本以后，专门为多模块覆盖率显示所设置，可以统计该模块所依赖的所有其他模块的覆盖率 -->
+                    <execution>
+                        <id>report-aggregate</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report-aggregate</goal> <!-- 是绑定maven生命周期的test阶段，在test阶段完后， 可以统计该模块所依赖的所有其他模块的覆盖率。 -->
+                        </goals>
+                        <configuration>
+                            <outputDirectory>target/jacoco-site</outputDirectory> <!-- 这是输出目录 -->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

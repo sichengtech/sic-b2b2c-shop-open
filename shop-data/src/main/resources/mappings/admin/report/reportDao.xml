@@ -1,0 +1,251 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.report.dao.ReportDao">
+
+	<!-- 统计：新增会员（按小时分组） -->
+	<select id="report1" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		<if test="dbType$ == 'oracle'">to_char(a.register_date,'YYYY-MM-DD HH24') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.register_date,'%Y-%m-%d %H') as DDATE,</if>
+		count(a.u_id) as COUNTNUMBER
+		from user_main a
+		where
+		a.type_account=1 
+		<if test="startDate != null and endDate != null ">AND a.register_date BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.register_date,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.register_date,'%Y-%m-%d %H')</if>
+		order by
+		<if test="dbType$ == 'oracle'">to_char(a.register_date,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.register_date,'%Y-%m-%d %H')</if> 
+	</select>
+	<!-- 统计：新增会员（按天分组） -->
+	<select id="report2" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		<if test="dbType$ == 'oracle'">to_char(a.register_date,'YYYY-MM-DD') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.register_date,'%Y-%m-%d') as DDATE,</if>
+		count(a.u_id) as COUNTNUMBER 
+		from user_main a
+		where
+		a.type_account=1
+		<if test="startDate != null and endDate != null ">AND a.register_date BETWEEN #{startDate} AND #{endDate}</if>
+		group by
+		<if test="dbType$ == 'oracle'">to_char(a.register_date,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.register_date,'%Y-%m-%d')</if>
+		order by
+		<if test="dbType$ == 'oracle'">to_char(a.register_date,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.register_date,'%Y-%m-%d')</if>
+	</select>
+	
+	<!-- 统计：新开店铺（按小时分组） -->
+	<select id="report3" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		<if test="dbType$ == 'oracle'">to_char(a.create_date,'YYYY-MM-DD HH24') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.create_date,'%Y-%m-%d %H') as DDATE,</if>
+		count(a.store_id) as COUNTNUMBER 
+		from store a
+		where 1=1 
+		<if test="startDate != null and endDate != null ">AND a.create_date BETWEEN #{startDate} AND #{endDate}</if>
+		group by
+		<if test="dbType$ == 'oracle'">to_char(a.create_date,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.create_date,'%Y-%m-%d %H')</if>
+		order by
+		<if test="dbType$ == 'oracle'">to_char(a.create_date,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.create_date,'%Y-%m-%d %H')</if>
+	</select>
+	<!-- 统计：新开店铺（按天分组） -->
+	<select id="report4" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		<if test="dbType$ == 'oracle'">to_char(a.create_date,'YYYY-MM-DD') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.create_date,'%Y-%m-%d') as DDATE,</if>
+		count(a.store_id) as COUNTNUMBER 
+		from store a
+		where 1=1 
+		<if test="startDate != null and endDate != null ">AND a.create_date BETWEEN #{startDate} AND #{endDate}</if>
+		group by
+		<if test="dbType$ == 'oracle'">to_char(a.create_date,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.create_date,'%Y-%m-%d')</if>
+		order by
+		<if test="dbType$ == 'oracle'">to_char(a.create_date,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.create_date,'%Y-%m-%d')</if>
+	</select>
+	
+	<!-- 统计：商品销售 -->
+	<select id="report5" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		toi.p_id as PRODUCTID,
+    	max(toi.name) as PRODUCTNAME,
+		sum(tor.amount_paid) as PAYMONEY,
+		count(tor.order_id) as ORDERNUM,
+		sum(toi.quantity) as PRODUCTNUM
+		from trade_order tor left join trade_order_item toi on tor.order_id=toi.order_id
+		where tor.order_status&lt;&gt;10  and tor.order_status&lt;&gt;60 and tor.is_return_status='0'
+		<if test="proName != null and proName !='' "> 
+			<bind name="pattern" value="'%' + proName + '%'" />				
+			AND lower(toi.name) LIKE lower(#{pattern})
+		</if>
+		<if test="pCategory != null and pCategory != '' ">AND toi.category=#{pCategory}</if>
+		<if test="startDate != null and endDate != null ">AND tor.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by toi.p_id
+		order by payMoney desc 
+	</select>
+	
+	<!-- 统计：会员购买 -->
+	<select id="report6" parameterType="java.util.Map" resultType="java.util.HashMap">
+	    select 
+	    tor.u_id as USERID,
+	    sum(tor.amount_paid) as PAYMONEY,
+	    count(tor.order_id) as ORDERNUM,
+	    sum(toi.quantity) as PRODUCTNUM
+	    from trade_order tor left join trade_order_item toi on tor.order_id=toi.order_id
+		where tor.order_status&lt;&gt;10  and tor.order_status&lt;&gt;60 and tor.is_return_status='0' 
+		<if test="userId != null and userId !='' ">AND tor.u_id= #{userId}</if>
+		<if test="startDate != null and endDate != null ">AND tor.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by tor.u_id
+		order by payMoney desc 
+	</select>
+	
+	<!-- 统计：店铺销售 -->
+	<select id="report7" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select
+		tor.store_id as STOREID,
+		max(tor.b_name) as STORENAME,
+		sum(tor.amount_paid) as PAYMONEY,
+		count(tor.order_id) as ORDERNUM,
+		sum(toi.quantity) as PRODUCTNUM
+		from trade_order tor left join trade_order_item toi on tor.order_id=toi.order_id
+		where tor.order_status&lt;&gt;10  and tor.order_status&lt;&gt;60 and tor.is_return_status='0' 
+		<if test="storeName != null and storeName !='' ">AND lower(tor.b_name) = #{storeName}</if>
+		<if test="startDate != null and endDate != null ">AND tor.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by tor.store_id
+		order by payMoney desc 
+	</select>
+	
+	<!-- 统计：下单金额 （按小时分组）-->
+	<select id="report8" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD HH24') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d %H') as DDATE,</if>
+		sum(a.amount_paid) as COUNTNUMBER 
+		from trade_order a
+		where a.order_status&lt;&gt;10  and a.order_status&lt;&gt;60 and a.is_return_status='0' 
+		<if test="startDate != null and endDate != null ">AND a.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d %H')</if>
+		order by COUNTNUMBER desc
+	</select>
+	
+	<!-- 统计：下单金额 （按天分组）-->
+	<select id="report9" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d') as DDATE,</if>
+		sum(a.amount_paid) as COUNTNUMBER 
+		from trade_order a
+		where a.order_status&lt;&gt;10  and a.order_status&lt;&gt;60 and a.is_return_status='0' 
+		<if test="startDate != null and endDate != null ">AND a.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d')</if>
+		order by COUNTNUMBER desc
+	</select>
+	
+	<!-- 统计：下单数量 （按小时分组）-->
+	<select id="report10" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD HH24') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d %H') as DDATE,</if>
+		count(a.order_id) as COUNTNUMBER 
+		from trade_order a
+		where a.order_status&lt;&gt;10  and a.order_status&lt;&gt;60 and a.is_return_status='0'
+		<if test="startDate != null and endDate != null ">AND a.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d %H')</if>
+		order by COUNTNUMBER desc
+	</select>
+	
+	<!-- 统计：下单数量 （按天分组）-->
+	<select id="report11" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d') as DDATE,</if>
+		count(a.order_id) as COUNTNUMBER 
+		from trade_order a
+		where a.order_status&lt;&gt;10  and a.order_status&lt;&gt;60 and a.is_return_status='0' 
+		<if test="startDate != null and endDate != null ">AND a.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.pay_order_time,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.pay_order_time,'%Y-%m-%d')</if>
+		order by COUNTNUMBER desc
+	</select>
+	
+	<!-- 统计：退款金额（按小时分组）-->
+	<select id="report12" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		<if test="dbType$ == 'oracle'">to_char(a.apply_date,'YYYY-MM-DD HH24') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.apply_date,'%Y-%m-%d %H') as DDATE,</if>
+		sum(a.return_money) as COUNTNUMBER 
+		from trade_return_order a
+		where 1=1 
+		<if test="startDate != null and endDate != null ">AND a.apply_date BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.apply_date,'YYYY-MM-DD HH24')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.apply_date,'%Y-%m-%d %H')</if>
+		order by COUNTNUMBER desc 
+	</select>
+	
+	<!-- 统计：退款金额 （按天分组）-->
+	<select id="report13" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		<if test="dbType$ == 'oracle'">to_char(a.apply_date,'YYYY-MM-DD') as DDATE,</if>
+		<if test="dbType$ == 'mysql'">date_format(a.apply_date,'%Y-%m-%d') as DDATE,</if>
+		sum(a.return_money) as COUNTNUMBER 
+		from trade_return_order a
+		where 1=1 
+		<if test="startDate != null and endDate != null ">AND a.apply_date BETWEEN #{startDate} AND #{endDate}</if>
+		group by 
+		<if test="dbType$ == 'oracle'">to_char(a.apply_date,'YYYY-MM-DD')</if>
+		<if test="dbType$ == 'mysql'">date_format(a.apply_date,'%Y-%m-%d')</if>
+		order by COUNTNUMBER desc
+	</select>
+	
+	<!-- 统计：下单金额与下单数量-->
+	<select id="report14" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		a.city_name as CITYNAME,
+		sum(a.amount_paid) as PAYMONEY,
+		count(a.order_id) as ORDERNUM
+		from trade_order a 
+		where a.order_status&lt;&gt;10  and a.order_status&lt;&gt;60 and a.is_return_status='0' 
+		<if test="startDate != null and endDate != null ">AND a.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by a.city_name
+		order by payMoney desc
+	</select>
+	
+	<!-- 统计：下单商品的分类 -->
+	<select id="report15" parameterType="java.util.Map" resultType="java.util.HashMap">
+		select 
+		toi.category as PCATEGORY
+		from trade_order tor left join trade_order_item toi on tor.order_id=toi.order_id
+		where tor.order_status&lt;&gt;10  and tor.order_status&lt;&gt;60 and tor.is_return_status='0' 
+		<if test="startDate != null and endDate != null ">AND tor.pay_order_time BETWEEN #{startDate} AND #{endDate}</if>
+		group by toi.category
+	</select>
+	
+	<!-- 统计：按店铺等级统计店铺 -->
+	<select id="report16" parameterType="java.util.Map" resultType="java.util.HashMap">
+	    select  
+	    sl.name as LEVELNAME,
+	    count(sb.store_id) as STORENUM
+	    
+	    from store sb left join user_seller us on sb.store_id=us.store_id
+	    left join store_enter se on us.u_id=se.enter_id
+	    left join store_level sl on se.level_id=sl.level_id
+	    
+	    group by sl.name 
+	    order by STORENUM desc
+	</select>
+	
+</mapper>

@@ -1,0 +1,778 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreEnterAuthDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeEnterAuthColumns">
+	<trim suffixOverrides=",">
+		a.enter_id AS "enterId",                                             <!-- 主键(卖家表，入驻申请，店铺表，店铺二级域名用1个id) number(19)-->
+		a.status AS "status",                                                <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+		a.is_perfect AS "isPerfect",                                         <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+		a.company_name AS "companyName",                                     <!-- 公司名称 nvarchar2(64)-->
+		a.country_id AS "countryId",                                         <!-- 国家(关联地区表) number(19)-->
+		a.country_name AS "countryName",                                     <!-- 国家名字 nvarchar2(64)-->
+		a.province_id AS "provinceId",                                       <!-- 省(关联地区表) number(19)-->
+		a.province_name AS "provinceName",                                   <!-- 省名字 nvarchar2(64)-->
+		a.city_id AS "cityId",                                               <!-- 市(关联地区表) number(19)-->
+		a.city_name AS "cityName",                                           <!-- 市名字 nvarchar2(64)-->
+		a.district_id AS "districtId",                                       <!-- 县(关联地区表) number(19)-->
+		a.district_name AS "districtName",                                   <!-- 县名字 nvarchar2(64)-->
+		a.detailed_address AS "detailedAddress",                             <!-- 公司_详细地址 nvarchar2(255)-->
+		a.registered_capital AS "registeredCapital",                         <!-- 注册资金，单位万元 number(10)-->
+		a.seller_license AS "sellerLicense",                                 <!-- 营业执照号 nvarchar2(64)-->
+		a.seller_license_path AS "sellerLicensePath",                        <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+		a.organization_code AS "organizationCode",                           <!-- 组织机构代码 nvarchar2(64)-->
+		a.organization_code_path AS "organizationCodePath",                  <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+		a.business_type AS "businessType",                                   <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+		a.social_credit_code AS "socialCreditCode",                          <!-- 统一社会信用代码 nvarchar2(64)-->
+		a.social_credit_code_path AS "socialCreditCodePath",                 <!-- 多证合一营业执照 nvarchar2(64)-->
+		a.open_an_account_license AS "openAnAccountLicense",                 <!-- 开户许可证核准号 nvarchar2(64)-->
+		a.open_an_account_license_path AS "openAnAccountLicensePath",        <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+		a.legal_name AS "legalName",                                         <!-- 法人姓名 nvarchar2(64)-->
+		a.legal_id_card_code AS "legalIdCardCode",                           <!-- 法人身份证号 nvarchar2(64)-->
+		a.legal_id_card_code_positive AS "legalIdCardCodePositive",          <!-- 法人身份证号（正面） nvarchar2(64)-->
+		a.legal_id_card_code_opposite AS "legalIdCardCodeOpposite",          <!-- 法人身份证号（反面） nvarchar2(64)-->
+		a.store_type AS "storeType",                                         <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+		a.tax_registration_number AS "taxRegistrationNumber",                <!-- 税务登记证号 nvarchar2(64)-->
+		a.store_brand AS "storeBrand",                                       <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+		a.tax_registration_number_path AS "taxRegistrationNumberPath",       <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+		a.store_brand_path AS "storeBrandPath",                              <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+		a.store_name AS "storeName",                                         <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+		a.contact AS "contact",                                              <!-- 联系人 nvarchar2(64)-->
+		a.contact_number AS "contactNumber",                                 <!-- 联系人电话 nvarchar2(64)-->
+		a.level_id AS "levelId",                                             <!-- 店铺等级（关联店铺等级id） number(19)-->
+		a.industry_id AS "industryId",                                       <!-- 主营行业（关联主营行业id） number(19)-->
+		a.summary_of_coping AS "summaryOfCoping",                            <!-- 应付总金额 number(12,3)-->
+		a.payment_voucher_path AS "paymentVoucherPath",                      <!-- 商家上传付款凭证path nvarchar2(64)-->
+		a.payment_instructions AS "paymentInstructions",                     <!-- 商家付款凭证说明 nvarchar2(255)-->
+		a.one_audit_opinion AS "oneAuditOpinion",                            <!-- 一审审核意见 nvarchar2(255)-->
+		a.two_audit_opinion AS "twoAuditOpinion",                            <!-- 二审审核意见 nvarchar2(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+		a.commission AS "commission",                                        <!-- 分佣比例 number(12,3)-->
+		a.audit_opinion AS "auditOpinion",                                   <!-- 入驻信息审核意见 nvarchar2(255)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeEnterAuthJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.enterId != null ">AND a.enter_id = #{c.enterId}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.isPerfect != null and c.isPerfect != ''">AND a.is_perfect = #{c.isPerfect}</if>
+		<if test="c.companyName != null and c.companyName != ''">AND a.company_name = #{c.companyName}</if>
+		<if test="c.countryId != null ">AND a.country_id = #{c.countryId}</if>
+		<if test="c.countryName != null and c.countryName != ''">AND a.country_name = #{c.countryName}</if>
+		<if test="c.provinceId != null ">AND a.province_id = #{c.provinceId}</if>
+		<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+		<if test="c.cityId != null ">AND a.city_id = #{c.cityId}</if>
+		<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+		<if test="c.districtId != null ">AND a.district_id = #{c.districtId}</if>
+		<if test="c.districtName != null and c.districtName != ''">AND a.district_name = #{c.districtName}</if>
+		<if test="c.detailedAddress != null and c.detailedAddress != ''">AND a.detailed_address = #{c.detailedAddress}</if>
+		<if test="c.registeredCapital != null ">AND a.registered_capital = #{c.registeredCapital}</if>
+		<if test="c.sellerLicense != null and c.sellerLicense != ''">AND a.seller_license = #{c.sellerLicense}</if>
+		<if test="c.sellerLicensePath != null and c.sellerLicensePath != ''">AND a.seller_license_path = #{c.sellerLicensePath}</if>
+		<if test="c.organizationCode != null and c.organizationCode != ''">AND a.organization_code = #{c.organizationCode}</if>
+		<if test="c.organizationCodePath != null and c.organizationCodePath != ''">AND a.organization_code_path = #{c.organizationCodePath}</if>
+		<if test="c.businessType != null and c.businessType != ''">AND a.business_type = #{c.businessType}</if>
+		<if test="c.socialCreditCode != null and c.socialCreditCode != ''">AND a.social_credit_code = #{c.socialCreditCode}</if>
+		<if test="c.socialCreditCodePath != null and c.socialCreditCodePath != ''">AND a.social_credit_code_path = #{c.socialCreditCodePath}</if>
+		<if test="c.openAnAccountLicense != null and c.openAnAccountLicense != ''">AND a.open_an_account_license = #{c.openAnAccountLicense}</if>
+		<if test="c.openAnAccountLicensePath != null and c.openAnAccountLicensePath != ''">AND a.open_an_account_license_path = #{c.openAnAccountLicensePath}</if>
+		<if test="c.legalName != null and c.legalName != ''">AND a.legal_name = #{c.legalName}</if>
+		<if test="c.legalIdCardCode != null and c.legalIdCardCode != ''">AND a.legal_id_card_code = #{c.legalIdCardCode}</if>
+		<if test="c.legalIdCardCodePositive != null and c.legalIdCardCodePositive != ''">AND a.legal_id_card_code_positive = #{c.legalIdCardCodePositive}</if>
+		<if test="c.legalIdCardCodeOpposite != null and c.legalIdCardCodeOpposite != ''">AND a.legal_id_card_code_opposite = #{c.legalIdCardCodeOpposite}</if>
+		<if test="c.storeType != null and c.storeType != ''">AND a.store_type = #{c.storeType}</if>
+		<if test="c.taxRegistrationNumber != null and c.taxRegistrationNumber != ''">AND a.tax_registration_number = #{c.taxRegistrationNumber}</if>
+		<if test="c.storeBrand != null and c.storeBrand != ''">AND a.store_brand = #{c.storeBrand}</if>
+		<if test="c.taxRegistrationNumberPath != null and c.taxRegistrationNumberPath != ''">AND a.tax_registration_number_path = #{c.taxRegistrationNumberPath}</if>
+		<if test="c.storeBrandPath != null and c.storeBrandPath != ''">AND a.store_brand_path = #{c.storeBrandPath}</if>
+		<if test="c.storeName != null and c.storeName != ''">				
+			<bind name="pattern" value="'%' + c.storeName + '%'" />				
+			AND lower(a.store_name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.contact != null and c.contact != ''">AND a.contact = #{c.contact}</if>
+		<if test="c.contactNumber != null and c.contactNumber != ''">AND a.contact_number = #{c.contactNumber}</if>
+		<if test="c.levelId != null ">AND a.level_id = #{c.levelId}</if>
+		<if test="c.industryId != null ">AND a.industry_id = #{c.industryId}</if>
+		<if test="c.summaryOfCoping != null ">AND a.summary_of_coping = #{c.summaryOfCoping}</if>
+		<if test="c.paymentVoucherPath != null and c.paymentVoucherPath != ''">AND a.payment_voucher_path = #{c.paymentVoucherPath}</if>
+		<if test="c.paymentInstructions != null and c.paymentInstructions != ''">AND a.payment_instructions = #{c.paymentInstructions}</if>
+		<if test="c.oneAuditOpinion != null and c.oneAuditOpinion != ''">AND a.one_audit_opinion = #{c.oneAuditOpinion}</if>
+		<if test="c.twoAuditOpinion != null and c.twoAuditOpinion != ''">AND a.two_audit_opinion = #{c.twoAuditOpinion}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+		<if test="c.commission != null ">AND a.commission = #{c.commission}</if>
+		<if test="c.auditOpinion != null and c.auditOpinion != ''">AND a.audit_opinion = #{c.auditOpinion}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreEnterAuth">
+		SELECT 
+		<include refid="storeEnterAuthColumns"/>
+		FROM store_enter_auth a
+		<include refid="storeEnterAuthJoins"/>
+		WHERE a.enter_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreEnterAuth">
+		SELECT 
+		<include refid="storeEnterAuthColumns"/>
+		FROM store_enter_auth a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.enter_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreEnterAuth">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeEnterAuthColumns"/>
+		FROM store_enter_auth a
+		<include refid="storeEnterAuthJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.enter_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreEnterAuth">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeEnterAuthColumns"/>
+		FROM store_enter_auth a
+		<include refid="storeEnterAuthJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.enter_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.enterId" keyColumn="enter_id" useGeneratedKeys="true">
+		INSERT INTO store_enter_auth
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			enter_id,                                          <!-- 主键(卖家表，入驻申请，店铺表，店铺二级域名用1个id) number(19)-->
+			status,                                            <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			is_perfect,                                        <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			company_name,                                      <!-- 公司名称 nvarchar2(64)-->
+			country_id,                                        <!-- 国家(关联地区表) number(19)-->
+			country_name,                                      <!-- 国家名字 nvarchar2(64)-->
+			province_id,                                       <!-- 省(关联地区表) number(19)-->
+			province_name,                                     <!-- 省名字 nvarchar2(64)-->
+			city_id,                                           <!-- 市(关联地区表) number(19)-->
+			city_name,                                         <!-- 市名字 nvarchar2(64)-->
+			district_id,                                       <!-- 县(关联地区表) number(19)-->
+			district_name,                                     <!-- 县名字 nvarchar2(64)-->
+			detailed_address,                                  <!-- 公司_详细地址 nvarchar2(255)-->
+			registered_capital,                                <!-- 注册资金，单位万元 number(10)-->
+			seller_license,                                    <!-- 营业执照号 nvarchar2(64)-->
+			seller_license_path,                               <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			organization_code,                                 <!-- 组织机构代码 nvarchar2(64)-->
+			organization_code_path,                            <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			business_type,                                     <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			social_credit_code,                                <!-- 统一社会信用代码 nvarchar2(64)-->
+			social_credit_code_path,                           <!-- 多证合一营业执照 nvarchar2(64)-->
+			open_an_account_license,                           <!-- 开户许可证核准号 nvarchar2(64)-->
+			open_an_account_license_path,                      <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			legal_name,                                        <!-- 法人姓名 nvarchar2(64)-->
+			legal_id_card_code,                                <!-- 法人身份证号 nvarchar2(64)-->
+			legal_id_card_code_positive,                       <!-- 法人身份证号（正面） nvarchar2(64)-->
+			legal_id_card_code_opposite,                       <!-- 法人身份证号（反面） nvarchar2(64)-->
+			store_type,                                        <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			tax_registration_number,                           <!-- 税务登记证号 nvarchar2(64)-->
+			store_brand,                                       <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			tax_registration_number_path,                      <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			store_brand_path,                                  <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			store_name,                                        <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			contact,                                           <!-- 联系人 nvarchar2(64)-->
+			contact_number,                                    <!-- 联系人电话 nvarchar2(64)-->
+			level_id,                                          <!-- 店铺等级（关联店铺等级id） number(19)-->
+			industry_id,                                       <!-- 主营行业（关联主营行业id） number(19)-->
+			summary_of_coping,                                 <!-- 应付总金额 number(12,3)-->
+			payment_voucher_path,                              <!-- 商家上传付款凭证path nvarchar2(64)-->
+			payment_instructions,                              <!-- 商家付款凭证说明 nvarchar2(255)-->
+			one_audit_opinion,                                 <!-- 一审审核意见 nvarchar2(255)-->
+			two_audit_opinion,                                 <!-- 二审审核意见 nvarchar2(255)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+			commission,                                        <!-- 分佣比例 number(12,3)-->
+			audit_opinion,                                     <!-- 入驻信息审核意见 nvarchar2(255)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.enterId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_enter_auth_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.status},                                  <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			#{entity.isPerfect},                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			#{entity.companyName},                             <!-- 公司名称 nvarchar2(64)-->
+			#{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			#{entity.countryName},                             <!-- 国家名字 nvarchar2(64)-->
+			#{entity.provinceId},                              <!-- 省(关联地区表) number(19)-->
+			#{entity.provinceName},                            <!-- 省名字 nvarchar2(64)-->
+			#{entity.cityId},                                  <!-- 市(关联地区表) number(19)-->
+			#{entity.cityName},                                <!-- 市名字 nvarchar2(64)-->
+			#{entity.districtId},                              <!-- 县(关联地区表) number(19)-->
+			#{entity.districtName},                            <!-- 县名字 nvarchar2(64)-->
+			#{entity.detailedAddress},                         <!-- 公司_详细地址 nvarchar2(255)-->
+			#{entity.registeredCapital},                       <!-- 注册资金，单位万元 number(10)-->
+			#{entity.sellerLicense},                           <!-- 营业执照号 nvarchar2(64)-->
+			#{entity.sellerLicensePath},                       <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			#{entity.organizationCode},                        <!-- 组织机构代码 nvarchar2(64)-->
+			#{entity.organizationCodePath},                    <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			#{entity.businessType},                            <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			#{entity.socialCreditCode},                        <!-- 统一社会信用代码 nvarchar2(64)-->
+			#{entity.socialCreditCodePath},                    <!-- 多证合一营业执照 nvarchar2(64)-->
+			#{entity.openAnAccountLicense},                    <!-- 开户许可证核准号 nvarchar2(64)-->
+			#{entity.openAnAccountLicensePath},                <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			#{entity.legalName},                               <!-- 法人姓名 nvarchar2(64)-->
+			#{entity.legalIdCardCode},                         <!-- 法人身份证号 nvarchar2(64)-->
+			#{entity.legalIdCardCodePositive},                 <!-- 法人身份证号（正面） nvarchar2(64)-->
+			#{entity.legalIdCardCodeOpposite},                 <!-- 法人身份证号（反面） nvarchar2(64)-->
+			#{entity.storeType},                               <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			#{entity.taxRegistrationNumber},                   <!-- 税务登记证号 nvarchar2(64)-->
+			#{entity.storeBrand},                              <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			#{entity.taxRegistrationNumberPath},               <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			#{entity.storeBrandPath},                          <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			#{entity.storeName},                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			#{entity.contact},                                 <!-- 联系人 nvarchar2(64)-->
+			#{entity.contactNumber},                           <!-- 联系人电话 nvarchar2(64)-->
+			#{entity.levelId},                                 <!-- 店铺等级（关联店铺等级id） number(19)-->
+			#{entity.industryId},                              <!-- 主营行业（关联主营行业id） number(19)-->
+			#{entity.summaryOfCoping},                         <!-- 应付总金额 number(12,3)-->
+			#{entity.paymentVoucherPath},                      <!-- 商家上传付款凭证path nvarchar2(64)-->
+			#{entity.paymentInstructions},                     <!-- 商家付款凭证说明 nvarchar2(255)-->
+			#{entity.oneAuditOpinion},                         <!-- 一审审核意见 nvarchar2(255)-->
+			#{entity.twoAuditOpinion},                         <!-- 二审审核意见 nvarchar2(255)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+			#{entity.commission},                              <!-- 分佣比例 number(12,3)-->
+			#{entity.auditOpinion},                            <!-- 入驻信息审核意见 nvarchar2(255)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.enterId" keyColumn="enter_id" useGeneratedKeys="true">
+		INSERT INTO store_enter_auth
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.enterId != null">enter_id,</if></if>
+			<if test="entity.pkMode==2">enter_id,</if>
+			<if test="entity.status != null">status,</if>                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			<if test="entity.isPerfect != null">is_perfect,</if>                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			<if test="entity.companyName != null">company_name,</if>                           <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name,</if>                           <!-- 国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 公司_详细地址 nvarchar2(255)-->
+			<if test="entity.registeredCapital != null">registered_capital,</if>               <!-- 注册资金，单位万元 number(10)-->
+			<if test="entity.sellerLicense != null">seller_license,</if>                       <!-- 营业执照号 nvarchar2(64)-->
+			<if test="entity.sellerLicensePath != null">seller_license_path,</if>              <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			<if test="entity.organizationCode != null">organization_code,</if>                 <!-- 组织机构代码 nvarchar2(64)-->
+			<if test="entity.organizationCodePath != null">organization_code_path,</if>        <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			<if test="entity.businessType != null">business_type,</if>                         <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			<if test="entity.socialCreditCode != null">social_credit_code,</if>                <!-- 统一社会信用代码 nvarchar2(64)-->
+			<if test="entity.socialCreditCodePath != null">social_credit_code_path,</if>       <!-- 多证合一营业执照 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicense != null">open_an_account_license,</if>       <!-- 开户许可证核准号 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicensePath != null">open_an_account_license_path,</if>    <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			<if test="entity.legalName != null">legal_name,</if>                               <!-- 法人姓名 nvarchar2(64)-->
+			<if test="entity.legalIdCardCode != null">legal_id_card_code,</if>                 <!-- 法人身份证号 nvarchar2(64)-->
+			<if test="entity.legalIdCardCodePositive != null">legal_id_card_code_positive,</if>  <!-- 法人身份证号（正面） nvarchar2(64)-->
+			<if test="entity.legalIdCardCodeOpposite != null">legal_id_card_code_opposite,</if>  <!-- 法人身份证号（反面） nvarchar2(64)-->
+			<if test="entity.storeType != null">store_type,</if>                               <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			<if test="entity.taxRegistrationNumber != null">tax_registration_number,</if>      <!-- 税务登记证号 nvarchar2(64)-->
+			<if test="entity.storeBrand != null">store_brand,</if>                             <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			<if test="entity.taxRegistrationNumberPath != null">tax_registration_number_path,</if>     <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			<if test="entity.storeBrandPath != null">store_brand_path,</if>                    <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			<if test="entity.storeName != null">store_name,</if>                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			<if test="entity.contact != null">contact,</if>                                    <!-- 联系人 nvarchar2(64)-->
+			<if test="entity.contactNumber != null">contact_number,</if>                       <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.levelId != null">level_id,</if>                                   <!-- 店铺等级（关联店铺等级id） number(19)-->
+			<if test="entity.industryId != null">industry_id,</if>                             <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.summaryOfCoping != null">summary_of_coping,</if>                  <!-- 应付总金额 number(12,3)-->
+			<if test="entity.paymentVoucherPath != null">payment_voucher_path,</if>            <!-- 商家上传付款凭证path nvarchar2(64)-->
+			<if test="entity.paymentInstructions != null">payment_instructions,</if>           <!-- 商家付款凭证说明 nvarchar2(255)-->
+			<if test="entity.oneAuditOpinion != null">one_audit_opinion,</if>                  <!-- 一审审核意见 nvarchar2(255)-->
+			<if test="entity.twoAuditOpinion != null">two_audit_opinion,</if>                  <!-- 二审审核意见 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.commission != null">commission,</if>                              <!-- 分佣比例 number(12,3)-->
+			<if test="entity.auditOpinion != null">audit_opinion,</if>                         <!-- 入驻信息审核意见 nvarchar2(255)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.enterId != null">#{entity.enterId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_enter_auth_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			<if test="entity.isPerfect != null">#{entity.isPerfect},</if>                                <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			<if test="entity.companyName != null">#{entity.companyName},</if>                            <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 公司_详细地址 nvarchar2(255)-->
+			<if test="entity.registeredCapital != null">#{entity.registeredCapital},</if>                <!-- 注册资金，单位万元 number(10)-->
+			<if test="entity.sellerLicense != null">#{entity.sellerLicense},</if>                        <!-- 营业执照号 nvarchar2(64)-->
+			<if test="entity.sellerLicensePath != null">#{entity.sellerLicensePath},</if>                <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			<if test="entity.organizationCode != null">#{entity.organizationCode},</if>                  <!-- 组织机构代码 nvarchar2(64)-->
+			<if test="entity.organizationCodePath != null">#{entity.organizationCodePath},</if>          <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			<if test="entity.businessType != null">#{entity.businessType},</if>                          <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			<if test="entity.socialCreditCode != null">#{entity.socialCreditCode},</if>                  <!-- 统一社会信用代码 nvarchar2(64)-->
+			<if test="entity.socialCreditCodePath != null">#{entity.socialCreditCodePath},</if>          <!-- 多证合一营业执照 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicense != null">#{entity.openAnAccountLicense},</if>          <!-- 开户许可证核准号 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicensePath != null">#{entity.openAnAccountLicensePath},</if>  <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			<if test="entity.legalName != null">#{entity.legalName},</if>                                <!-- 法人姓名 nvarchar2(64)-->
+			<if test="entity.legalIdCardCode != null">#{entity.legalIdCardCode},</if>                    <!-- 法人身份证号 nvarchar2(64)-->
+			<if test="entity.legalIdCardCodePositive != null">#{entity.legalIdCardCodePositive},</if>    <!-- 法人身份证号（正面） nvarchar2(64)-->
+			<if test="entity.legalIdCardCodeOpposite != null">#{entity.legalIdCardCodeOpposite},</if>    <!-- 法人身份证号（反面） nvarchar2(64)-->
+			<if test="entity.storeType != null">#{entity.storeType},</if>                                <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			<if test="entity.taxRegistrationNumber != null">#{entity.taxRegistrationNumber},</if>        <!-- 税务登记证号 nvarchar2(64)-->
+			<if test="entity.storeBrand != null">#{entity.storeBrand},</if>                              <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			<if test="entity.taxRegistrationNumberPath != null">#{entity.taxRegistrationNumberPath},</if>  <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			<if test="entity.storeBrandPath != null">#{entity.storeBrandPath},</if>                      <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			<if test="entity.storeName != null">#{entity.storeName},</if>                                <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			<if test="entity.contact != null">#{entity.contact},</if>                                    <!-- 联系人 nvarchar2(64)-->
+			<if test="entity.contactNumber != null">#{entity.contactNumber},</if>                        <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.levelId != null">#{entity.levelId},</if>                                    <!-- 店铺等级（关联店铺等级id） number(19)-->
+			<if test="entity.industryId != null">#{entity.industryId},</if>                              <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.summaryOfCoping != null">#{entity.summaryOfCoping},</if>                    <!-- 应付总金额 number(12,3)-->
+			<if test="entity.paymentVoucherPath != null">#{entity.paymentVoucherPath},</if>              <!-- 商家上传付款凭证path nvarchar2(64)-->
+			<if test="entity.paymentInstructions != null">#{entity.paymentInstructions},</if>            <!-- 商家付款凭证说明 nvarchar2(255)-->
+			<if test="entity.oneAuditOpinion != null">#{entity.oneAuditOpinion},</if>                    <!-- 一审审核意见 nvarchar2(255)-->
+			<if test="entity.twoAuditOpinion != null">#{entity.twoAuditOpinion},</if>                    <!-- 二审审核意见 nvarchar2(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.commission != null">#{entity.commission},</if>                              <!-- 分佣比例 number(12,3)-->
+			<if test="entity.auditOpinion != null">#{entity.auditOpinion},</if>                          <!-- 入驻信息审核意见 nvarchar2(255)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_enter_auth 
+		<set>
+			status = #{entity.status},                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			is_perfect = #{entity.isPerfect},                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			country_name = #{entity.countryName},                           <!-- 国家名字 nvarchar2(64)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) number(19)-->
+			province_name = #{entity.provinceName},                         <!-- 省名字 nvarchar2(64)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) number(19)-->
+			city_name = #{entity.cityName},                                 <!-- 市名字 nvarchar2(64)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) number(19)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 公司_详细地址 nvarchar2(255)-->
+			registered_capital = #{entity.registeredCapital},               <!-- 注册资金，单位万元 number(10)-->
+			seller_license = #{entity.sellerLicense},                       <!-- 营业执照号 nvarchar2(64)-->
+			seller_license_path = #{entity.sellerLicensePath},              <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			organization_code = #{entity.organizationCode},                 <!-- 组织机构代码 nvarchar2(64)-->
+			organization_code_path = #{entity.organizationCodePath},        <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			business_type = #{entity.businessType},                         <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			social_credit_code = #{entity.socialCreditCode},                <!-- 统一社会信用代码 nvarchar2(64)-->
+			social_credit_code_path = #{entity.socialCreditCodePath},       <!-- 多证合一营业执照 nvarchar2(64)-->
+			open_an_account_license = #{entity.openAnAccountLicense},       <!-- 开户许可证核准号 nvarchar2(64)-->
+			open_an_account_license_path = #{entity.openAnAccountLicensePath},    <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			legal_name = #{entity.legalName},                               <!-- 法人姓名 nvarchar2(64)-->
+			legal_id_card_code = #{entity.legalIdCardCode},                 <!-- 法人身份证号 nvarchar2(64)-->
+			legal_id_card_code_positive = #{entity.legalIdCardCodePositive},  <!-- 法人身份证号（正面） nvarchar2(64)-->
+			legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},  <!-- 法人身份证号（反面） nvarchar2(64)-->
+			store_type = #{entity.storeType},                               <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			tax_registration_number = #{entity.taxRegistrationNumber},      <!-- 税务登记证号 nvarchar2(64)-->
+			store_brand = #{entity.storeBrand},                             <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			tax_registration_number_path = #{entity.taxRegistrationNumberPath},     <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			store_brand_path = #{entity.storeBrandPath},                    <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			store_name = #{entity.storeName},                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			contact = #{entity.contact},                                    <!-- 联系人 nvarchar2(64)-->
+			contact_number = #{entity.contactNumber},                       <!-- 联系人电话 nvarchar2(64)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id） number(19)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id） number(19)-->
+			summary_of_coping = #{entity.summaryOfCoping},                  <!-- 应付总金额 number(12,3)-->
+			payment_voucher_path = #{entity.paymentVoucherPath},            <!-- 商家上传付款凭证path nvarchar2(64)-->
+			payment_instructions = #{entity.paymentInstructions},           <!-- 商家付款凭证说明 nvarchar2(255)-->
+			one_audit_opinion = #{entity.oneAuditOpinion},                  <!-- 一审审核意见 nvarchar2(255)-->
+			two_audit_opinion = #{entity.twoAuditOpinion},                  <!-- 二审审核意见 nvarchar2(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+			commission = #{entity.commission},                              <!-- 分佣比例 number(12,3)-->
+			audit_opinion = #{entity.auditOpinion},                         <!-- 入驻信息审核意见 nvarchar2(255)-->
+
+		</set>
+		WHERE enter_id = #{entity.enterId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_enter_auth a 
+		<set>
+			status = #{entity.status},                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			is_perfect = #{entity.isPerfect},                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			country_name = #{entity.countryName},                           <!-- 国家名字 nvarchar2(64)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) number(19)-->
+			province_name = #{entity.provinceName},                         <!-- 省名字 nvarchar2(64)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) number(19)-->
+			city_name = #{entity.cityName},                                 <!-- 市名字 nvarchar2(64)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) number(19)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 公司_详细地址 nvarchar2(255)-->
+			registered_capital = #{entity.registeredCapital},               <!-- 注册资金，单位万元 number(10)-->
+			seller_license = #{entity.sellerLicense},                       <!-- 营业执照号 nvarchar2(64)-->
+			seller_license_path = #{entity.sellerLicensePath},              <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			organization_code = #{entity.organizationCode},                 <!-- 组织机构代码 nvarchar2(64)-->
+			organization_code_path = #{entity.organizationCodePath},        <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			business_type = #{entity.businessType},                         <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			social_credit_code = #{entity.socialCreditCode},                <!-- 统一社会信用代码 nvarchar2(64)-->
+			social_credit_code_path = #{entity.socialCreditCodePath},       <!-- 多证合一营业执照 nvarchar2(64)-->
+			open_an_account_license = #{entity.openAnAccountLicense},       <!-- 开户许可证核准号 nvarchar2(64)-->
+			open_an_account_license_path = #{entity.openAnAccountLicensePath},    <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			legal_name = #{entity.legalName},                               <!-- 法人姓名 nvarchar2(64)-->
+			legal_id_card_code = #{entity.legalIdCardCode},                 <!-- 法人身份证号 nvarchar2(64)-->
+			legal_id_card_code_positive = #{entity.legalIdCardCodePositive},  <!-- 法人身份证号（正面） nvarchar2(64)-->
+			legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},  <!-- 法人身份证号（反面） nvarchar2(64)-->
+			store_type = #{entity.storeType},                               <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			tax_registration_number = #{entity.taxRegistrationNumber},      <!-- 税务登记证号 nvarchar2(64)-->
+			store_brand = #{entity.storeBrand},                             <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			tax_registration_number_path = #{entity.taxRegistrationNumberPath},     <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			store_brand_path = #{entity.storeBrandPath},                    <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			store_name = #{entity.storeName},                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			contact = #{entity.contact},                                    <!-- 联系人 nvarchar2(64)-->
+			contact_number = #{entity.contactNumber},                       <!-- 联系人电话 nvarchar2(64)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id） number(19)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id） number(19)-->
+			summary_of_coping = #{entity.summaryOfCoping},                  <!-- 应付总金额 number(12,3)-->
+			payment_voucher_path = #{entity.paymentVoucherPath},            <!-- 商家上传付款凭证path nvarchar2(64)-->
+			payment_instructions = #{entity.paymentInstructions},           <!-- 商家付款凭证说明 nvarchar2(255)-->
+			one_audit_opinion = #{entity.oneAuditOpinion},                  <!-- 一审审核意见 nvarchar2(255)-->
+			two_audit_opinion = #{entity.twoAuditOpinion},                  <!-- 二审审核意见 nvarchar2(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+			commission = #{entity.commission},                              <!-- 分佣比例 number(12,3)-->
+			audit_opinion = #{entity.auditOpinion},                         <!-- 入驻信息审核意见 nvarchar2(255)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_enter_auth
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			<if test="entity.isPerfect != null">is_perfect = #{entity.isPerfect},</if>                                          <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司_详细地址 nvarchar2(255)-->
+			<if test="entity.registeredCapital != null">registered_capital = #{entity.registeredCapital},</if>                  <!-- 注册资金，单位万元 number(10)-->
+			<if test="entity.sellerLicense != null">seller_license = #{entity.sellerLicense},</if>                              <!-- 营业执照号 nvarchar2(64)-->
+			<if test="entity.sellerLicensePath != null">seller_license_path = #{entity.sellerLicensePath},</if>                 <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			<if test="entity.organizationCode != null">organization_code = #{entity.organizationCode},</if>                     <!-- 组织机构代码 nvarchar2(64)-->
+			<if test="entity.organizationCodePath != null">organization_code_path = #{entity.organizationCodePath},</if>        <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			<if test="entity.businessType != null">business_type = #{entity.businessType},</if>                                 <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			<if test="entity.socialCreditCode != null">social_credit_code = #{entity.socialCreditCode},</if>                    <!-- 统一社会信用代码 nvarchar2(64)-->
+			<if test="entity.socialCreditCodePath != null">social_credit_code_path = #{entity.socialCreditCodePath},</if>       <!-- 多证合一营业执照 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicense != null">open_an_account_license = #{entity.openAnAccountLicense},</if>       <!-- 开户许可证核准号 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicensePath != null">open_an_account_license_path = #{entity.openAnAccountLicensePath},</if>        <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			<if test="entity.legalName != null">legal_name = #{entity.legalName},</if>                                          <!-- 法人姓名 nvarchar2(64)-->
+			<if test="entity.legalIdCardCode != null">legal_id_card_code = #{entity.legalIdCardCode},</if>                      <!-- 法人身份证号 nvarchar2(64)-->
+			<if test="entity.legalIdCardCodePositive != null">legal_id_card_code_positive = #{entity.legalIdCardCodePositive},</if>     <!-- 法人身份证号（正面） nvarchar2(64)-->
+			<if test="entity.legalIdCardCodeOpposite != null">legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},</if>     <!-- 法人身份证号（反面） nvarchar2(64)-->
+			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			<if test="entity.taxRegistrationNumber != null">tax_registration_number = #{entity.taxRegistrationNumber},</if>     <!-- 税务登记证号 nvarchar2(64)-->
+			<if test="entity.storeBrand != null">store_brand = #{entity.storeBrand},</if>                                       <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			<if test="entity.taxRegistrationNumberPath != null">tax_registration_number_path = #{entity.taxRegistrationNumberPath},</if>          <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			<if test="entity.storeBrandPath != null">store_brand_path = #{entity.storeBrandPath},</if>                          <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			<if test="entity.contact != null">contact = #{entity.contact},</if>                                                 <!-- 联系人 nvarchar2(64)-->
+			<if test="entity.contactNumber != null">contact_number = #{entity.contactNumber},</if>                              <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id） number(19)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.summaryOfCoping != null">summary_of_coping = #{entity.summaryOfCoping},</if>                       <!-- 应付总金额 number(12,3)-->
+			<if test="entity.paymentVoucherPath != null">payment_voucher_path = #{entity.paymentVoucherPath},</if>              <!-- 商家上传付款凭证path nvarchar2(64)-->
+			<if test="entity.paymentInstructions != null">payment_instructions = #{entity.paymentInstructions},</if>            <!-- 商家付款凭证说明 nvarchar2(255)-->
+			<if test="entity.oneAuditOpinion != null">one_audit_opinion = #{entity.oneAuditOpinion},</if>                       <!-- 一审审核意见 nvarchar2(255)-->
+			<if test="entity.twoAuditOpinion != null">two_audit_opinion = #{entity.twoAuditOpinion},</if>                       <!-- 二审审核意见 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.commission != null">commission = #{entity.commission},</if>                                        <!-- 分佣比例 number(12,3)-->
+			<if test="entity.auditOpinion != null">audit_opinion = #{entity.auditOpinion},</if>                                 <!-- 入驻信息审核意见 nvarchar2(255)-->
+		</set>
+		WHERE enter_id = #{entity.enterId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_enter_auth a
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过 70 入驻信息更改后审核中、  80入驻信息更改后审核通过、90入驻信息更改后审核不通过 char(2)-->
+			<if test="entity.isPerfect != null">is_perfect = #{entity.isPerfect},</if>                                          <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
+			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司_详细地址 nvarchar2(255)-->
+			<if test="entity.registeredCapital != null">registered_capital = #{entity.registeredCapital},</if>                  <!-- 注册资金，单位万元 number(10)-->
+			<if test="entity.sellerLicense != null">seller_license = #{entity.sellerLicense},</if>                              <!-- 营业执照号 nvarchar2(64)-->
+			<if test="entity.sellerLicensePath != null">seller_license_path = #{entity.sellerLicensePath},</if>                 <!-- 营业执照电子版图片路径 nvarchar2(64)-->
+			<if test="entity.organizationCode != null">organization_code = #{entity.organizationCode},</if>                     <!-- 组织机构代码 nvarchar2(64)-->
+			<if test="entity.organizationCodePath != null">organization_code_path = #{entity.organizationCodePath},</if>        <!-- 组织机构代码电子版图片路径 nvarchar2(64)-->
+			<if test="entity.businessType != null">business_type = #{entity.businessType},</if>                                 <!-- 证件类型（1.普通营业执照2.多证合一营业执照） char(1)-->
+			<if test="entity.socialCreditCode != null">social_credit_code = #{entity.socialCreditCode},</if>                    <!-- 统一社会信用代码 nvarchar2(64)-->
+			<if test="entity.socialCreditCodePath != null">social_credit_code_path = #{entity.socialCreditCodePath},</if>       <!-- 多证合一营业执照 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicense != null">open_an_account_license = #{entity.openAnAccountLicense},</if>       <!-- 开户许可证核准号 nvarchar2(64)-->
+			<if test="entity.openAnAccountLicensePath != null">open_an_account_license_path = #{entity.openAnAccountLicensePath},</if>        <!-- 开户许可证核准号电子版 nvarchar2(64)-->
+			<if test="entity.legalName != null">legal_name = #{entity.legalName},</if>                                          <!-- 法人姓名 nvarchar2(64)-->
+			<if test="entity.legalIdCardCode != null">legal_id_card_code = #{entity.legalIdCardCode},</if>                      <!-- 法人身份证号 nvarchar2(64)-->
+			<if test="entity.legalIdCardCodePositive != null">legal_id_card_code_positive = #{entity.legalIdCardCodePositive},</if>     <!-- 法人身份证号（正面） nvarchar2(64)-->
+			<if test="entity.legalIdCardCodeOpposite != null">legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},</if>     <!-- 法人身份证号（反面） nvarchar2(64)-->
+			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型（1.普通店铺，2.旗舰店铺） char(1)-->
+			<if test="entity.taxRegistrationNumber != null">tax_registration_number = #{entity.taxRegistrationNumber},</if>     <!-- 税务登记证号 nvarchar2(64)-->
+			<if test="entity.storeBrand != null">store_brand = #{entity.storeBrand},</if>                                       <!-- 店铺品牌名（多个按照，分割） nvarchar2(255)-->
+			<if test="entity.taxRegistrationNumberPath != null">tax_registration_number_path = #{entity.taxRegistrationNumberPath},</if>          <!-- 税务登记，税务登记证号电子版path nvarchar2(64)-->
+			<if test="entity.storeBrandPath != null">store_brand_path = #{entity.storeBrandPath},</if>                          <!-- 店铺品牌商标证书path（多个按照，分割） nvarchar2(2000)-->
+			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
+			<if test="entity.contact != null">contact = #{entity.contact},</if>                                                 <!-- 联系人 nvarchar2(64)-->
+			<if test="entity.contactNumber != null">contact_number = #{entity.contactNumber},</if>                              <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id） number(19)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.summaryOfCoping != null">summary_of_coping = #{entity.summaryOfCoping},</if>                       <!-- 应付总金额 number(12,3)-->
+			<if test="entity.paymentVoucherPath != null">payment_voucher_path = #{entity.paymentVoucherPath},</if>              <!-- 商家上传付款凭证path nvarchar2(64)-->
+			<if test="entity.paymentInstructions != null">payment_instructions = #{entity.paymentInstructions},</if>            <!-- 商家付款凭证说明 nvarchar2(255)-->
+			<if test="entity.oneAuditOpinion != null">one_audit_opinion = #{entity.oneAuditOpinion},</if>                       <!-- 一审审核意见 nvarchar2(255)-->
+			<if test="entity.twoAuditOpinion != null">two_audit_opinion = #{entity.twoAuditOpinion},</if>                       <!-- 二审审核意见 nvarchar2(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.commission != null">commission = #{entity.commission},</if>                                        <!-- 分佣比例 number(12,3)-->
+			<if test="entity.auditOpinion != null">audit_opinion = #{entity.auditOpinion},</if>                                 <!-- 入驻信息审核意见 nvarchar2(255)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_enter_auth
+		WHERE enter_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_enter_auth
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					enter_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_enter_auth a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_enter_auth a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

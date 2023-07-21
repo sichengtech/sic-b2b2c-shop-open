@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<% var addressId=parameter.addressId;%>
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/addressForm.js"></script>
+	<!-- 选择地区js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-area.js"></script>
+	<!-- 选择地区css -->
+	<link rel="stylesheet" href="${ctx}/views/wap/default/css/wx-area.css">
+	
+</head>
+<body ontouchstart class="address-form-body">
+	<div class="sui-page-group address-form">
+	    <div class="sui-page sui-page-current" id="addressView">
+			<div class="header-default-box weui-border-b">
+				<a href="javascript:history.back(-1);" class="icon icon-arrowleft l back use-router"></a>
+				<!-- <a href="home.jsp" class="icon icon-wxbzhuye r"></a> -->
+				<h1 class="title">添加收货地址</h1>
+			</div>
+		    <form id="form">
+		    	<input id="addressId" name="addressId" class="weui_input" type="hidden" value="${addressId!}"/>
+		        <div class="weui_cells weui_cells_form">
+		            <div class="weui_cell">
+		                <div class="weui_cell_hd"><label class="weui_label">收货人：</label></div>
+		                <div class="weui_cell_bd weui_cell_primary">
+		                    <input id="name" name="name" value="" class="weui_input" type="text" placeholder="请输入姓名" required emptyTips="请输入姓名" maxlength="10"/>
+		                </div>
+		             	<div class="weui_cell_ft">
+		                	<i class="weui_icon_warn"></i>
+		            	</div>
+		            </div>
+		            <div class="weui_cell">
+		                <div class="weui_cell_hd"><label class="weui_label">手机号：</label></div>
+		                <div class="weui_cell_bd weui_cell_primary">
+		                    <input id="mobile" name="mobile" value="" class="weui_input" type="text" placeholder="请输入手机号" required emptyTips="请输入手机号" pattern="^(\+\d+)?(1[0-9]\d{9})$" maxlength="20" notMatchTips="请输入正确的手机号"/>
+		                </div>
+		             	<div class="weui_cell_ft">
+		                	<i class="weui_icon_warn"></i>
+		            	</div>
+		            </div>
+		            <div class="weui_cell">
+		                <div class="weui_cell_hd"><label class="weui_label">地址：</label></div>
+		                <div class="weui_cell_bd weui_cell_primary">
+		                    <input id="areaId" class="weui_input" type="text" placeholder="请选择所在城市" required emptyTips="请选择所在城市" readonly="readonly"/>
+		                    <input id="provinceId" name="provinceId" type="hidden"/>
+		                    <input id="provinceName" name="provinceName" type="hidden"/>
+		                    <input id="cityId" name="cityId" type="hidden"/>
+		                    <input id="cityName" name="cityName" type="hidden"/>
+		                    <input id="districtId" name="districtId" type="hidden"/>
+		                    <input id="districtName" name="districtName" type="hidden"/>
+		                </div>
+		                <div class="weui_cell_ft">
+		                	<i class="weui_icon_warn"></i>
+		            	</div>
+		            </div>
+		        </div>
+				<div class="weui_cells weui_cells_form">
+		            <div class="weui_cell">
+		                <div class="weui_cell_bd weui_cell_primary">
+		                    <textarea id="detailedAddress" name="detailedAddress" class="weui_textarea" placeholder="请输入详细地址" rows="3" required emptyTips="请输入详细地址" maxlength="255"></textarea>
+		                </div>
+		                <div class="weui_cell_ft">
+		                	<i class="weui_icon_warn"></i>
+		            	</div>
+		            </div>
+		        </div>
+		        <div class="weui_cells weui_cells_checkbox">
+					<label class="weui_cell weui_check_label" for="isDefault">
+		                <div class="weui_cell_hd">
+		                    <input id="isDefault" type="checkbox" class="weui_check" name="isDefault" value="1"/>
+		                    <i class="weui_icon_checked"></i>
+		                </div>
+		                <div class="weui_cell_bd weui_cell_primary">
+		                    <p>设为默认</p>
+		                </div>
+					</label>
+		        </div>
+		        <div class="weui_btn_area">
+		            <a id="formSubmitBtn" href="javascript:" class="weui_btn weui_btn_warn">保存</a>
+		        </div>
+		    </form>
+		    <!-- 选择地区model -->
+		    <% include("/include/areaModel.html"){}%>
+		    
+	     	<% include("/include/foot-nav.html"){}%>
+		 </div>
+	 </div>
+</body>
+</html>

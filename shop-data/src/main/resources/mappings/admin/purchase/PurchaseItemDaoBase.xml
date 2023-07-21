@@ -1,0 +1,322 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.purchase.dao.PurchaseItemDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="purchaseItemColumns">
+	<trim suffixOverrides=",">
+		a.purchase_item_id AS 'purchaseItemId',                              <!-- 采购详情id bigint(20)-->
+		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+		a.name AS 'name',                                                    <!-- 产品名称 varchar(64)-->
+		a.model AS 'model',                                                  <!-- 产品型号 varchar(64)-->
+		a.brand AS 'brand',                                                  <!-- 产品品牌 varchar(64)-->
+		a.amount AS 'amount',                                                <!-- 产品数量 int(11)-->
+		a.purchase_remarks AS 'purchaseRemarks',                             <!-- 产品描述 varchar(255)-->
+		a.price_requirement AS 'priceRequirement',                           <!-- 价格要求 decimal(12,3)-->
+		a.unit AS 'unit',                                                    <!-- 单位 varchar(64)-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.purchaseItemId != null ">AND a.purchase_item_id = #{c.purchaseItemId}</if>
+		<if test="c.purchaseId != null ">AND a.purchase_id = #{c.purchaseId}</if>
+		<if test="c.name != null and c.name != ''">AND a.name = #{c.name}</if>
+		<if test="c.model != null and c.model != ''">AND a.model = #{c.model}</if>
+		<if test="c.brand != null and c.brand != ''">AND a.brand = #{c.brand}</if>
+		<if test="c.amount != null ">AND a.amount = #{c.amount}</if>
+		<if test="c.purchaseRemarks != null and c.purchaseRemarks != ''">AND a.purchase_remarks = #{c.purchaseRemarks}</if>
+		<if test="c.priceRequirement != null ">AND a.price_requirement = #{c.priceRequirement}</if>
+		<if test="c.unit != null and c.unit != ''">AND a.unit = #{c.unit}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="PurchaseItem">
+		SELECT 
+		<include refid="purchaseItemColumns"/>
+		FROM purchase_item a
+		WHERE a.purchase_item_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="PurchaseItem">
+		SELECT 
+		<include refid="purchaseItemColumns"/>
+		FROM purchase_item a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.purchase_item_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="PurchaseItem">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="purchaseItemColumns"/>
+		FROM purchase_item a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.purchase_item_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="PurchaseItem">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="purchaseItemColumns"/>
+		FROM purchase_item a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.purchase_item_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.purchaseItemId" keyColumn="purchase_item_id" useGeneratedKeys="true">
+		INSERT INTO purchase_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			purchase_item_id,                                  <!-- 采购详情id bigint(20)-->
+			purchase_id,                                       <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			name,                                              <!-- 产品名称 varchar(64)-->
+			model,                                             <!-- 产品型号 varchar(64)-->
+			brand,                                             <!-- 产品品牌 varchar(64)-->
+			amount,                                            <!-- 产品数量 int(11)-->
+			purchase_remarks,                                  <!-- 产品描述 varchar(255)-->
+			price_requirement,                                 <!-- 价格要求 decimal(12,3)-->
+			unit,                                              <!-- 单位 varchar(64)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.purchaseItemId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">purchase_item_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.purchaseId},                              <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			#{entity.name},                                    <!-- 产品名称 varchar(64)-->
+			#{entity.model},                                   <!-- 产品型号 varchar(64)-->
+			#{entity.brand},                                   <!-- 产品品牌 varchar(64)-->
+			#{entity.amount},                                  <!-- 产品数量 int(11)-->
+			#{entity.purchaseRemarks},                         <!-- 产品描述 varchar(255)-->
+			#{entity.priceRequirement},                        <!-- 价格要求 decimal(12,3)-->
+			#{entity.unit},                                    <!-- 单位 varchar(64)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.purchaseItemId" keyColumn="purchase_item_id" useGeneratedKeys="true">
+		INSERT INTO purchase_item
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.purchaseItemId != null">purchase_item_id,</if></if>
+			<if test="entity.pkMode==2">purchase_item_id,</if>
+			<if test="entity.purchaseId != null">purchase_id,</if>                             <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 产品名称 varchar(64)-->
+			<if test="entity.model != null">model,</if>                                        <!-- 产品型号 varchar(64)-->
+			<if test="entity.brand != null">brand,</if>                                        <!-- 产品品牌 varchar(64)-->
+			<if test="entity.amount != null">amount,</if>                                      <!-- 产品数量 int(11)-->
+			<if test="entity.purchaseRemarks != null">purchase_remarks,</if>                   <!-- 产品描述 varchar(255)-->
+			<if test="entity.priceRequirement != null">price_requirement,</if>                 <!-- 价格要求 decimal(12,3)-->
+			<if test="entity.unit != null">unit,</if>                                          <!-- 单位 varchar(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.purchaseItemId != null">#{entity.purchaseItemId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">purchase_item_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.purchaseId != null">#{entity.purchaseId},</if>                              <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 产品名称 varchar(64)-->
+			<if test="entity.model != null">#{entity.model},</if>                                        <!-- 产品型号 varchar(64)-->
+			<if test="entity.brand != null">#{entity.brand},</if>                                        <!-- 产品品牌 varchar(64)-->
+			<if test="entity.amount != null">#{entity.amount},</if>                                      <!-- 产品数量 int(11)-->
+			<if test="entity.purchaseRemarks != null">#{entity.purchaseRemarks},</if>                    <!-- 产品描述 varchar(255)-->
+			<if test="entity.priceRequirement != null">#{entity.priceRequirement},</if>                  <!-- 价格要求 decimal(12,3)-->
+			<if test="entity.unit != null">#{entity.unit},</if>                                          <!-- 单位 varchar(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE purchase_item 
+		<set>
+			purchase_item_id = #{entity.purchaseItemId},                    <!-- 采购详情id bigint(20)-->
+			purchase_id = #{entity.purchaseId},                             <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			name = #{entity.name},                                          <!-- 产品名称 varchar(64)-->
+			model = #{entity.model},                                        <!-- 产品型号 varchar(64)-->
+			brand = #{entity.brand},                                        <!-- 产品品牌 varchar(64)-->
+			amount = #{entity.amount},                                      <!-- 产品数量 int(11)-->
+			purchase_remarks = #{entity.purchaseRemarks},                   <!-- 产品描述 varchar(255)-->
+			price_requirement = #{entity.priceRequirement},                 <!-- 价格要求 decimal(12,3)-->
+			unit = #{entity.unit},                                          <!-- 单位 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE purchase_item_id = #{entity.purchaseItemId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE purchase_item a 
+		<set>
+			purchase_item_id = #{entity.purchaseItemId},                    <!-- 采购详情id bigint(20)-->
+			purchase_id = #{entity.purchaseId},                             <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			name = #{entity.name},                                          <!-- 产品名称 varchar(64)-->
+			model = #{entity.model},                                        <!-- 产品型号 varchar(64)-->
+			brand = #{entity.brand},                                        <!-- 产品品牌 varchar(64)-->
+			amount = #{entity.amount},                                      <!-- 产品数量 int(11)-->
+			purchase_remarks = #{entity.purchaseRemarks},                   <!-- 产品描述 varchar(255)-->
+			price_requirement = #{entity.priceRequirement},                 <!-- 价格要求 decimal(12,3)-->
+			unit = #{entity.unit},                                          <!-- 单位 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE purchase_item
+		<set>
+			<if test="entity.purchaseItemId != null">purchase_item_id = #{entity.purchaseItemId},</if>                          <!-- 采购详情id bigint(20)-->
+			<if test="entity.purchaseId != null">purchase_id = #{entity.purchaseId},</if>                                       <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 产品名称 varchar(64)-->
+			<if test="entity.model != null">model = #{entity.model},</if>                                                       <!-- 产品型号 varchar(64)-->
+			<if test="entity.brand != null">brand = #{entity.brand},</if>                                                       <!-- 产品品牌 varchar(64)-->
+			<if test="entity.amount != null">amount = #{entity.amount},</if>                                                    <!-- 产品数量 int(11)-->
+			<if test="entity.purchaseRemarks != null">purchase_remarks = #{entity.purchaseRemarks},</if>                        <!-- 产品描述 varchar(255)-->
+			<if test="entity.priceRequirement != null">price_requirement = #{entity.priceRequirement},</if>                     <!-- 价格要求 decimal(12,3)-->
+			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 单位 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE purchase_item_id = #{entity.purchaseItemId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE purchase_item a
+		<set>
+			<if test="entity.purchaseItemId != null">purchase_item_id = #{entity.purchaseItemId},</if>                          <!-- 采购详情id bigint(20)-->
+			<if test="entity.purchaseId != null">purchase_id = #{entity.purchaseId},</if>                                       <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 产品名称 varchar(64)-->
+			<if test="entity.model != null">model = #{entity.model},</if>                                                       <!-- 产品型号 varchar(64)-->
+			<if test="entity.brand != null">brand = #{entity.brand},</if>                                                       <!-- 产品品牌 varchar(64)-->
+			<if test="entity.amount != null">amount = #{entity.amount},</if>                                                    <!-- 产品数量 int(11)-->
+			<if test="entity.purchaseRemarks != null">purchase_remarks = #{entity.purchaseRemarks},</if>                        <!-- 产品描述 varchar(255)-->
+			<if test="entity.priceRequirement != null">price_requirement = #{entity.priceRequirement},</if>                     <!-- 价格要求 decimal(12,3)-->
+			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 单位 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM purchase_item
+		WHERE purchase_item_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM purchase_item
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					purchase_item_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM purchase_item a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM purchase_item a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

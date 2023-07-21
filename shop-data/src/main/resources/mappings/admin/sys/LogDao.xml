@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.LogDao">
+
+	<!--
+	请把你的扩展SQL写到 当前 文件中
+	AccountBalanceProorderDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountBalanceProorderDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountBalanceProorderDao.xml文件与AccountBalanceProorderDaoBase.xml文件，在运行时会合并起来。
+	AccountBalanceProorderDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountBalanceProorderDao.xml文件的内容你要自行做好备份。
+	-->
+
+   	<select id="findList" resultType="Log">
+		SELECT 
+			a.*,
+			u.id AS "createBy.id",
+			u.name AS "createBy.name",
+			c.name AS "createBy.company.name",
+			o.name AS "createBy.office.name"
+		FROM sys_log a
+		JOIN sys_user u ON u.id = a.create_by
+		JOIN sys_office c ON c.id = u.company_id
+		JOIN sys_office o ON o.id = u.office_id
+		WHERE a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+		<if test="title != null and title != ''">
+			<bind name="pattern" value="'%' + title + '%'" />				
+			AND lower(a.title) LIKE lower(#{pattern})
+		</if>
+		<if test="createBy != null and createBy.id != null and createBy.id != ''">
+			AND a.create_by = #{createBy.id}
+		</if>
+		<if test="requestUri != null and requestUri != ''">
+			<bind name="pattern" value="'%' + requestUri + '%'" />				
+			AND lower(a.request_uri) LIKE lower(#{pattern})
+		</if>
+		<if test="exception != null and exception != ''">
+			AND a.type = #{TYPE_EXCEPTION}
+		</if>
+		ORDER BY a.id DESC
+	</select>
+	
+</mapper>

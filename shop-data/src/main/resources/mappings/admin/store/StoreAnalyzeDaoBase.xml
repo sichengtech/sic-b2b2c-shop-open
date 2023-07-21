@@ -1,0 +1,358 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreAnalyzeDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeAnalyzeColumns">
+		<trim suffixOverrides=",">
+			a.store_id AS "storeId",                                             <!-- 店铺id bigint(20)-->
+			a.all_sales AS "allSales",                                           <!-- 总销量 int(11)-->
+			a.all_sales_date AS "allSalesDate",                                  <!-- 总销量更新日期 datetime-->
+			a.week_sales AS "weekSales",                                         <!-- 周销量 int(11)-->
+			a.week_sales_date AS "weekSalesDate",                                <!-- 周销量更新日期 datetime-->
+			a.month_sales AS "monthSales",                                       <!-- 月销量 int(11)-->
+			a.month_sales_date AS "monthSalesDate",                              <!-- 月销量更新日期 datetime-->
+			a.month3_sales AS "month3Sales",                                     <!-- 三个月销量 int(11)-->
+			a.month3_sales_date AS "month3SalesDate",                            <!-- 三个月销量更新日期 datetime-->
+			a.product_score AS "productScore",                                   <!-- 产品评分 float-->
+			a.logistics_score AS "logisticsScore",                               <!-- 物流评分 float-->
+			a.service_attitude_score AS "serviceAttitudeScore",                  <!-- 服务评分 float-->
+			a.product_score_up_or_down AS "productScoreUpOrDown",                <!-- 1为商品评分上升，0为下降 char(1)-->
+			a.logistics_score_up_or_down AS "logisticsScoreUpOrDown",            <!-- 1为物流评分上升，0为下降 char(1)-->
+			a.service_attitude_score_up_or_down AS "serviceAttitudeScoreUpOrDown",   <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+		<if test="w!=null and w.e!=null">
+			<bind name="c" value="w.e"/>
+			<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+			<if test="c.allSales != null ">AND a.all_sales = #{c.allSales}</if>
+			<if test="c.beginAllSalesDate != null and c.endAllSalesDate != null ">AND a.all_sales_date BETWEEN #{c.beginAllSalesDate} AND #{c.endAllSalesDate}</if>
+			<if test="c.weekSales != null ">AND a.week_sales = #{c.weekSales}</if>
+			<if test="c.beginWeekSalesDate != null and c.endWeekSalesDate != null ">AND a.week_sales_date BETWEEN #{c.beginWeekSalesDate} AND #{c.endWeekSalesDate}</if>
+			<if test="c.monthSales != null ">AND a.month_sales = #{c.monthSales}</if>
+			<if test="c.beginMonthSalesDate != null and c.endMonthSalesDate != null ">AND a.month_sales_date BETWEEN #{c.beginMonthSalesDate} AND #{c.endMonthSalesDate}</if>
+			<if test="c.month3Sales != null ">AND a.month3_sales = #{c.month3Sales}</if>
+			<if test="c.beginMonth3SalesDate != null and c.endMonth3SalesDate != null ">AND a.month3_sales_date BETWEEN #{c.beginMonth3SalesDate} AND #{c.endMonth3SalesDate}</if>
+			<if test="c.productScore != null and c.productScore != ''">AND a.product_score = #{c.productScore}</if>
+			<if test="c.logisticsScore != null and c.logisticsScore != ''">AND a.logistics_score = #{c.logisticsScore}</if>
+			<if test="c.serviceAttitudeScore != null and c.serviceAttitudeScore != ''">AND a.service_attitude_score = #{c.serviceAttitudeScore}</if>
+			<if test="c.productScoreUpOrDown != null and c.productScoreUpOrDown != ''">AND a.product_score_up_or_down = #{c.productScoreUpOrDown}</if>
+			<if test="c.logisticsScoreUpOrDown != null and c.logisticsScoreUpOrDown != ''">AND a.logistics_score_up_or_down = #{c.logisticsScoreUpOrDown}</if>
+			<if test="c.serviceAttitudeScoreUpOrDown != null and c.serviceAttitudeScoreUpOrDown != ''">AND a.service_attitude_score_up_or_down = #{c.serviceAttitudeScoreUpOrDown}</if>
+		</if>
+	</sql>
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreAnalyze">
+		SELECT
+		<include refid="storeAnalyzeColumns"/>
+		FROM store_analyze a
+		WHERE a.store_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreAnalyze">
+		SELECT
+		<include refid="storeAnalyzeColumns"/>
+		FROM store_analyze a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.store_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreAnalyze">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeAnalyzeColumns"/>
+		FROM store_analyze a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.store_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreAnalyze">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeAnalyzeColumns"/>
+		FROM store_analyze a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.store_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.storeId" keyColumn="store_id" useGeneratedKeys="true">
+		INSERT INTO store_analyze
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			store_id,                                          <!-- 店铺id bigint(20)-->
+			all_sales,                                         <!-- 总销量 int(11)-->
+			all_sales_date,                                    <!-- 总销量更新日期 datetime-->
+			week_sales,                                        <!-- 周销量 int(11)-->
+			week_sales_date,                                   <!-- 周销量更新日期 datetime-->
+			month_sales,                                       <!-- 月销量 int(11)-->
+			month_sales_date,                                  <!-- 月销量更新日期 datetime-->
+			month3_sales,                                      <!-- 三个月销量 int(11)-->
+			month3_sales_date,                                 <!-- 三个月销量更新日期 datetime-->
+			product_score,                                     <!-- 产品评分 float-->
+			logistics_score,                                   <!-- 物流评分 float-->
+			service_attitude_score,                            <!-- 服务评分 float-->
+			product_score_up_or_down,                          <!-- 1为商品评分上升，0为下降 char(1)-->
+			logistics_score_up_or_down,                        <!-- 1为物流评分上升，0为下降 char(1)-->
+			service_attitude_score_up_or_down,                 <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.storeId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_analyze_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.allSales},                                <!-- 总销量 int(11)-->
+			#{entity.allSalesDate},                            <!-- 总销量更新日期 datetime-->
+			#{entity.weekSales},                               <!-- 周销量 int(11)-->
+			#{entity.weekSalesDate},                           <!-- 周销量更新日期 datetime-->
+			#{entity.monthSales},                              <!-- 月销量 int(11)-->
+			#{entity.monthSalesDate},                          <!-- 月销量更新日期 datetime-->
+			#{entity.month3Sales},                             <!-- 三个月销量 int(11)-->
+			#{entity.month3SalesDate},                         <!-- 三个月销量更新日期 datetime-->
+			#{entity.productScore},                            <!-- 产品评分 float-->
+			#{entity.logisticsScore},                          <!-- 物流评分 float-->
+			#{entity.serviceAttitudeScore},                    <!-- 服务评分 float-->
+			#{entity.productScoreUpOrDown},                    <!-- 1为商品评分上升，0为下降 char(1)-->
+			#{entity.logisticsScoreUpOrDown},                  <!-- 1为物流评分上升，0为下降 char(1)-->
+			#{entity.serviceAttitudeScoreUpOrDown},            <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.storeId" keyColumn="store_id" useGeneratedKeys="true">
+		INSERT INTO store_analyze
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.storeId != null">store_id,</if></if>
+			<if test="entity.pkMode==2">store_id,</if>
+			<if test="entity.allSales != null">all_sales,</if>                                 <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">all_sales_date,</if>                        <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">week_sales,</if>                               <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">week_sales_date,</if>                      <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">month_sales_date,</if>                    <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">month3_sales,</if>                           <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date,</if>                  <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">product_score,</if>                         <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">logistics_score,</if>                     <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">service_attitude_score,</if>        <!-- 服务评分 float-->
+			<if test="entity.productScoreUpOrDown != null">product_score_up_or_down,</if>      <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">logistics_score_up_or_down,</if>  <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">service_attitude_score_up_or_down,</if>             <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.storeId != null">#{entity.storeId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_analyze_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.allSales != null">#{entity.allSales},</if>                                  <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">#{entity.allSalesDate},</if>                          <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">#{entity.weekSales},</if>                                <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">#{entity.weekSalesDate},</if>                        <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">#{entity.monthSalesDate},</if>                      <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">#{entity.month3Sales},</if>                            <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">#{entity.month3SalesDate},</if>                    <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">#{entity.productScore},</if>                          <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">#{entity.logisticsScore},</if>                      <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">#{entity.serviceAttitudeScore},</if>          <!-- 服务评分 float-->
+			<if test="entity.productScoreUpOrDown != null">#{entity.productScoreUpOrDown},</if>          <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">#{entity.logisticsScoreUpOrDown},</if>      <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">#{entity.serviceAttitudeScoreUpOrDown},</if>        <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_analyze
+		<set>
+			all_sales = #{entity.allSales},                                 <!-- 总销量 int(11)-->
+			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 datetime-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 int(11)-->
+			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 datetime-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 int(11)-->
+			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 datetime-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 int(11)-->
+			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 datetime-->
+			product_score = #{entity.productScore},                         <!-- 产品评分 float-->
+			logistics_score = #{entity.logisticsScore},                     <!-- 物流评分 float-->
+			service_attitude_score = #{entity.serviceAttitudeScore},        <!-- 服务评分 float-->
+			product_score_up_or_down = #{entity.productScoreUpOrDown},      <!-- 1为商品评分上升，0为下降 char(1)-->
+			logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},  <!-- 1为物流评分上升，0为下降 char(1)-->
+			service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},             <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</set>
+		WHERE store_id = #{entity.storeId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_analyze a
+		<set>
+			all_sales = #{entity.allSales},                                 <!-- 总销量 int(11)-->
+			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 datetime-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 int(11)-->
+			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 datetime-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 int(11)-->
+			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 datetime-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 int(11)-->
+			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 datetime-->
+			product_score = #{entity.productScore},                         <!-- 产品评分 float-->
+			logistics_score = #{entity.logisticsScore},                     <!-- 物流评分 float-->
+			service_attitude_score = #{entity.serviceAttitudeScore},        <!-- 服务评分 float-->
+			product_score_up_or_down = #{entity.productScoreUpOrDown},      <!-- 1为商品评分上升，0为下降 char(1)-->
+			logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},  <!-- 1为物流评分上升，0为下降 char(1)-->
+			service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},             <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_analyze
+		<set>
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">product_score = #{entity.productScore},</if>                                 <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">logistics_score = #{entity.logisticsScore},</if>                           <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">service_attitude_score = #{entity.serviceAttitudeScore},</if>        <!-- 服务评分 float-->
+			<if test="entity.productScoreUpOrDown != null">product_score_up_or_down = #{entity.productScoreUpOrDown},</if>      <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},</if>  <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},</if>                     <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</set>
+		WHERE store_id = #{entity.storeId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_analyze a
+		<set>
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">product_score = #{entity.productScore},</if>                                 <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">logistics_score = #{entity.logisticsScore},</if>                           <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">service_attitude_score = #{entity.serviceAttitudeScore},</if>        <!-- 服务评分 float-->
+			<if test="entity.productScoreUpOrDown != null">product_score_up_or_down = #{entity.productScoreUpOrDown},</if>      <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},</if>  <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},</if>                     <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_analyze
+		WHERE store_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_analyze
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					store_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_analyze a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_analyze a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

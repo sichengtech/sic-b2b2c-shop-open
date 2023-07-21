@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.AreaDao">
+
+	<!--
+	请把你的扩展SQL写到 当前 文件中
+	AccountBalanceProorderDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountBalanceProorderDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountBalanceProorderDao.xml文件与AccountBalanceProorderDaoBase.xml文件，在运行时会合并起来。
+	AccountBalanceProorderDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountBalanceProorderDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<cache-ref namespace="com.sicheng.admin.sys.dao.AreaDao"/><!-- 下面的sql全是单表操作，可以启用二级缓存 -->
+	
+	<!-- 特性：区域是一个树结构，删除一个节点会同时删除他的子节点 SQL语句中的OR parent_ids LIKE 就是实现这个功能的 -->
+	<update id="delete">
+		UPDATE sys_area SET
+		del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id} 
+		<bind name="pattern" value="'%,' + id + ',%'" />				
+		OR lower(parent_ids) LIKE lower(#{pattern})
+	</update>
+	
+	
+	
+
+</mapper>

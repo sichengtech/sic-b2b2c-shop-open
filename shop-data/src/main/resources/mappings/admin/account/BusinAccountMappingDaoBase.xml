@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.BusinAccountMappingDao">
+	<!-- 全部字段 -->
+	<sql id="businAccountMappingColumns">
+	<trim suffixOverrides=",">
+		a.b_id AS 'bId',                                                     <!-- 主键 bigint(20)-->
+		a.business_id AS 'businessId',                                       <!-- 业务id bigint(20)-->
+		a.serial_number AS 'serialNumber',                                   <!-- 流水号 varchar(64)-->
+		a.business_type AS 'businessType',                                   <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+		a.service_charge_status AS 'serviceChargeStatus',                    <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 修改时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.bId != null ">AND a.b_id = #{c.bId}</if>
+		<if test="c.businessId != null ">AND a.business_id = #{c.businessId}</if>
+		<if test="c.serialNumber != null and c.serialNumber != ''">AND a.serial_number = #{c.serialNumber}</if>
+		<if test="c.businessType != null and c.businessType != ''">AND a.business_type = #{c.businessType}</if>
+		<if test="c.serviceChargeStatus != null and c.serviceChargeStatus != ''">AND a.service_charge_status = #{c.serviceChargeStatus}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="BusinAccountMapping">
+		SELECT 
+		<include refid="businAccountMappingColumns"/>
+		FROM busin_account_mapping a
+		WHERE a.b_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="BusinAccountMapping">
+		SELECT 
+		<include refid="businAccountMappingColumns"/>
+		FROM busin_account_mapping a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.b_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="BusinAccountMapping">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="businAccountMappingColumns"/>
+		FROM busin_account_mapping a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.b_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="BusinAccountMapping">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="businAccountMappingColumns"/>
+		FROM busin_account_mapping a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.b_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.bId" keyColumn="b_id" useGeneratedKeys="true">
+		INSERT INTO busin_account_mapping
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			b_id,                                              <!-- 主键 bigint(20)-->
+			business_id,                                       <!-- 业务id bigint(20)-->
+			serial_number,                                     <!-- 流水号 varchar(64)-->
+			business_type,                                     <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			service_charge_status,                             <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 修改时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.bId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">busin_account_mapping_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.businessId},                              <!-- 业务id bigint(20)-->
+			#{entity.serialNumber},                            <!-- 流水号 varchar(64)-->
+			#{entity.businessType},                            <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			#{entity.serviceChargeStatus},                     <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 修改时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.bId" keyColumn="b_id" useGeneratedKeys="true">
+		INSERT INTO busin_account_mapping
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.bId != null">b_id,</if></if>
+			<if test="entity.pkMode==2">b_id,</if>
+			<if test="entity.businessId != null">business_id,</if>                             <!-- 业务id bigint(20)-->
+			<if test="entity.serialNumber != null">serial_number,</if>                         <!-- 流水号 varchar(64)-->
+			<if test="entity.businessType != null">business_type,</if>                         <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			<if test="entity.serviceChargeStatus != null">service_charge_status,</if>          <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 修改时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.bId != null">#{entity.bId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">busin_account_mapping_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.businessId != null">#{entity.businessId},</if>                              <!-- 业务id bigint(20)-->
+			<if test="entity.serialNumber != null">#{entity.serialNumber},</if>                          <!-- 流水号 varchar(64)-->
+			<if test="entity.businessType != null">#{entity.businessType},</if>                          <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			<if test="entity.serviceChargeStatus != null">#{entity.serviceChargeStatus},</if>            <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 修改时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE busin_account_mapping 
+		<set>
+			business_id = #{entity.businessId},                             <!-- 业务id bigint(20)-->
+			serial_number = #{entity.serialNumber},                         <!-- 流水号 varchar(64)-->
+			business_type = #{entity.businessType},                         <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			service_charge_status = #{entity.serviceChargeStatus},          <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 修改时间 datetime-->
+
+		</set>
+		WHERE b_id = #{entity.bId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE busin_account_mapping a 
+		<set>
+			business_id = #{entity.businessId},                             <!-- 业务id bigint(20)-->
+			serial_number = #{entity.serialNumber},                         <!-- 流水号 varchar(64)-->
+			business_type = #{entity.businessType},                         <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			service_charge_status = #{entity.serviceChargeStatus},          <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 修改时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE busin_account_mapping
+		<set>
+			<if test="entity.businessId != null">business_id = #{entity.businessId},</if>                                       <!-- 业务id bigint(20)-->
+			<if test="entity.serialNumber != null">serial_number = #{entity.serialNumber},</if>                                 <!-- 流水号 varchar(64)-->
+			<if test="entity.businessType != null">business_type = #{entity.businessType},</if>                                 <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			<if test="entity.serviceChargeStatus != null">service_charge_status = #{entity.serviceChargeStatus},</if>           <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改时间 datetime-->
+		</set>
+		WHERE b_id = #{entity.bId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE busin_account_mapping a
+		<set>
+			<if test="entity.businessId != null">business_id = #{entity.businessId},</if>                                       <!-- 业务id bigint(20)-->
+			<if test="entity.serialNumber != null">serial_number = #{entity.serialNumber},</if>                                 <!-- 流水号 varchar(64)-->
+			<if test="entity.businessType != null">business_type = #{entity.businessType},</if>                                 <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+			<if test="entity.serviceChargeStatus != null">service_charge_status = #{entity.serviceChargeStatus},</if>           <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM busin_account_mapping
+		WHERE b_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM busin_account_mapping
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					b_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM busin_account_mapping a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM busin_account_mapping a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

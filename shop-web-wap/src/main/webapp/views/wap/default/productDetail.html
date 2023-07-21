@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var pid=parameter.pid ;%>
+	<!-- 地区控件 -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/picker-city.js"></script>
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/picker.js"></script>
+	<!-- 轮播图 -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/Swiper-4.0.3/dist/js/swiper.min.js"></script>
+	<!-- <script type='text/javascript' src="${ctx}/views/wap/default/js/swiper.js"></script> -->
+	<link rel="stylesheet" href="${ctx}/views/wap/default/Swiper-4.0.3/dist/css/swiper.min.css">
+	<!-- 图片放大控件 -->
+	<link rel="stylesheet prefetch" href="${ctx}/views/wap/default/PhotoSwipe-master/dist/photoswipe.css">
+	<link rel="stylesheet prefetch" href="${ctx}/views/wap/default/PhotoSwipe-master/dist/default-skin/default-skin.css">
+	<script type="text/javascript" src="${ctx}/views/wap/default/PhotoSwipe-master/dist/photoswipe.min.js"></script>
+	<script type="text/javascript" src="${ctx}/views/wap/default/PhotoSwipe-master/dist/photoswipe-ui-default.min.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/productDetail.js"></script>
+	<script type="text/javascript">
+		var pid='${pid}';
+	</script>
+</head>
+<body class="view product-detail-body">
+	<div class="sui-page-group">
+		<% include("/include/view-nav.html"){}%>
+		<% include("/include/add-cat1.html"){}%>
+		<% include("/include/add-cat2.html"){}%>
+		<div class="sui-page sui-page-current" id="productView" style="position: absolute;">
+			<div class="content">
+				<!-- 头部开始 -->
+				<header class="store weui_cells_title weui-border-b clearfix">
+					<a href="javascript:void(0);" onclick="javascript:window.history.go(-1);" class="icon icon-arrowleft l back"></a>
+					<!-- <a href="${ctxw}/user/userMessage/list.htm" class="icon icon-xiaoxi4 icon-more r"><b></b></a> -->
+					<a href="${ctxw}/index.htm" class="icon icon-wxbzhuye r"></a>
+					<!-- <a href="#" class="icon icon-fenxiang share r"></a> -->
+					<a href="${ctxw}/index.htm"><div class="logo l"><img src="${ctx}/views/wap/default/images/logo.png" /><strong>思程商城</strong></div></a>
+				</header>
+				<!-- 头部结束 -->
+				<!--产品图片开始-->
+				<div class="swiper-container goods_pic">
+					<div class="swiper-wrapper productImgs">
+						<div class="swiper-slide"><a href="javaScript:void(0);"><img src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></a></div>
+					</div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+				</div>
+				<!--产品图片结束-->
+				<!--商品名称开始-->
+				<div class="goods_name">
+					<h1 class="name"></h1>
+					<h3 class="nameSub"></h3>
+					<input type="hidden" class="productType"/>
+					<input type="hidden" class="unit"/>
+				</div>
+				<!--商品名称结束-->
+				<!-- 商品零售价开始 -->
+				<div class="goods_price weui-border-b clearfix"></div>
+				<!--商品零售价格结束-->
+				<!--阶梯批发价格开始-->
+				<div class="goods_price2 weui-border-b clearfix">
+				</div>
+				<!--阶梯批发价格结束-->
+				<div class="weui_cells weui_cells_access activity">
+					<!-- <a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p><span class="activity_ico">满减</span><span>每满100元，减10元</span></p>
+							<p><span class="activity_ico">双11随便购</span><span>每满100元，减10元</span></p>
+						</div>
+					</a> -->
+					<a class="weui_cell " href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>供应总量：<font class="totalCount">0</font>个</p>
+						</div>
+						<div class="weui_cell_ft">评价：<span class="commentCount">0</span>     月销：<span class="salleCount">0</span>     收藏：<span class="collectionCount">0</span></div>
+					</a>
+				</div>
+				<!-- 商品规格开始 -->
+				<div class="weui_cells weui_cells_access choose">
+					<a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary go-addcat" id="choose">
+							<p>
+								<small class="choose_ico weui-border-r" style="display: block;float: left;">
+									<span class="icon icon-banben"></span> 已选
+								</small>
+								<span class="selectedSpec"></span>
+							</p>
+						</div>
+						<div class="weui_cell_ft"></div>
+					</a>
+					<!-- <a class="weui_cell address" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p class="logistics"><small class="choose_ico weui-border-r"><span class="icon icon-songhuo"></span> 送至</small><input class="weui_input" type="text" value="" id='ssx'/></p>
+						</div>
+						<div class="weui_cell_ft"></div>
+					</a> -->
+				</div>
+				<!-- 商品规格结束 -->
+				<!-- 店铺信息开始 -->
+				<div class="weui_cells weui_cells_access store">
+					<a class="weui_cell storeName" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary">
+							<p>
+								<small class="choose_ico weui-border-r">
+									<span class="icon icon-wxbmingxingdianpu"></span> 
+									店铺
+								</small>
+								<span class="storename"></span> <span class="storetype" style="display: none;">旗舰店</span>
+							</p>
+						</div>
+						<div class="weui_cell_ft"></div>
+					</a>
+					<a class="weui_cell" href="javascript:;">
+						<div class="weui_cell_bd weui_cell_primary store-des">
+							<p><span class="icon icon-71">官方认证店</span> <span class="icon icon-71">担保交易</span> <span class="icon icon-71">15天退换货</span> </p>
+						</div>
+					</a>
+				</div>
+				<!-- 店铺信息结束 -->
+				<!-- 商品咨询开始 -->
+				<div class="weui_cells weui_cells_access consulation">
+					<a class="weui_cell" href="${ctxw}/trade/consultation/list.htm?pid=${pid}">
+						<div class="weui_cell_bd weui_cell_primary">
+							<small class="choose_ico"><span class="icon icon-88"></span> 有疑问 ? 可查看并发起咨询</small>
+						</div>
+						<div class="weui_cell_ft"></div>
+					</a>
+				</div>
+				<!-- 商品咨询结束 -->
+				<!-- 商品评价开始 -->
+				<div class="weui_cells_title"><span class="icon icon-85"></span> 评价</div>
+				<div class="commmentList">
+					<div>
+						<div class="commentRate">
+							<!-- <p class="grade">共31人参与评分</p>
+							<p class="prate"><span>好评率：<i>100%</i></span></p> -->
+						</div>
+					</div>
+					<ul class="commmentList_ul">
+					</ul>
+					<a href="${ctxw}/trade/comment/list.htm?pid=${pid}" class="weui_btn weui_btn_default allConmment use-router hide" id="productView1">查看全部评价</a>
+				</div>
+				<!-- 商品评价结束 -->
+				<!--商品详情开始-->
+				<div class="weui-tab goods-des">
+					<div class="weui_tabbar weui-border-tb">
+						<a href="#tab1" class="weui_tabbar_item cur">
+							<p class="weui_tabbar_label" style="margin-bottom: 5px;margin-top: 10px;">商品详情</p>
+						</a>
+						<a href="#tab2" class="weui_tabbar_item" id="param">
+							<p class="weui_tabbar_label" style="margin-bottom: 5px;margin-top: 10px;">商品参数</p>
+						</a>
+					</div>
+					<div class="weui_tab_bd weui-border-b">
+						<div id="tab1" class="weui_tab_bd_item weui_article active product_detail" style="padding:0"></div>
+						<div id="tab2" class="weui_tab_bd_item weui_article" >
+							<table class="weui-table weui-border-tb detailParameter">
+							 </table>
+						</div>
+					</div>
+				</div>
+				<!-- 商品详情结束-->
+				<!-- 店铺信息结束 -->
+				<div class="weui_cells weui_cells_access store-info">
+					<div class="logo weui-border"><img src="${ctxfs}/shop_init/store_logo.png" onerror="fdp.defaultImage('${ctxfs}/shop_init/store_logo.png');"></div>
+					<div class="store-name">米其林官方旗舰店</div>
+					<input name="storeId" class="storeId" value="" type="hidden"/>
+					<div class="star star5"></div>
+					<div class="weui-flex mt20">
+						<div class="weui_tabbar_item">
+							<p class="weui-flex-item">描述 <font>4.8 ↑</font></p>
+							<p class="weui-flex-item collentionCount">0</p>
+							<p class="weui-flex-item">关注人数</p>
+						</div>
+						<div class="weui_tabbar_item weui-border-l">
+							<p class="weui-flex-item">服务 <font>4.8 ↓</font></p>
+							<p class="weui-flex-item productCount">0</p>
+							<p class="weui-flex-item">全部商品</p>
+						</div>
+						<div class="weui_tabbar_item weui-border-l">
+							<p class="weui-flex-item">物流 <font>4.8 ↑</font></p>
+							<p class="weui-flex-item articleCount">0</p>
+							<p class="weui-flex-item">店铺动态</p>
+						</div>
+					</div>		
+					<div class="weui-flex button">
+						<input value="" class="collectionstoreId" type="hidden"/>
+						<p class="weui-flex-item"><a class="weui-border-radius collectionstore" isCollection="0"><span class="icon icon-favorite1"></span> 收藏店铺</a></p>
+						<p class="weui-flex-item"><a class="weui-border-radius storeIndex" href="${ctxw}/store/index.htm"><span class="icon icon-wxbmingxingdianpu"></span> 进店逛逛</a></p>
+					</div>
+				</div>
+				<!-- 店铺信息结束 -->
+			</div>
+		</div>
+	</div>
+	<% include("/include/viewTradePrice.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<script type="text/template" id="product_img_Tpl" info="商品图片模板">
+		<div class="swiper-slide">
+			<a href="javaScript:void(0);">
+				<img src="{{d.imgPath}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+			</a>
+		</div>
+	</script>
+	<script type="text/template" id="product_name_Tpl" info="商品名称模板">
+		<h1>{{d.name}}</h1>
+		<h3>{{d.nameSub}}</h3>
+	</script>
+	<script type="text/template" id="product_price1_Tpl" info="商品零售价模板">
+		<small>¥</small><strong>{{d.price}}</strong><span class="p-type">{{d.type}}</span>
+	</script>
+	<script type="text/template" id="product_price2_Tpl" info="商品批发价模板">
+		<p><small>¥</small><strong>{{d.price}}</strong><span>{{d.number}}</span></p>
+	</script>
+	<script type="text/template" id="product_count_Tpl" info="供应数量模板">
+		<a class="weui_cell " href="javascript:;">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p>供应总量：{{d.count}}{{d.unit}}</p>
+			</div>
+			<div class="weui_cell_ft">评价：{{d.commentCount}}   销量：{{d.salleCount}}     收藏：{{d.collectionCount}}</div>
+		</a>
+	</script>
+	<script type="text/template" id="product_comment_Tpl" info="商品评价模板">
+		<li class="weui-border-t" commentId="{{d.commentId}}">
+			<div class="userInfo"><span class="headicon"></span><span class="nickname">{{d.username}}</span><div class="star star{{d.score}} r"></div></div>
+			<div class="content">{{d.content}}</div>
+			<div class="timesku"><span class="createTime">{{d.date}}</span><span class="skuDesc">{{d.sku}}</span></div>
+		</li>
+	</script>
+	<script type="text/template" id="product_comment_count_Tpl" info="商品评价数量模板">
+		<p class="grade">{{d.commentCount}}</p>
+	</script>
+	<script type="text/template" id="product_comment_rate_Tpl" info="商品好评率模板">
+		<p class="prate"><span>好评率：<i>{{d.rate}}%</i></span></p>
+	</script>
+	<script type="text/template" id="product_retail_spec_Tpl" info="商品零售模式规格名称模板">
+		<li>
+			<h2 id="prop_title_1">{{d.specName}}</h2>
+			<div class="items" role="radiogroup" aria-labelledby="prop_title_1">
+				{{d.specvs}}
+			</div>
+		</li>
+	</script>
+	<script type="text/template" id="product_spec_value_Tpl" info="商品零售模式规格值模板">
+		<a role="radio" href="javascript:void(0)" isColor="{{d.isColor}}" data-value="20509:825854967" class="spec {{d.className}}" aria-checked="false" aria-disabled="true">{{d.specV}}</a>
+	</script>
+	<script type="text/template" id="product_wholesale_spec_Tpl" info="商品批发模式规格模板">
+		<tr>
+			{{d.specV}}
+			<td class="sectionPrice"></td>
+			<td>{{d.stock}}{{d.unit}}</td>
+			<td>
+				<div class="number-wrap">
+					<div class="number-line">
+						<div class="number" style="float: none;margin: 0 auto;">
+							<button class="decrease disabled weui-number-sub" iswholesale="1">-</button>
+							<input class="number_input" type="number" value='0'  data-min="0" data-step="1" oldCount="0" data-max="{{d.stock}}">
+							<button class="increase weui-number-plus" iswholesale="1">+</button>
+						</div>
+					</div>
+					<input type="hidden" name="skuId" class="skuId" value="{{d.skuId}}"/>
+				</div>
+			</td>
+		</tr>
+	</script>
+	<script type="text/template" id="product_wholesale_specv_Tpl" info="商品批发模式规格值模板">
+		<td style="padding-left: 5px;">
+			<div class="spec1V">{{d.spec1V}}</div>
+			<div class="spec2V">{{d.spec2V}}</div>
+			<div class="spec3V">{{d.spec3V}}</div>
+		</td>
+	</script>
+	<script type="text/template" id="product_param_Tpl" info="商品参数模板">
+		<tr><td class="parameter_key">{{d.paramName}}</td><td class="parameter_value">{{d.paramValue}}</td></tr>
+	</script>
+	<script type="text/template" id="product_no_param_Tpl" info="商品暂无参数模板">
+		<tr><td class="parameter_key" style="line-height: 50px;">很遗憾，暂无参数！</td></tr>
+	</script>
+</body>
+</html>

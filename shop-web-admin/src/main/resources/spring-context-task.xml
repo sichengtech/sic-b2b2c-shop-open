@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context" xmlns:jdbc="http://www.springframework.org/schema/jdbc"  
+	xmlns:jee="http://www.springframework.org/schema/jee" xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:task="http://www.springframework.org/schema/task" xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
+		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
+	default-lazy-init="true">
+	<description>定时任务 Configuration</description>
+	
+
+ 	<bean id="taskJob" class="com.sicheng.admin.task.utils.TaskJob"></bean> 
+	
+	<!-- 配置定时任务规则 -->
+   	<task:scheduled-tasks>
+		<!--每天0点执行-->
+		<task:scheduled ref="taskJob" method="computeScore" cron="0 0 0 * * ? "/>
+		<!-- 
+		<task:scheduled ref="voiceFileClearJob" method="execute" initial-delay="5000" fixed-delay="3600000"/> -->
+		<task:scheduled ref="taskJob" method="settlementProductTask" cron="0 0 2 ? * *"/>
+		<task:scheduled ref="taskJob" method="sysTokenTask" cron="0 15 10 ? * *"/> 
+		<task:scheduled ref="taskJob" method="storeProductSum" cron="0 0 1 ? * *"/>
+		<task:scheduled ref="taskJob" method="cleanLog" cron="0 0 8 ? * *"/> 
+		<task:scheduled ref="taskJob" method="updateCollectionProduct" cron="0 0 23 ? * *"/>
+		<task:scheduled ref="taskJob" method="monthSales" cron="0 0 5 ? * *"/>
+		<task:scheduled ref="taskJob" method="adminIndexInfo" cron="0 0 0/1 * * ?"/>
+		<task:scheduled ref="taskJob" method="updateTradeOrder" cron="0 0 4 ? * *"/>
+		<task:scheduled ref="taskJob" method="updateTradeReturnOrder" cron="0 0 4 ? * *"/>
+		<task:scheduled ref="taskJob" method="cancleExpiredTradeOrder" cron="0 0 5 ? * *"/>
+		<task:scheduled ref="taskJob" method="clearAppToken" cron="0 0/1 * * * ? "/> <!-- 每天2点执行 0 0 2 * * ? -->
+		<task:scheduled ref="taskJob" method="updatePurchase" cron="0 0 0/1 * * ?"/>
+		<task:scheduled ref="taskJob" method="balanceAccount" cron="0 0/10 * * * ?"/>
+		<task:scheduled ref="taskJob" method="insertBalanceTask" cron="0 0/10 * * * ?"/>
+		<!-- <task:scheduled ref="taskJob" method="reconciliation" cron="0 0 1 ? * *"/> -->
+		<!-- 用于测试定时任务，每20秒触发一次  -->
+		<!-- <task:scheduled ref="taskJob" method="reconciliation" cron="1/10 * * * * ?"/> -->
+	</task:scheduled-tasks> 
+
+	<!-- 计划任务配置，用 @Service @Lazy(false)标注类，用@Scheduled(cron = "0 0 2 * * ?")标注方法 -->
+    <task:executor id="executor" pool-size="10"/> <task:scheduler id="scheduler" pool-size="10"/>
+    <task:annotation-driven scheduler="scheduler" executor="executor" proxy-target-class="true"/>
+	
+</beans>

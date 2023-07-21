@@ -1,0 +1,278 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountBalanceProreturnorderDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="accountBalanceProreturnorderColumns">
+	<trim suffixOverrides=",">
+		a.return_id AS 'returnId',                                           <!-- 商品退单id bigint(20)-->
+		a.status AS 'status',                                                <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+		a.fail_times AS 'failTimes',                                         <!-- 失败次数 int(10)-->
+		a.begin_time AS 'beginTime',                                         <!-- 开始对账时间 datetime-->
+		a.end_time AS 'endTime',                                             <!-- 结束对账时间 datetime-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.returnId != null ">AND a.return_id = #{c.returnId}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.failTimes != null ">AND a.fail_times = #{c.failTimes}</if>
+		<if test="c.beginBeginTime != null and c.endBeginTime != null ">AND a.begin_time BETWEEN #{c.beginBeginTime} AND #{c.endBeginTime}</if>
+		<if test="c.beginEndTime != null and c.endEndTime != null ">AND a.end_time BETWEEN #{c.beginEndTime} AND #{c.endEndTime}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="AccountBalanceProreturnorder">
+		SELECT 
+		<include refid="accountBalanceProreturnorderColumns"/>
+		FROM account_balance_proreturnorder a
+		WHERE a.return_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="AccountBalanceProreturnorder">
+		SELECT 
+		<include refid="accountBalanceProreturnorderColumns"/>
+		FROM account_balance_proreturnorder a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.return_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="AccountBalanceProreturnorder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountBalanceProreturnorderColumns"/>
+		FROM account_balance_proreturnorder a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.return_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="AccountBalanceProreturnorder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountBalanceProreturnorderColumns"/>
+		FROM account_balance_proreturnorder a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.return_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.returnId" keyColumn="return_id" useGeneratedKeys="true">
+		INSERT INTO account_balance_proreturnorder
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			return_id,                                         <!-- 商品退单id bigint(20)-->
+			status,                                            <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			fail_times,                                        <!-- 失败次数 int(10)-->
+			begin_time,                                        <!-- 开始对账时间 datetime-->
+			end_time,                                          <!-- 结束对账时间 datetime-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.returnId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_balance_proreturnorder_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.status},                                  <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			#{entity.failTimes},                               <!-- 失败次数 int(10)-->
+			#{entity.beginTime},                               <!-- 开始对账时间 datetime-->
+			#{entity.endTime},                                 <!-- 结束对账时间 datetime-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.returnId" keyColumn="return_id" useGeneratedKeys="true">
+		INSERT INTO account_balance_proreturnorder
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.returnId != null">return_id,</if></if>
+			<if test="entity.pkMode==2">return_id,</if>
+			<if test="entity.status != null">status,</if>                                      <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			<if test="entity.failTimes != null">fail_times,</if>                               <!-- 失败次数 int(10)-->
+			<if test="entity.beginTime != null">begin_time,</if>                               <!-- 开始对账时间 datetime-->
+			<if test="entity.endTime != null">end_time,</if>                                   <!-- 结束对账时间 datetime-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.returnId != null">#{entity.returnId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_balance_proreturnorder_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			<if test="entity.failTimes != null">#{entity.failTimes},</if>                                <!-- 失败次数 int(10)-->
+			<if test="entity.beginTime != null">#{entity.beginTime},</if>                                <!-- 开始对账时间 datetime-->
+			<if test="entity.endTime != null">#{entity.endTime},</if>                                    <!-- 结束对账时间 datetime-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE account_balance_proreturnorder 
+		<set>
+			status = #{entity.status},                                      <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			fail_times = #{entity.failTimes},                               <!-- 失败次数 int(10)-->
+			begin_time = #{entity.beginTime},                               <!-- 开始对账时间 datetime-->
+			end_time = #{entity.endTime},                                   <!-- 结束对账时间 datetime-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE return_id = #{entity.returnId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE account_balance_proreturnorder a 
+		<set>
+			status = #{entity.status},                                      <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			fail_times = #{entity.failTimes},                               <!-- 失败次数 int(10)-->
+			begin_time = #{entity.beginTime},                               <!-- 开始对账时间 datetime-->
+			end_time = #{entity.endTime},                                   <!-- 结束对账时间 datetime-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE account_balance_proreturnorder
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			<if test="entity.failTimes != null">fail_times = #{entity.failTimes},</if>                                          <!-- 失败次数 int(10)-->
+			<if test="entity.beginTime != null">begin_time = #{entity.beginTime},</if>                                          <!-- 开始对账时间 datetime-->
+			<if test="entity.endTime != null">end_time = #{entity.endTime},</if>                                                <!-- 结束对账时间 datetime-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE return_id = #{entity.returnId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE account_balance_proreturnorder a
+		<set>
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+			<if test="entity.failTimes != null">fail_times = #{entity.failTimes},</if>                                          <!-- 失败次数 int(10)-->
+			<if test="entity.beginTime != null">begin_time = #{entity.beginTime},</if>                                          <!-- 开始对账时间 datetime-->
+			<if test="entity.endTime != null">end_time = #{entity.endTime},</if>                                                <!-- 结束对账时间 datetime-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM account_balance_proreturnorder
+		WHERE return_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM account_balance_proreturnorder
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					return_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM account_balance_proreturnorder a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM account_balance_proreturnorder a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

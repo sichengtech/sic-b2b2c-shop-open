@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreMenuDao">
+	
+	<sql id="storeMenuColumnsChild">
+		a.menu_id AS "menuId",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.name AS "name",
+		a.sort AS "sort",
+		a.href AS "href",
+		a.target AS "target",
+		a.icon AS "icon",
+		a.is_show AS "isShow",
+		a.permission AS "permission",
+		a.del_flag AS "delFlag",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.bak1 AS "bak1",
+		a.bak2 AS "bak2",
+		a.bak3 AS "bak3",
+		a.bak4 AS "bak4",
+		a.bak5 AS "bak5"
+	</sql>
+	
+	<sql id="storeMenuJoinsChild">
+	</sql>
+	
+	<select id="get" resultType="StoreMenu">
+		SELECT 
+			<include refid="storeMenuColumnsChild"/>
+		FROM store_menu a
+		<include refid="storeMenuJoinsChild"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="StoreMenu">
+		SELECT 
+			<include refid="storeMenuColumnsChild"/>
+		FROM store_menu a
+		<include refid="storeMenuJoinsChild"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			<if test="menuId != null and menuId != ''">
+				AND a.menu_id = #{menuId}
+			</if>
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				<bind name="pattern" value="'%' + parentIds + '%'" />				
+				AND lower(a.parent_ids) LIKE lower(#{pattern})
+			</if>
+			<if test="name != null and name != ''">
+				<bind name="pattern" value="'%' + name + '%'" />				
+				AND lower(a.name) LIKE lower(#{pattern})
+			</if>
+			<if test="sort != null and sort != ''">
+				AND a.sort = #{sort}
+			</if>
+			<if test="href != null and href != ''">
+				AND a.href = #{href}
+			</if>
+			<if test="target != null and target != ''">
+				AND a.target = #{target}
+			</if>
+			<if test="icon != null and icon != ''">
+				AND a.icon = #{icon}
+			</if>
+			<if test="isShow != null and isShow != ''">
+				AND a.is_show = #{isShow}
+			</if>
+			<if test="permission != null and permission != ''">
+				AND a.permission = #{permission}
+			</if>
+			<if test="delFlag != null and delFlag != ''">
+				AND a.del_flag = #{delFlag}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+			<if test="beginUpdateDate != null and endUpdateDate != null">
+				AND a.update_date BETWEEN #{beginUpdateDate} AND #{endUpdateDate}
+			</if>
+			<if test="bak1 != null and bak1 != ''">
+				AND a.bak1 = #{bak1}
+			</if>
+			<if test="bak2 != null and bak2 != ''">
+				AND a.bak2 = #{bak2}
+			</if>
+			<if test="bak3 != null and bak3 != ''">
+				AND a.bak3 = #{bak3}
+			</if>
+			<if test="bak4 != null and bak4 != ''">
+				AND a.bak4 = #{bak4}
+			</if>
+			<if test="bak5 != null and bak5 != ''">
+				AND a.bak5 = #{bak5}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllList" resultType="StoreMenu">
+		SELECT 
+			<include refid="storeMenuColumnsChild"/>
+		FROM store_menu a
+		<include refid="storeMenuJoinsChild"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="StoreMenu">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM store_menu a
+		<include refid="storeMenuJoinsChild"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+			AND lower(a.parent_ids) LIKE lower(#{parentIds})
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<!-- <insert id="insert">
+		INSERT INTO store_menu(
+			menu_id,
+			parent_id,
+			parent_ids,
+			name,
+			sort,
+			href,
+			target,
+			icon,
+			is_show,
+			permission,
+			del_flag,
+			create_date,
+			update_date,
+			bak1,
+			bak2,
+			bak3,
+			bak4,
+			bak5
+		) VALUES (
+			#{menuId},
+			#{parent.id},
+			#{parentIds},
+			#{name},
+			#{sort},
+			#{href},
+			#{target},
+			#{icon},
+			#{isShow},
+			#{permission},
+			#{delFlag},
+			#{createDate},
+			#{updateDate},
+			#{bak1},
+			#{bak2},
+			#{bak3},
+			#{bak4},
+			#{bak5}
+		)
+	</insert> -->
+	
+	<update id="update">
+		UPDATE store_menu SET 	
+			parent_id = #{parent.id},
+			parent_ids = #{parentIds},
+			name = #{name},
+			sort = #{sort},
+			href = #{href},
+			target = #{target},
+			icon = #{icon},
+			is_show = #{isShow},
+			permission = #{permission},
+			create_date = #{createDate},
+			update_date = #{updateDate},
+			bak1 = #{bak1},
+			bak2 = #{bak2},
+			bak3 = #{bak3},
+			bak4 = #{bak4},
+			bak5 = #{bak5}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE store_menu SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE store_menu SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}  
+			<bind name="pattern" value="'%,' + id + ',%'" />				
+			OR lower(parent_ids) LIKE lower(#{pattern})
+	</update>
+	
+</mapper>

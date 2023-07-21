@@ -1,0 +1,65 @@
+<%	var type = null;
+	if(isEmpty(category) || category.categoryId==1){
+		type = 4;
+	}
+	if(isNotEmpty(category) && category.categoryId==329){
+		type = 5;
+	}
+%>
+<div class="banner">
+	<div class="wp">
+		<div class="class-menu">
+			<ul>
+				<% if(category!=null){%>
+					<% for(productCategory in product.categoryList({parentId:cid!,limit:10})){ %>
+						<li><a target="_blank" href="${ctxf}/product/list.htm?cid=${productCategory.categoryId!}">● ${productCategory.name!}</a></li>
+					<%}%>
+				<%}%>
+			</ul>
+			<div class="class-menu-banner"><a href="javaScript:;"><img src="${ctx}/views/front/default/images/left_money_01.jpg" /></a></div>
+		</div>
+		<div class="index-main-right class-banner">
+			<a href="javaScript:;"><img src="${ctx}/views/front/default/images/right_money_01.jpg" /></a>
+			<a href="javaScript:;"><img src="${ctx}/views/front/default/images/right_money_02.jpg" /></a>
+			<a href="javaScript:;"><img src="${ctx}/views/front/default/images/right_money_03.jpg" /></a>
+		</div>
+	</div>
+	<div class="fullSlide-class">
+		<div class="bd">
+			<ul>
+				<% if(type!=null){%>
+					<% for(carousel in site.carouselList({type:type,limit:3})){
+						var target=dict.label({type:'target',value:carousel.target!});
+					%>
+						<li style="background-color:${carousel.txt!};"><span class="wp"><a target="${target.label!}" href="${carousel.url!}" style="background-image:url(${ctxfs}${carousel.path})"></a></span></li>
+					<%}%>
+				<%}%>
+			</ul>
+		</div>
+		<div class="hd wp">
+			<ul></ul>
+		</div>
+	</div>
+	<script type="text/javascript">
+	jQuery(".fullSlide-class").hover(function() {
+	    jQuery(this).find(".prev,.next").stop(true, true).fadeTo("show", 0.5)
+	},
+	function() {
+	    jQuery(this).find(".prev,.next").fadeOut()
+	});
+	jQuery(".fullSlide-class").slide({
+	    titCell: ".hd ul",
+	    mainCell: ".bd ul",
+	    effect: "fold",
+	    autoPlay: true,
+	    autoPage: true,
+	    trigger: "click",
+	    startFun: function(i) {
+	        var curLi = jQuery(".fullSlide-class .bd li").eq(i);
+	        if ( !! curLi.attr("_src")) {
+	            curLi.css("background-image", curLi.attr("_src")).removeAttr("_src")
+	        }
+	    }
+	});
+	</script>
+</div>

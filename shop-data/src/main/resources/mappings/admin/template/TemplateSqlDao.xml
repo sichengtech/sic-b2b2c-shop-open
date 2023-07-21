@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.template.dao.TemplateSqlDao">
+	<!--模板自定义sql标签执行的sql，动态sql的拼装由sql.queryList、sql.queryPage标签完成-->
+	<!--MyBatis映射的时候，key也会映射成大写，要使用LinkedCaseInsensitiveMap（key值不区分大小写的LinkedMap）-->
+	<select id="selectBysql" parameterType="java.lang.String" resultType="org.springframework.util.LinkedCaseInsensitiveMap">
+	    ${sql}
+	</select>
+</mapper>

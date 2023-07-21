@@ -1,0 +1,379 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreRoleDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>	
+	<!-- 全部字段 -->
+	<sql id="storeRoleColumns">
+	<trim suffixOverrides=",">
+		a.role_id AS "roleId",                                               <!-- 主键 number(19)-->
+		a.store_id AS "storeId",                                             <!-- 店铺id number(19)-->
+		a.role_name AS "roleName",                                           <!-- 角色名称 nvarchar2(64)-->
+		a.enname AS "enname",                                                <!-- 英文名称 nvarchar2(255)-->
+		a.role_type AS "roleType",                                           <!-- 角色类型 nvarchar2(64)-->
+		a.data_scope AS "dataScope",                                         <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+		a.is_sys AS "isSys",                                                 <!-- 是否系统数据(0否、1是) char(1)-->
+		a.useable AS "useable",                                              <!-- 是否可用，0否、1是 nvarchar2(64)-->
+		a.del_flag AS "delFlag",                                             <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeRoleJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.roleId != null ">AND a.role_id = #{c.roleId}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.roleName != null and c.roleName != ''">AND a.role_name = #{c.roleName}</if>
+		<if test="c.enname != null and c.enname != ''">AND a.enname = #{c.enname}</if>
+		<if test="c.roleType != null and c.roleType != ''">AND a.role_type = #{c.roleType}</if>
+		<if test="c.dataScope != null and c.dataScope != ''">AND a.data_scope = #{c.dataScope}</if>
+		<if test="c.isSys != null and c.isSys != ''">AND a.is_sys = #{c.isSys}</if>
+		<if test="c.useable != null and c.useable != ''">AND a.useable = #{c.useable}</if>
+		<if test="c.delFlag != null and c.delFlag != ''">AND a.del_flag = #{c.delFlag}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreRole">
+		SELECT 
+		<include refid="storeRoleColumns"/>
+		FROM store_role a
+		<include refid="storeRoleJoins"/>
+		WHERE a.role_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreRole">
+		SELECT 
+		<include refid="storeRoleColumns"/>
+		FROM store_role a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.role_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreRole">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeRoleColumns"/>
+		FROM store_role a
+		<include refid="storeRoleJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.role_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreRole">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeRoleColumns"/>
+		FROM store_role a
+		<include refid="storeRoleJoins"/>
+		<where>
+			<if test="w!=null and w.e!=null">
+				<if test="w.e.delFlag != null and w.e.delFlag != ''">
+				a.del_flag =  #{w.e.delFlag}
+				</if>
+			</if>
+		</where>	
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.role_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.roleId" keyColumn="role_id" useGeneratedKeys="true">
+		INSERT INTO store_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			role_id,                                           <!-- 主键 number(19)-->
+			store_id,                                          <!-- 店铺id number(19)-->
+			role_name,                                         <!-- 角色名称 nvarchar2(64)-->
+			enname,                                            <!-- 英文名称 nvarchar2(255)-->
+			role_type,                                         <!-- 角色类型 nvarchar2(64)-->
+			data_scope,                                        <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			is_sys,                                            <!-- 是否系统数据(0否、1是) char(1)-->
+			useable,                                           <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			del_flag,                                          <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.roleId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_role_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.storeId},                                 <!-- 店铺id number(19)-->
+			#{entity.roleName},                                <!-- 角色名称 nvarchar2(64)-->
+			#{entity.enname},                                  <!-- 英文名称 nvarchar2(255)-->
+			#{entity.roleType},                                <!-- 角色类型 nvarchar2(64)-->
+			#{entity.dataScope},                               <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			#{entity.isSys},                                   <!-- 是否系统数据(0否、1是) char(1)-->
+			#{entity.useable},                                 <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			#{entity.delFlag},                                 <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.roleId" keyColumn="role_id" useGeneratedKeys="true">
+		INSERT INTO store_role
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.roleId != null">role_id,</if></if>
+			<if test="entity.pkMode==2">role_id,</if>
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 店铺id number(19)-->
+			<if test="entity.roleName != null">role_name,</if>                                 <!-- 角色名称 nvarchar2(64)-->
+			<if test="entity.enname != null">enname,</if>                                      <!-- 英文名称 nvarchar2(255)-->
+			<if test="entity.roleType != null">role_type,</if>                                 <!-- 角色类型 nvarchar2(64)-->
+			<if test="entity.dataScope != null">data_scope,</if>                               <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			<if test="entity.isSys != null">is_sys,</if>                                       <!-- 是否系统数据(0否、1是) char(1)-->
+			<if test="entity.useable != null">useable,</if>                                    <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.roleId != null">#{entity.roleId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_role_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 店铺id number(19)-->
+			<if test="entity.roleName != null">#{entity.roleName},</if>                                  <!-- 角色名称 nvarchar2(64)-->
+			<if test="entity.enname != null">#{entity.enname},</if>                                      <!-- 英文名称 nvarchar2(255)-->
+			<if test="entity.roleType != null">#{entity.roleType},</if>                                  <!-- 角色类型 nvarchar2(64)-->
+			<if test="entity.dataScope != null">#{entity.dataScope},</if>                                <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			<if test="entity.isSys != null">#{entity.isSys},</if>                                        <!-- 是否系统数据(0否、1是) char(1)-->
+			<if test="entity.useable != null">#{entity.useable},</if>                                    <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- 逻辑删除，0正常、1删除、2审核 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_role 
+		<set>
+			store_id = #{entity.storeId},                                   <!-- 店铺id number(19)-->
+			role_name = #{entity.roleName},                                 <!-- 角色名称 nvarchar2(64)-->
+			enname = #{entity.enname},                                      <!-- 英文名称 nvarchar2(255)-->
+			role_type = #{entity.roleType},                                 <!-- 角色类型 nvarchar2(64)-->
+			data_scope = #{entity.dataScope},                               <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			is_sys = #{entity.isSys},                                       <!-- 是否系统数据(0否、1是) char(1)-->
+			useable = #{entity.useable},                                    <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		WHERE role_id = #{entity.roleId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_role a 
+		<set>
+			store_id = #{entity.storeId},                                   <!-- 店铺id number(19)-->
+			role_name = #{entity.roleName},                                 <!-- 角色名称 nvarchar2(64)-->
+			enname = #{entity.enname},                                      <!-- 英文名称 nvarchar2(255)-->
+			role_type = #{entity.roleType},                                 <!-- 角色类型 nvarchar2(64)-->
+			data_scope = #{entity.dataScope},                               <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			is_sys = #{entity.isSys},                                       <!-- 是否系统数据(0否、1是) char(1)-->
+			useable = #{entity.useable},                                    <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_role
+		<set>
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id number(19)-->
+			<if test="entity.roleName != null">role_name = #{entity.roleName},</if>                                             <!-- 角色名称 nvarchar2(64)-->
+			<if test="entity.enname != null">enname = #{entity.enname},</if>                                                    <!-- 英文名称 nvarchar2(255)-->
+			<if test="entity.roleType != null">role_type = #{entity.roleType},</if>                                             <!-- 角色类型 nvarchar2(64)-->
+			<if test="entity.dataScope != null">data_scope = #{entity.dataScope},</if>                                          <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			<if test="entity.isSys != null">is_sys = #{entity.isSys},</if>                                                      <!-- 是否系统数据(0否、1是) char(1)-->
+			<if test="entity.useable != null">useable = #{entity.useable},</if>                                                 <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE role_id = #{entity.roleId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_role a
+		<set>
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id number(19)-->
+			<if test="entity.roleName != null">role_name = #{entity.roleName},</if>                                             <!-- 角色名称 nvarchar2(64)-->
+			<if test="entity.enname != null">enname = #{entity.enname},</if>                                                    <!-- 英文名称 nvarchar2(255)-->
+			<if test="entity.roleType != null">role_type = #{entity.roleType},</if>                                             <!-- 角色类型 nvarchar2(64)-->
+			<if test="entity.dataScope != null">data_scope = #{entity.dataScope},</if>                                          <!-- 数据范围（0：所有数据；1：所在公司及以下数据；2：所在公司数据；3：所在部门及以下数据；4：所在部门数据；8：仅本人数据；9：按明细设置） char(1)-->
+			<if test="entity.isSys != null">is_sys = #{entity.isSys},</if>                                                      <!-- 是否系统数据(0否、1是) char(1)-->
+			<if test="entity.useable != null">useable = #{entity.useable},</if>                                                 <!-- 是否可用，0否、1是 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE store_role SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE role_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_role
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					role_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_role a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_role a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

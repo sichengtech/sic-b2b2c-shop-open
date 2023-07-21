@@ -1,0 +1,42 @@
+<!-- 业务js -->
+<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/default/storeLeft.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/default/collection.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/default/js/jquery.waterfall.js"></script>
+<script>
+	$(".store-nav-map .sui-container").waterfall({
+	    itemClass: ".box",
+	    minColCount: 2,
+	    spacingHeight: 10,
+	    resizeable: true,
+	});
+</script>
+<div class="store-banner clearfix" style="background-image:url(${ctxfs}${storeOne.banner!}@!1920X150)"></div>
+<div class="store-nav clearfix">
+	<ul id="store-nav" class="wp">
+		<li>
+			<a href="javascript:void(0);" class=""><i class="sui-icon icon-tb-unfold"></i>全部分类</a>
+			<ul class="store-nav-map" style="display: none;">
+				<div class="sui-container" style="width: 1200px;background-color: #e8e8e8;">
+					<%for (storeCategoryP in store.categoryList({parentId:0,sid:sid,limit:'50'})){%>
+						<dl class="box">
+							<dt><a href="${ctxf}/store/${sid!}/pList.htm?scid=${storeCategoryP.storeCategoryId}&sid=${sid}">${storeCategoryP.name} &gt;</a></dt>
+							<dd>
+								<%for (storeCategory in store.categoryList({parentId:storeCategoryP.storeCategoryId,sid:sid})){%>
+									<a href="${ctxf}/store/${sid!}/pList.htm?scid=${storeCategory.storeCategoryId}&sid=${sid}">${storeCategory.name}</a>
+								<%}%>
+							</dd>
+						</dl>
+					<%}%>
+				</div>
+			</ul>
+		</li>
+		<li class="store-home"><a href="${ctx}/store/${storeOne.storeId!}.htm" class="">店铺首页</a></li>
+		<% if(isNotEmpty(storeOne.purchaseSpace)){%>
+		<li class="store-home"><a href="${ctx}/purchase/space.htm?spaceId=${storeOne.purchaseSpace.spaceId!}" class="">采购空间</a></li>
+		<%}%>
+		<% for(storeNav in store.navList({sid:sid!,limit:5})){ %>
+			<li><a target="${storeNav.target=='2'?'_blank':''}" href="${ctxf}${storeNav.url!}">${storeNav.name!}</a></li>
+		<%}%>
+	</ul>
+</div>

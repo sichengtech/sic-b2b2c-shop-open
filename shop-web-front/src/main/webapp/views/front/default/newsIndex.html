@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>
+	<%var newHomePage =fy.getMsg({key:'新闻首页'});%>
+	${newHomePage!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+</head>
+<body>
+<% include("/include/header.html"){}%>
+<% include("/include/nav.html"){}%>
+<!-- 顶部图片开始 -->
+<div class="topnews">
+	<ul>
+		<div class="wp">
+			<!-- 背景图一 -->
+			<li class="con1">
+				<a href="#">
+					<div class="bg"></div>
+					<div class="info">
+						<h3>
+							<%var bgTitle =fy.getMsg({key:'特斯拉尴尬：车辆超前，产能却远落后于传统车企'});%>
+							${bgTitle!}
+						</h3>
+					</div>
+					<img src="http://cms-bucket.nosdn.127.net/e82198f96ec94359b59d77e158d76f5e20171019083637.jpeg">
+				</a>
+			</li>
+			<!-- 轮播图片 -->
+			<li class="con2">
+				<div id="scroll-news" class="l owl-carousel owl-carousel-index">
+					<% for(c_picture in site.carouselList({type:10})){
+						var target=dict.label({type:'target',value:c_picture.target!});
+					%>
+					<div class="item">
+						<a target="${target.label!}" href="${c_picture.url!}">
+							<div class="bg"></div>
+							<div class="info"><h3>${c_picture.title!}</h3></div>
+							<img src="${ctxfs}${c_picture.path!}" alt="">
+						</a>
+					</div>
+					<%}%>
+				</div>
+			<script type="text/javascript">
+				$(function(){
+					$('#scroll-news').owlCarousel({
+						items: 1,
+						autoPlay: true,
+						navigation: true,
+						navigationText: ["",""],
+						paginationSpeed:500,
+						scrollPerPage: false,
+						navigation:true
+					});
+				});
+			</script>
+			<!--scroll-gc end-->	
+			</li>
+			<!-- 页面右侧图 -->
+			<% var r=site.recommend({number:'news_index_right'});
+			for(ri in r.siteRecommendItemList!){%>
+			<li class="${riLP.first?'con3':'con4'}">
+				<a target="_blank" href="${ri.url!}">
+					<div class="bg"></div>
+					<div class="info"><h3>${ri.addInfo1!}</h3></div>
+					<img src="${ctxfs}${ri.path!}"/>
+				</a>
+			</li>
+			<%}%>
+			<!-- 背景图二 -->
+			<li class="con5">
+				<a href="#">
+					<div class="bg"></div>
+					<div class="info">
+						<h3>
+							${bgTitle!}
+						</h3>
+					</div>
+					<img src="http://cms-bucket.nosdn.127.net/4fac52a78efa4c369c7dde441107636e20171019130224.jpeg">
+				</a>
+			</li>
+		</div>
+	</ul>
+</div>
+<!-- 顶部图片结束 -->
+<% include("/include/newsNavigation.html"){}%>
+<div class="wp clearfix mt20">
+	<dl class="l art-hot w200">
+		<dt>
+			<%var todayHot =fy.getMsg({key:'今日热点'});%>
+			${todayHot!}
+		</dt>
+		<dd>
+			<ul>
+			<% for(article in cms.articleList({channelId:843,limit:6})){
+				var title=article.title!;
+				if(strutil.length(title)>30){
+					title=strutil.subStringTo(title,0,30)+"...";
+				}
+			%>
+				<li><b>&deg;</b> <a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm">${title}</a><span>${article.updateDate!,dateFormat="yyyy.MM.dd"}</span></li>
+			<%}%>
+			</ul>
+		</dd>
+	</dl>
+	<dl class="l art-new w600 ml50">
+		<dt>
+			<%var latestNews =fy.getMsg({key:'最新资讯'});%>
+			${latestNews!}
+		</dt>
+		<dd>
+			<ul class="a-list">
+			<% for(article in cms.articleList({channelId:843,limit:9})){
+				var title=article.title!;
+				var keywords=article.keywords!;
+				var link=article.link!;
+				if(strutil.length(title)>60){
+					title=strutil.subStringTo(title,0,60)+"...";
+				}
+			%>
+				<li>
+					<div class="a-pic" style="width: 180px;">
+						<a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm">
+							<img src="${ctxfs}${article.image!}"/>
+						</a>
+					</div>
+					<div class="a-word">
+						<a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm" class="title">${title}</a>
+						<div class="a-info">
+							<span class="a-typename" style="border: #b8e1c7 solid 1px;">
+								<a target="_blank" href="${ctxf}/newsList/${article.category.id!}.htm" style="color: #159b46;">${article.category.name!}</a>
+							</span>
+							<span class="tag">
+							<% if(isNotEmpty(keywords)){
+								for(key in strutil.split(keywords,",")){%>
+									<% if(isEmpty(link)){%>
+										<a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm">${key}</a>
+									<%}else{%>
+										<a target="_blank" href="${link}">${key}</a>
+									<%}%>
+							<%}}%>
+							</span>
+							<span class="date">${article.updateDate!,dateFormat="yyyy-MM-dd"}</span>
+						</div>
+					</div>
+				</li>
+			<%}%>
+			</ul>
+		</dd>
+	</dl>
+	<dl class="r news-right w300">
+		<% include("/include/newsRight1.html"){}%>
+		<% include("/include/newsRight2.html"){}%>
+	</dl>
+</div>
+<% include("/include/footer.html"){}%>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!-- 文章左侧目录 -->
+<div class="article-left-menu">
+	<dl>
+		<dt>常见问题分类</dt>
+		<dd>
+			<ul class="menu">
+			<% for(channel in cms.channelList({parentId:861})){%>
+			<li class="menu-item ${channel.id+''==channelId?'cur':''}">
+				<a href="${ctxf}/articList/${channel.id!}.htm" target="_blank" style="${channel.id+''==channelId?'color:red;':''}"><b></b>${channel.name!}</a>
+				<ul class="menu-sub">
+					<% for(article in cms.articleList({channelId:channel.id,limit:50})){
+						var title=article.title!;
+						if(strutil.length(title)>10){
+							title=strutil.subStringTo(title,0,10)+"...";
+						}
+					%>
+						<%if( isNotEmpty(article.link!) ){%>
+						<li><a href="${article.link!}" target="_blank" style="${article.id+''==articleId?'color:red;':''}">${title}</a></li>
+						<%}else{%>
+						<li><a href="${ctxf}/articleDetail/${article.id!}.htm" target="_blank" style="${article.id+''==articleId?'color:red;':''}">${title}</a></li>
+						<%}%>
+					<%}%>
+				</ul>
+			</li>
+			<%}%>
+			</ul>
+		</dd>
+	</dl>
+</div>

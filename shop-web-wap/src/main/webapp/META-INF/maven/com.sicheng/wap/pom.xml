@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.sicheng</groupId>
+    <artifactId>shop-all</artifactId>
+    <version>2.0</version>
+  </parent>
+  <artifactId>wap</artifactId>
+  <packaging>war</packaging>
+  <name>shop-web-wap</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+	<!-- 依赖基础模块 开始 -->
+    <dependency>
+    	<groupId>com.sicheng</groupId>
+    	<artifactId>fdp-common-core</artifactId>
+    	<version>3.3-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.sicheng</groupId>
+    	<artifactId>shop-data</artifactId>
+    	<version>${project.version}</version>
+    </dependency>
+    <!-- 依赖基础模块 结束 -->
+    
+    <!-- 依赖第三方jar包 -->  
+    
+    <!-- 微信-jfinal-sdk jar包 -->  
+   	<dependency>
+	    <groupId>com.jfinal</groupId>
+	    <artifactId>jfinal-weixin</artifactId>
+	    <version>1.8</version>
+	</dependency>
+			
+	<dependency>
+		<groupId>com.jfinal</groupId>
+		<artifactId>jetty-server</artifactId>
+		<version>8.1.8</version>
+		<scope>provided</scope>
+	</dependency>
+	
+	<!-- Spring-session jar包 -->
+	<dependency>
+		<groupId>org.springframework.session</groupId>
+		<artifactId>spring-session-data-redis</artifactId>
+		<version>1.2.0.RELEASE</version>
+	</dependency>
+
+  </dependencies>
+</project>

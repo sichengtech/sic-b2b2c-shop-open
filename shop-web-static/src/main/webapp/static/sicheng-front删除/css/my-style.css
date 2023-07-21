@@ -1,0 +1,15 @@
+@charset "utf-8";
+/* CSS Document */
+
+.style-01 .goods-page .panel dt{background-color:#e8410b; color:#fff }
+.style-01 .store-nav{ background-color:#000}
+.style-01 #store-nav li a{ color:#fff}
+.style-01 #store-nav li a:hover, .style-01 #store-nav li a.hov{ color:#333}
+.style-01 #store-nav ul li a{ color:#333}
+.style-01 #store-nav li a:hover{ color:#e8410c}
+
+
+.cat-title{border-bottom:#e8410b solid 1px;}
+.cat-title strong{ background-color:#e8410b;}
+.style-01 .store-content h1.title{border-bottom:#e8410b solid 1px;}
+.style-01 .store-content h1.title strong{background-color:#e8410b; color:#fff}

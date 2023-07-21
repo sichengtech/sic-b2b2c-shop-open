@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreDomainDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeDomainColumns">
+	<trim suffixOverrides=",">
+		a.store_id AS "storeId",                                             <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) number(19)-->
+		a.domain AS "domain",                                                <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+		a.modify_count AS "modifyCount",                                     <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 （修改时间） date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.modify_date AS "modifyDate",                                       <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeDomainJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.domain != null and c.domain != ''">AND a.domain = #{c.domain}</if>
+		<if test="c.modifyCount != null ">AND a.modify_count = #{c.modifyCount}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.modifyDate != null and c.modifyDate != ''">AND a.modify_date = #{c.modifyDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreDomain">
+		SELECT 
+		<include refid="storeDomainColumns"/>
+		FROM store_domain a
+		<include refid="storeDomainJoins"/>
+		WHERE a.store_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreDomain">
+		SELECT 
+		<include refid="storeDomainColumns"/>
+		FROM store_domain a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.store_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreDomain">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeDomainColumns"/>
+		FROM store_domain a
+		<include refid="storeDomainJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.store_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreDomain">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeDomainColumns"/>
+		FROM store_domain a
+		<include refid="storeDomainJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.store_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.storeId" keyColumn="store_id" useGeneratedKeys="true">
+		INSERT INTO store_domain
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			store_id,                                          <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) number(19)-->
+			domain,                                            <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			modify_count,                                      <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 （修改时间） date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			modify_date,                                       <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.storeId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_domain_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.domain},                                  <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			#{entity.modifyCount},                             <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 （修改时间） date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.modifyDate},                              <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.storeId" keyColumn="store_id" useGeneratedKeys="true">
+		INSERT INTO store_domain
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.storeId != null">store_id,</if></if>
+			<if test="entity.pkMode==2">store_id,</if>
+			<if test="entity.domain != null">domain,</if>                                      <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			<if test="entity.modifyCount != null">modify_count,</if>                           <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 （修改时间） date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">modify_date,</if>                             <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.storeId != null">#{entity.storeId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_domain_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.domain != null">#{entity.domain},</if>                                      <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			<if test="entity.modifyCount != null">#{entity.modifyCount},</if>                            <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 （修改时间） date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">#{entity.modifyDate},</if>                              <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_domain 
+		<set>
+			domain = #{entity.domain},                                      <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			modify_count = #{entity.modifyCount},                           <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 （修改时间） date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			modify_date = #{entity.modifyDate},                             <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+
+		</set>
+		WHERE store_id = #{entity.storeId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_domain a 
+		<set>
+			domain = #{entity.domain},                                      <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			modify_count = #{entity.modifyCount},                           <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 （修改时间） date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			modify_date = #{entity.modifyDate},                             <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_domain
+		<set>
+			<if test="entity.domain != null">domain = #{entity.domain},</if>                                                    <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			<if test="entity.modifyCount != null">modify_count = #{entity.modifyCount},</if>                                    <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 （修改时间） date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">modify_date = #{entity.modifyDate},</if>                                       <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+		</set>
+		WHERE store_id = #{entity.storeId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_domain a
+		<set>
+			<if test="entity.domain != null">domain = #{entity.domain},</if>                                                    <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
+			<if test="entity.modifyCount != null">modify_count = #{entity.modifyCount},</if>                                    <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 （修改时间） date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.modifyDate != null">modify_date = #{entity.modifyDate},</if>                                       <!-- 二级域名最后一次变更年月（格式：2017-02） nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_domain
+		WHERE store_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_domain
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					store_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_domain a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_domain a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

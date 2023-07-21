@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var orderId=parameter.orderId ;%>
+	<script type="text/javascript">
+		var orderId='${orderId}';
+	</script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeOrderDetail.js"></script>
+	<!-- 微信支付js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wxPay.js"></script>
+</head>
+<body class="order_detail_body">
+	<div class="sui-page-group" style="position: absolute;">
+		<div class="sui-page sui-page-current" id="order-detail" style="position: absolute;">
+			<% include("/include/foot-nav.html"){}%>
+			<div class="order_detail content weui_tab_bd">
+				<div class="header-default-box weui-border-b" style="border-bottom: 1px solid #d9d9d9;">
+					<a href="#" class="icon icon-arrowleft l back use-router"></a>
+					<!-- <a class="icon-more icon icon-xiaoxi4 r"><b></b></a> -->
+					<h1>订单详情</h1>
+					<input type="hidden" name="orderId" value="${orderId}"/>
+				</div>
+				<div id="" class="order_status">
+				 	<div class="l"><span class="icon icon-110"></span> 交易状态</div>
+				 	<div class="r"></div>
+				</div>
+				<div id="" class="order_address">
+					<div class="address_username">
+						<span class="icon icon-69"></span>
+						<span class="address_name"></span>
+						<span class="address_phone"></span>
+					</div>
+					<div class="address_city" style="word-break:break-all;">
+						
+					</div>
+				</div>
+				<!--header-nav end-->
+				<div class="weui-form-preview order-list">
+					<a class="store" href="">
+						<div class="weui-form-preview-hd">
+							<label class="weui-form-preview-label order_store_name"><span class="store_name"></span> <span class="icon icon-108"></span></label>
+						</div>
+					</a>
+					<div class="weui_cells">
+						<div class="weui_cell amountPaid">
+							<div class="weui_cell_bd weui_cell_primary">
+								<p>订单金额</p>
+							</div>
+							<div class="weui_cell_ft"><font class="red">￥0.00</font> (含运费：<span class="freight">0.00</span>元)</div>
+						</div>
+					</div>
+				</div>
+				<div id="" class="order_memo order_member_memo">
+					<div class="order_memo_title">买家留言</div>
+					<div class="memo_msg member_memo_msg"></div>
+				</div>
+				<div id="" class="order_memo order_seller_memo">
+					<div class="order_memo_title">商家留言</div>
+					<div class="memo_msg seller_memo_msg"></div>
+				</div>
+				<div class="order_deliver">
+				</div>
+				<div class="order_pay_way">
+					<div class="l">付款方式</div>
+					<div class="r"></div>
+				</div>
+				<div class="order_other">
+					<div class="orderId">订单编号： <span></span></div>
+					<div class="createDate">创建时间：<span></span> </div>
+					<div class="payDate hide">付款时间：<span></span></div>
+					<div class="deliverProductDate hide">发货时间：<span></span> </div>
+					<div class="productReceiptDate hide">完成时间：<span></span> </div>
+					<div class="cancelOrderDate hide">取消时间：<span></span> </div>
+				</div>
+				<div class="order_btns">
+					<a href="javascript:void(0);" class="weui_btn weui_btn_default payOrder hide" orderId="${orderId}">支付</a>
+					<a href="javascript:void(0);" class="weui_btn weui_btn_default delOrder hide" orderId="${orderId}">取消订单</a>
+					<a href="${ctxw}/trade/logistics/info.htm?orderId=${orderId}" class="weui_btn weui_btn_default OKHarvest logistics hide use-router" orderId="${orderId}">查看物流</a>
+					<a href="javascript:void(0);" class="weui_btn weui_btn_default OKHarvest receiveOrder hide" orderId="${orderId}">确认收货</a>
+					<a href="${ctxw}/trade/comment/form.htm?orderId=${orderId}&isAddComment=0" class="weui_btn weui_btn_default use-router commentOrder  hide">我要评价</a>
+					<a href="${ctxw}/trade/comment/form.htm?orderId=${orderId}&isAddComment=1" class="weui_btn weui_btn_default use-router addCommentOrder hide">追加评价</a>
+				</div>
+			</div>
+		</div>
+		<script type="text/template" id="order_item_Tpl" info="订单详情模板">
+			<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+			<div class="weui-form-preview-bd weui-border-t clearfix orderItem">
+				<div class="d-picture weui-border">
+					<img data-src="{{d.productImg}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+				</div>
+				<div class="d-text">
+					<span class="weui-form-preview-value"><span class="d-price">¥{{d.productPrice}}</span><span class="d-number"><span class="icon icon-close1"></span>{{d.count}}</span></span>
+					<label class="weui-form-preview-label"><span class="d-name">{{d.productName}}</span><span class="d-info">{{d.sku}}</span></label>
+				</div>
+			</div>
+			</a>
+		</script>
+		<script type="text/template" id="deliver_Tpl" info="发票模板">
+			<div class="deliver_type">
+				<div class="l">发票类型</div>
+				<div class="r">{{d.deliverType}}</div>
+			</div>
+			<div class="deliver_title">
+				<div class="l">公司名称</div>
+				<div class="r">{{d.companyName}}</div>
+			</div>
+			<div class="deliver_content">
+				<div class="l">纳税人识别号</div>
+				<div class="r">{{d.axpayerIdentityNumber}}</div>
+			</div>
+			<div class="deliver_content">
+				<div class="l">开户行</div>
+				<div class="r">{{d.openingBank}}</div>
+			</div>
+			<div class="deliver_content">
+				<div class="l">账号</div>
+				<div class="r">{{d.accountNumber}}</div>
+			</div>
+			<div class="deliver_content">
+				<div class="l">地址</div>
+				<div class="r">{{d.address}}</div>
+			</div>
+			<div class="deliver_content">
+				<div class="l">电话</div>
+				<div class="r">{{d.phone}}</div>
+			</div>
+		</script>
+	</div>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

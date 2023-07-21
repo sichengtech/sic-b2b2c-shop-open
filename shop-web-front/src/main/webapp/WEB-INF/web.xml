@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<display-name>front</display-name>
+
+	<!-- Spring Context ConfigLocation -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:/spring-context*.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>com.sicheng.common.web.SpringContextLoader</listener-class>
+	</listener>
+
+	<!-- 在Servlet容器(比如Tomcat)停止时，取消注册JDBC的驱动。从而达到消除控制台的警告信息的目标。 -->
+	<listener>
+		<listener-class>com.sicheng.common.web.AppContextListener</listener-class>
+	</listener>
+
+	<!-- 防止xss攻击过滤器 -->
+	<filter>
+		<filter-name>XssEscape</filter-name>
+		<filter-class>com.sicheng.common.xss.XssFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>XssEscape</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	
+	<!-- 防止直接访问jsp和html -->
+	<filter>
+		<filter-name>JspFilter</filter-name>
+		<filter-class>com.sicheng.common.filter.ShopJspFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>JspFilter</filter-name>
+		<url-pattern>*.jsp</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>JspFilter</filter-name>
+		<url-pattern>*.html</url-pattern>
+	</filter-mapping>
+	
+	<!-- 检查网站是否开放 -->
+	<filter>
+		<filter-name>ShopIsOpenFilter</filter-name>
+		<filter-class>com.sicheng.common.filter.ShopOpenFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>ShopIsOpenFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>ShopIsOpenFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+	
+	<!-- 店铺二级域名,URL重写 -->
+	<filter>
+		<filter-name>StoreDomainFilter</filter-name>
+		<filter-class>com.sicheng.front.interceptor.StoreDomainFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>StoreDomainFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>	
+	
+	<!-- Spring 编码过滤器 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+ 	<!-- R工具过滤器 -->
+	<filter>
+		<filter-name>r</filter-name>
+		<filter-class>com.sicheng.common.web.R</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>r</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+		
+	<!-- sso用户中心 Apache Shiro -->
+	<filter>
+		<filter-name>shiroFilter</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+		<init-param>
+			<param-name>targetFilterLifecycle</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>targetBeanName</param-name>
+			<param-value>shiroFilter</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<!-- seller 系统 -->
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/seller/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<!-- member 系统 -->
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/member/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<!-- sso 系统 -->
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/sso/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<!-- front 系统 -->
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>shiroFilter</filter-name>
+		<url-pattern>/servlet/validateCodeServlet</url-pattern>
+		<!-- 图片验证码需要使用session。用户中心的session由shiro管理，必须走shiroFilter才能正确的拿到session -->
+	</filter-mapping>
+	
+	<!-- PageCachingFilter，页面高速缓存过滤器，可在admin管理后台手动清理缓存
+	<filter>
+		<filter-name>pageCachingFilter</filter-name>
+		<filter-class>com.sicheng.common.filter.PageCachingFilter</filter-class>
+        <init-param>
+            <description>以下url需要由本filter来处理，支持正则，多个值之间用','分割
+            目前，只缓存了：大首页、分类频道页
+            </description>
+            <param-name>include</param-name>
+            <param-value>/,/index\.htm,/category/[0-9]+\.htm</param-value>  
+        </init-param>
+        <init-param>
+            <description>以下url不需要由本filter来处理，支持正则，多个值之间用','分割</description>  
+            <param-name>exclude</param-name>
+            <param-value>/member/.*,/seller/.*,/sso/.*</param-value>
+        </init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>pageCachingFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+		<dispatcher>REQUEST</dispatcher>  
+		<dispatcher>FORWARD</dispatcher> 
+	</filter-mapping>
+	-->
+	<!-- SiteMesh，对SiteMeshFilter的增强,支持正则表达式过滤url -->
+	<filter>
+		<filter-name>sitemeshFilter</filter-name>
+		<filter-class>com.sicheng.common.filter.ShopSiteMeshFilter</filter-class>
+        <init-param>  
+            <description>以下url需要由本filter来处理，支持正则，多个值之间用','分割</description>  
+            <param-name>include</param-name>  
+            <param-value>/member/.*,/seller/.*,/sso/.*</param-value>  
+        </init-param>  
+        <init-param>  
+            <description>以下url不需要由本filter来处理，支持正则，多个值之间用','分割</description>  
+            <param-name>exclude</param-name>  
+            <param-value></param-value>  
+        </init-param> 
+	</filter>
+	<filter-mapping>
+		<filter-name>sitemeshFilter</filter-name>
+		<url-pattern>*.do</url-pattern>
+	</filter-mapping>
+	<filter-mapping>
+		<filter-name>sitemeshFilter</filter-name>
+		<url-pattern>*.htm</url-pattern>
+	</filter-mapping>
+	
+	<!-- Front系统静态资源访问器,支持正则表达式 -->
+	<filter>
+		<filter-name>frontStaticFileFilter</filter-name>
+		<filter-class>com.sicheng.common.filter.FrontStaticFileFilter</filter-class>
+        <init-param>  
+            <description>以下url需要由本filter来处理，支持正则，多个值之间用','分割,(?i) 表示不区分大小写,*.js,*.css,*.jpg,*.png,*.gif,*.bmp 等
+            .+(?i)\.js,.+(?i)\.css,.+(?i)\.jpg,.+(?i)\.png,.+(?i)\.gif,.+(?i)\.bmp</description>  
+            <param-name>include</param-name>
+            <param-value></param-value>  
+        </init-param>  
+        <init-param>  
+            <description>以下url不需要由本filter来处理，支持正则，多个值之间用','分割,(?i) 表示不区分大小写</description>  
+            <param-name>exclude</param-name>  
+            <param-value>.+(?i)\.do,.+(?i)\.htm,.+(?i)\.jsp,.+(?i)\.html</param-value>  
+        </init-param> 
+        <init-param>  
+            <description>配置basePath基础路径。/views/*/*/表示要被忽略前三层目录，如访问的是/views/front/qiche/a.js，取出a.js，再到模板目录中去查找a.js</description>  
+            <param-name>basePath</param-name>  
+            <param-value>/views/*/*/</param-value>  
+        </init-param> 
+	</filter>
+	<filter-mapping>
+		<filter-name>frontStaticFileFilter</filter-name>
+		<url-pattern>/views/front/*</url-pattern>
+	</filter-mapping>
+	
+	<!--商家后台 Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>springServletSeller</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/spring-mvc-seller.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServletSeller</servlet-name>
+		<url-pattern>/seller/*</url-pattern>
+	</servlet-mapping>
+	
+	<!--会员中心 Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>springServletMember</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/spring-mvc-member.xml</param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServletMember</servlet-name>
+		<url-pattern>/member/*</url-pattern>
+	</servlet-mapping>
+	
+	<!--sso Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>springServletSso</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/spring-mvc-sso.xml</param-value>
+		</init-param>
+		<load-on-startup>4</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServletSso</servlet-name>
+		<url-pattern>/sso/*</url-pattern>
+	</servlet-mapping>
+	
+	<!--front Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>springServletFront</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/spring-mvc-front.xml</param-value>
+		</init-param>
+		<load-on-startup>5</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServletFront</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 图片验证码 Validate code -->
+	<servlet>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<servlet-class>com.sicheng.common.servlet.ValidateCodeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<url-pattern>/servlet/adminValidateCodeServlet</url-pattern>
+		<!-- 图片验证码需要使用session。后台的session由shiro管理，/servlet/adminValidateCodeServlet走shiroFilter才能正确的拿到session -->
+	</servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<url-pattern>/servlet/validateCodeServlet</url-pattern>
+		<!-- 图片验证码需要使用session。用户中心的session由shiro管理，/servlet/validateCodeServlet走shiroFilter才能正确的拿到session -->
+	</servlet-mapping>
+	
+
+	<!-- Session过期时间配置，对未使用shiro的子系统有效(如前台、买家中心、商家后台),
+	时间单位是分钟，并且只能是整数，如果是零或负数，那么会话就永远不会超时-->
+	<!-- 管理后台，因为使用shiro来管理权限、用户、登录，Session过期时间也由shiro管理
+	请修改"fdp.properties" 文件 "session.sessionTimeout" 参数.-->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<!-- 去除jsp中的空行 -->
+	<!-- 在 Tomcat 的源码里我们可以找到：apache-tomcat-8.0.39-src\java\org\apache\jasper\servlet\JspServlet.java -->
+	<servlet>
+		<servlet-name>jsp</servlet-name>
+		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>trimSpaces</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet> 
+	
+	<!-- 全局的404\500页面，所有的404\500状态码，都会展示这个页面。如a.js没找到404也会展示这个404页面，与spring没有关系 -->
+	<error-page>
+		<error-code>500</error-code>
+		<location>/views/error/500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/views/error/404.jsp</location>
+	</error-page>
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

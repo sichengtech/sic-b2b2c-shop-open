@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>
+	<%var fy0 =fy.getMsg({key:'采购首页'});%>
+	${fy0!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<style type="text/css">
+	.pm_row_bottom { padding: 13px 0 10px; }
+	.state_img1_ok { margin-left: 15px; }
+	.pm_row_b_one div,
+	.pm_row_b_three div,
+	.pm_row_b_two div{ line-height: 22px; display: -webkit-box; text-overflow: ellipsis;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden; }
+</style>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<%
+		var fy1 =fy.getMsg({key:'采购信息'});
+		var fy2 =fy.getMsg({key:'采购条件筛选：'});
+		var fy3 =fy.getMsg({key:'产品名称：'});
+		var fy4 =fy.getMsg({key:'型号：'});
+		var fy5 =fy.getMsg({key:'品牌：'});
+		var fy6 =fy.getMsg({key:'搜索'});
+		var fy7 =fy.getMsg({key:'采购信息列表'});
+		var fy8 =fy.getMsg({key:'共搜索到'});
+		var fy9 =fy.getMsg({key:'条信息'});
+		var fy10 =fy.getMsg({key:'工作时间：周一至周五9:00-18:00，此时段有客服在线。'});
+		var fy12 =fy.getMsg({key:'固定电话：'});
+		var fy13 =fy.getMsg({key:'无'});
+		var fy14 =fy.getMsg({key:'报价截止时间：'});
+		var fy15 =fy.getMsg({key:'交货周期：'});
+		var fy16 =fy.getMsg({key:'已报价供应商数量：'});
+		var fy17 =fy.getMsg({key:'我要报价'});
+		var fy18 =fy.getMsg({key:'采购空间'});
+		var fy19 =fy.getMsg({key:'很遗憾，暂无数据!'});
+		var fy20 =fy.getMsg({key:'发布'});
+		var fy21 =fy.getMsg({key:'订单播报'});
+		var fy22 =fy.getMsg({key:'公司名称'});
+		var fy23 =fy.getMsg({key:'采购标题'});
+		var fy24 =fy.getMsg({key:'交易状态'});
+		var fy25 =fy.getMsg({key:'暂无数据'});
+	%>
+	<div class="wp-1920">
+		<div class="page-banner">
+			<img src="${ctx}/views/front/english/images/ban-006.jpg" alt="">
+		</div>
+	</div>
+	<div>
+		<div class="wp clearfix caigou mb30 mt30">
+			<div class="biaoti mb30">
+				<h2>${fy1!}</h2>
+			</div>
+			<!-- 条件筛选开始 -->
+			<div class=" wrap">
+				<div class="caigou-sx">${fy2!}</div>
+				<div class="caigou-xh">
+					<form action="${ctxf}/purchase/index.htm" method="get" class="sui-form ml20">
+						<p class="sxtj_sear">
+							<span style="width: 320px;"> 
+								<i>${fy3!}</i> <input class="input-fat input-large" type="text" name="purchaseName" value="${purchaseName!}" maxlength="64">
+							</span> 
+							<span> 
+								<i>${fy4!}</i> <input class="input-fat input-large" type="text" name="model" value="${model!}" maxlength="64">
+							</span> 
+							<span>
+								<i>${fy5!}</i> 
+								<input class="input-fat input-large" type="text" name="brand" value="${brand!}" maxlength="64">
+							</span> 
+							<button class="sui-btn btn-large btn-primary">${fy6!}</button>
+						</p>
+					</form>
+				</div>
+				<div class=" clear caigou-shuai">
+					<span>${fy7!}</span>
+					<span class="caigou-shuliang">
+						${fy8!}<em class="red">${viewPurchasePage.count}</em>${fy9!}
+					</span> 
+					<span class="caigou-shijian">${fy10!}</span> 
+				</div>
+			</div>
+			<!-- 条件筛选结束 -->
+			<div class="fl leftcgxx">
+				<input name="uId" value="${uId!}" type="hidden"/>
+				<% for(viewPurchase in viewPurchasePage.list){ %>
+					<div class="leftcgxx clear">
+						<div class="procurement_row clear">
+							<div class="pm_row_top clear">
+								<div class="pm_left fl">
+									<p class="p_h45 clear">
+										<span class="fcolor_61 sp1 fl">${isEmpty (viewPurchase.purchaseTitle!)?fy13!:viewPurchase.purchaseTitle!}</span> 
+										<span class="sp2 fl">${viewPurchase.purchaseCreateDate!,dateFormat="yyyy-MM-dd HH:ss"}</span>
+									</p>
+								</div>
+								<div class="pm_right fl">
+									<p class="state_tip1">
+										<span>
+											<% var label=dict.label({value:viewPurchase.purchaseStatus!,type:"purchase_status"});%>
+											${label}
+										</span>
+									</p>
+								</div>
+							</div>
+							<div class="pm_row_bottom clear">
+								<div class="pm_row_b_one fl">
+									<div>${fy14!}<br/>${viewPurchase.purchaseExpiryTime!,dateFormat="yyyy-MM-dd"}</div>
+								</div>
+								<div class="pm_row_b_two fl bbll">
+									<div>${fy15!}<br/>${isEmpty (viewPurchase.puCycle!)?fy13!:viewPurchase.puCycle!}</div>
+								</div>
+								<div class="pm_row_b_three fl bbll">
+									<div>${fy16!}<br/>${viewPurchase.purchaseCounts!}</div>
+								</div>
+								<div class="pm_row_b_four fl" style="margin-top: -10px;"> 
+									<a target="_blank" class="offer ${(viewPurchase.purchaseStatus!) =='35'?'state_img1_ok sui-btn btn-primary':'state_img1 disabled_a sui-btn'}" uId="${viewPurchase.purchaseUId!}"
+										href="javascript:void(0);" status="${viewPurchase.purchaseStatus!}" purchaseId="${viewPurchase.purchaseId!}">
+										${fy17!}
+									</a>
+									<% if(isNotEmpty(viewPurchase.purchaseSpace)){%>
+									<a target="_blank" href="${ctxf}/purchase/space.htm?spaceId=${viewPurchase.psId!}" class="state_img1_ok sui-btn btn-primary">${fy18!}</a>
+									<%}%>
+								</div>
+							</div>
+						</div>
+					</div>
+				<%}%>
+				<% if(isEmpty(viewPurchasePage.list)){%>
+					<div class="leftcgxx clear">
+						<div class="procurement_row clear">
+								<div style="text-align: center;height: 300px;line-height: 300px;">
+									<img src="${ctx}/views/front/english/images/nodata.png" alt="" style="vertical-align: middle;">
+									<span style="line-height: 30px;">${fy19!}</span></div>
+							<div class="pm_row_bottom clear"></div>
+						</div>
+					</div>
+				<%}%>
+				<div class="mhei"></div>
+				<!-- 分页导航start   页面model中的变量名称为 page-->
+				<% if(isNotEmpty(viewPurchasePage.list)){include("/page.html",{'page':viewPurchasePage}){}}%>
+				<!-- 分页导航end -->
+			</div>
+			<!---右侧采购信息开始-->
+			<!--右侧开始-->
+			<div class="r rightcgxx">
+				<div class="inde_right1 fl"  style="height: 238px; border: 0px;">
+					<form action="${ctxf}/purchase/release/one.htm" id="inputForm1" name="form1" method="get">
+						<div class="news_inner clear">
+							<p class="neirong-fabu">
+								<a href="${ctxs}/purchase/purchase/oneRelease1.htm" id="fabu1" class="sui-btn btn-primary" style="font-size: 46px; text-align: center; line-height: 240px; height: 240px">${fy20!}</a>
+							</p>
+						</div>
+					</form>
+				</div>
+				<div class="mhei"></div>
+				<!--*订单播报开始-->
+				<div class="mj_content clear">
+					<div class="floor1_right fl" style="width:258px">
+						<div class="procurement_tit index_bl clear">${fy21!}</div>
+						<div class="mj_contents clear">
+							<h3 class="clear">
+								<span class="td_w40">${fy22!}</span>
+								<span class="td_w84">${fy23!}</span>
+								<span class="td_w80">${fy24!}</span>
+							</h3>
+							<div class="viphy">
+								<div id="viphy-g" size="1">
+									<div id="viphy1">
+										<% for(purchase2 in purchasePage2){%>
+											<div class="jine">
+												<span style="width: 80px;">${purchase2.companyName!}</span>
+												<span style="width: 90px;">${purchase2.title!}</span>
+												<span style="width: 60px;">
+													<% var label2=dict.label({value:purchase2.status!,type:"purchase_status"});%>
+													${label2!}
+												</span>
+											</div>
+										<%}%>
+										<% if(isEmpty(purchasePage2)){ %>
+											<div class="jine">
+												<p style="margin-left: 98px; line-height: 100px;">${fy25!}</p>
+											</div>
+										<%}%>
+									</div>
+									<div id="viphy2"></div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!--*订单播报结束-->
+			</div>
+			<!---右侧结束-->
+		</div>
+	</div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/front/default/purchaseIndex.js"></script>
+	<script type="text/javascript">
+		var content='${message!}';
+		var type='${type!}';
+		sysMessage(content,type);
+	</script>
+</body>
+</html>

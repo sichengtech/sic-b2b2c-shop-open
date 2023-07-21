@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var pid=parameter.pid ;%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeConsultationList.js"></script>
+	<script type="text/javascript">
+		var pid='${pid}';
+	</script>
+</head>
+<body class="productConsultation-list-body">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id="consultatin-list-page">
+			<% include("/include/router-login.html"){}%>
+			<div class="header-default-box weui-border-b">
+				<a href="${ctxw}/product/detail.htm?pid=${pid}" class="icon icon-arrowleft l back"></a>
+				<a href="${ctxw}/trade/consultation/form.htm?pid=${pid}" class="use-router add-consultation" data-no-cache="true"><span class="icon icon-xiaoxi5"></span> 发起咨询</a>
+				<h1>商品咨询</h1>
+			</div>
+			<div class="noList"></div>
+			<div class="weui_panel">
+			    <div class="consultation-items">
+			    	<div class="no-consultation hide">
+			    		<p class="icon icon-xiaoxi2" style="font-size: 50px;text-align: center;"></p>
+			    		<p style="font-size: 13px;text-align: center;">暂时还没有咨询信息哦~</p>
+			    	</div>
+			    </div>
+			</div>
+		</div>
+	</div>
+	<% include("/include/foot-nav.html"){}%>
+	<% include("/include/foot.html"){}%>
+    <script type="text/template" id="consultation_Tpl" info="咨询模板">
+		<div class="consultation-item">
+			<div class="askAnswer-item">
+				<div class="consultationType">                     
+					<i class="icon-consultationType">咨询类型</i>                   
+					<div class="item-con">     
+						<p class="consultationType_p">{{d.consultationLabel}}</p> 
+					</div>               
+				</div>      
+				<div class="ask">                     
+					<i class="icon-ask">问</i>                   
+					<div class="item-con">     
+						<p class="question">{{d.ask}}</p> 
+					</div>               
+				</div>    
+				<div class="answer {{d.disabled}}">                     
+					<i class="icon-answer">答</i>                     
+					<div class="item-con">                          
+						<p class="answer">{{d.answer}}</p>                        
+					</div>                
+				</div>   
+			</div>
+			<div class="contents">
+				<p class="consultation-date">咨询时间：&nbsp;&nbsp;{{d.date}}</p> 
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="暂无咨询模板">
+		<div class="noList-div">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>暂时还没有咨询信息哦~</span>
+		</div>
+	</script>
+</body>
+</html>

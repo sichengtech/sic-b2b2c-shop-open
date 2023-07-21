@@ -1,0 +1,159 @@
+<%
+    var siteInfo = site.info();
+    var welcome = fy.getMsg({key:'您好，欢迎来到'});
+    var login = fy.getMsg({key:'登录'});
+    var registered = fy.getMsg({key:'注册'});
+    var memberCentre = fy.getMsg({key:'会员中心'});
+    var enterMemberCenter = fy.getMsg({key:'进入会员中心'});
+    var myOrder = fy.getMsg({key:'我的订单'});
+    var shoppingCart = fy.getMsg({key:'购物车'});
+    var favorites = fy.getMsg({key:'收藏夹'});
+    var merchantBackground = fy.getMsg({key:'商家后台'});
+    var allCategories = fy.getMsg({key:'全部分类'});
+    var hotSearchKeywords = fy.getMsg({key:'热搜关键词'});
+    var product = fy.getMsg({key:'产品'});
+    var shop = fy.getMsg({key:'店铺'});
+    var query = fy.getMsg({key:'搜索'});
+%>
+<div class="header-top clearfix">
+    <div class="wp">
+        <div class="l">${welcome!}${siteInfo.name!}</div>
+        <ul class="header-top-nav">
+			<span class="welcomeGray">
+				<li><a target="_blank" href="${ctxsso}/login/login.htm">${login!}</a></li>
+				<li><a target="_blank" href="${ctxsso}/register/save1.htm">${registered!}</a></li>
+			</span>
+            <li>
+                <a href="javaScript:">${memberCentre!}</a>
+                <ul class="store-nav-map" style="display: none;">
+                    <li><a target="_blank" href="${ctxm}/index.htm">${enterMemberCenter!}</a></li>
+                    <li><a target="_blank" href="${ctxm}/trade/tradeOrder/list.htm">${myOrder!}</a></li>
+                    <li><a target="_blank" href="${ctxf}/trade/cart/list.htm">${shoppingCart!}</a></li>
+                    <li><a target="_blank" href="${ctxm}/collect/memberCollectionProduct/list.htm">${favorites!}</a></li>
+                </ul>
+            </li>
+            <li><a target="_blank" href="${ctxs}/index.htm">${merchantBackground!}</a></li>
+        </ul>
+    </div>
+</div>
+
+<%
+    //主LOGO的CSS,内有logo的url
+    var css = "";
+    if(siteInfo.siteLogo != null){
+        css = "style='width: 200px;height: 60px; background: url("+ ctxfs + siteInfo.siteLogo + ") center no-repeat;'";
+    }
+%>
+<div class="header-main clearfix">
+    <div class="wp">
+        <!--主LOGO区域-->
+        <div class="logo l" ${css!}>
+            <div class="page-nav-top">
+                <div id="topnavmenu" class="menu"><strong>${allCategories!} <i class="sui-icon icon-tb-unfold"></i></strong>
+                    <ul>
+                        <li><a target="_blank" href="${ctxf}/category/1.htm">工程机械</a></li>
+                        <li><a target="_blank" href="${ctxf}/category/329.htm">家电产品</a></li>
+                        <li><a target="_blank" href="${ctxf}/product/list.htm?cid=108">3C数码</a></li>
+                        <li><a target="_blank" href="${ctxf}/product/list.htm?cid=179">安防监控</a></li>
+                        <li><a target="_blank" href="${ctxf}/product/list.htm?cid=240">汽车汽配</a></li>
+                    </ul>
+                </div>
+            </div>
+            <a target="_blank" href="${ctxf}/index.htm">${siteInfo.name}</a>
+        </div>
+        <div class="search-box">
+            <div class="hotsearch" id="hotsearch">
+                <div class="title">${hotSearchKeywords!}：</div>
+                <%
+                var siteHotSearchWords = site.hotSearchWord({type:0,pageSize:12});
+                for(siteHotSearchWord in siteHotSearchWords!){
+                %>
+                <a target="_blank" href="javascript:"
+                   onclick="window.location.href ='${ctxf}/product/list.htm?k=${siteHotSearchWord.word!}'">${siteHotSearchWord.word!}</a>
+                <%} %>
+            </div>
+            <!--<form target="_blank"  id="searchForm">-->
+            <div>
+				<span class="sui-dropdown select" >
+					<span class="dropdown-inner">
+						<a role="button" data-toggle="dropdown" href="#" class="dropdown-toggle">
+					      	<span id="searchType">${product!}</span> <i class="caret"></i>
+						</a>
+						<ul role="menu" aria-labelledby="drop1" class="sui-dropdown-menu">
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="1"
+                                                       id="searchTypeButton1">${product!}</a></li>
+							<li role="presentation"><a role="menuitem" tabindex="-1" href="#" value="2"
+                                                       id="searchTypeButton2">${shop!}</a></li>
+						</ul>
+					</span>
+					<input type="hidden" placeholder="" class="input-medium searchType" value="1"/>
+				</span>
+                <input type="text" class="text" id="keyWord" name="k" value="${parameter.k!=null?parameter.k:'神州笔记本'}"
+                       onfocus="if(this.value=='神州笔记本')this.value='';"
+                       onblur="if(this.value=='')this.value='神州笔记本';" style="float: left;"/>
+                <input type="button" id="searchButton"
+                       class="button head-searchBtn"
+                       onclick="return false;" value="${query!}" style="float: left;"/>
+            </div>
+            <!--</form>-->
+            <script>
+                $(document).ready(function () {
+                    /**
+                     * 选择搜索类型，店铺类型隐藏热搜词
+                     */
+                    $("#searchTypeButton1").click(function () {
+                        $("#hotsearch").show();
+                    });
+                    $("#searchTypeButton2").click(function () {
+                        $("#hotsearch").hide();
+                    });
+
+                    /**
+                     * 点击搜索按钮
+                     */
+                    $("#searchButton").click(function () {
+                        query();
+                    });
+
+                    /**
+                     * 回车按下
+                     */
+                    $(document).keydown(function (event) {
+                        if (event.which == 13) {
+                            query();
+                        }
+                    });
+                });
+
+                /**
+                 * 店铺搜索和商品搜索函数
+                 */
+                function query() {
+                    var keyWord = $("#keyWord").val();
+                    var url = "";
+                    if (keyWord.length <= 0) {
+                        return;
+                    }
+                    if ($("#searchType").html() == "${product!}") {
+                        url = "${ctxf}/product/list.htm?k=";
+                    } else {
+                        url = "${ctxf}/store/list.htm?k=";
+                    }
+                    window.location.href = url + keyWord;
+                }
+            </script>
+        </div>
+        <div class="header-ico r">
+            <div class="ico-wx">
+                <img src="${ctx}/views/front/default/images/ico_weixin.png"/>
+            </div>
+            <div class="ico-wb">
+                <img src="${ctx}/views/front/default/images/ico_weibo.png"/>
+            </div>
+            <a target="_blank" href="${ctxf}/trade/cart/list.htm">
+                <div class="top_car"></div>
+            </a>
+        </div>
+    </div>
+</div>
+<!--header-main end-->

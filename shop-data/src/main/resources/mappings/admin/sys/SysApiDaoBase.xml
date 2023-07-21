@@ -1,0 +1,298 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysApiDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysApiColumns">
+	<trim suffixOverrides=",">
+		a.api_id AS "apiId",                                                 <!-- 接口id bigint(20)-->
+		a.api_category AS "apiCategory",                                     <!-- 所属分类 char(1)-->
+		a.api_name AS "apiName",                                             <!-- 接口名 varchar(64)-->
+		a.api_version AS "apiVersion",                                       <!-- 接口版本号 varchar(64)-->
+		a.api_describe AS "apiDescribe",                                     <!-- 接口描述 varchar(256)-->
+		a.api_url AS "apiUrl",                                               <!-- 接口地址 varchar(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysApiJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.apiId != null ">AND a.api_id = #{c.apiId}</if>
+		<if test="c.apiCategory != null and c.apiCategory != ''">AND a.api_category = #{c.apiCategory}</if>
+		<if test="c.apiName != null and c.apiName != ''">				
+			<bind name="pattern" value="'%' + c.apiName + '%'" />				
+			AND lower(a.api_name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.apiVersion != null and c.apiVersion != ''">AND a.api_version = #{c.apiVersion}</if>
+		<if test="c.apiDescribe != null and c.apiDescribe != ''">AND a.api_describe = #{c.apiDescribe}</if>
+		<if test="c.apiUrl != null and c.apiUrl != ''">AND a.api_url = #{c.apiUrl}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysApi">
+		SELECT 
+		<include refid="sysApiColumns"/>
+		FROM sys_api a
+		<include refid="sysApiJoins"/>
+		WHERE a.api_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysApi">
+		SELECT 
+		<include refid="sysApiColumns"/>
+		FROM sys_api a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.api_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysApi">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysApiColumns"/>
+		FROM sys_api a
+		<include refid="sysApiJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.api_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysApi">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysApiColumns"/>
+		FROM sys_api a
+		<include refid="sysApiJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.api_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.apiId" keyColumn="api_id" useGeneratedKeys="true">
+		INSERT INTO sys_api
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			api_id,                                            <!-- 接口id bigint(20)-->
+			api_category,                                      <!-- 所属分类 char(1)-->
+			api_name,                                          <!-- 接口名 varchar(64)-->
+			api_version,                                       <!-- 接口版本号 varchar(64)-->
+			api_describe,                                      <!-- 接口描述 varchar(256)-->
+			api_url,                                           <!-- 接口地址 varchar(64)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.apiId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_api_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.apiCategory},                             <!-- 所属分类 char(1)-->
+			#{entity.apiName},                                 <!-- 接口名 varchar(64)-->
+			#{entity.apiVersion},                              <!-- 接口版本号 varchar(64)-->
+			#{entity.apiDescribe},                             <!-- 接口描述 varchar(256)-->
+			#{entity.apiUrl},                                  <!-- 接口地址 varchar(64)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.apiId" keyColumn="api_id" useGeneratedKeys="true">
+		INSERT INTO sys_api
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.apiId != null">api_id,</if></if>
+			<if test="entity.pkMode==2">api_id,</if>
+			<if test="entity.apiCategory != null">api_category,</if>                           <!-- 所属分类 char(1)-->
+			<if test="entity.apiName != null">api_name,</if>                                   <!-- 接口名 varchar(64)-->
+			<if test="entity.apiVersion != null">api_version,</if>                             <!-- 接口版本号 varchar(64)-->
+			<if test="entity.apiDescribe != null">api_describe,</if>                           <!-- 接口描述 varchar(256)-->
+			<if test="entity.apiUrl != null">api_url,</if>                                     <!-- 接口地址 varchar(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.apiId != null">#{entity.apiId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_api_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.apiCategory != null">#{entity.apiCategory},</if>                            <!-- 所属分类 char(1)-->
+			<if test="entity.apiName != null">#{entity.apiName},</if>                                    <!-- 接口名 varchar(64)-->
+			<if test="entity.apiVersion != null">#{entity.apiVersion},</if>                              <!-- 接口版本号 varchar(64)-->
+			<if test="entity.apiDescribe != null">#{entity.apiDescribe},</if>                            <!-- 接口描述 varchar(256)-->
+			<if test="entity.apiUrl != null">#{entity.apiUrl},</if>                                      <!-- 接口地址 varchar(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_api 
+		<set>
+			api_category = #{entity.apiCategory},                           <!-- 所属分类 char(1)-->
+			api_name = #{entity.apiName},                                   <!-- 接口名 varchar(64)-->
+			api_version = #{entity.apiVersion},                             <!-- 接口版本号 varchar(64)-->
+			api_describe = #{entity.apiDescribe},                           <!-- 接口描述 varchar(256)-->
+			api_url = #{entity.apiUrl},                                     <!-- 接口地址 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE api_id = #{entity.apiId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_api a 
+		<set>
+			api_category = #{entity.apiCategory},                           <!-- 所属分类 char(1)-->
+			api_name = #{entity.apiName},                                   <!-- 接口名 varchar(64)-->
+			api_version = #{entity.apiVersion},                             <!-- 接口版本号 varchar(64)-->
+			api_describe = #{entity.apiDescribe},                           <!-- 接口描述 varchar(256)-->
+			api_url = #{entity.apiUrl},                                     <!-- 接口地址 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_api
+		<set>
+			<if test="entity.apiCategory != null">api_category = #{entity.apiCategory},</if>                                    <!-- 所属分类 char(1)-->
+			<if test="entity.apiName != null">api_name = #{entity.apiName},</if>                                                <!-- 接口名 varchar(64)-->
+			<if test="entity.apiVersion != null">api_version = #{entity.apiVersion},</if>                                       <!-- 接口版本号 varchar(64)-->
+			<if test="entity.apiDescribe != null">api_describe = #{entity.apiDescribe},</if>                                    <!-- 接口描述 varchar(256)-->
+			<if test="entity.apiUrl != null">api_url = #{entity.apiUrl},</if>                                                   <!-- 接口地址 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE api_id = #{entity.apiId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_api a
+		<set>
+			<if test="entity.apiCategory != null">api_category = #{entity.apiCategory},</if>                                    <!-- 所属分类 char(1)-->
+			<if test="entity.apiName != null">api_name = #{entity.apiName},</if>                                                <!-- 接口名 varchar(64)-->
+			<if test="entity.apiVersion != null">api_version = #{entity.apiVersion},</if>                                       <!-- 接口版本号 varchar(64)-->
+			<if test="entity.apiDescribe != null">api_describe = #{entity.apiDescribe},</if>                                    <!-- 接口描述 varchar(256)-->
+			<if test="entity.apiUrl != null">api_url = #{entity.apiUrl},</if>                                                   <!-- 接口地址 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_api
+		WHERE api_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_api
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					api_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_api a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_api a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

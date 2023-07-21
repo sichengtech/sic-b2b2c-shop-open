@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountUserDao">
+
+	<cache-ref namespace="com.sicheng.admin.account.dao.AccountUserDao"/>
+	
+	<!--
+	 请把你的扩展SQL写到 当前 文件中 
+	AccountUserDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountUserDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountUserDao.xml文件与AccountUserDaoBase.xml文件，在运行时会合并起来。
+	AccountUserDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountUserDao.xml文件的内容你要自行做好备份 。
+	-->
+
+	<!-- 原子累加累减账户中的金额-->
+	<update id="updateByIdSelectiveAtom">
+		UPDATE account_user
+		<set>
+			<if test="entity.ownMoney != null">own_money = own_money + #{entity.ownMoney},</if>                                 <!-- 会员账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money = frozen_money + #{entity.frozenMoney},</if>                     <!-- 会员冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE au_id = #{entity.auId}
+	</update>
+
+	<!-- 会员申请提现（资金冻结了），原子操作，防止超额提现-->
+	<update id="withdrawApplyUser">
+		UPDATE account_user
+		<set>
+			own_money = own_money - #{money},                          <!-- 账户余额 decimal(12,3)-->
+			frozen_money = frozen_money + #{money},                    <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE au_id = #{auId}
+		AND own_money >= #{money} <!-- 防止超额提现-->
+	</update>	
+
+	
+	<!-- 会员执行提现，原子操作，防止超额提现-->
+	<update id="withdrawExecuteUser">
+		UPDATE account_user
+		<set>
+			frozen_money = frozen_money - #{money},                    <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE au_id = #{auId}
+		AND frozen_money >= #{money} <!-- 防止超额提现-->
+	</update>	
+
+
+	<!-- 拒绝会员提现（资金解冻了），原子操作，防止超额解冻-->
+	<update id="withdrawRefuseUser">
+		UPDATE account_user
+		<set>
+			own_money = own_money + #{money},                          <!-- 账户余额 decimal(12,3)-->
+			frozen_money = frozen_money - #{money},                    <!-- 冻结金额 decimal(12,3)-->
+			update_date = now(),                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE au_id = #{auId}
+		AND frozen_money >= #{money} <!-- 防止超额解冻-->
+	</update>			
+</mapper>

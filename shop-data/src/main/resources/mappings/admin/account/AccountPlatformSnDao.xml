@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountPlatformSnDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	AccountPlatformSnDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountPlatformSnDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountPlatformSnDao.xml文件与AccountPlatformSnDaoBase.xml文件，在运行时会合并起来。
+	AccountPlatformSnDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountPlatformSnDao.xml文件的内容你要自行做好备份。
+	-->
+	
+	<!-- 支付手续费用总和 -->
+	<select id="payCommissionTotal" resultType="java.math.BigDecimal">
+		select ( select sum(income_money) as paymentProcedure_total from account_platform_sn 
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					serial_number in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+		 ) from dual
+	</select>
+	
+	<!-- 支付退回手续费用总和 -->
+	<select id="refundCommissionTotal" resultType="java.math.BigDecimal">
+		select ( select sum(expenses_money) as paymentProcedure_total from account_platform_sn
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					serial_number in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+		 ) from dual
+	</select>
+
+</mapper>

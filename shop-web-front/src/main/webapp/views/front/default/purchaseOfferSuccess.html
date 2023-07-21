@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>
+	<%var fy0 =fy.getMsg({key:'报价完成'});%>
+	${fy0!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<div class="wp clearfix section box-def bg-fff mt60 mb60 page-ok">
+		<div class="clearfix page-ok-main">
+		<div class="pic"><img src="${ctx}/views/front/english/images/001.png"></div>
+		<div class="word">
+			<h2>
+				<%var fy1 =fy.getMsg({key:'恭喜您报价成功，请稍后'});%>
+				${fy1!}
+			</h2>
+			<p>
+				<%var fy2 =fy.getMsg({key:'请您保持手机畅通，买家随时都有可能与您联系，请耐心等待，'});%>
+				${fy2!}<br>
+				<%var fy3 =fy.getMsg({key:'如有疑问可以联系商城客服'});%>
+				${fy3!}
+			</p>
+			<a href="${ctxf}/index.htm" class="sui-btn btn-xlarge">
+				<%var fy4 =fy.getMsg({key:'返回首页'});%>
+				${fy4!}
+			</a>
+			<a href="${ctxs}/purchase/matchmaking/list.htm?sta=2" class="sui-btn btn-xlarge">
+				<%var fy5 =fy.getMsg({key:'查看我的报价单'});%>
+				${fy5!}
+			</a>
+		</div>
+		</div>
+	</div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

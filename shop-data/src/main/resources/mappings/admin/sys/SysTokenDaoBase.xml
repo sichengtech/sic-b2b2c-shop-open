@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysTokenDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysTokenColumns">
+	<trim suffixOverrides=",">
+		a.t_id AS "tId",                                                     <!-- 主键 number(19)-->
+		a.user_id AS "userId",                                               <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+		a.token AS "token",                                                  <!-- 令牌 varchar2(64)-->
+		a.type AS "type",                                                    <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+		a.status AS "status",                                                <!-- 状态：0.失效1.有效 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysTokenJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.tId != null ">AND a.t_id = #{c.tId}</if>
+		<if test="c.userId != null ">AND a.user_id = #{c.userId}</if>
+		<if test="c.token != null and c.token != ''">AND a.token = #{c.token}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysToken">
+		SELECT 
+		<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		WHERE a.t_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysToken">
+		SELECT 
+		<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.t_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysToken">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.t_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysToken">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysTokenColumns"/>
+		FROM sys_token a
+		<include refid="sysTokenJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.t_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.tId" keyColumn="t_id" useGeneratedKeys="true">
+		INSERT INTO sys_token
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			t_id,                                              <!-- 主键 number(19)-->
+			user_id,                                           <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			token,                                             <!-- 令牌 varchar2(64)-->
+			type,                                              <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			status,                                            <!-- 状态：0.失效1.有效 char(1)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.tId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_token_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.userId},                                  <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			#{entity.token},                                   <!-- 令牌 varchar2(64)-->
+			#{entity.type},                                    <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			#{entity.status},                                  <!-- 状态：0.失效1.有效 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.tId" keyColumn="t_id" useGeneratedKeys="true">
+		INSERT INTO sys_token
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.tId != null">t_id,</if></if>
+			<if test="entity.pkMode==2">t_id,</if>
+			<if test="entity.userId != null">user_id,</if>                                     <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			<if test="entity.token != null">token,</if>                                        <!-- 令牌 varchar2(64)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 状态：0.失效1.有效 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.tId != null">#{entity.tId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_token_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.userId != null">#{entity.userId},</if>                                      <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			<if test="entity.token != null">#{entity.token},</if>                                        <!-- 令牌 varchar2(64)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态：0.失效1.有效 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_token 
+		<set>
+			user_id = #{entity.userId},                                     <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			token = #{entity.token},                                        <!-- 令牌 varchar2(64)-->
+			type = #{entity.type},                                          <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			status = #{entity.status},                                      <!-- 状态：0.失效1.有效 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+
+		</set>
+		WHERE t_id = #{entity.tId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_token a 
+		<set>
+			user_id = #{entity.userId},                                     <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			token = #{entity.token},                                        <!-- 令牌 varchar2(64)-->
+			type = #{entity.type},                                          <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			status = #{entity.status},                                      <!-- 状态：0.失效1.有效 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_token
+		<set>
+			<if test="entity.userId != null">user_id = #{entity.userId},</if>                                                   <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			<if test="entity.token != null">token = #{entity.token},</if>                                                       <!-- 令牌 varchar2(64)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态：0.失效1.有效 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+		</set>
+		WHERE t_id = #{entity.tId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_token a
+		<set>
+			<if test="entity.userId != null">user_id = #{entity.userId},</if>                                                   <!-- 用户id(公用上传不需要存值；激活邮箱需要存值) number(19)-->
+			<if test="entity.token != null">token = #{entity.token},</if>                                                       <!-- 令牌 varchar2(64)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 业务类型：10.公用上传20.用户激活邮箱 varchar2(4)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态：0.失效1.有效 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_token
+		WHERE t_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_token
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					t_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_token a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_token a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

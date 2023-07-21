@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<decorators defaultdir="">
+	
+	<!-- 默认装饰页面, 在需要装饰的页面增加<meta name="decorator" content="default"/> -->
+
+	<!--商家中心 -->
+	<decorator name="sellerLoginBegin" page="/views/seller/layouts/defaultsellerLoginBegin.jsp" />  <!-- 登录之前 -->
+	<decorator name="sellerLoginAfter" page="/views/seller/layouts/defaultsellerLoginAfter.jsp" />	<!-- 登录之后(没开店)，忘记密码，激活邮箱 -->
+	<decorator name="seller" page="/views/seller/layouts/defaultSeller.jsp" />						<!-- 登录之后(开店) -->
+	
+	<!-- jbox弹出树布局 -->
+	<decorator name="blank" page="/views/seller/layouts/blank.jsp" />
+	
+	<!--买家中心 -->
+	<decorator name="member" page="/views/member/layouts/defaultMember.jsp" />
+	
+	<!--用户中心 -->
+	<decorator name="sso" page="/views/sso/layouts/defaultSso.jsp" />    
+	<decorator name="ssoLeft" page="/views/sso/layouts/defaultSsoLeft.jsp" />  
+		
+</decorators>

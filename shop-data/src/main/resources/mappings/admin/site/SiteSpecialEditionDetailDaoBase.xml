@@ -1,0 +1,275 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.site.dao.SiteSpecialEditionDetailDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="siteSpecialEditionDetailColumns">
+	<trim suffixOverrides=",">
+		a.se_detail_id AS "seDetailId",                                      <!-- 主键(特版详情id) bigint(20)-->
+		a.se_id AS "seId",                                                   <!-- 特版id(关联特版表) bigint(20)-->
+		a.content AS "content",                                              <!-- 特版详情内容 longtext-->
+		a.sort AS "sort",                                                    <!-- 排序 bigint(10)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="siteSpecialEditionDetailJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.seDetailId != null ">AND a.se_detail_id = #{c.seDetailId}</if>
+		<if test="c.seId != null ">AND a.se_id = #{c.seId}</if>
+		<if test="c.content != null and c.content != ''">AND a.content = #{c.content}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SiteSpecialEditionDetail">
+		SELECT 
+		<include refid="siteSpecialEditionDetailColumns"/>
+		FROM site_special_edition_detail a
+		<include refid="siteSpecialEditionDetailJoins"/>
+		WHERE a.se_detail_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SiteSpecialEditionDetail">
+		SELECT 
+		<include refid="siteSpecialEditionDetailColumns"/>
+		FROM site_special_edition_detail a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.se_detail_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SiteSpecialEditionDetail">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteSpecialEditionDetailColumns"/>
+		FROM site_special_edition_detail a
+		<include refid="siteSpecialEditionDetailJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.se_detail_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SiteSpecialEditionDetail">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteSpecialEditionDetailColumns"/>
+		FROM site_special_edition_detail a
+		<include refid="siteSpecialEditionDetailJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.se_detail_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.seDetailId" keyColumn="se_detail_id" useGeneratedKeys="true">
+		INSERT INTO site_special_edition_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			se_detail_id,                                      <!-- 主键(特版详情id) bigint(20)-->
+			se_id,                                             <!-- 特版id(关联特版表) bigint(20)-->
+			content,                                           <!-- 特版详情内容 longtext-->
+			sort,                                              <!-- 排序 bigint(10)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.seDetailId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_special_edition_detail_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.seId},                                    <!-- 特版id(关联特版表) bigint(20)-->
+			#{entity.content},                                 <!-- 特版详情内容 longtext-->
+			#{entity.sort},                                    <!-- 排序 bigint(10)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.seDetailId" keyColumn="se_detail_id" useGeneratedKeys="true">
+		INSERT INTO site_special_edition_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.seDetailId != null">se_detail_id,</if></if>
+			<if test="entity.pkMode==2">se_detail_id,</if>
+			<if test="entity.seId != null">se_id,</if>                                         <!-- 特版id(关联特版表) bigint(20)-->
+			<if test="entity.content != null">content,</if>                                    <!-- 特版详情内容 longtext-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 bigint(10)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.seDetailId != null">#{entity.seDetailId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_special_edition_detail_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.seId != null">#{entity.seId},</if>                                          <!-- 特版id(关联特版表) bigint(20)-->
+			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 特版详情内容 longtext-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 bigint(10)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE site_special_edition_detail 
+		<set>
+			se_id = #{entity.seId},                                         <!-- 特版id(关联特版表) bigint(20)-->
+			content = #{entity.content},                                    <!-- 特版详情内容 longtext-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(10)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE se_detail_id = #{entity.seDetailId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE site_special_edition_detail a 
+		<set>
+			se_id = #{entity.seId},                                         <!-- 特版id(关联特版表) bigint(20)-->
+			content = #{entity.content},                                    <!-- 特版详情内容 longtext-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(10)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE site_special_edition_detail
+		<set>
+			<if test="entity.seId != null">se_id = #{entity.seId},</if>                                                         <!-- 特版id(关联特版表) bigint(20)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 特版详情内容 longtext-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(10)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE se_detail_id = #{entity.seDetailId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE site_special_edition_detail a
+		<set>
+			<if test="entity.seId != null">se_id = #{entity.seId},</if>                                                         <!-- 特版id(关联特版表) bigint(20)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 特版详情内容 longtext-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(10)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM site_special_edition_detail
+		WHERE se_detail_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM site_special_edition_detail
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					se_detail_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM site_special_edition_detail a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM site_special_edition_detail a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

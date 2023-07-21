@@ -1,0 +1,445 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.settlement.dao.SettlementRechargeDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="settlementRechargeColumns">
+	<trim suffixOverrides=",">
+		a.recharge_id AS "rechargeId",                                       <!-- 主键 number(19)-->
+		a.recharge_number AS "rechargeNumber",                               <!-- 充值编号 nvarchar2(64)-->
+		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) number(19)-->
+		a.recharge_money AS "rechargeMoney",                                 <!-- 充值金额 number(12,3)-->
+		a.recharge_time AS "rechargeTime",                                   <!-- 充值时间 date(7)-->
+		a.pay_date AS "payDate",                                             <!-- 支付时间 date(7)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 支付方式(支付方式id) number(19)-->
+		a.staus AS "staus",                                                  <!-- 支付状态，0未支付、1已支付 char(1)-->
+		a.pay_terminal AS "payTerminal",                                     <!-- 支付终端，0pc端、1移动端 char(1)-->
+		a.trade_number AS "tradeNumber",                                     <!-- 交易号 nvarchar2(64)-->
+		a.admin_id AS "adminId",                                             <!-- 管理员(管理员表id) number(19)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="settlementRechargeJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.rechargeId != null ">AND a.recharge_id = #{c.rechargeId}</if>
+		<if test="c.rechargeNumber != null and c.rechargeNumber != ''">AND a.recharge_number = #{c.rechargeNumber}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.rechargeMoney != null ">AND a.recharge_money = #{c.rechargeMoney}</if>
+		<if test="c.beginRechargeTime != null and c.endRechargeTime != null ">AND a.recharge_time BETWEEN #{c.beginRechargeTime} AND #{c.endRechargeTime}</if>
+		<if test="c.beginPayDate != null and c.endPayDate != null ">AND a.pay_date BETWEEN #{c.beginPayDate} AND #{c.endPayDate}</if>
+		<if test="c.payWayId != null ">AND a.pay_way_id = #{c.payWayId}</if>
+		<if test="c.staus != null and c.staus != ''">AND a.staus = #{c.staus}</if>
+		<if test="c.payTerminal != null and c.payTerminal != ''">AND a.pay_terminal = #{c.payTerminal}</if>
+		<if test="c.tradeNumber != null and c.tradeNumber != ''">AND a.trade_number = #{c.tradeNumber}</if>
+		<if test="c.adminId != null ">AND a.admin_id = #{c.adminId}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SettlementRecharge">
+		SELECT 
+		<include refid="settlementRechargeColumns"/>
+		FROM settlement_recharge a
+		<include refid="settlementRechargeJoins"/>
+		WHERE a.recharge_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SettlementRecharge">
+		SELECT 
+		<include refid="settlementRechargeColumns"/>
+		FROM settlement_recharge a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.recharge_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SettlementRecharge">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="settlementRechargeColumns"/>
+		FROM settlement_recharge a
+		<include refid="settlementRechargeJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.recharge_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SettlementRecharge">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="settlementRechargeColumns"/>
+		FROM settlement_recharge a
+		<include refid="settlementRechargeJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.recharge_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.rechargeId" keyColumn="recharge_id" useGeneratedKeys="true">
+		INSERT INTO settlement_recharge
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			recharge_id,                                       <!-- 主键 number(19)-->
+			recharge_number,                                   <!-- 充值编号 nvarchar2(64)-->
+			u_id,                                              <!-- 会员id(会员表id) number(19)-->
+			recharge_money,                                    <!-- 充值金额 number(12,3)-->
+			recharge_time,                                     <!-- 充值时间 date(7)-->
+			pay_date,                                          <!-- 支付时间 date(7)-->
+			pay_way_id,                                        <!-- 支付方式(支付方式id) number(19)-->
+			staus,                                             <!-- 支付状态，0未支付、1已支付 char(1)-->
+			pay_terminal,                                      <!-- 支付终端，0pc端、1移动端 char(1)-->
+			trade_number,                                      <!-- 交易号 nvarchar2(64)-->
+			admin_id,                                          <!-- 管理员(管理员表id) number(19)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.rechargeId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">settlement_recharge_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.rechargeNumber},                          <!-- 充值编号 nvarchar2(64)-->
+			#{entity.uId},                                     <!-- 会员id(会员表id) number(19)-->
+			#{entity.rechargeMoney},                           <!-- 充值金额 number(12,3)-->
+			#{entity.rechargeTime},                            <!-- 充值时间 date(7)-->
+			#{entity.payDate},                                 <!-- 支付时间 date(7)-->
+			#{entity.payWayId},                                <!-- 支付方式(支付方式id) number(19)-->
+			#{entity.staus},                                   <!-- 支付状态，0未支付、1已支付 char(1)-->
+			#{entity.payTerminal},                             <!-- 支付终端，0pc端、1移动端 char(1)-->
+			#{entity.tradeNumber},                             <!-- 交易号 nvarchar2(64)-->
+			#{entity.adminId},                                 <!-- 管理员(管理员表id) number(19)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.rechargeId" keyColumn="recharge_id" useGeneratedKeys="true">
+		INSERT INTO settlement_recharge
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.rechargeId != null">recharge_id,</if></if>
+			<if test="entity.pkMode==2">recharge_id,</if>
+			<if test="entity.rechargeNumber != null">recharge_number,</if>                     <!-- 充值编号 nvarchar2(64)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.rechargeMoney != null">recharge_money,</if>                       <!-- 充值金额 number(12,3)-->
+			<if test="entity.rechargeTime != null">recharge_time,</if>                         <!-- 充值时间 date(7)-->
+			<if test="entity.payDate != null">pay_date,</if>                                   <!-- 支付时间 date(7)-->
+			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.staus != null">staus,</if>                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
+			<if test="entity.payTerminal != null">pay_terminal,</if>                           <!-- 支付终端，0pc端、1移动端 char(1)-->
+			<if test="entity.tradeNumber != null">trade_number,</if>                           <!-- 交易号 nvarchar2(64)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.rechargeId != null">#{entity.rechargeId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">settlement_recharge_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.rechargeNumber != null">#{entity.rechargeNumber},</if>                      <!-- 充值编号 nvarchar2(64)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.rechargeMoney != null">#{entity.rechargeMoney},</if>                        <!-- 充值金额 number(12,3)-->
+			<if test="entity.rechargeTime != null">#{entity.rechargeTime},</if>                          <!-- 充值时间 date(7)-->
+			<if test="entity.payDate != null">#{entity.payDate},</if>                                    <!-- 支付时间 date(7)-->
+			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.staus != null">#{entity.staus},</if>                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
+			<if test="entity.payTerminal != null">#{entity.payTerminal},</if>                            <!-- 支付终端，0pc端、1移动端 char(1)-->
+			<if test="entity.tradeNumber != null">#{entity.tradeNumber},</if>                            <!-- 交易号 nvarchar2(64)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE settlement_recharge 
+		<set>
+			recharge_number = #{entity.rechargeNumber},                     <!-- 充值编号 nvarchar2(64)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
+			recharge_money = #{entity.rechargeMoney},                       <!-- 充值金额 number(12,3)-->
+			recharge_time = #{entity.rechargeTime},                         <!-- 充值时间 date(7)-->
+			pay_date = #{entity.payDate},                                   <!-- 支付时间 date(7)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式id) number(19)-->
+			staus = #{entity.staus},                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
+			pay_terminal = #{entity.payTerminal},                           <!-- 支付终端，0pc端、1移动端 char(1)-->
+			trade_number = #{entity.tradeNumber},                           <!-- 交易号 nvarchar2(64)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) number(19)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		WHERE recharge_id = #{entity.rechargeId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE settlement_recharge a 
+		<set>
+			recharge_number = #{entity.rechargeNumber},                     <!-- 充值编号 nvarchar2(64)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
+			recharge_money = #{entity.rechargeMoney},                       <!-- 充值金额 number(12,3)-->
+			recharge_time = #{entity.rechargeTime},                         <!-- 充值时间 date(7)-->
+			pay_date = #{entity.payDate},                                   <!-- 支付时间 date(7)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式id) number(19)-->
+			staus = #{entity.staus},                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
+			pay_terminal = #{entity.payTerminal},                           <!-- 支付终端，0pc端、1移动端 char(1)-->
+			trade_number = #{entity.tradeNumber},                           <!-- 交易号 nvarchar2(64)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) number(19)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE settlement_recharge
+		<set>
+			<if test="entity.rechargeNumber != null">recharge_number = #{entity.rechargeNumber},</if>                           <!-- 充值编号 nvarchar2(64)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.rechargeMoney != null">recharge_money = #{entity.rechargeMoney},</if>                              <!-- 充值金额 number(12,3)-->
+			<if test="entity.rechargeTime != null">recharge_time = #{entity.rechargeTime},</if>                                 <!-- 充值时间 date(7)-->
+			<if test="entity.payDate != null">pay_date = #{entity.payDate},</if>                                                <!-- 支付时间 date(7)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.staus != null">staus = #{entity.staus},</if>                                                       <!-- 支付状态，0未支付、1已支付 char(1)-->
+			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 支付终端，0pc端、1移动端 char(1)-->
+			<if test="entity.tradeNumber != null">trade_number = #{entity.tradeNumber},</if>                                    <!-- 交易号 nvarchar2(64)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		WHERE recharge_id = #{entity.rechargeId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE settlement_recharge a
+		<set>
+			<if test="entity.rechargeNumber != null">recharge_number = #{entity.rechargeNumber},</if>                           <!-- 充值编号 nvarchar2(64)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.rechargeMoney != null">recharge_money = #{entity.rechargeMoney},</if>                              <!-- 充值金额 number(12,3)-->
+			<if test="entity.rechargeTime != null">recharge_time = #{entity.rechargeTime},</if>                                 <!-- 充值时间 date(7)-->
+			<if test="entity.payDate != null">pay_date = #{entity.payDate},</if>                                                <!-- 支付时间 date(7)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.staus != null">staus = #{entity.staus},</if>                                                       <!-- 支付状态，0未支付、1已支付 char(1)-->
+			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 支付终端，0pc端、1移动端 char(1)-->
+			<if test="entity.tradeNumber != null">trade_number = #{entity.tradeNumber},</if>                                    <!-- 交易号 nvarchar2(64)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM settlement_recharge
+		WHERE recharge_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM settlement_recharge
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					recharge_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM settlement_recharge a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM settlement_recharge a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

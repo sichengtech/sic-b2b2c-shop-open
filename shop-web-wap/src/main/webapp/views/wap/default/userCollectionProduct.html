@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 页面返回js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-back.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/userCollectionProduct.js"></script>
+</head>
+<body class="collectionProduct-body">
+	<% include("/include/foot-nav.html"){}%>
+	<div class="header-default-box weui-border-b">
+		<a href="javascript:;" class="icon icon-arrowleft l back click_back"></a>
+		<span class="icon icon-category administration" style="display: block;"> 管理</span>
+		<span class="icon icon-duihao administrationOK" style="display: none;"> 完成</span>
+		<h1>商品收藏</h1>
+	</div>
+	<div class="weui_cells_div">
+		<div class="weui_cells">
+			<div class="weui_cells_tit">亲，你当前有已下架的宝贝<span>0</span>个！！</div>
+			<div class="weui_cells_btn">
+				<a href="javascript:;" class="bleachNow">立即删除 》》</a>
+			</div>
+		</div>
+	</div>
+	<div class="noList hide" style="padding-top: 40%;"></div>
+	<div class="weui_panel weui_cells_checkbox">
+		<div class="weui_panel_bd"></div>
+	</div>
+	<div class="weui_tabbar weui_cells_checkbox administration_footer" style="display: none;">
+		<label class="weui_cell collectionProductAll">
+			<div class="weui_cell_hd">
+				<input type="checkbox" class="weui_check" name="collectionProductAll">
+				<i class="weui_icon_checked"></i>
+			</div>
+		</label>
+		<span>全选</span>
+		<a href="javascript:;" class="deleteCollection">
+			<p class="view_nav_label">删除</p>
+		</a>
+	</div>
+	<script type="text/template" id="collectionProduct_Tpl" info="商品收藏模板">
+		<div class="weui_media_box weui_media_appmsg">
+			<label class="weui_cell weui_check_label collectionProduct" style="display: none;">
+				<div class="weui_cell_hd">
+					<input type="checkbox" class="weui_check" name="collectionProduct" value="{{d.collectionId}}"/>
+					<i class="weui_icon_checked"></i>
+				</div>
+            </label>
+			<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+				<div class="weui_media_hd weui-border-radius">
+					<img class="weui_media_appmsg_thumb" data-src="{{d.image}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+				</div>
+			</a>
+			<div class="weui_media_bd">
+				<p class="p-name">
+					<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">{{d.pictureName}}</a>
+				</p>
+				<p class="p-price">¥{{d.picturePrice}}</p>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="undercarriageCollectionProduct_Tpl" info="下架商品收藏模板">
+		<div class="weui_media_box weui_media_appmsg">
+			<label class="weui_cell weui_check_label collectionProduct" style="display: none;">
+				<div class="weui_cell_hd">
+					<input type="checkbox" class="weui_check undercarriage" name="collectionProduct" value="{{d.collectionId}}"/>
+					<i class="weui_icon_checked"></i>
+				</div>
+            </label>
+			<div class="weui_media_hd weui-border-radius">
+				<div class="undercarriage">下架</div>
+				<img class="weui_media_appmsg_thumb undercarriageCur" data-src="{{d.image}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+			</div>
+			<div class="weui_media_bd">
+				<p class="p-name undercarriageCur">{{d.pictureName}}</p>
+				<p class="p-price undercarriageCur">暂无报价</p>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="没有收藏模板">
+		<div class="noList-div">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>暂时还没有收藏商品哦~</span>
+		</div>
+	</script>
+</body>
+</html>

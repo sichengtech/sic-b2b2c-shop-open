@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+	<%var shoppingCart =fy.getMsg({key:'购物车'});%>
+	${shoppingCart!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/default/tradeCartList.js"></script>
+<style>
+.cartListBody .mycart dl dt ul li.con_3, .cartListBody .mycart dl dd ul li.con_3 { width: 33%; }
+input[type="radio"], input[type="checkbox"] {margin: 0px;}
+</style>
+</head>
+<body class="bgfff cartListBody">
+	<!-- 头部开始 -->
+	<% include("/include/header.html"){}%>
+	<!--头部结束-->
+	<!-- 商品信息开始 -->
+	<sys:message content="${message!}"/>
+	<% if(isNotEmpty(cartMap)){%>
+		<form action="${ctxf}/trade/order/confirmOrder.htm" id="cartFrom" method="post">
+			<input type="hidden" name="userMemberId" value="${userMember.uId!}"/>
+			<div class="sui-container mycart" style="margin-bottom: 5px;">
+				<%var selectAll =fy.getMsg({key:'全选'});
+				var yuan=fy.getMsg({key:'元'});
+				var jian=fy.getMsg({key:'件'});
+				%>
+				<dl>
+					<dt>
+						<ul style="margin: auto;">
+							 <li class="con_1" style="width: 2%;"><span></span></li>
+							 <li class="con_2" style="width: 7%;"><input type="checkbox" class="input-check productCheckAll"/>${selectAll!}</li>
+							 <li class="con_3"><%var productName =fy.getMsg({key:'商品名称'});%>${productName!}</li>
+							 <li class="con_4"><%var attr =fy.getMsg({key:'属性'});%>${attr!}</li>
+							 <li class="con_5"><%var price =fy.getMsg({key:'单价'});%>${price!}</li>
+							 <li class="con_6"><%var quantity =fy.getMsg({key:'数量'});%>${quantity!}</li>
+							 <li class="con_7"><%var subtotal =fy.getMsg({key:'小计'});%>${subtotal!}</li>
+							 <li class="con_8"><%var operating =fy.getMsg({key:'操作'});%>${operating!}</li>
+						</ul>
+					</dt>
+					<dd>
+						<% for(cart in cartMap){%>
+							<div class="store">
+								<div class="store-title">
+									<a href="javascript:void(0);">
+										<span class="show retract"><i class="sui-icon icon-tb-unfold"></i> <span><%var hide =fy.getMsg({key:'隐藏'});%>${hide!}</span></span>
+										<a target="_blank" href="${ctxf}/store/${strutil.split(cart.key!,'-')[1]}.htm">
+											<strong>
+												<input type="checkbox" class="input-check" isTitle="1"/>
+												${strutil.split(cart.key!,"-")[0]}
+											</strong>
+										</a>
+									</a>
+								</div>
+								<% for(v in cart.value){%>
+									<ul>
+										<li class="con_1">
+											<input type="checkbox" class="input-check cartSub" isTitle="0" cartId="${v.cartId!}" pid="${v.productSpu.pId!}" purchasingAmount="${v.productSpu.purchasingAmount!}"/>
+											<input type="hidden" name="userSellerId" value="${v.productSpu.uId!}"/>
+								  		</li>
+										<li class="con_2">
+											<a href="${ctxf}/detail/${v.productSpu.pId!}.htm">
+												<img src="${ctxfs}${v.productSpu.image}@!70x70" style="width: 70px;height:70px;"
+												onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+											</a>
+										</li>
+										<%var offer =fy.getMsg({key:'优惠'});
+											none =fy.getMsg({key:'无'});
+										%>
+										<li class="con_3"><a href="${ctxf}/detail/${v.productSpu.pId!}.htm" class="block-text" target="_blank">${v.productSpu.name!}</a><p>${offer!}：${none}</p></li>
+										<li class="con_4" style="width: 20%;">
+											<% if(isNotEmpty(v.skuValue!)){
+												for(sku in strutil.split(v.skuValue!,",")){%>
+													<a href="javascript:void(0);">${sku!}</a>
+												<%}
+											}%>
+										</li>
+										<li class="con_5" style="width: 8%;">${yuan!}<span class="price">${v.price!}</span></li>
+										<li class="con_6" style="width: 14%;">
+											<div class="countBtn">
+												<a class="r" issection="section"> - </a>
+												<input type="hidden" class="stock" value="${v.productSku.stock!}"/>
+												<div class="input">
+													<input id="txt" type="text" value="${v.count!}" value2="${v.count!}" class="buyNum" stock="995" skuid="16461" issection="section">
+												</div>
+												<a class="l" stock="995" issection="section"> + </a>
+											</div>
+											<p class="stock-tip"><%var buyNum =fy.getMsg({key:'此商品最多可购买'});%>${buyNum!} <span class="stock-tip-stock">${v.productSku.stock!}</span>${jian!}</p>
+											<p class="stock-tip"><%var startBuyNum =fy.getMsg({key:'此商品起购量是'});%>${startBuyNum!}<span class="stock-tip-stock" id="purchaseAmount" pid="${v.productSpu.pId!}">${v.productSpu.purchasingAmount!}</span>${jian!}</p>
+										</li>
+										<li class="con_7">${yuan!}${v.priceSum!}</li>
+										<li class="con_8" style="width: 3%;">
+											<a href="javascript:" href1="${ctxm}/trade/tradeCart/delete.htm?cartId=${v.cartId!}" class="deleteSure"><i class="sui-icon icon-tb-delete"></i></a>
+										</li>
+									</ul>
+								<%}%>
+							</div>
+						<%}%>
+					</dd>
+				</dl>
+				<dl id="dl-footer">
+					<div id="dl-footer-div">
+						<div class="l">
+							<input type="checkbox" class="input-check productCheckAll"/><label>${selectAll!}</label>
+							<a href="javascript:" href1="${ctxm}/trade/tradeCart/delete.htm" class="batchDele"><%var delete =fy.getMsg({key:'删除'});%>${delete!}</a>
+						</div>
+						<div class="r">
+							<%var species=fy.getMsg({key:'种'});
+							var totalNum=fy.getMsg({key:'选购数量总计'});
+							var totalMoney=fy.getMsg({key:'商品金额总计(不包含运费)'});
+							var settlement=fy.getMsg({key:'结算'});
+							%>
+							<span><%var productType =fy.getMsg({key:'选购商品种类'});%>${productType!}<span class="productCate">0</span>${species!}${totalNum!}<span class="productCount">0</span>${jian!} ${totalMoney!}${yuan!}<span class="productSumPrice">0</span></span>
+							<button class="sui-btn btn-xlarge btn-danger" id="buyBtn">${settlement!}</button>
+						</div>
+					</div>
+				</dl>
+			</div>
+			<input type="hidden" name="ids"/>
+			<input type="hidden" name="priceSum"/>
+			<input type="hidden" name="stat" value="1"/>
+		</form>
+	<%}else{%>
+		<div class="no_product">
+			<div class="no_product_img"></div>
+			<div class="no_product_info">
+				<p class="no_product_msg"><%var noProduct =fy.getMsg({key:'您的购物车还没有商品'});%>${noProduct!}</p>
+				<p>
+					<a href="${ctxf}/index.htm" class="sui-btn btn-xlarge btn-danger"><i class="sui-icon icon-tb-cart"></i><%var goShoping =fy.getMsg({key:'去购物'});%>${goShoping!}</a>
+					<a href="${ctxm}/trade/tradeOrder/list.htm" class="sui-btn btn-xlarge btn-primary"><i class="sui-icon icon-pc-doc"></i><%var chekOrder =fy.getMsg({key:'查看订单'});%>${chekOrder!}</a>
+				</p>
+			</div>
+		</div>
+	<%}%>
+	<!-- 商品信息结束 -->
+	<div class="footer-simple"></div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% if(isNotEmpty(message!)){%>
+	<script type="text/javascript">
+		var content='${message!}';
+		var type='${type!}';
+		sysMessage(content,type);
+	</script>
+	<%}%>
+</body>
+</html>

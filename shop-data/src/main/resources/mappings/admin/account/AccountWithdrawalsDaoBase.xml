@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountWithdrawalsDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="accountWithdrawalsColumns">
+	<trim suffixOverrides=",">
+		a.id AS 'id',                                                        <!-- 主键 bigint(20)-->
+		a.account_id AS 'accountId',                                         <!-- 账户id bigint(20)-->
+		a.status AS 'status',                                                <!-- 类型（1会员提现，2平台提现） char(1)-->
+		a.money AS 'money',                                                  <!-- 提现金额 decimal(12,3)-->
+		a.tied_card_id AS 'tiedCardId',                                      <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+		a.audit_status AS 'auditStatus',                                     <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+		a.audit_opinion AS 'auditOpinion',                                   <!-- 审核理由 varchar(255)-->
+		a.is_pay AS 'isPay',                                                 <!-- 是否支付（0未支付、1已支付） char(1)-->
+		a.pay_time AS 'payTime',                                             <!-- 支付时间 datetime-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.accountId != null ">AND a.account_id = #{c.accountId}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.money != null ">AND a.money = #{c.money}</if>
+		<if test="c.tiedCardId != null ">AND a.tied_card_id = #{c.tiedCardId}</if>
+		<if test="c.auditStatus != null and c.auditStatus != ''">AND a.audit_status = #{c.auditStatus}</if>
+		<if test="c.auditOpinion != null and c.auditOpinion != ''">AND a.audit_opinion = #{c.auditOpinion}</if>
+		<if test="c.isPay != null and c.isPay != ''">AND a.is_pay = #{c.isPay}</if>
+		<if test="c.beginPayTime != null and c.endPayTime != null ">AND a.pay_time BETWEEN #{c.beginPayTime} AND #{c.endPayTime}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="AccountWithdrawals">
+		SELECT 
+		<include refid="accountWithdrawalsColumns"/>
+		FROM account_withdrawals a
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="AccountWithdrawals">
+		SELECT 
+		<include refid="accountWithdrawalsColumns"/>
+		FROM account_withdrawals a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="AccountWithdrawals">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountWithdrawalsColumns"/>
+		FROM account_withdrawals a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="AccountWithdrawals">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountWithdrawalsColumns"/>
+		FROM account_withdrawals a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO account_withdrawals
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- 主键 bigint(20)-->
+			account_id,                                        <!-- 账户id bigint(20)-->
+			status,                                            <!-- 类型（1会员提现，2平台提现） char(1)-->
+			money,                                             <!-- 提现金额 decimal(12,3)-->
+			tied_card_id,                                      <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			audit_status,                                      <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			audit_opinion,                                     <!-- 审核理由 varchar(255)-->
+			is_pay,                                            <!-- 是否支付（0未支付、1已支付） char(1)-->
+			pay_time,                                          <!-- 支付时间 datetime-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_withdrawals_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.accountId},                               <!-- 账户id bigint(20)-->
+			#{entity.status},                                  <!-- 类型（1会员提现，2平台提现） char(1)-->
+			#{entity.money},                                   <!-- 提现金额 decimal(12,3)-->
+			#{entity.tiedCardId},                              <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			#{entity.auditStatus},                             <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			#{entity.auditOpinion},                            <!-- 审核理由 varchar(255)-->
+			#{entity.isPay},                                   <!-- 是否支付（0未支付、1已支付） char(1)-->
+			#{entity.payTime},                                 <!-- 支付时间 datetime-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO account_withdrawals
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.accountId != null">account_id,</if>                               <!-- 账户id bigint(20)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 类型（1会员提现，2平台提现） char(1)-->
+			<if test="entity.money != null">money,</if>                                        <!-- 提现金额 decimal(12,3)-->
+			<if test="entity.tiedCardId != null">tied_card_id,</if>                            <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			<if test="entity.auditStatus != null">audit_status,</if>                           <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">audit_opinion,</if>                         <!-- 审核理由 varchar(255)-->
+			<if test="entity.isPay != null">is_pay,</if>                                       <!-- 是否支付（0未支付、1已支付） char(1)-->
+			<if test="entity.payTime != null">pay_time,</if>                                   <!-- 支付时间 datetime-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_withdrawals_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.accountId != null">#{entity.accountId},</if>                                <!-- 账户id bigint(20)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 类型（1会员提现，2平台提现） char(1)-->
+			<if test="entity.money != null">#{entity.money},</if>                                        <!-- 提现金额 decimal(12,3)-->
+			<if test="entity.tiedCardId != null">#{entity.tiedCardId},</if>                              <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			<if test="entity.auditStatus != null">#{entity.auditStatus},</if>                            <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">#{entity.auditOpinion},</if>                          <!-- 审核理由 varchar(255)-->
+			<if test="entity.isPay != null">#{entity.isPay},</if>                                        <!-- 是否支付（0未支付、1已支付） char(1)-->
+			<if test="entity.payTime != null">#{entity.payTime},</if>                                    <!-- 支付时间 datetime-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE account_withdrawals 
+		<set>
+			account_id = #{entity.accountId},                               <!-- 账户id bigint(20)-->
+			status = #{entity.status},                                      <!-- 类型（1会员提现，2平台提现） char(1)-->
+			money = #{entity.money},                                        <!-- 提现金额 decimal(12,3)-->
+			tied_card_id = #{entity.tiedCardId},                            <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			audit_status = #{entity.auditStatus},                           <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			audit_opinion = #{entity.auditOpinion},                         <!-- 审核理由 varchar(255)-->
+			is_pay = #{entity.isPay},                                       <!-- 是否支付（0未支付、1已支付） char(1)-->
+			pay_time = #{entity.payTime},                                   <!-- 支付时间 datetime-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE account_withdrawals a 
+		<set>
+			account_id = #{entity.accountId},                               <!-- 账户id bigint(20)-->
+			status = #{entity.status},                                      <!-- 类型（1会员提现，2平台提现） char(1)-->
+			money = #{entity.money},                                        <!-- 提现金额 decimal(12,3)-->
+			tied_card_id = #{entity.tiedCardId},                            <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			audit_status = #{entity.auditStatus},                           <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			audit_opinion = #{entity.auditOpinion},                         <!-- 审核理由 varchar(255)-->
+			is_pay = #{entity.isPay},                                       <!-- 是否支付（0未支付、1已支付） char(1)-->
+			pay_time = #{entity.payTime},                                   <!-- 支付时间 datetime-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE account_withdrawals
+		<set>
+			<if test="entity.accountId != null">account_id = #{entity.accountId},</if>                                          <!-- 账户id bigint(20)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 类型（1会员提现，2平台提现） char(1)-->
+			<if test="entity.money != null">money = #{entity.money},</if>                                                       <!-- 提现金额 decimal(12,3)-->
+			<if test="entity.tiedCardId != null">tied_card_id = #{entity.tiedCardId},</if>                                      <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			<if test="entity.auditStatus != null">audit_status = #{entity.auditStatus},</if>                                    <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">audit_opinion = #{entity.auditOpinion},</if>                                 <!-- 审核理由 varchar(255)-->
+			<if test="entity.isPay != null">is_pay = #{entity.isPay},</if>                                                      <!-- 是否支付（0未支付、1已支付） char(1)-->
+			<if test="entity.payTime != null">pay_time = #{entity.payTime},</if>                                                <!-- 支付时间 datetime-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE account_withdrawals a
+		<set>
+			<if test="entity.accountId != null">account_id = #{entity.accountId},</if>                                          <!-- 账户id bigint(20)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 类型（1会员提现，2平台提现） char(1)-->
+			<if test="entity.money != null">money = #{entity.money},</if>                                                       <!-- 提现金额 decimal(12,3)-->
+			<if test="entity.tiedCardId != null">tied_card_id = #{entity.tiedCardId},</if>                                      <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+			<if test="entity.auditStatus != null">audit_status = #{entity.auditStatus},</if>                                    <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">audit_opinion = #{entity.auditOpinion},</if>                                 <!-- 审核理由 varchar(255)-->
+			<if test="entity.isPay != null">is_pay = #{entity.isPay},</if>                                                      <!-- 是否支付（0未支付、1已支付） char(1)-->
+			<if test="entity.payTime != null">pay_time = #{entity.payTime},</if>                                                <!-- 支付时间 datetime-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM account_withdrawals
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM account_withdrawals
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM account_withdrawals a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM account_withdrawals a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

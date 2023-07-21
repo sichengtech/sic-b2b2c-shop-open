@@ -1,0 +1,775 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductSpuDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productSpuColumns">
+	<trim suffixOverrides=",">
+		a.p_id AS "pId",                                                     <!-- id number(19)-->
+		a.name AS "name",                                                    <!-- 商品名称 nvarchar2(128)-->
+		a.category_id AS "categoryId",                                       <!-- 商品分类（平台） number(19)-->
+		a.store_category_id AS "storeCategoryId",                            <!-- 商品分类（本店） number(19)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.status AS "status",                                                <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+		a.image AS "image",                                                  <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+		a.brand_id AS "brandId",                                             <!-- 品牌 number(19)-->
+		a.u_id AS "uId",                                                     <!-- 关联(卖家扩展表) number(19)-->
+		a.name_sub AS "nameSub",                                             <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+		a.unit AS "unit",                                                    <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+		a.type AS "type",                                                    <!-- 1零售型、2批发型 char(1)-->
+		a.is_gift AS "isGift",                                               <!-- 是否为赠品，0非，1是 char(1)-->
+		a.is_recommend AS "isRecommend",                                     <!-- 是否推荐，0非，1是 char(1)-->
+		a.recommend_sort AS "recommendSort",                                 <!-- 推荐排序 number(10)-->
+		a.market_price AS "marketPrice",                                     <!-- 市场价（只用于显示） number(12,3)-->
+		a.point AS "point",                                                  <!-- 赠送积分 nvarchar2(64)-->
+		a.weight AS "weight",                                                <!-- 重量 number(12,3)-->
+		a.volume AS "volume",                                                <!-- 体积 number(12,3)-->
+		a.benefit AS "benefit",                                              <!-- 优惠 nvarchar2(128)-->
+		a.invoice AS "invoice",                                              <!-- 发票，0不可开发票，1可开发票 char(1)-->
+		a.action AS "action",                                                <!-- 是否参加促销活动，0否，1是 char(1)-->
+		a.deliver_goods_date AS "deliverGoodsDate",                          <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+		a.purchasing_amount AS "purchasingAmount",                           <!-- 起购量 nvarchar2(64)-->
+		a.express_type AS "expressType",                                     <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+		a.express_price AS "expressPrice",                                   <!-- 运费价格,express_type=0时有值 number(12,3)-->
+		a.lt_id AS "ltId",                                                   <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+		a.cause AS "cause",                                                  <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+		a.shelf_time AS "shelfTime",                                         <!-- 上架时间 date(7)-->
+		a.create_date AS "createDate",                                       <!-- 创建日期 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 修改日期 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段 nvarchar2(64)-->
+		a.bak11 AS "bak11",                                                  <!-- 备用字段 nvarchar2(64)-->
+		a.bak12 AS "bak12",                                                  <!-- 备用字段 nvarchar2(64)-->
+		a.bak13 AS "bak13",                                                  <!-- 备用字段 nvarchar2(64)-->
+		a.bak14 AS "bak14",                                                  <!-- 备用字段 nvarchar2(64)-->
+		a.bak15 AS "bak15",                                                  <!-- 备用字段 nvarchar2(64)-->
+		a.n1 AS "n1",                                                        <!-- 备用字段 number(10)-->
+		a.n2 AS "n2",                                                        <!-- 备用字段 number(10)-->
+		a.n3 AS "n3",                                                        <!-- 备用字段 number(10)-->
+		a.f1 AS "f1",                                                        <!-- 备用字段 number(12,3)-->
+		a.f2 AS "f2",                                                        <!-- 备用字段 number(12,3)-->
+		a.f3 AS "f3",                                                        <!-- 备用字段 number(12,3)-->
+		a.d1 AS "d1",                                                        <!-- 备用字段 date(7)-->
+		a.d2 AS "d2",                                                        <!-- 备用字段 date(7)-->
+		a.d3 AS "d3",                                                        <!-- 备用字段 date(7)-->
+		a.publish AS "publish",                                              <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productSpuJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.name != null and c.name != ''">AND a.name = #{c.name}</if>
+		<if test="c.categoryId != null ">AND a.category_id = #{c.categoryId}</if>
+		<if test="c.storeCategoryId != null ">AND a.store_category_id = #{c.storeCategoryId}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.image != null and c.image != ''">AND a.image = #{c.image}</if>
+		<if test="c.brandId != null ">AND a.brand_id = #{c.brandId}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.nameSub != null and c.nameSub != ''">AND a.name_sub = #{c.nameSub}</if>
+		<if test="c.unit != null and c.unit != ''">AND a.unit = #{c.unit}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.isGift != null and c.isGift != ''">AND a.is_gift = #{c.isGift}</if>
+		<if test="c.isRecommend != null and c.isRecommend != ''">AND a.is_recommend = #{c.isRecommend}</if>
+		<if test="c.recommendSort != null ">AND a.recommend_sort = #{c.recommendSort}</if>
+		<if test="c.marketPrice != null ">AND a.market_price = #{c.marketPrice}</if>
+		<if test="c.point != null and c.point != ''">AND a.point = #{c.point}</if>
+		<if test="c.weight != null ">AND a.weight = #{c.weight}</if>
+		<if test="c.volume != null ">AND a.volume = #{c.volume}</if>
+		<if test="c.benefit != null and c.benefit != ''">AND a.benefit = #{c.benefit}</if>
+		<if test="c.invoice != null and c.invoice != ''">AND a.invoice = #{c.invoice}</if>
+		<if test="c.action != null and c.action != ''">AND a.action = #{c.action}</if>
+		<if test="c.deliverGoodsDate != null and c.deliverGoodsDate != ''">AND a.deliver_goods_date = #{c.deliverGoodsDate}</if>
+		<if test="c.purchasingAmount != null and c.purchasingAmount != ''">AND a.purchasing_amount = #{c.purchasingAmount}</if>
+		<if test="c.expressType != null and c.expressType != ''">AND a.express_type = #{c.expressType}</if>
+		<if test="c.expressPrice != null ">AND a.express_price = #{c.expressPrice}</if>
+		<if test="c.ltId != null ">AND a.lt_id = #{c.ltId}</if>
+		<if test="c.cause != null and c.cause != ''">AND a.cause = #{c.cause}</if>
+		<if test="c.beginShelfTime != null and c.endShelfTime != null ">AND a.shelf_time BETWEEN #{c.beginShelfTime} AND #{c.endShelfTime}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+		<if test="c.bak11 != null and c.bak11 != ''">AND a.bak11 = #{c.bak11}</if>
+		<if test="c.bak12 != null and c.bak12 != ''">AND a.bak12 = #{c.bak12}</if>
+		<if test="c.bak13 != null and c.bak13 != ''">AND a.bak13 = #{c.bak13}</if>
+		<if test="c.bak14 != null and c.bak14 != ''">AND a.bak14 = #{c.bak14}</if>
+		<if test="c.bak15 != null and c.bak15 != ''">AND a.bak15 = #{c.bak15}</if>
+		<if test="c.n1 != null ">AND a.n1 = #{c.n1}</if>
+		<if test="c.n2 != null ">AND a.n2 = #{c.n2}</if>
+		<if test="c.n3 != null ">AND a.n3 = #{c.n3}</if>
+		<if test="c.f1 != null ">AND a.f1 = #{c.f1}</if>
+		<if test="c.f2 != null ">AND a.f2 = #{c.f2}</if>
+		<if test="c.f3 != null ">AND a.f3 = #{c.f3}</if>
+		<if test="c.beginD1 != null and c.endD1 != null ">AND a.d1 BETWEEN #{c.beginD1} AND #{c.endD1}</if>
+		<if test="c.beginD2 != null and c.endD2 != null ">AND a.d2 BETWEEN #{c.beginD2} AND #{c.endD2}</if>
+		<if test="c.beginD3 != null and c.endD3 != null ">AND a.d3 BETWEEN #{c.beginD3} AND #{c.endD3}</if>
+		<if test="c.publish != null and c.publish != ''">AND a.publish = #{c.publish}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductSpu">
+		SELECT 
+		<include refid="productSpuColumns"/>
+		FROM product_spu a
+		<include refid="productSpuJoins"/>
+		WHERE a.p_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductSpu">
+		SELECT 
+		<include refid="productSpuColumns"/>
+		FROM product_spu a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductSpu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSpuColumns"/>
+		FROM product_spu a
+		<include refid="productSpuJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductSpu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSpuColumns"/>
+		FROM product_spu a
+		<include refid="productSpuJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_spu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			p_id,                                              <!-- id number(19)-->
+			name,                                              <!-- 商品名称 nvarchar2(128)-->
+			category_id,                                       <!-- 商品分类（平台） number(19)-->
+			store_category_id,                                 <!-- 商品分类（本店） number(19)-->
+			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			status,                                            <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			image,                                             <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			brand_id,                                          <!-- 品牌 number(19)-->
+			u_id,                                              <!-- 关联(卖家扩展表) number(19)-->
+			name_sub,                                          <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			unit,                                              <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			type,                                              <!-- 1零售型、2批发型 char(1)-->
+			is_gift,                                           <!-- 是否为赠品，0非，1是 char(1)-->
+			is_recommend,                                      <!-- 是否推荐，0非，1是 char(1)-->
+			recommend_sort,                                    <!-- 推荐排序 number(10)-->
+			market_price,                                      <!-- 市场价（只用于显示） number(12,3)-->
+			point,                                             <!-- 赠送积分 nvarchar2(64)-->
+			weight,                                            <!-- 重量 number(12,3)-->
+			volume,                                            <!-- 体积 number(12,3)-->
+			benefit,                                           <!-- 优惠 nvarchar2(128)-->
+			invoice,                                           <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			action,                                            <!-- 是否参加促销活动，0否，1是 char(1)-->
+			deliver_goods_date,                                <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			purchasing_amount,                                 <!-- 起购量 nvarchar2(64)-->
+			express_type,                                      <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			express_price,                                     <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			lt_id,                                             <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			cause,                                             <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			shelf_time,                                        <!-- 上架时间 date(7)-->
+			create_date,                                       <!-- 创建日期 date(7)-->
+			update_date,                                       <!-- 修改日期 date(7)-->
+			bak1,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段 nvarchar2(64)-->
+			bak11,                                             <!-- 备用字段 nvarchar2(64)-->
+			bak12,                                             <!-- 备用字段 nvarchar2(64)-->
+			bak13,                                             <!-- 备用字段 nvarchar2(64)-->
+			bak14,                                             <!-- 备用字段 nvarchar2(64)-->
+			bak15,                                             <!-- 备用字段 nvarchar2(64)-->
+			n1,                                                <!-- 备用字段 number(10)-->
+			n2,                                                <!-- 备用字段 number(10)-->
+			n3,                                                <!-- 备用字段 number(10)-->
+			f1,                                                <!-- 备用字段 number(12,3)-->
+			f2,                                                <!-- 备用字段 number(12,3)-->
+			f3,                                                <!-- 备用字段 number(12,3)-->
+			d1,                                                <!-- 备用字段 date(7)-->
+			d2,                                                <!-- 备用字段 date(7)-->
+			d3,                                                <!-- 备用字段 date(7)-->
+			publish,                                           <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.pId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_spu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.name},                                    <!-- 商品名称 nvarchar2(128)-->
+			#{entity.categoryId},                              <!-- 商品分类（平台） number(19)-->
+			#{entity.storeCategoryId},                         <!-- 商品分类（本店） number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.status},                                  <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			#{entity.image},                                   <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			#{entity.brandId},                                 <!-- 品牌 number(19)-->
+			#{entity.uId},                                     <!-- 关联(卖家扩展表) number(19)-->
+			#{entity.nameSub},                                 <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			#{entity.unit},                                    <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			#{entity.type},                                    <!-- 1零售型、2批发型 char(1)-->
+			#{entity.isGift},                                  <!-- 是否为赠品，0非，1是 char(1)-->
+			#{entity.isRecommend},                             <!-- 是否推荐，0非，1是 char(1)-->
+			#{entity.recommendSort},                           <!-- 推荐排序 number(10)-->
+			#{entity.marketPrice},                             <!-- 市场价（只用于显示） number(12,3)-->
+			#{entity.point},                                   <!-- 赠送积分 nvarchar2(64)-->
+			#{entity.weight},                                  <!-- 重量 number(12,3)-->
+			#{entity.volume},                                  <!-- 体积 number(12,3)-->
+			#{entity.benefit},                                 <!-- 优惠 nvarchar2(128)-->
+			#{entity.invoice},                                 <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			#{entity.action},                                  <!-- 是否参加促销活动，0否，1是 char(1)-->
+			#{entity.deliverGoodsDate},                        <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			#{entity.purchasingAmount},                        <!-- 起购量 nvarchar2(64)-->
+			#{entity.expressType},                             <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			#{entity.expressPrice},                            <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			#{entity.ltId},                                    <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			#{entity.cause},                                   <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			#{entity.shelfTime},                               <!-- 上架时间 date(7)-->
+			#{entity.createDate},                              <!-- 创建日期 date(7)-->
+			#{entity.updateDate},                              <!-- 修改日期 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak11},                                   <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak12},                                   <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak13},                                   <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak14},                                   <!-- 备用字段 nvarchar2(64)-->
+			#{entity.bak15},                                   <!-- 备用字段 nvarchar2(64)-->
+			#{entity.n1},                                      <!-- 备用字段 number(10)-->
+			#{entity.n2},                                      <!-- 备用字段 number(10)-->
+			#{entity.n3},                                      <!-- 备用字段 number(10)-->
+			#{entity.f1},                                      <!-- 备用字段 number(12,3)-->
+			#{entity.f2},                                      <!-- 备用字段 number(12,3)-->
+			#{entity.f3},                                      <!-- 备用字段 number(12,3)-->
+			#{entity.d1},                                      <!-- 备用字段 date(7)-->
+			#{entity.d2},                                      <!-- 备用字段 date(7)-->
+			#{entity.d3},                                      <!-- 备用字段 date(7)-->
+			#{entity.publish},                                 <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_spu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.pId != null">p_id,</if></if>
+			<if test="entity.pkMode==2">p_id,</if>
+			<if test="entity.name != null">name,</if>                                          <!-- 商品名称 nvarchar2(128)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 商品分类（平台） number(19)-->
+			<if test="entity.storeCategoryId != null">store_category_id,</if>                  <!-- 商品分类（本店） number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			<if test="entity.image != null">image,</if>                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			<if test="entity.brandId != null">brand_id,</if>                                   <!-- 品牌 number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.nameSub != null">name_sub,</if>                                   <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			<if test="entity.unit != null">unit,</if>                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 1零售型、2批发型 char(1)-->
+			<if test="entity.isGift != null">is_gift,</if>                                     <!-- 是否为赠品，0非，1是 char(1)-->
+			<if test="entity.isRecommend != null">is_recommend,</if>                           <!-- 是否推荐，0非，1是 char(1)-->
+			<if test="entity.recommendSort != null">recommend_sort,</if>                       <!-- 推荐排序 number(10)-->
+			<if test="entity.marketPrice != null">market_price,</if>                           <!-- 市场价（只用于显示） number(12,3)-->
+			<if test="entity.point != null">point,</if>                                        <!-- 赠送积分 nvarchar2(64)-->
+			<if test="entity.weight != null">weight,</if>                                      <!-- 重量 number(12,3)-->
+			<if test="entity.volume != null">volume,</if>                                      <!-- 体积 number(12,3)-->
+			<if test="entity.benefit != null">benefit,</if>                                    <!-- 优惠 nvarchar2(128)-->
+			<if test="entity.invoice != null">invoice,</if>                                    <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			<if test="entity.action != null">action,</if>                                      <!-- 是否参加促销活动，0否，1是 char(1)-->
+			<if test="entity.deliverGoodsDate != null">deliver_goods_date,</if>                <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			<if test="entity.purchasingAmount != null">purchasing_amount,</if>                 <!-- 起购量 nvarchar2(64)-->
+			<if test="entity.expressType != null">express_type,</if>                           <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			<if test="entity.expressPrice != null">express_price,</if>                         <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			<if test="entity.ltId != null">lt_id,</if>                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.cause != null">cause,</if>                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			<if test="entity.shelfTime != null">shelf_time,</if>                               <!-- 上架时间 date(7)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak11 != null">bak11,</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak12 != null">bak12,</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak13 != null">bak13,</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak14 != null">bak14,</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak15 != null">bak15,</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.n1 != null">n1,</if>                                              <!-- 备用字段 number(10)-->
+			<if test="entity.n2 != null">n2,</if>                                              <!-- 备用字段 number(10)-->
+			<if test="entity.n3 != null">n3,</if>                                              <!-- 备用字段 number(10)-->
+			<if test="entity.f1 != null">f1,</if>                                              <!-- 备用字段 number(12,3)-->
+			<if test="entity.f2 != null">f2,</if>                                              <!-- 备用字段 number(12,3)-->
+			<if test="entity.f3 != null">f3,</if>                                              <!-- 备用字段 number(12,3)-->
+			<if test="entity.d1 != null">d1,</if>                                              <!-- 备用字段 date(7)-->
+			<if test="entity.d2 != null">d2,</if>                                              <!-- 备用字段 date(7)-->
+			<if test="entity.d3 != null">d3,</if>                                              <!-- 备用字段 date(7)-->
+			<if test="entity.publish != null">publish,</if>                                    <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.pId != null">#{entity.pId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_spu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 商品名称 nvarchar2(128)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 商品分类（平台） number(19)-->
+			<if test="entity.storeCategoryId != null">#{entity.storeCategoryId},</if>                    <!-- 商品分类（本店） number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			<if test="entity.image != null">#{entity.image},</if>                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			<if test="entity.brandId != null">#{entity.brandId},</if>                                    <!-- 品牌 number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.nameSub != null">#{entity.nameSub},</if>                                    <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			<if test="entity.unit != null">#{entity.unit},</if>                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 1零售型、2批发型 char(1)-->
+			<if test="entity.isGift != null">#{entity.isGift},</if>                                      <!-- 是否为赠品，0非，1是 char(1)-->
+			<if test="entity.isRecommend != null">#{entity.isRecommend},</if>                            <!-- 是否推荐，0非，1是 char(1)-->
+			<if test="entity.recommendSort != null">#{entity.recommendSort},</if>                        <!-- 推荐排序 number(10)-->
+			<if test="entity.marketPrice != null">#{entity.marketPrice},</if>                            <!-- 市场价（只用于显示） number(12,3)-->
+			<if test="entity.point != null">#{entity.point},</if>                                        <!-- 赠送积分 nvarchar2(64)-->
+			<if test="entity.weight != null">#{entity.weight},</if>                                      <!-- 重量 number(12,3)-->
+			<if test="entity.volume != null">#{entity.volume},</if>                                      <!-- 体积 number(12,3)-->
+			<if test="entity.benefit != null">#{entity.benefit},</if>                                    <!-- 优惠 nvarchar2(128)-->
+			<if test="entity.invoice != null">#{entity.invoice},</if>                                    <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			<if test="entity.action != null">#{entity.action},</if>                                      <!-- 是否参加促销活动，0否，1是 char(1)-->
+			<if test="entity.deliverGoodsDate != null">#{entity.deliverGoodsDate},</if>                  <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			<if test="entity.purchasingAmount != null">#{entity.purchasingAmount},</if>                  <!-- 起购量 nvarchar2(64)-->
+			<if test="entity.expressType != null">#{entity.expressType},</if>                            <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			<if test="entity.expressPrice != null">#{entity.expressPrice},</if>                          <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			<if test="entity.ltId != null">#{entity.ltId},</if>                                          <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.cause != null">#{entity.cause},</if>                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			<if test="entity.shelfTime != null">#{entity.shelfTime},</if>                                <!-- 上架时间 date(7)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak11 != null">#{entity.bak11},</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak12 != null">#{entity.bak12},</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak13 != null">#{entity.bak13},</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak14 != null">#{entity.bak14},</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak15 != null">#{entity.bak15},</if>                                        <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.n1 != null">#{entity.n1},</if>                                              <!-- 备用字段 number(10)-->
+			<if test="entity.n2 != null">#{entity.n2},</if>                                              <!-- 备用字段 number(10)-->
+			<if test="entity.n3 != null">#{entity.n3},</if>                                              <!-- 备用字段 number(10)-->
+			<if test="entity.f1 != null">#{entity.f1},</if>                                              <!-- 备用字段 number(12,3)-->
+			<if test="entity.f2 != null">#{entity.f2},</if>                                              <!-- 备用字段 number(12,3)-->
+			<if test="entity.f3 != null">#{entity.f3},</if>                                              <!-- 备用字段 number(12,3)-->
+			<if test="entity.d1 != null">#{entity.d1},</if>                                              <!-- 备用字段 date(7)-->
+			<if test="entity.d2 != null">#{entity.d2},</if>                                              <!-- 备用字段 date(7)-->
+			<if test="entity.d3 != null">#{entity.d3},</if>                                              <!-- 备用字段 date(7)-->
+			<if test="entity.publish != null">#{entity.publish},</if>                                    <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_spu 
+		<set>
+			name = #{entity.name},                                          <!-- 商品名称 nvarchar2(128)-->
+			category_id = #{entity.categoryId},                             <!-- 商品分类（平台） number(19)-->
+			store_category_id = #{entity.storeCategoryId},                  <!-- 商品分类（本店） number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			status = #{entity.status},                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			image = #{entity.image},                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			brand_id = #{entity.brandId},                                   <!-- 品牌 number(19)-->
+			u_id = #{entity.uId},                                           <!-- 关联(卖家扩展表) number(19)-->
+			name_sub = #{entity.nameSub},                                   <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			unit = #{entity.unit},                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			type = #{entity.type},                                          <!-- 1零售型、2批发型 char(1)-->
+			is_gift = #{entity.isGift},                                     <!-- 是否为赠品，0非，1是 char(1)-->
+			is_recommend = #{entity.isRecommend},                           <!-- 是否推荐，0非，1是 char(1)-->
+			recommend_sort = #{entity.recommendSort},                       <!-- 推荐排序 number(10)-->
+			market_price = #{entity.marketPrice},                           <!-- 市场价（只用于显示） number(12,3)-->
+			point = #{entity.point},                                        <!-- 赠送积分 nvarchar2(64)-->
+			weight = #{entity.weight},                                      <!-- 重量 number(12,3)-->
+			volume = #{entity.volume},                                      <!-- 体积 number(12,3)-->
+			benefit = #{entity.benefit},                                    <!-- 优惠 nvarchar2(128)-->
+			invoice = #{entity.invoice},                                    <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			action = #{entity.action},                                      <!-- 是否参加促销活动，0否，1是 char(1)-->
+			deliver_goods_date = #{entity.deliverGoodsDate},                <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			purchasing_amount = #{entity.purchasingAmount},                 <!-- 起购量 nvarchar2(64)-->
+			express_type = #{entity.expressType},                           <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			express_price = #{entity.expressPrice},                         <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			lt_id = #{entity.ltId},                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			cause = #{entity.cause},                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			shelf_time = #{entity.shelfTime},                               <!-- 上架时间 date(7)-->
+			create_date = #{entity.createDate},                             <!-- 创建日期 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 修改日期 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak11 = #{entity.bak11},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak12 = #{entity.bak12},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak13 = #{entity.bak13},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak14 = #{entity.bak14},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak15 = #{entity.bak15},                                        <!-- 备用字段 nvarchar2(64)-->
+			n1 = #{entity.n1},                                              <!-- 备用字段 number(10)-->
+			n2 = #{entity.n2},                                              <!-- 备用字段 number(10)-->
+			n3 = #{entity.n3},                                              <!-- 备用字段 number(10)-->
+			f1 = #{entity.f1},                                              <!-- 备用字段 number(12,3)-->
+			f2 = #{entity.f2},                                              <!-- 备用字段 number(12,3)-->
+			f3 = #{entity.f3},                                              <!-- 备用字段 number(12,3)-->
+			d1 = #{entity.d1},                                              <!-- 备用字段 date(7)-->
+			d2 = #{entity.d2},                                              <!-- 备用字段 date(7)-->
+			d3 = #{entity.d3},                                              <!-- 备用字段 date(7)-->
+			publish = #{entity.publish},                                    <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_spu a 
+		<set>
+			name = #{entity.name},                                          <!-- 商品名称 nvarchar2(128)-->
+			category_id = #{entity.categoryId},                             <!-- 商品分类（平台） number(19)-->
+			store_category_id = #{entity.storeCategoryId},                  <!-- 商品分类（本店） number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			status = #{entity.status},                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			image = #{entity.image},                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			brand_id = #{entity.brandId},                                   <!-- 品牌 number(19)-->
+			u_id = #{entity.uId},                                           <!-- 关联(卖家扩展表) number(19)-->
+			name_sub = #{entity.nameSub},                                   <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			unit = #{entity.unit},                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			type = #{entity.type},                                          <!-- 1零售型、2批发型 char(1)-->
+			is_gift = #{entity.isGift},                                     <!-- 是否为赠品，0非，1是 char(1)-->
+			is_recommend = #{entity.isRecommend},                           <!-- 是否推荐，0非，1是 char(1)-->
+			recommend_sort = #{entity.recommendSort},                       <!-- 推荐排序 number(10)-->
+			market_price = #{entity.marketPrice},                           <!-- 市场价（只用于显示） number(12,3)-->
+			point = #{entity.point},                                        <!-- 赠送积分 nvarchar2(64)-->
+			weight = #{entity.weight},                                      <!-- 重量 number(12,3)-->
+			volume = #{entity.volume},                                      <!-- 体积 number(12,3)-->
+			benefit = #{entity.benefit},                                    <!-- 优惠 nvarchar2(128)-->
+			invoice = #{entity.invoice},                                    <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			action = #{entity.action},                                      <!-- 是否参加促销活动，0否，1是 char(1)-->
+			deliver_goods_date = #{entity.deliverGoodsDate},                <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			purchasing_amount = #{entity.purchasingAmount},                 <!-- 起购量 nvarchar2(64)-->
+			express_type = #{entity.expressType},                           <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			express_price = #{entity.expressPrice},                         <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			lt_id = #{entity.ltId},                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			cause = #{entity.cause},                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			shelf_time = #{entity.shelfTime},                               <!-- 上架时间 date(7)-->
+			create_date = #{entity.createDate},                             <!-- 创建日期 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 修改日期 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak11 = #{entity.bak11},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak12 = #{entity.bak12},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak13 = #{entity.bak13},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak14 = #{entity.bak14},                                        <!-- 备用字段 nvarchar2(64)-->
+			bak15 = #{entity.bak15},                                        <!-- 备用字段 nvarchar2(64)-->
+			n1 = #{entity.n1},                                              <!-- 备用字段 number(10)-->
+			n2 = #{entity.n2},                                              <!-- 备用字段 number(10)-->
+			n3 = #{entity.n3},                                              <!-- 备用字段 number(10)-->
+			f1 = #{entity.f1},                                              <!-- 备用字段 number(12,3)-->
+			f2 = #{entity.f2},                                              <!-- 备用字段 number(12,3)-->
+			f3 = #{entity.f3},                                              <!-- 备用字段 number(12,3)-->
+			d1 = #{entity.d1},                                              <!-- 备用字段 date(7)-->
+			d2 = #{entity.d2},                                              <!-- 备用字段 date(7)-->
+			d3 = #{entity.d3},                                              <!-- 备用字段 date(7)-->
+			publish = #{entity.publish},                                    <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_spu
+		<set>
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 商品名称 nvarchar2(128)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 商品分类（平台） number(19)-->
+			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 商品分类（本店） number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌 number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.nameSub != null">name_sub = #{entity.nameSub},</if>                                                <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 1零售型、2批发型 char(1)-->
+			<if test="entity.isGift != null">is_gift = #{entity.isGift},</if>                                                   <!-- 是否为赠品，0非，1是 char(1)-->
+			<if test="entity.isRecommend != null">is_recommend = #{entity.isRecommend},</if>                                    <!-- 是否推荐，0非，1是 char(1)-->
+			<if test="entity.recommendSort != null">recommend_sort = #{entity.recommendSort},</if>                              <!-- 推荐排序 number(10)-->
+			<if test="entity.marketPrice != null">market_price = #{entity.marketPrice},</if>                                    <!-- 市场价（只用于显示） number(12,3)-->
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 赠送积分 nvarchar2(64)-->
+			<if test="entity.weight != null">weight = #{entity.weight},</if>                                                    <!-- 重量 number(12,3)-->
+			<if test="entity.volume != null">volume = #{entity.volume},</if>                                                    <!-- 体积 number(12,3)-->
+			<if test="entity.benefit != null">benefit = #{entity.benefit},</if>                                                 <!-- 优惠 nvarchar2(128)-->
+			<if test="entity.invoice != null">invoice = #{entity.invoice},</if>                                                 <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			<if test="entity.action != null">action = #{entity.action},</if>                                                    <!-- 是否参加促销活动，0否，1是 char(1)-->
+			<if test="entity.deliverGoodsDate != null">deliver_goods_date = #{entity.deliverGoodsDate},</if>                    <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			<if test="entity.purchasingAmount != null">purchasing_amount = #{entity.purchasingAmount},</if>                     <!-- 起购量 nvarchar2(64)-->
+			<if test="entity.expressType != null">express_type = #{entity.expressType},</if>                                    <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			<if test="entity.expressPrice != null">express_price = #{entity.expressPrice},</if>                                 <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.cause != null">cause = #{entity.cause},</if>                                                       <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			<if test="entity.shelfTime != null">shelf_time = #{entity.shelfTime},</if>                                          <!-- 上架时间 date(7)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak11 != null">bak11 = #{entity.bak11},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak12 != null">bak12 = #{entity.bak12},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak13 != null">bak13 = #{entity.bak13},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak14 != null">bak14 = #{entity.bak14},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak15 != null">bak15 = #{entity.bak15},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.n1 != null">n1 = #{entity.n1},</if>                                                                <!-- 备用字段 number(10)-->
+			<if test="entity.n2 != null">n2 = #{entity.n2},</if>                                                                <!-- 备用字段 number(10)-->
+			<if test="entity.n3 != null">n3 = #{entity.n3},</if>                                                                <!-- 备用字段 number(10)-->
+			<if test="entity.f1 != null">f1 = #{entity.f1},</if>                                                                <!-- 备用字段 number(12,3)-->
+			<if test="entity.f2 != null">f2 = #{entity.f2},</if>                                                                <!-- 备用字段 number(12,3)-->
+			<if test="entity.f3 != null">f3 = #{entity.f3},</if>                                                                <!-- 备用字段 number(12,3)-->
+			<if test="entity.d1 != null">d1 = #{entity.d1},</if>                                                                <!-- 备用字段 date(7)-->
+			<if test="entity.d2 != null">d2 = #{entity.d2},</if>                                                                <!-- 备用字段 date(7)-->
+			<if test="entity.d3 != null">d3 = #{entity.d3},</if>                                                                <!-- 备用字段 date(7)-->
+			<if test="entity.publish != null">publish = #{entity.publish},</if>                                                 <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_spu a
+		<set>
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 商品名称 nvarchar2(128)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 商品分类（平台） number(19)-->
+			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 商品分类（本店） number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
+			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
+			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌 number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.nameSub != null">name_sub = #{entity.nameSub},</if>                                                <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
+			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 1零售型、2批发型 char(1)-->
+			<if test="entity.isGift != null">is_gift = #{entity.isGift},</if>                                                   <!-- 是否为赠品，0非，1是 char(1)-->
+			<if test="entity.isRecommend != null">is_recommend = #{entity.isRecommend},</if>                                    <!-- 是否推荐，0非，1是 char(1)-->
+			<if test="entity.recommendSort != null">recommend_sort = #{entity.recommendSort},</if>                              <!-- 推荐排序 number(10)-->
+			<if test="entity.marketPrice != null">market_price = #{entity.marketPrice},</if>                                    <!-- 市场价（只用于显示） number(12,3)-->
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 赠送积分 nvarchar2(64)-->
+			<if test="entity.weight != null">weight = #{entity.weight},</if>                                                    <!-- 重量 number(12,3)-->
+			<if test="entity.volume != null">volume = #{entity.volume},</if>                                                    <!-- 体积 number(12,3)-->
+			<if test="entity.benefit != null">benefit = #{entity.benefit},</if>                                                 <!-- 优惠 nvarchar2(128)-->
+			<if test="entity.invoice != null">invoice = #{entity.invoice},</if>                                                 <!-- 发票，0不可开发票，1可开发票 char(1)-->
+			<if test="entity.action != null">action = #{entity.action},</if>                                                    <!-- 是否参加促销活动，0否，1是 char(1)-->
+			<if test="entity.deliverGoodsDate != null">deliver_goods_date = #{entity.deliverGoodsDate},</if>                    <!-- 发货日期，1天内，2天内，3天内 nvarchar2(64)-->
+			<if test="entity.purchasingAmount != null">purchasing_amount = #{entity.purchasingAmount},</if>                     <!-- 起购量 nvarchar2(64)-->
+			<if test="entity.expressType != null">express_type = #{entity.expressType},</if>                                    <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
+			<if test="entity.expressPrice != null">express_price = #{entity.expressPrice},</if>                                 <!-- 运费价格,express_type=0时有值 number(12,3)-->
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.cause != null">cause = #{entity.cause},</if>                                                       <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
+			<if test="entity.shelfTime != null">shelf_time = #{entity.shelfTime},</if>                                          <!-- 上架时间 date(7)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建日期 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改日期 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak11 != null">bak11 = #{entity.bak11},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak12 != null">bak12 = #{entity.bak12},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak13 != null">bak13 = #{entity.bak13},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak14 != null">bak14 = #{entity.bak14},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.bak15 != null">bak15 = #{entity.bak15},</if>                                                       <!-- 备用字段 nvarchar2(64)-->
+			<if test="entity.n1 != null">n1 = #{entity.n1},</if>                                                                <!-- 备用字段 number(10)-->
+			<if test="entity.n2 != null">n2 = #{entity.n2},</if>                                                                <!-- 备用字段 number(10)-->
+			<if test="entity.n3 != null">n3 = #{entity.n3},</if>                                                                <!-- 备用字段 number(10)-->
+			<if test="entity.f1 != null">f1 = #{entity.f1},</if>                                                                <!-- 备用字段 number(12,3)-->
+			<if test="entity.f2 != null">f2 = #{entity.f2},</if>                                                                <!-- 备用字段 number(12,3)-->
+			<if test="entity.f3 != null">f3 = #{entity.f3},</if>                                                                <!-- 备用字段 number(12,3)-->
+			<if test="entity.d1 != null">d1 = #{entity.d1},</if>                                                                <!-- 备用字段 date(7)-->
+			<if test="entity.d2 != null">d2 = #{entity.d2},</if>                                                                <!-- 备用字段 date(7)-->
+			<if test="entity.d3 != null">d3 = #{entity.d3},</if>                                                                <!-- 备用字段 date(7)-->
+			<if test="entity.publish != null">publish = #{entity.publish},</if>                                                 <!-- 发布，0放入仓库中，1立即发布 char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_spu
+		WHERE p_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_spu
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_spu a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_spu a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

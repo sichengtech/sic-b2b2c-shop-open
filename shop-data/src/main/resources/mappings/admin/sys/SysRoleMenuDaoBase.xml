@@ -1,0 +1,245 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.SysRoleMenuDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="sysRoleMenuColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- 主键id bigint(20)-->
+		a.role_id AS "roleId",                                               <!-- 角色编号 bigint(20)-->
+		a.menu_id AS "menuId",                                               <!-- 菜单编号 bigint(20)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="sysRoleMenuJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.roleId != null ">AND a.role_id = #{c.roleId}</if>
+		<if test="c.menuId != null ">AND a.menu_id = #{c.menuId}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SysRoleMenu">
+		SELECT 
+		<include refid="sysRoleMenuColumns"/>
+		FROM sys_role_menu a
+		<include refid="sysRoleMenuJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SysRoleMenu">
+		SELECT 
+		<include refid="sysRoleMenuColumns"/>
+		FROM sys_role_menu a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SysRoleMenu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysRoleMenuColumns"/>
+		FROM sys_role_menu a
+		<include refid="sysRoleMenuJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SysRoleMenu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="sysRoleMenuColumns"/>
+		FROM sys_role_menu a
+		<include refid="sysRoleMenuJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_role_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- 主键id bigint(20)-->
+			role_id,                                           <!-- 角色编号 bigint(20)-->
+			menu_id,                                           <!-- 菜单编号 bigint(20)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_role_menu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.roleId},                                  <!-- 角色编号 bigint(20)-->
+			#{entity.menuId},                                  <!-- 菜单编号 bigint(20)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_role_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.roleId != null">role_id,</if>                                     <!-- 角色编号 bigint(20)-->
+			<if test="entity.menuId != null">menu_id,</if>                                     <!-- 菜单编号 bigint(20)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_role_menu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.roleId != null">#{entity.roleId},</if>                                      <!-- 角色编号 bigint(20)-->
+			<if test="entity.menuId != null">#{entity.menuId},</if>                                      <!-- 菜单编号 bigint(20)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_role_menu 
+		<set>
+			role_id = #{entity.roleId},                                     <!-- 角色编号 bigint(20)-->
+			menu_id = #{entity.menuId},                                     <!-- 菜单编号 bigint(20)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_role_menu a 
+		<set>
+			role_id = #{entity.roleId},                                     <!-- 角色编号 bigint(20)-->
+			menu_id = #{entity.menuId},                                     <!-- 菜单编号 bigint(20)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_role_menu
+		<set>
+			<if test="entity.roleId != null">role_id = #{entity.roleId},</if>                                                   <!-- 角色编号 bigint(20)-->
+			<if test="entity.menuId != null">menu_id = #{entity.menuId},</if>                                                   <!-- 菜单编号 bigint(20)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_role_menu a
+		<set>
+			<if test="entity.roleId != null">role_id = #{entity.roleId},</if>                                                   <!-- 角色编号 bigint(20)-->
+			<if test="entity.menuId != null">menu_id = #{entity.menuId},</if>                                                   <!-- 菜单编号 bigint(20)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM sys_role_menu
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_role_menu
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_role_menu a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_role_menu a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

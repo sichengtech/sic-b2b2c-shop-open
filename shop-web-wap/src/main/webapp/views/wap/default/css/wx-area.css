@@ -1,0 +1,9 @@
+@charset "utf-8";
+/* CSS Document */
+
+.wx-area-model{position: relative;}
+.wx-area-model .close{position: absolute;top: -43px;right: 10px;font-size: 20px;}
+.wx-area-model .areaContentUl{margin-left: 15px;}
+.wx-area-model .areaContentUl li{margin-bottom: 10px;margin-right: 10px;}
+.wx-area-model .areaData{overflow: auto;height: 300px;}
+.wx-area-model .areaData ul{margin-left: 15px;}

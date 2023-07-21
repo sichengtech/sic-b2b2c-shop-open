@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var pid=parameter.pid ;%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeConsultationForm.js"></script>
+	<script type="text/javascript">
+		var pid='${pid}';
+	</script>
+</head>
+<body ontouchstart class="productConsultation-list-body">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id="consultatin-form-page">
+			<form id="form" action="" method="post">
+				<input type="hidden" name="pid" value="${pid}"/>
+				<div class="header-default-box weui-border-b">
+					<a href="" class="icon icon-arrowleft l back use-router"></a>
+					<a href="home.jsp" class="icon icon-wxbzhuye r"></a>
+					<h1>商品咨询</h1>
+				</div>
+				<div class="weui_panel consultation_form_panel">
+					<!-- <div class="weui_media_box weui_media_appmsg">
+						<div class="weui_media_hd">
+							<a class="product_img" href="${ctxw}/product/detail.htm?pid=${pid}"></a>
+						</div>
+						<div class="weui_media_bd">
+		                	<a href="javascript:void(0);"><h4 class="weui_media_title product_name"></h4></a>
+		                </div>
+					</div> -->
+					<div class="weui_cells weui_cells_form">
+						<div class="consultation-type">
+							<div class="consultation-type-title">咨询类型：</div>
+							<div class="consultation-type-span"></div>
+						</div>
+						<div class="consultation-content">
+							<div class="consultation-content-title">咨询内容：</div>
+							<div class="consultation-content—div">
+								<textarea id="textarea" name="content" class="weui_textarea text_size" placeholder="请填写你需要的咨询" rows="5" maxLength="200" required emptyTips="请输入咨询内容"></textarea>
+							</div>
+						</div>
+					</div>
+			       	<div class="weui_btn_consulation">
+			            <a id="formSubmitBtn" href="javascript:void(0);" class="weui_btn weui_btn_warn">保存</a>
+			        </div>
+	       		</div>
+			</form>
+		</div>
+		<% include("/include/foot-nav.html"){}%>
+		<script type="text/template" id="product_Tpl" info="商品图片模板">
+			<div class="weui_media_box weui_media_appmsg">
+				<div class="weui_media_hd">
+					<a class="product_img" href="${ctxw}/product/detail.htm?pid=${pid}">
+						<img src="{{d.imgPath}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+					</a>
+				</div>
+				<div class="weui_media_bd">
+					<a href="javascript:void(0);"><h4 class="weui_media_title product_name">{{d.name}}</h4></a>
+				</div>
+			</div>
+		</script>
+		<script type="text/template" id="consultation_type_Tpl" info="咨询类型模板">
+			<span class="{{d.className}}" category="{{d.value}}">{{d.label}}</span>
+		</script>
+	</div>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

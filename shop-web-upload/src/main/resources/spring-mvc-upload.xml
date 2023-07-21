@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	   xmlns:context="http://www.springframework.org/schema/context" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	   xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd"
+	   default-lazy-init="true">
+
+	<description>upload系统 Spring MVC Configuration</description>
+
+	<!-- 加载配置属性文件 -->
+	<context:property-placeholder ignore-unresolvable="true" location="classpath:fdp.properties" />
+
+	<!-- 使用Annotation自动注册Bean,只扫描@Controller -->
+	<!-- 只扫描这一个包com.sicheng.admin -->
+	<!-- base-package 如果多个，用“,”分隔 -->
+	<context:component-scan base-package="com.sicheng.upload.**.web" use-default-filters="false">
+		<context:include-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+	</context:component-scan>
+
+	<!-- 默认的注解映射的支持，org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping -->
+	<mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
+		<mvc:message-converters register-defaults="true">
+			<!-- 将StringHttpMessageConverter的默认编码设为UTF-8 -->
+			<bean class="org.springframework.http.converter.StringHttpMessageConverter">
+				<constructor-arg value="UTF-8" />
+			</bean>
+			<!-- 将Jackson2HttpMessageConverter的默认格式化输出为false -->
+			<bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+				<property name="supportedMediaTypes">
+					<list>
+						<value>application/json;charset=UTF-8</value>
+					</list>
+				</property>
+				<property name="prettyPrint" value="false"/>
+				<property name="objectMapper">
+					<bean class="com.sicheng.common.mapper.JsonMapper"></bean>
+				</property>
+			</bean>
+			<!-- 使用XML格式输出数据 -->
+			<bean class="org.springframework.http.converter.xml.MarshallingHttpMessageConverter">
+				<constructor-arg>
+					<bean class="org.springframework.oxm.xstream.XStreamMarshaller">
+						<property name="streamDriver">
+							<bean class="com.thoughtworks.xstream.io.xml.StaxDriver"/>
+						</property>
+						<property name="annotatedClasses">
+							<list>
+							</list>
+						</property>
+					</bean>
+				</constructor-arg>
+				<property name="supportedMediaTypes" value="application/xml"></property>
+			</bean>
+		</mvc:message-converters>
+	</mvc:annotation-driven>
+
+	<!-- Spring MVC的“内容协商”策略，2017-07-20 禁用了2种“内容协商”策略 -->
+	<!-- 由于咱前台拦截的*.htm，经过“内容协商”后，无法正确的响应ajax请求 -->
+	<!-- //REST中根据URL后缀自动判定Content-Type及相应的View -->
+	<bean id="contentNegotiationManager" class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
+		<property name="mediaTypes" >
+			<map>
+				<entry key="xml" value="application/xml"/>
+				<entry key="json" value="application/json"/>
+			</map>
+		</property>
+		<property name="ignoreAcceptHeader" value="false"/><!-- 是否支持accept-header匹配，默认为fasle -->
+		<property name="favorPathExtension" value="false"/><!-- 是否支持后缀匹配 -->
+		<property name="favorParameter" value="true"/><!-- 是否支持参数匹配 --><!-- 用于开启 /userinfo/a.htm?format=json 的支持 -->
+	</bean>
+
+	<!-- 定义视图文件解析 -->
+	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="${web.view.prefix}"/>
+		<property name="suffix" value="${web.view.suffix}"/>
+	</bean>
+
+	<!-- 对静态资源文件的访问， 将无法mapping到Controller的path交给default servlet handler处理 -->
+	<mvc:default-servlet-handler />
+
+	<!-- 静态资源映射 -->
+	<mvc:resources mapping="/static/**" location="/static/" cache-period="31536000"/>
+
+	<!-- 定义无Controller的path<->view直接映射 -->
+	<!-- 删除，无用，因为spring mvc拦截的是*.do,所以对/的请求，不会进入spring mvc -->
+	<!--
+	<mvc:view-controller path="/" view-name="redirect:${web.view.index}"/>
+	-->
+
+	<!-- 拦截器配置，拦截顺序：先执行后定义的，排在第一位的最后执行。-->
+	<!-- 文件上传拦截器，用于检查上传文件的总大小，超过限制后(50M)，给用户一个友好提示
+	<mvc:interceptors>
+		<mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <bean class="com.sicheng.upload.component.FileUploadInterceptor">
+                <property name="maxSize" value="${web.maxUploadSize}"/>
+            </bean>
+        </mvc:interceptor>
+	</mvc:interceptors>-->
+
+	<!--
+	通用的多部分上传解析器 1G=1048576000字节，
+	配置maxUploadSize为1G，表示小于1G的文件放过由FileUploadInterceptor来处理
+	-->
+	<bean id="multipartResolver" class="com.sicheng.upload.component.MyCommonsMultipartResolver">
+		<!-- <property name="maxUploadSize" value="1048576000" /> -->
+		<property name="maxUploadSize" value="${web.maxUploadSize}" />
+		<property name="excludeUrls">
+			<list>
+				<value>/upload/ueditorServer.htm</value><!-- 为了百度富文本编辑器ueditor而放过此url -->
+			</list>
+		</property>
+	</bean>
+
+	<bean class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver">
+		<property name="exceptionMappings">
+			<props>
+				<!--
+				按异常类型的错误处理要由 SimpleMappingExceptionResolver来完成
+				当无访问权限时，会报这个异常
+				-->
+				<prop key="org.springframework.web.multipart.MultipartException">/error/MultipartError</prop>
+
+				<!--
+				这个异常不建议由SimpleMappingExceptionResolver处理，
+				因为它会吞掉这个异常，导致LogInterceptor拦截器中都拦截不到异常，日志和控制台都不输出异常信栈息
+				400、404、500 的异常，在web.xml中有error-page标签处理
+				<prop key="java.lang.Throwable">/error/500</prop>
+				-->
+			</props>
+		</property>
+		<!--
+        warnLogCategory的值值不是随便写的。因为我在log4j的配置文件中还要加入log4j.logger.org.springframework.web.servlet.handler.SimpleMappingExceptionResolver=WARN，保证这个级别是warn的日志一定会被记录，即使log4j的根日志级别是ERROR。
+         -->
+		<property name="warnLogCategory" value="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"></property>
+	</bean>
+
+	<!--Spring MVC实现国际化 -->
+	<!-- 第一步：配置消息源MessageSource用来加载对应的国际化属性文件：bean的ID名称只能是messageSource -->
+	<!--配置ReloadableResourceBundleMessageSource：这种方式只能把资源文件放到任何位置，不需要重启就能加载文件，并且可以设置刷新时间 -->
+	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<!-- 默认编码方式 -->
+		<property name="defaultEncoding" value="UTF-8" />
+		<!-- 资源文件的前缀:多了一个classpath，如果资源文件在一个文件夹下，还要加上文件夹路径，否则报错 -->
+		<property name="basename" value="classpath:msg/upload"></property>
+		<!-- 刷新时间 -->
+		<property name="cacheSeconds" value="3600" />
+	</bean>
+
+	<!-- 第二步：配置国际化解析器，有cookie和session两种方式 -->
+	<!--配置session国际化解析器 -->
+	<!-- <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+        <property name="defaultLocale" value="zh_CN" />
+    </bean> -->
+
+	<bean id="localeResolver"
+		  class="org.springframework.web.servlet.i18n.CookieLocaleResolver">
+		<!-- cookie变量的名称 -->
+		<property name="cookieName" value="fylanguage" />
+		<!-- cookie超时时间，一个月 -->
+		<property name="cookieMaxAge" value="2592000" />
+		<!-- 默认使用的语言 -->
+		<property name="defaultLocale" value="${sys.defaultLocale}" />
+	</bean>
+
+	<!-- 配置国际化拦截器 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<mvc:mapping path="/**" />
+			<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+				<property name="paramName" value="language" />
+			</bean>
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+</beans>

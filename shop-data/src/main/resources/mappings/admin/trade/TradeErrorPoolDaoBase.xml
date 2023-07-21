@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeErrorPoolDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="tradeErrorPoolColumns">
+		<trim suffixOverrides=",">
+			a.ep_id AS "epId",                                                   <!-- 主键 bigint(20)-->
+			a.order_id AS "orderId",                                             <!-- shop商城的订单编号 bigint(20)-->
+			a.store_id AS "storeId",                                             <!-- 店铺id bigint(20)-->
+			a.store_name AS "storeName",                                         <!-- 店铺名称 varchar(255)-->
+			a.transaction_id AS "transactionId",                                 <!-- 第三方平台支付交易号 varchar(64)-->
+			a.bill_type AS "billType",                                           <!-- 类型(1支付，2退单) char(1)-->
+			a.pay_way_id AS "payWayId",                                          <!-- 支付方式id bigint(20)-->
+			a.pay_way_name AS "payWayName",                                      <!-- 支付方式名称 varchar(64)-->
+			a.order_status AS "orderStatus",                                     <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			a.transaction_status AS "transactionStatus",                         <!-- 第三方平台订单状态 varchar(64)-->
+			a.ordertime AS "ordertime",                                          <!-- 下单时间 datetime-->
+			a.handlestatus AS "handlestatus",                                    <!-- 处理状态(0未处理，1已处理) char(1)-->
+			a.handleremark AS "handleremark",                                    <!-- 处理备注 varchar(256)-->
+			a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+			a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+		</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="tradeErrorPoolJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+		<if test="w!=null and w.e!=null">
+			<bind name="c" value="w.e"/>
+			<if test="c.epId != null ">AND a.ep_id = #{c.epId}</if>
+			<if test="c.orderId != null ">AND a.order_id = #{c.orderId}</if>
+			<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+			<if test="c.storeName != null and c.storeName != ''">
+				<bind name="pattern" value="'%' + c.storeName + '%'" />
+				AND lower(a.store_name) LIKE lower(#{pattern})
+			</if>
+			<if test="c.transactionId != null and c.transactionId != ''">AND a.transaction_id = #{c.transactionId}</if>
+			<if test="c.billType != null and c.billType != ''">AND a.bill_type = #{c.billType}</if>
+			<if test="c.payWayId != null ">AND a.pay_way_id = #{c.payWayId}</if>
+			<if test="c.payWayName != null and c.payWayName != ''">AND a.pay_way_name = #{c.payWayName}</if>
+			<if test="c.orderStatus != null and c.orderStatus != ''">AND a.order_status = #{c.orderStatus}</if>
+			<if test="c.transactionStatus != null and c.transactionStatus != ''">AND a.transaction_status = #{c.transactionStatus}</if>
+			<if test="c.beginOrdertime != null and c.endOrdertime != null ">AND a.ordertime BETWEEN #{c.beginOrdertime} AND #{c.endOrdertime}</if>
+			<if test="c.handlestatus != null and c.handlestatus != ''">AND a.handlestatus = #{c.handlestatus}</if>
+			<if test="c.handleremark != null and c.handleremark != ''">AND a.handleremark = #{c.handleremark}</if>
+			<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+			<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		</if>
+	</sql>
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="TradeErrorPool">
+		SELECT
+		<include refid="tradeErrorPoolColumns"/>
+		FROM trade_error_pool a
+		<include refid="tradeErrorPoolJoins"/>
+		WHERE a.ep_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="TradeErrorPool">
+		SELECT
+		<include refid="tradeErrorPoolColumns"/>
+		FROM trade_error_pool a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.ep_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="TradeErrorPool">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeErrorPoolColumns"/>
+		FROM trade_error_pool a
+		<include refid="tradeErrorPoolJoins"/>
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ep_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="TradeErrorPool">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeErrorPoolColumns"/>
+		FROM trade_error_pool a
+		<include refid="tradeErrorPoolJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ep_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.epId" keyColumn="ep_id" useGeneratedKeys="true">
+		INSERT INTO trade_error_pool
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ep_id,                                             <!-- 主键 bigint(20)-->
+			order_id,                                          <!-- shop商城的订单编号 bigint(20)-->
+			store_id,                                          <!-- 店铺id bigint(20)-->
+			store_name,                                        <!-- 店铺名称 varchar(255)-->
+			transaction_id,                                    <!-- 第三方平台支付交易号 varchar(64)-->
+			bill_type,                                         <!-- 类型(1支付，2退单) char(1)-->
+			pay_way_id,                                        <!-- 支付方式id bigint(20)-->
+			pay_way_name,                                      <!-- 支付方式名称 varchar(64)-->
+			order_status,                                      <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			transaction_status,                                <!-- 第三方平台订单状态 varchar(64)-->
+			ordertime,                                         <!-- 下单时间 datetime-->
+			handlestatus,                                      <!-- 处理状态(0未处理，1已处理) char(1)-->
+			handleremark,                                      <!-- 处理备注 varchar(256)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.epId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_error_pool_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.orderId},                                 <!-- shop商城的订单编号 bigint(20)-->
+			#{entity.storeId},                                 <!-- 店铺id bigint(20)-->
+			#{entity.storeName},                               <!-- 店铺名称 varchar(255)-->
+			#{entity.transactionId},                           <!-- 第三方平台支付交易号 varchar(64)-->
+			#{entity.billType},                                <!-- 类型(1支付，2退单) char(1)-->
+			#{entity.payWayId},                                <!-- 支付方式id bigint(20)-->
+			#{entity.payWayName},                              <!-- 支付方式名称 varchar(64)-->
+			#{entity.orderStatus},                             <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			#{entity.transactionStatus},                       <!-- 第三方平台订单状态 varchar(64)-->
+			#{entity.ordertime},                               <!-- 下单时间 datetime-->
+			#{entity.handlestatus},                            <!-- 处理状态(0未处理，1已处理) char(1)-->
+			#{entity.handleremark},                            <!-- 处理备注 varchar(256)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+		</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.epId" keyColumn="ep_id" useGeneratedKeys="true">
+		INSERT INTO trade_error_pool
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.epId != null">ep_id,</if></if>
+			<if test="entity.pkMode==2">ep_id,</if>
+			<if test="entity.orderId != null">order_id,</if>                                   <!-- shop商城的订单编号 bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 店铺id bigint(20)-->
+			<if test="entity.storeName != null">store_name,</if>                               <!-- 店铺名称 varchar(255)-->
+			<if test="entity.transactionId != null">transaction_id,</if>                       <!-- 第三方平台支付交易号 varchar(64)-->
+			<if test="entity.billType != null">bill_type,</if>                                 <!-- 类型(1支付，2退单) char(1)-->
+			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式id bigint(20)-->
+			<if test="entity.payWayName != null">pay_way_name,</if>                            <!-- 支付方式名称 varchar(64)-->
+			<if test="entity.orderStatus != null">order_status,</if>                           <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			<if test="entity.transactionStatus != null">transaction_status,</if>               <!-- 第三方平台订单状态 varchar(64)-->
+			<if test="entity.ordertime != null">ordertime,</if>                                <!-- 下单时间 datetime-->
+			<if test="entity.handlestatus != null">handlestatus,</if>                          <!-- 处理状态(0未处理，1已处理) char(1)-->
+			<if test="entity.handleremark != null">handleremark,</if>                          <!-- 处理备注 varchar(256)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.epId != null">#{entity.epId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_error_pool_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- shop商城的订单编号 bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 店铺id bigint(20)-->
+			<if test="entity.storeName != null">#{entity.storeName},</if>                                <!-- 店铺名称 varchar(255)-->
+			<if test="entity.transactionId != null">#{entity.transactionId},</if>                        <!-- 第三方平台支付交易号 varchar(64)-->
+			<if test="entity.billType != null">#{entity.billType},</if>                                  <!-- 类型(1支付，2退单) char(1)-->
+			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式id bigint(20)-->
+			<if test="entity.payWayName != null">#{entity.payWayName},</if>                              <!-- 支付方式名称 varchar(64)-->
+			<if test="entity.orderStatus != null">#{entity.orderStatus},</if>                            <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			<if test="entity.transactionStatus != null">#{entity.transactionStatus},</if>                <!-- 第三方平台订单状态 varchar(64)-->
+			<if test="entity.ordertime != null">#{entity.ordertime},</if>                                <!-- 下单时间 datetime-->
+			<if test="entity.handlestatus != null">#{entity.handlestatus},</if>                          <!-- 处理状态(0未处理，1已处理) char(1)-->
+			<if test="entity.handleremark != null">#{entity.handleremark},</if>                          <!-- 处理备注 varchar(256)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE trade_error_pool
+		<set>
+			order_id = #{entity.orderId},                                   <!-- shop商城的订单编号 bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 店铺id bigint(20)-->
+			store_name = #{entity.storeName},                               <!-- 店铺名称 varchar(255)-->
+			transaction_id = #{entity.transactionId},                       <!-- 第三方平台支付交易号 varchar(64)-->
+			bill_type = #{entity.billType},                                 <!-- 类型(1支付，2退单) char(1)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式id bigint(20)-->
+			pay_way_name = #{entity.payWayName},                            <!-- 支付方式名称 varchar(64)-->
+			order_status = #{entity.orderStatus},                           <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			transaction_status = #{entity.transactionStatus},               <!-- 第三方平台订单状态 varchar(64)-->
+			ordertime = #{entity.ordertime},                                <!-- 下单时间 datetime-->
+			handlestatus = #{entity.handlestatus},                          <!-- 处理状态(0未处理，1已处理) char(1)-->
+			handleremark = #{entity.handleremark},                          <!-- 处理备注 varchar(256)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE ep_id = #{entity.epId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE trade_error_pool a
+		<set>
+			order_id = #{entity.orderId},                                   <!-- shop商城的订单编号 bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 店铺id bigint(20)-->
+			store_name = #{entity.storeName},                               <!-- 店铺名称 varchar(255)-->
+			transaction_id = #{entity.transactionId},                       <!-- 第三方平台支付交易号 varchar(64)-->
+			bill_type = #{entity.billType},                                 <!-- 类型(1支付，2退单) char(1)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式id bigint(20)-->
+			pay_way_name = #{entity.payWayName},                            <!-- 支付方式名称 varchar(64)-->
+			order_status = #{entity.orderStatus},                           <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			transaction_status = #{entity.transactionStatus},               <!-- 第三方平台订单状态 varchar(64)-->
+			ordertime = #{entity.ordertime},                                <!-- 下单时间 datetime-->
+			handlestatus = #{entity.handlestatus},                          <!-- 处理状态(0未处理，1已处理) char(1)-->
+			handleremark = #{entity.handleremark},                          <!-- 处理备注 varchar(256)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE trade_error_pool
+		<set>
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- shop商城的订单编号 bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id bigint(20)-->
+			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名称 varchar(255)-->
+			<if test="entity.transactionId != null">transaction_id = #{entity.transactionId},</if>                              <!-- 第三方平台支付交易号 varchar(64)-->
+			<if test="entity.billType != null">bill_type = #{entity.billType},</if>                                             <!-- 类型(1支付，2退单) char(1)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式id bigint(20)-->
+			<if test="entity.payWayName != null">pay_way_name = #{entity.payWayName},</if>                                      <!-- 支付方式名称 varchar(64)-->
+			<if test="entity.orderStatus != null">order_status = #{entity.orderStatus},</if>                                    <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			<if test="entity.transactionStatus != null">transaction_status = #{entity.transactionStatus},</if>                  <!-- 第三方平台订单状态 varchar(64)-->
+			<if test="entity.ordertime != null">ordertime = #{entity.ordertime},</if>                                           <!-- 下单时间 datetime-->
+			<if test="entity.handlestatus != null">handlestatus = #{entity.handlestatus},</if>                                  <!-- 处理状态(0未处理，1已处理) char(1)-->
+			<if test="entity.handleremark != null">handleremark = #{entity.handleremark},</if>                                  <!-- 处理备注 varchar(256)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE ep_id = #{entity.epId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE trade_error_pool a
+		<set>
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- shop商城的订单编号 bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id bigint(20)-->
+			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名称 varchar(255)-->
+			<if test="entity.transactionId != null">transaction_id = #{entity.transactionId},</if>                              <!-- 第三方平台支付交易号 varchar(64)-->
+			<if test="entity.billType != null">bill_type = #{entity.billType},</if>                                             <!-- 类型(1支付，2退单) char(1)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式id bigint(20)-->
+			<if test="entity.payWayName != null">pay_way_name = #{entity.payWayName},</if>                                      <!-- 支付方式名称 varchar(64)-->
+			<if test="entity.orderStatus != null">order_status = #{entity.orderStatus},</if>                                    <!-- shop商城的订单状态(10待付款、20待发货、30待收货、40(已完成)待评价、 50已评价、60已取消、70退货退款中) char(2)-->
+			<if test="entity.transactionStatus != null">transaction_status = #{entity.transactionStatus},</if>                  <!-- 第三方平台订单状态 varchar(64)-->
+			<if test="entity.ordertime != null">ordertime = #{entity.ordertime},</if>                                           <!-- 下单时间 datetime-->
+			<if test="entity.handlestatus != null">handlestatus = #{entity.handlestatus},</if>                                  <!-- 处理状态(0未处理，1已处理) char(1)-->
+			<if test="entity.handleremark != null">handleremark = #{entity.handleremark},</if>                                  <!-- 处理备注 varchar(256)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM trade_error_pool
+		WHERE ep_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM trade_error_pool
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					ep_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM trade_error_pool a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM trade_error_pool a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

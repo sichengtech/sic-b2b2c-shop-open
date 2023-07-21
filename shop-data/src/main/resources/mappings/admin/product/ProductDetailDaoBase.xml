@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductDetailDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productDetailColumns">
+		a.p_id AS "pId",                                                     <!-- 商品ID number(19)-->
+		a.introduction AS "introduction",                                    <!-- 商品描述详情,pc版 clob-->
+		a.introduction2 AS "introduction2"                                  <!-- 商品描述详情，移动版 clob-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productDetailJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.introduction != null and c.introduction != ''">AND a.introduction = #{c.introduction}</if>
+		<if test="c.introduction2 != null and c.introduction2 != ''">AND a.introduction2 = #{c.introduction2}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductDetail">
+		SELECT 
+		<include refid="productDetailColumns"/>
+		FROM product_detail a
+		<include refid="productDetailJoins"/>
+		WHERE a.p_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductDetail">
+		SELECT
+		<include refid="productDetailColumns"/>
+		FROM product_detail a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductDetail">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productDetailColumns"/>
+		FROM product_detail a
+		<include refid="productDetailJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductDetail">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productDetailColumns"/>
+		FROM product_detail a
+		<include refid="productDetailJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_detail(
+			p_id,                                              <!-- 商品ID number(19)-->
+			introduction,                                      <!-- 商品描述详情,pc版 clob-->
+			introduction2                                     <!-- 商品描述详情，移动版 clob-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.pId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_detail_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.introduction},                            <!-- 商品描述详情,pc版 clob-->
+			#{entity.introduction2}                           <!-- 商品描述详情，移动版 clob-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.pId != null">p_id,</if></if>
+			<if test="entity.pkMode==2">p_id,</if>
+			<if test="entity.introduction != null">introduction,</if>                          <!-- 商品描述详情,pc版 clob-->
+			<if test="entity.introduction2 != null">introduction2,</if>                        <!-- 商品描述详情，移动版 clob-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.pId != null">#{entity.pId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_detail_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.introduction != null">#{entity.introduction},</if>                          <!-- 商品描述详情,pc版 clob-->
+			<if test="entity.introduction2 != null">#{entity.introduction2},</if>                        <!-- 商品描述详情，移动版 clob-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_detail SET
+			introduction = #{entity.introduction},                          <!-- 商品描述详情,pc版 clob-->
+			introduction2 = #{entity.introduction2}                        <!-- 商品描述详情，移动版 clob-->
+
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_detail a SET
+			introduction = #{entity.introduction},                          <!-- 商品描述详情,pc版 clob-->
+			introduction2 = #{entity.introduction2}                        <!-- 商品描述详情，移动版 clob-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_detail
+		<set>
+			<if test="entity.introduction != null">introduction = #{entity.introduction},</if>                                  <!-- 商品描述详情,pc版 clob-->
+			<if test="entity.introduction2 != null">introduction2 = #{entity.introduction2},</if>                               <!-- 商品描述详情，移动版 clob-->
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_detail a
+		<set>
+			<if test="entity.introduction != null">introduction = #{entity.introduction},</if>                                  <!-- 商品描述详情,pc版 clob-->
+			<if test="entity.introduction2 != null">introduction2 = #{entity.introduction2},</if>                               <!-- 商品描述详情，移动版 clob-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_detail
+		WHERE p_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_detail
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_detail a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_detail a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

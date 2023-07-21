@@ -1,0 +1,100 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <% var article=cms.article({id:articleId});%>
+    <%var newDetail =fy.getMsg({key:'新闻详情'});%>
+    <title>${isEmpty(article)?newDetail:article.title!} Powered by SiC</title>
+    <% include("/include/head.html"){}%>
+    <!-- 页面样式 -->
+    <style type="text/css">
+        .content {
+            word-wrap: break-word
+        }
+
+        .content table {
+            border-collapse: collapse;
+        }
+
+        .content > * {
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+<% include("/include/header.html"){}%>
+<% include("/include/nav.html"){}%>
+<% include("/include/newsNavigation.html"){}%>
+<div class="wp clearfix mt20 news-art">
+    <% if(isEmpty(article)){ %>
+    <div class="article_error_div" style="float: left;">
+        <div class="article_error_msg">
+            <p>
+                <%	var news=fy.getMsg({key:'新闻'});
+                var noDate =fy.getMsg({key:'数据不存在提示',params:news});%> ${noDate!}
+            </p><br>
+            <p><a href="${ctxf}/index.htm">(1) <%var returnHomePage =fy.getMsg({key:'返回首页'});%> ${returnHomePage!}</a></p><br>
+            <p><a href="javascript:" onclick="history.go(-1);">(2) <%var returnPreviousPage =fy.getMsg({key:'返回上一页'});%> ${returnPreviousPage!}</a></p><br>
+        </div>
+    </div>
+    <%}else{%>
+    <div class="news_crumb">
+        <%var newSection =fy.getMsg({key:'新闻栏目'});%>
+        <%var text =fy.getMsg({key:'正文'});%>
+        <a href="javascript:;">${newSection!}</a> &gt; <a href="javascript:">${article.category.name!}</a> &gt; ${text!}
+    </div>
+    <h1>${article.title!}</h1>
+
+    <ul class="share-icon">
+        <li class="weibo"><a href="#" data-cmd="tsina"><%var weibo =fy.getMsg({key:'微博'});%> ${weibo!}</a></li>
+        <li class="weixin"><a href="#" data-cmd="weixin"><%var weixin =fy.getMsg({key:'微信'});%> ${weixin!}</a></li>
+        <li class="qq"><a href="#" data-cmd="sqq">QQ</a></li>
+        <li class="qqzone"><a href="#" data-cmd="qzone"><%var qqZone =fy.getMsg({key:'QQ空间'});%> ${qqZone!}</a></li>
+    </ul>
+
+    <div class="info">
+        <span>${article.updateDate!,dateFormat="yyyy-MM-dd"}</span>
+        <%var editor =fy.getMsg({key:'编辑'});%>
+        <%var websiteOperator =fy.getMsg({key:'网站运营者'});%>
+        <%var source =fy.getMsg({key:'来源'});%>
+        <%var original =fy.getMsg({key:'原创'});%>
+        <%var views =fy.getMsg({key:'浏览量'});%>
+        <span>${editor!}：${isEmpty (article.user.name!)?websiteOperator:(article.user.name!)}</span><span>${source!}：${isEmpty (article.articleData.copyfrom!)?original:(article.articleData.copyfrom!)}</span>
+        <span>${views!}：${article.hits!}</span>
+    </div>
+    <div class="l news-content">
+        <div class="content">${article.articleData.content!}</div>
+        <dl class="news-related">
+            <dt><%var relatedNews =fy.getMsg({key:'相关新闻'});%> ${relatedNews!}</dt>
+            <dd>
+                <ul class="a-list">
+                    <% for(x_article in list){%>
+                    <li>
+                        <a target="_blank" href="${ctxf}/newsDetail/${x_article.id!}.htm" class="title">${x_article.title!}</a>
+                        <div class="a-pic">
+                            <a target="_blank" href="${ctxf}/newsDetail/${x_article.id!}.htm">
+                                <img src="${ctxfs}${x_article.image!}"/>
+                            </a>
+                        </div>
+                        <div class="a-word">
+                            <div class="des">${x_article.articleData.content!}</div>
+                            <div class="a-info">
+                                <span class="date">${x_article.updateDate!,dateFormat="yyyy-MM-dd"}</span>
+                            </div>
+                        </div>
+                    </li>
+                    <%}%>
+                </ul>
+            </dd>
+        </dl>
+    </div>
+    <%}%>
+    <dl class="r news-right w300">
+        <% include("/include/newsRight2.html"){}%>
+    </dl>
+</div>
+<% include("/include/footer.html"){}%>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

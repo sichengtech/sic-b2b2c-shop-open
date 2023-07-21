@@ -1,0 +1,265 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% var seo=seo.one({type:"店铺列表页"});%>
+<title>${seo.title!}  Powered by SiC</title>
+<meta name="Keywords" content="${seo.keywords!}"/>
+<meta name="description" content="${seo.description!}"/>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/default/productList.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/default/collection.js"></script>
+<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+
+	<style>
+		ul, ol { list-style: none; padding: 0; }
+		body { background: #FFF none repeat scroll 0 0;}
+		body, button, input, select, textarea { -webkit-font-smoothing: antialiased; background-color: #fff; font: 12px/1.5 Microsoft YaHei,tahoma,arial,Hiragino Sans GB,\\5b8b\4f53,sans-serif; color: #666;}
+		a { color: #333; text-decoration: none; outline: medium none;}
+		a:link, a:visited, a:active { text-decoration: none;}
+		a:hover { color: #C81623; text-decoration: none;}
+		i, cite, em { font-style: normal;}
+		html, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input { padding: 0; margin: 0;}
+
+		.m-t-5 { margin-top: 5px!important;}
+		.m-l-5 { margin-left: 5px!important;}
+		.search-store{ margin: 20px auto; width: 1200px; text-align: left; position:relative; z-index: 0}
+		.search-store ul .store-list{margin-bottom: 15px;height: 223px;position: relative;color: #444;background: #f8f8f8 url(${ctx}/views/front/english/img/store-bg.png) no-repeat 0 100%;}
+		.search-store ul .store-list .store-left{float: left; position: relative; width: 390px; height: 223px; }
+		.search-store ul .store-list .store-left .store-info{ width: 360px; padding:0 10px 0 20px; margin: 20px 0px; overflow: hidden;}
+		.search-store ul .store-list .store-left .store-info .store-img{ float: left; }
+		.search-store ul .store-list .store-left .store-info .store-img a{display:block;width: 62px; /*height:62px;*/ border: 1px solid #efefef; background: #fff;}
+		.search-store ul .store-list .store-left .store-info .store-img a img{max-height: 62px; max-width: 62px;}
+		.search-store ul .store-list .store-left .store-info .store-info-o{ margin-left: 74px; position:relative}
+		.search-store ul .store-list .store-left .store-info .store-info-o .store-name{ max-width: 165px; height: 20px; font-size: 12px; font-weight: 600; color: #333; line-height: 20px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: inline-block;}
+		.search-store ul .store-list .store-left .store-info .store-info-o .goods_self{ border:1px solid #f30213; color: #f30213; padding: 0px 2px; border-radius:3px; font-family: "å¾®è½¯é›…é»‘"; font-weight: normal;}
+		.search-store ul .store-list .store-left .store-info .store-info-o i{display: inline-block; *display: inline; width: 18px; height: 18px; background: url(${ctx}/views/front/english/img/chat_state_01.png) no-repeat -1px -2px; cursor: pointer;}
+		.search-store ul .store-list .store-left .store-info .store-info-o i.offline{background-position: -1px -24px;}
+		.search-store ul .store-list .store-left .store-info .store-info-o p{ color: #999; font-size: 12px; line-height: 20px; height: 20px; padding-top:3px}
+		.search-store ul .store-list .store-left .store-info .store-info-o p:first-child{padding-top: 0;}
+		.search-store ul .store-list .store-left .store-info .store-info-o p span{ color: #333;}
+		.search-store ul .store-list .store-left .store-info .store-info-o p span.store-major{ width: 226px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; display: inline-block; vertical-align: middle;}
+		.search-store ul .store-list .store-left .store-activity{ padding:0px 10px 0 20px}
+		.search-store ul .store-list .store-left .store-activity .myh{ display:inline-block; padding:2px 10px; max-width:340px; height: 16px; line-height: 16px; color:#fff; background: #F59C1A; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer;}
+		.search-store ul .store-list .store-left .store-activity .yhq{ width: 360px; height: 20px; overflow: hidden;}
+		.search-store ul .store-list .store-left .store-activity .yhq a{display:inline-block; padding:2px 10px; max-width:340px; height: 16px; line-height: 16px; color:#fff; background: #49B6D6; cursor: pointer; margin-right: 5px;}
+		.search-store ul .store-list .store-left .store-sever{position: absolute; bottom:16px; padding:0 10px 0 20px; z-index: 1000}
+		.search-store ul .store-list .store-left .store-sever .store-volume{ display: inline-block; margin-right: 6px;}
+		.search-store ul .store-list .store-left .store-sever .store-volume span{ font-size: 12px; color: #999; margin-right: 10px;line-height: 20px; vertical-align: middle;}
+		.search-store ul .store-list .store-left .store-sever .store-volume span em{ color: #f30213; font-weight: 600;}
+		.search-store ul .store-list .store-left .store-sever .store-volume span:last-child{margin-right: 0px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege{display: inline-block; position:relative; vertical-align: middle;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege em{ display:inline-block; margin-right: 5px; width: 16px; height: 16px; background:url(${ctx}/views/front/english/img/store-sever.png) no-repeat; vertical-align: middle;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege em.pf{background-position: 0 0; cursor: pointer;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege em.xb{background-position: -24px 0px; background-size: 40px; }
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo{ display:none;position:absolute; top:28px; left: -14px ;width: 240px; z-index: 999;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-shopinfo-arrow{ position: absolute; top:-7px; left: 11px;line-height: 14px;width: 22px; height: 8px; background:url(${ctx}/views/front/english/img/arrow-top.png) no-repeat ;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap{padding:6px 8px; border-radius: 3px; border: 1px solid #999; background: #fff; overflow: hidden;width: 152px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-store-info .sub .ncs-detail-rate { display: block; padding: 5px; overflow: hidden; border-bottom: dotted 1px #E1E1E1;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate dl { display: block; float: left;/* width: 46%; padding: 0 2%;*/ border: none;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate dl dt { display: block; height: 20px; margin-bottom: 5px; line-height: 20px; color: #444;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate dl dd { display: block; width: auto; height: 15px; padding: 0 0 5px 0; line-height: 15px; color: #666;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate dd div { display: inline-block;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate dd span {padding: 0 3px; margin-right: 5px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .credit { color: #555; display: inline-block; width: 35px; margin-left: 4px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate dd div i { background: url(../img/store/store_c2hvcG5j_pic.png) no-repeat; vertical-align: middle; display: inline-block; width: 8px; height: 7px; margin-right: 3px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .high { color: #e4393c;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .high span { background-color: #e4393c; color: #FFF;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .high i { background-position: 0 -70px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .equal { color: #483E39;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .equal span { background-color: #483E39; color: #FFF; }
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .equal i { background-position: -20px -70px;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .low { color: #00ACAC;}
+		.search-store ul .store-list .search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrapstore-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .low span { background-color: #00ACAC; color: #FFF;}
+		.search-store ul .store-list .store-left .store-sever .store-privilege .popup-shopinfo .popup-wrap .ncs-detail-rate .low i { background-position: -10px -70px;}
+		.search-store ul .store-list .store-left .fav-store{ position: absolute; top:20px; right:0px; text-align: center; z-index: 999;}
+		.search-store ul .store-list .store-left .fav-store a{font-size: 12px; line-height: 20px; color: #333; background-color: #F5F5F5; vertical-align: top; text-align: center; display: inline-block; *display: inline/*IE7*/; height: 20px; padding: 3px 10px; border: solid 1px #CCC; *zoom: 1;}
+
+		.search-store ul .store-list .store-right{ float: right; position: relative;}
+		.search-store ul .store-list .store-right .warp{ padding:15px 15px 5px; }
+		.search-store ul .store-list .store-right .warp .store-goods-container{ width: 780px; overflow: hidden;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods{ width: 180px; float: left; margin-right: 20px;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods:last-child{ margin-right: 0px;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods{ display: block; width: 150px; height: 150px; margin-left: 15px; background-color: #FFF; }
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods img{ max-height: 150px; max-width: 150px;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info{line-height: 20px; color: #999;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info .goods-name a{ padding:0 5px;display: block; width: 170px; height: 18px; line-height: 18px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #333;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info .goods-name a:hover{color: #f30213;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info .goods-price { overflow: hidden; padding: 0 5px; text-align: left;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info .goods-price .number { display:inline-block; width: 80px; color: #f30213; overflow: hidden;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info .goods-price .sales { float:right; font-size: 12px; color: #999;}
+		.search-store ul .store-list .store-right .warp .store-goods-container .store-goods .goods-info .goods-price .sales strong {display: inline; font-size: 12px; font-weight: normal; color: #999; width: auto;}
+	</style>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+
+	<%
+		var k=parameter.k;
+		var sort=parameter.sort;
+		var pageNo=parameter.pageNo;
+		var pageSize=parameter.pageSize;
+		var page = store.List({sort:sort,pageSize:pageSize,pageNo:pageNo,k:k});
+		var shop =fy.getMsg({key:'店铺'});
+	%>
+	<script>
+		$(document).ready(function () {
+			$("#searchType").html("${shop!}");
+			$("#hotsearch").hide();
+			$("#keyWord").val("${k!}");
+		});
+	</script>
+	<!-- 商品信息开始 -->
+	<div class="goods-list wp mt30">
+			<div class="sui-navbar search-tool">
+				<div class="search-navbar-inner">
+					<%var storeCount =fy.getMsg({key:'共找到店铺',params:page.count});%>
+					<div class="r">${storeCount!}</div>
+					<%var comprehensive =fy.getMsg({key:'综合'});
+					var sales =fy.getMsg({key:'销量'});
+					var favorite =fy.getMsg({key:'收藏'});
+					%>
+					<ul class="sui-nav sortType">
+						<li class="${sort==null?'active':''} all" all="" id=""><a href="javascript:"><i></i>${comprehensive!}</a></li>
+						<li class="${sort=='allSales'?'active':''}" id="allSales"><a href="javascript:"><i></i>${sales!}</a></li>
+						<li class="${sort=='collectionCount'?'active':''}" id="collectionCount"><a href="javascript:"><i></i>${favorite!}</a></li>
+					</ul>
+				</div>
+			</div>
+		<!-- 商品信息结束 -->
+
+		<!--店铺信息开始-->
+		<div class="search-store">
+			<ul>
+				<%
+					for(store in page.list!){
+				%>
+				<li class="store-list">
+					<div class="store-left">
+						<div class="store-info">
+							<div class="store-img"><a href="${ctxf}/store/${store.storeId}.htm" title=""><img
+									src="${ctxfs}${store.logo}@!62X62"></a></div>
+							<div class="store-info-o">
+								<p> <a class="store-name m-r-5" href="${ctxf}/store/${store.storeId}.htm">${store.name}</a></p>
+								<%var area =fy.getMsg({key:'所在地区'});
+								var maoHao=fy.getMsg({key:'：'});
+								var mainProduct=fy.getMsg({key:'主营商品'});
+								%>
+								<p>${area!}${maoHao!}<span>${store.countryName} ${store.provinceName} ${store.cityName}</span></p>
+								<p>${mainProduct!}${maoHao!}<span class="store-major" title="">${store.industry}</span></p>
+							</div>
+						</div>
+						<div class="store-activity">
+						</div>
+						<div class="store-sever">
+							<%var productCount=fy.getMsg({key:'共有商品',params:'<em>'+store.productCount+'</em>'});
+							%>
+							<div class="store-volume"> <span>${sales!}<em>${store.allSales}</em></span> <span>${productCount!}</span>
+							</div>
+							<div class="store-privilege"> <em class="pf"></em>
+								<div class="popup-shopinfo" style="display: none;">
+									<div class="popup-shopinfo-arrow"></div>
+									<div class="popup-wrap">
+										<div class="ncs-detail-rate">
+											<dl>
+												<%var storeScore =fy.getMsg({key:'店铺评分'});
+													var productScore =fy.getMsg({key:'商品评价',params:store.productScore!});
+													var logisticsScore =fy.getMsg({key:'物流速度',params:store.logisticsScore!});
+													var serviceScore =fy.getMsg({key:'服务态度',params:store.serviceAttitudeScore!});
+												%>
+												<dt>${storeScore!} </dt>
+												<dd>${productScore!}</dd>
+												<dd>${logisticsScore!}</dd>
+												<dd>${serviceScore!}</dd>
+											</dl>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- 跟商品收藏一样的逻辑 -->
+						<div class="fav-store">
+							<a href="javascript:void(0);" storeId="${store.storeId!}" class="sui-btn btn-lgrey ml8 collectionStore" style="height: 30px">
+								<i class="icon fa fa-star-o"></i>
+								<%var favoriteStore =fy.getMsg({key:'收藏店铺'});%>
+								${favoriteStore!}
+<!--								<em class="m-l-5" nc_type="storeFavoritesNum">${store.countCollection!}</em>-->
+							</a>
+						</div>
+					</div>
+					<div class="store-right">
+						<div class="warp">
+							<div class="store-goods-container">
+								<ul>
+									<%
+										for(product in store.fourProduct){
+									%>
+										<li class="store-goods"> <a class="goods" href="${ctxf}/detail/${product.pId}.htm"
+																	title="${product.name}"><img
+												src="${ctxfs}${product.storeAlbumPictureList2[0].path}@!150X150"></a>
+											<div class="goods-info">
+												<p class="goods-name m-t-5"><a
+														href="${ctxf}/detail/${product.pId}.htm">${product.name}</a></p>
+												<p class="goods-price m-t-5">
+													<span class="number number-14">
+														<span class="yuan"></span><span class="integer">${product.showPrice}</span>
+														<span class="pointer"></span>
+													</span>
+													<%var saleProductCount =fy.getMsg({key:'售出',params:'<strong>'+product.allSales+'</strong>'});%>
+													<span class="sales">${saleProductCount!}</span>
+												</p>
+											</div>
+										</li>
+									<%
+										}
+									%>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</li>
+				<%} %>
+				<% elsefor{ %>
+				<div style="height: 300px;line-height: 300px;text-align: center;font-size: 40px;" >
+					<%var noStore =fy.getMsg({key:'暂无店铺'});%>
+					<i class="sui-icon icon-touch-face"></i> ${noStore!}
+				</div>
+				<% } %>
+			</ul>
+		</div>
+		<script type="application/javascript">
+			$(function(){
+				$(".store-privilege").hover(function(){
+					$(this).find(".popup-shopinfo").show();
+				},function(){
+					$(this).find(".popup-shopinfo").hide();
+				});
+			})
+		</script>
+		<!--店铺信息结束-->
+
+		<!--分页开始-->
+			<% include("/page.html",{'page':page}){} %>
+		<!--分页结束-->
+
+	</div>
+	<!-- 商品信息结束 -->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+	<script>
+		/**
+		 * 将头部的搜索类型改为店铺
+		 * */
+		//英文
+		$(".search-div #dropdownMenu1").html(fy.getMsg("供应商")+"<i class='sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-down sc-hd-prefix2-icon-xs'></i>");
+		$(".search-div .ui-searchbar-type .searchType").val("2");
+
+		//中文
+		$(".search-box .select .dropdown-toggle span").text("店铺");
+		$(".search-box .select .searchType").val("2");
+	</script>
+</html>

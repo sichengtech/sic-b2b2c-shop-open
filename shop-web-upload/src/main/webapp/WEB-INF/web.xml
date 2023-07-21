@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+
+	<display-name>upload</display-name>
+
+	<!-- Spring Context ConfigLocation -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath*:/spring-context*.xml</param-value>
+	</context-param>
+	<listener>
+		<listener-class>com.sicheng.common.web.SpringContextLoader</listener-class>
+	</listener>
+
+	<!-- 在Servlet容器(比如Tomcat)停止时，取消注册JDBC的驱动。从而达到消除控制台的警告信息的目标。 -->
+	<listener>
+		<listener-class>com.sicheng.common.web.AppContextListener</listener-class>
+	</listener>
+
+	<!-- 防止xss攻击过滤器 -->
+	<filter>
+		<filter-name>XssEscape</filter-name>
+		<filter-class>com.sicheng.common.xss.XssFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>XssEscape</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+	
+	<!-- Spring 编码过滤器 -->
+	<filter>
+		<filter-name>encodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>encodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+ 	<!-- R工具过滤器 -->
+	<filter>
+		<filter-name>r</filter-name>
+		<filter-class>com.sicheng.common.web.R</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>r</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>	
+
+	<!-- Spring MVC Servlet -->
+	<servlet>
+		<servlet-name>springServletAdmin</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath*:/spring-mvc-upload.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>springServletAdmin</servlet-name>
+		<url-pattern>*.htm</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 从文件存储系统下载文件，图片可实时生成缩略图 -->
+	<servlet>
+		<servlet-name>FileStorageDownloadServlet</servlet-name>
+		<servlet-class>com.sicheng.upload.filedownload.FileStorageDownloadServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>FileStorageDownloadServlet</servlet-name>
+		<url-pattern>/filestorage/*</url-pattern>
+	</servlet-mapping>
+
+	<!-- 图片验证码 Validate code -->
+	<servlet>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<servlet-class>com.sicheng.common.servlet.ValidateCodeServlet</servlet-class>
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>ValidateCodeServlet</servlet-name>
+		<url-pattern>/servlet/validateCodeServlet</url-pattern>
+	</servlet-mapping>
+	
+	<!-- Session过期时间配置,
+	时间单位是分钟，并且只能是整数，如果是零或负数，那么会话就永远不会超时-->
+	<session-config>
+		<session-timeout>30</session-timeout>
+	</session-config>
+
+	<!-- 去除jsp中的空行 -->
+	<!-- 在 Tomcat 的源码里我们可以找到：apache-tomcat-8.0.39-src\java\org\apache\jasper\servlet\JspServlet.java -->
+	<servlet>
+		<servlet-name>jsp</servlet-name>
+		<servlet-class>org.apache.jasper.servlet.JspServlet</servlet-class>
+		<init-param>
+			<param-name>trimSpaces</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet> 
+	
+	<!-- 全局的404\500页面，所有的404\500状态码，都会展示这个页面。如a.js没找到404也会展示这个404页面，与spring没有关系 -->
+	<error-page>
+		<error-code>500</error-code>
+		<location>/views/error/500.jsp</location>
+	</error-page>
+	<error-page>
+		<error-code>404</error-code>
+		<location>/views/error/404.jsp</location>
+	</error-page>
+	
+	<welcome-file-list>
+		<welcome-file>index.jsp</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+</web-app>

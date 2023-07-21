@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.UserDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="userColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- id number(19)-->
+		a.company_id AS "company.id",                                        <!-- 归属公司 number(19)-->
+		a.office_id AS "office.id",                                          <!-- 归属部门 number(19)-->
+		a.login_name AS "loginName",                                         <!-- 登录名 varchar2(100)-->
+		a.password AS "password",                                            <!-- 密码 varchar2(100)-->
+		a.no AS "no",                                                        <!-- 工号 varchar2(100)-->
+		a.name AS "name",                                                    <!-- 姓名 nvarchar2(100)-->
+		a.email AS "email",                                                  <!-- 邮箱 nvarchar2(200)-->
+		a.phone AS "phone",                                                  <!-- 电话 varchar2(200)-->
+		a.mobile AS "mobile",                                                <!-- 手机 varchar2(200)-->
+		a.user_type AS "userType",                                           <!-- 用户类型 char(1)-->
+		a.photo AS "photo",                                                  <!-- 头像 varchar2(1000)-->
+		a.login_ip AS "loginIp",                                             <!-- 最后登录IP varchar2(100)-->
+		a.login_date AS "loginDate",                                         <!-- 最后登录日期 timestamp(6)-->
+		a.login_flag AS "loginFlag",                                         <!-- 是否允许登录 varchar2(64)-->
+		a.create_by AS "createBy.id",                                        <!-- create_by varchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- create_date timestamp(6)-->
+		a.update_by AS "updateBy.id",                                        <!-- update_by varchar2(64)-->
+		a.update_date AS "updateDate",                                       <!-- update_date timestamp(6)-->
+		a.remarks AS "remarks",                                              <!-- remarks nvarchar2(255)-->
+		a.del_flag AS "delFlag",                                             <!-- del_flag char(1)-->
+		a.qq AS "qq",                                                        <!-- qq varchar2(64)-->
+		a.bak1 AS "bak1",                                                    <!-- bak1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- bak2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- bak3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- bak4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- bak5 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="userJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.company != null and c.company.id != null ">AND a.company_id = #{c.company.id}</if>
+		<if test="c.office != null and c.office.id != null ">AND a.office_id = #{c.office.id}</if>
+		<if test="c.loginName != null and c.loginName != ''">AND a.login_name = #{c.loginName}</if>
+		<if test="c.password != null and c.password != ''">AND a.password = #{c.password}</if>
+		<if test="c.no != null and c.no != ''">AND a.no = #{c.no}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.email != null and c.email != ''">AND a.email = #{c.email}</if>
+		<if test="c.phone != null and c.phone != ''">AND a.phone = #{c.phone}</if>
+		<if test="c.mobile != null and c.mobile != ''">AND a.mobile = #{c.mobile}</if>
+		<if test="c.userType != null and c.userType != ''">AND a.user_type = #{c.userType}</if>
+		<if test="c.photo != null and c.photo != ''">AND a.photo = #{c.photo}</if>
+		<if test="c.loginIp != null and c.loginIp != ''">AND a.login_ip = #{c.loginIp}</if>
+		<if test="c.beginLoginDate != null and c.endLoginDate != null ">AND a.login_date BETWEEN #{c.beginLoginDate} AND #{c.endLoginDate}</if>
+		<if test="c.loginFlag != null and c.loginFlag != ''">AND a.login_flag = #{c.loginFlag}</if>
+		<if test="c.createBy != null and c.createBy.id != null ">AND a.create_by = #{c.createBy.id}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.updateBy != null and c.updateBy.id != null ">AND a.update_by = #{c.updateBy.id}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.remarks != null and c.remarks != ''">AND a.remarks = #{c.remarks}</if>
+		<if test="c.delFlag != null and c.delFlag != ''">AND a.del_flag = #{c.delFlag}</if>
+		<if test="c.qq != null and c.qq != ''">AND a.qq = #{c.qq}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="User">
+		SELECT 
+		<include refid="userColumns"/>
+		FROM sys_user a
+		<include refid="userJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="User">
+		SELECT 
+		<include refid="userColumns"/>
+		FROM sys_user a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="User">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userColumns"/>
+		FROM sys_user a
+		<include refid="userJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="User">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userColumns"/>
+		FROM sys_user a
+		<include refid="userJoins"/>
+		<where>
+			<if test="w!=null and w.e!=null">
+				<if test="w.e.delFlag != null and w.e.delFlag != ''">
+				a.del_flag =  #{w.e.delFlag}
+				</if>
+			</if>
+		</where>	
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- id number(19)-->
+			company_id,                                        <!-- 归属公司 number(19)-->
+			office_id,                                         <!-- 归属部门 number(19)-->
+			login_name,                                        <!-- 登录名 varchar2(100)-->
+			password,                                          <!-- 密码 varchar2(100)-->
+			no,                                                <!-- 工号 varchar2(100)-->
+			name,                                              <!-- 姓名 nvarchar2(100)-->
+			email,                                             <!-- 邮箱 nvarchar2(200)-->
+			phone,                                             <!-- 电话 varchar2(200)-->
+			mobile,                                            <!-- 手机 varchar2(200)-->
+			user_type,                                         <!-- 用户类型 char(1)-->
+			photo,                                             <!-- 头像 varchar2(1000)-->
+			login_ip,                                          <!-- 最后登录IP varchar2(100)-->
+			login_date,                                        <!-- 最后登录日期 timestamp(6)-->
+			login_flag,                                        <!-- 是否允许登录 varchar2(64)-->
+			create_by,                                         <!-- create_by varchar2(64)-->
+			create_date,                                       <!-- create_date timestamp(6)-->
+			update_by,                                         <!-- update_by varchar2(64)-->
+			update_date,                                       <!-- update_date timestamp(6)-->
+			remarks,                                           <!-- remarks nvarchar2(255)-->
+			del_flag,                                          <!-- del_flag char(1)-->
+			qq,                                                <!-- qq varchar2(64)-->
+			bak1,                                              <!-- bak1 nvarchar2(64)-->
+			bak2,                                              <!-- bak2 nvarchar2(64)-->
+			bak3,                                              <!-- bak3 nvarchar2(64)-->
+			bak4,                                              <!-- bak4 nvarchar2(64)-->
+			bak5,                                              <!-- bak5 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_user_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.company.id},                              <!-- 归属公司 number(19)-->
+			#{entity.office.id},                               <!-- 归属部门 number(19)-->
+			#{entity.loginName},                               <!-- 登录名 varchar2(100)-->
+			#{entity.password},                                <!-- 密码 varchar2(100)-->
+			#{entity.no},                                      <!-- 工号 varchar2(100)-->
+			#{entity.name},                                    <!-- 姓名 nvarchar2(100)-->
+			#{entity.email},                                   <!-- 邮箱 nvarchar2(200)-->
+			#{entity.phone},                                   <!-- 电话 varchar2(200)-->
+			#{entity.mobile},                                  <!-- 手机 varchar2(200)-->
+			#{entity.userType},                                <!-- 用户类型 char(1)-->
+			#{entity.photo},                                   <!-- 头像 varchar2(1000)-->
+			#{entity.loginIp},                                 <!-- 最后登录IP varchar2(100)-->
+			#{entity.loginDate},                               <!-- 最后登录日期 timestamp(6)-->
+			#{entity.loginFlag},                               <!-- 是否允许登录 varchar2(64)-->
+			#{entity.createBy.id},                             <!-- create_by varchar2(64)-->
+			#{entity.createDate},                              <!-- create_date timestamp(6)-->
+			#{entity.updateBy.id},                             <!-- update_by varchar2(64)-->
+			#{entity.updateDate},                              <!-- update_date timestamp(6)-->
+			#{entity.remarks},                                 <!-- remarks nvarchar2(255)-->
+			#{entity.delFlag},                                 <!-- del_flag char(1)-->
+			#{entity.qq},                                      <!-- qq varchar2(64)-->
+			#{entity.bak1},                                    <!-- bak1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- bak2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- bak3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- bak4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- bak5 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_user
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.company!= null and entity.company.id!= null ">company_id,</if>                              <!-- 归属公司 number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 归属部门 number(19)-->
+			<if test="entity.loginName != null">login_name,</if>                               <!-- 登录名 varchar2(100)-->
+			<if test="entity.password != null">password,</if>                                  <!-- 密码 varchar2(100)-->
+			<if test="entity.no != null">no,</if>                                              <!-- 工号 varchar2(100)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 姓名 nvarchar2(100)-->
+			<if test="entity.email != null">email,</if>                                        <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.phone != null">phone,</if>                                        <!-- 电话 varchar2(200)-->
+			<if test="entity.mobile != null">mobile,</if>                                      <!-- 手机 varchar2(200)-->
+			<if test="entity.userType != null">user_type,</if>                                 <!-- 用户类型 char(1)-->
+			<if test="entity.photo != null">photo,</if>                                        <!-- 头像 varchar2(1000)-->
+			<if test="entity.loginIp != null">login_ip,</if>                                   <!-- 最后登录IP varchar2(100)-->
+			<if test="entity.loginDate != null">login_date,</if>                               <!-- 最后登录日期 timestamp(6)-->
+			<if test="entity.loginFlag != null">login_flag,</if>                               <!-- 是否允许登录 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by,</if>                              <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks,</if>                                    <!-- remarks nvarchar2(255)-->
+			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- del_flag char(1)-->
+			<if test="entity.qq != null">qq,</if>                                              <!-- qq varchar2(64)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- bak1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- bak2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- bak3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- bak4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- bak5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_user_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.company!= null and entity.company.id!= null ">#{entity.company.id},</if>                              <!-- 归属公司 number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 归属部门 number(19)-->
+			<if test="entity.loginName != null">#{entity.loginName},</if>                                <!-- 登录名 varchar2(100)-->
+			<if test="entity.password != null">#{entity.password},</if>                                  <!-- 密码 varchar2(100)-->
+			<if test="entity.no != null">#{entity.no},</if>                                              <!-- 工号 varchar2(100)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 姓名 nvarchar2(100)-->
+			<if test="entity.email != null">#{entity.email},</if>                                        <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.phone != null">#{entity.phone},</if>                                        <!-- 电话 varchar2(200)-->
+			<if test="entity.mobile != null">#{entity.mobile},</if>                                      <!-- 手机 varchar2(200)-->
+			<if test="entity.userType != null">#{entity.userType},</if>                                  <!-- 用户类型 char(1)-->
+			<if test="entity.photo != null">#{entity.photo},</if>                                        <!-- 头像 varchar2(1000)-->
+			<if test="entity.loginIp != null">#{entity.loginIp},</if>                                    <!-- 最后登录IP varchar2(100)-->
+			<if test="entity.loginDate != null">#{entity.loginDate},</if>                                <!-- 最后登录日期 timestamp(6)-->
+			<if test="entity.loginFlag != null">#{entity.loginFlag},</if>                                <!-- 是否允许登录 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">#{entity.updateBy.id},</if>                            <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">#{entity.remarks},</if>                                    <!-- remarks nvarchar2(255)-->
+			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- del_flag char(1)-->
+			<if test="entity.qq != null">#{entity.qq},</if>                                              <!-- qq varchar2(64)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- bak1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- bak2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- bak3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- bak4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- bak5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_user 
+		<set>
+			company_id = #{entity.company.id},                              <!-- 归属公司 number(19)-->
+			office_id = #{entity.office.id},                                <!-- 归属部门 number(19)-->
+			login_name = #{entity.loginName},                               <!-- 登录名 varchar2(100)-->
+			password = #{entity.password},                                  <!-- 密码 varchar2(100)-->
+			no = #{entity.no},                                              <!-- 工号 varchar2(100)-->
+			name = #{entity.name},                                          <!-- 姓名 nvarchar2(100)-->
+			email = #{entity.email},                                        <!-- 邮箱 nvarchar2(200)-->
+			phone = #{entity.phone},                                        <!-- 电话 varchar2(200)-->
+			mobile = #{entity.mobile},                                      <!-- 手机 varchar2(200)-->
+			user_type = #{entity.userType},                                 <!-- 用户类型 char(1)-->
+			photo = #{entity.photo},                                        <!-- 头像 varchar2(1000)-->
+			login_ip = #{entity.loginIp},                                   <!-- 最后登录IP varchar2(100)-->
+			login_date = #{entity.loginDate},                               <!-- 最后登录日期 timestamp(6)-->
+			login_flag = #{entity.loginFlag},                               <!-- 是否允许登录 varchar2(64)-->
+			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- update_date timestamp(6)-->
+			remarks = #{entity.remarks},                                    <!-- remarks nvarchar2(255)-->
+			qq = #{entity.qq},                                              <!-- qq varchar2(64)-->
+			bak1 = #{entity.bak1},                                          <!-- bak1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- bak2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- bak3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- bak4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- bak5 nvarchar2(64)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_user a 
+		<set>
+			company_id = #{entity.company.id},                              <!-- 归属公司 number(19)-->
+			office_id = #{entity.office.id},                                <!-- 归属部门 number(19)-->
+			login_name = #{entity.loginName},                               <!-- 登录名 varchar2(100)-->
+			password = #{entity.password},                                  <!-- 密码 varchar2(100)-->
+			no = #{entity.no},                                              <!-- 工号 varchar2(100)-->
+			name = #{entity.name},                                          <!-- 姓名 nvarchar2(100)-->
+			email = #{entity.email},                                        <!-- 邮箱 nvarchar2(200)-->
+			phone = #{entity.phone},                                        <!-- 电话 varchar2(200)-->
+			mobile = #{entity.mobile},                                      <!-- 手机 varchar2(200)-->
+			user_type = #{entity.userType},                                 <!-- 用户类型 char(1)-->
+			photo = #{entity.photo},                                        <!-- 头像 varchar2(1000)-->
+			login_ip = #{entity.loginIp},                                   <!-- 最后登录IP varchar2(100)-->
+			login_date = #{entity.loginDate},                               <!-- 最后登录日期 timestamp(6)-->
+			login_flag = #{entity.loginFlag},                               <!-- 是否允许登录 varchar2(64)-->
+			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- update_date timestamp(6)-->
+			remarks = #{entity.remarks},                                    <!-- remarks nvarchar2(255)-->
+			qq = #{entity.qq},                                              <!-- qq varchar2(64)-->
+			bak1 = #{entity.bak1},                                          <!-- bak1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- bak2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- bak3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- bak4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- bak5 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_user
+		<set>
+			<if test="entity.company!= null and entity.company.id!= null ">company_id = #{entity.company.id},</if>                                        <!-- 归属公司 number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属部门 number(19)-->
+			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 登录名 varchar2(100)-->
+			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 varchar2(100)-->
+			<if test="entity.no != null">no = #{entity.no},</if>                                                                <!-- 工号 varchar2(100)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 姓名 nvarchar2(100)-->
+			<if test="entity.email != null">email = #{entity.email},</if>                                                       <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话 varchar2(200)-->
+			<if test="entity.mobile != null">mobile = #{entity.mobile},</if>                                                    <!-- 手机 varchar2(200)-->
+			<if test="entity.userType != null">user_type = #{entity.userType},</if>                                             <!-- 用户类型 char(1)-->
+			<if test="entity.photo != null">photo = #{entity.photo},</if>                                                       <!-- 头像 varchar2(1000)-->
+			<if test="entity.loginIp != null">login_ip = #{entity.loginIp},</if>                                                <!-- 最后登录IP varchar2(100)-->
+			<if test="entity.loginDate != null">login_date = #{entity.loginDate},</if>                                          <!-- 最后登录日期 timestamp(6)-->
+			<if test="entity.loginFlag != null">login_flag = #{entity.loginFlag},</if>                                          <!-- 是否允许登录 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- remarks nvarchar2(255)-->
+			<if test="entity.qq != null">qq = #{entity.qq},</if>                                                                <!-- qq varchar2(64)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- bak1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- bak2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- bak3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- bak4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- bak5 nvarchar2(64)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_user a
+		<set>
+			<if test="entity.company!= null and entity.company.id!= null ">company_id = #{entity.company.id},</if>                                        <!-- 归属公司 number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属部门 number(19)-->
+			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 登录名 varchar2(100)-->
+			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 varchar2(100)-->
+			<if test="entity.no != null">no = #{entity.no},</if>                                                                <!-- 工号 varchar2(100)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 姓名 nvarchar2(100)-->
+			<if test="entity.email != null">email = #{entity.email},</if>                                                       <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话 varchar2(200)-->
+			<if test="entity.mobile != null">mobile = #{entity.mobile},</if>                                                    <!-- 手机 varchar2(200)-->
+			<if test="entity.userType != null">user_type = #{entity.userType},</if>                                             <!-- 用户类型 char(1)-->
+			<if test="entity.photo != null">photo = #{entity.photo},</if>                                                       <!-- 头像 varchar2(1000)-->
+			<if test="entity.loginIp != null">login_ip = #{entity.loginIp},</if>                                                <!-- 最后登录IP varchar2(100)-->
+			<if test="entity.loginDate != null">login_date = #{entity.loginDate},</if>                                          <!-- 最后登录日期 timestamp(6)-->
+			<if test="entity.loginFlag != null">login_flag = #{entity.loginFlag},</if>                                          <!-- 是否允许登录 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- remarks nvarchar2(255)-->
+			<if test="entity.qq != null">qq = #{entity.qq},</if>                                                                <!-- qq varchar2(64)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- bak1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- bak2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- bak3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- bak4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- bak5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE sys_user SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_user
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_user a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_user a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

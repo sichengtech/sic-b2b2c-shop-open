@@ -1,0 +1,467 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.OfficeDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="officeColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- id number(19)-->
+		a.parent_id AS "parent.id",                                          <!-- 父级编号 number(19)-->
+		a.parent_ids AS "parentIds",                                         <!-- 所有父级编号 varchar2(2000)-->
+		a.name AS "name",                                                    <!-- 机构名称 nvarchar2(100)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
+		a.area_id AS "area.id",                                              <!-- 归属区域 number(19)-->
+		a.code AS "code",                                                    <!-- 机构编码 varchar2(100)-->
+		a.type AS "type",                                                    <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+		a.grade AS "grade",                                                  <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+		a.address AS "address",                                              <!-- 联系地址 nvarchar2(255)-->
+		a.zip_code AS "zipCode",                                             <!-- 邮政编码 varchar2(100)-->
+		a.master AS "master",                                                <!-- 负责人 nvarchar2(100)-->
+		a.phone AS "phone",                                                  <!-- 电话 nvarchar2(200)-->
+		a.fax AS "fax",                                                      <!-- 传真 nvarchar2(200)-->
+		a.email AS "email",                                                  <!-- 邮箱 nvarchar2(200)-->
+		a.useable AS "useable",                                              <!-- 是否可用 varchar2(64)-->
+		a.primary_person AS "primaryPerson.id",                              <!-- 主负责人 varchar2(64)-->
+		a.deputy_person AS "deputyPerson.id",                                <!-- 副负责人 varchar2(64)-->
+		a.create_by AS "createBy.id",                                        <!-- create_by varchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- create_date timestamp(6)-->
+		a.update_by AS "updateBy.id",                                        <!-- update_by varchar2(64)-->
+		a.update_date AS "updateDate",                                       <!-- update_date timestamp(6)-->
+		a.remarks AS "remarks",                                              <!-- remarks nvarchar2(255)-->
+		a.del_flag AS "delFlag",                                             <!-- del_flag char(1)-->
+		<!--a6.name AS "area.name", -->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="officeJoins">
+		<!--LEFT JOIN sys_area a6 ON a6.id = a.area_id -->
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.parent != null and c.parent.id != null ">AND a.parent_id = #{c.parent.id}</if>
+		<if test="c.parentIds != null and c.parentIds != ''">				
+			<bind name="pattern" value="'%' + c.parentIds + '%'" />				
+			AND lower(a.parent_ids) LIKE lower(#{pattern})
+		</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.area != null and c.area.id != null ">AND a.area_id = #{c.area.id}</if>
+		<if test="c.code != null and c.code != ''">AND a.code = #{c.code}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.grade != null and c.grade != ''">AND a.grade = #{c.grade}</if>
+		<if test="c.address != null and c.address != ''">AND a.address = #{c.address}</if>
+		<if test="c.zipCode != null and c.zipCode != ''">AND a.zip_code = #{c.zipCode}</if>
+		<if test="c.master != null and c.master != ''">AND a.master = #{c.master}</if>
+		<if test="c.phone != null and c.phone != ''">AND a.phone = #{c.phone}</if>
+		<if test="c.fax != null and c.fax != ''">AND a.fax = #{c.fax}</if>
+		<if test="c.email != null and c.email != ''">AND a.email = #{c.email}</if>
+		<if test="c.useable != null and c.useable != ''">AND a.useable = #{c.useable}</if>
+		<if test="c.primaryPerson != null and c.primaryPerson.id != null ">AND a.primary_person = #{c.primaryPerson.id}</if>
+		<if test="c.deputyPerson != null and c.deputyPerson.id != null ">AND a.deputy_person = #{c.deputyPerson.id}</if>
+		<if test="c.createBy != null and c.createBy.id != null ">AND a.create_by = #{c.createBy.id}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.updateBy != null and c.updateBy.id != null ">AND a.update_by = #{c.updateBy.id}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.remarks != null and c.remarks != ''">AND a.remarks = #{c.remarks}</if>
+		<if test="c.delFlag != null and c.delFlag != ''">AND a.del_flag = #{c.delFlag}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="Office">
+		SELECT 
+		<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="Office">
+		SELECT 
+		<include refid="officeColumns"/> 
+		FROM sys_office a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="Office">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="Office">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="officeColumns"/>
+		FROM sys_office a
+		<include refid="officeJoins"/>
+		<where>
+			<if test="w!=null and w.e!=null">
+				<if test="w.e.delFlag != null and w.e.delFlag != ''">
+				a.del_flag =  #{w.e.delFlag}
+				</if>
+			</if>
+		</where>	
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_office
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- id number(19)-->
+			parent_id,                                         <!-- 父级编号 number(19)-->
+			parent_ids,                                        <!-- 所有父级编号 varchar2(2000)-->
+			name,                                              <!-- 机构名称 nvarchar2(100)-->
+			sort,                                              <!-- 排序 number(10)-->
+			area_id,                                           <!-- 归属区域 number(19)-->
+			code,                                              <!-- 机构编码 varchar2(100)-->
+			type,                                              <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			grade,                                             <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			address,                                           <!-- 联系地址 nvarchar2(255)-->
+			zip_code,                                          <!-- 邮政编码 varchar2(100)-->
+			master,                                            <!-- 负责人 nvarchar2(100)-->
+			phone,                                             <!-- 电话 nvarchar2(200)-->
+			fax,                                               <!-- 传真 nvarchar2(200)-->
+			email,                                             <!-- 邮箱 nvarchar2(200)-->
+			useable,                                           <!-- 是否可用 varchar2(64)-->
+			primary_person,                                    <!-- 主负责人 varchar2(64)-->
+			deputy_person,                                     <!-- 副负责人 varchar2(64)-->
+			create_by,                                         <!-- create_by varchar2(64)-->
+			create_date,                                       <!-- create_date timestamp(6)-->
+			update_by,                                         <!-- update_by varchar2(64)-->
+			update_date,                                       <!-- update_date timestamp(6)-->
+			remarks,                                           <!-- remarks nvarchar2(255)-->
+			del_flag,                                          <!-- del_flag char(1)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_office_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.parent.id},                               <!-- 父级编号 number(19)-->
+			#{entity.parentIds},                               <!-- 所有父级编号 varchar2(2000)-->
+			#{entity.name},                                    <!-- 机构名称 nvarchar2(100)-->
+			#{entity.sort},                                    <!-- 排序 number(10)-->
+			#{entity.area.id},                                 <!-- 归属区域 number(19)-->
+			#{entity.code},                                    <!-- 机构编码 varchar2(100)-->
+			#{entity.type},                                    <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			#{entity.grade},                                   <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			#{entity.address},                                 <!-- 联系地址 nvarchar2(255)-->
+			#{entity.zipCode},                                 <!-- 邮政编码 varchar2(100)-->
+			#{entity.master},                                  <!-- 负责人 nvarchar2(100)-->
+			#{entity.phone},                                   <!-- 电话 nvarchar2(200)-->
+			#{entity.fax},                                     <!-- 传真 nvarchar2(200)-->
+			#{entity.email},                                   <!-- 邮箱 nvarchar2(200)-->
+			#{entity.useable},                                 <!-- 是否可用 varchar2(64)-->
+			#{entity.primaryPerson.id},                        <!-- 主负责人 varchar2(64)-->
+			#{entity.deputyPerson.id},                         <!-- 副负责人 varchar2(64)-->
+			#{entity.createBy.id},                             <!-- create_by varchar2(64)-->
+			#{entity.createDate},                              <!-- create_date timestamp(6)-->
+			#{entity.updateBy.id},                             <!-- update_by varchar2(64)-->
+			#{entity.updateDate},                              <!-- update_date timestamp(6)-->
+			#{entity.remarks},                                 <!-- remarks nvarchar2(255)-->
+			#{entity.delFlag},                                 <!-- del_flag char(1)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_office
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- 父级编号 number(19)-->
+			<if test="entity.parentIds != null">parent_ids,</if>                               <!-- 所有父级编号 varchar2(2000)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 机构名称 nvarchar2(100)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.area!= null and entity.area.id!= null ">area_id,</if>                                    <!-- 归属区域 number(19)-->
+			<if test="entity.code != null">code,</if>                                          <!-- 机构编码 varchar2(100)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			<if test="entity.grade != null">grade,</if>                                        <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			<if test="entity.address != null">address,</if>                                    <!-- 联系地址 nvarchar2(255)-->
+			<if test="entity.zipCode != null">zip_code,</if>                                   <!-- 邮政编码 varchar2(100)-->
+			<if test="entity.master != null">master,</if>                                      <!-- 负责人 nvarchar2(100)-->
+			<if test="entity.phone != null">phone,</if>                                        <!-- 电话 nvarchar2(200)-->
+			<if test="entity.fax != null">fax,</if>                                            <!-- 传真 nvarchar2(200)-->
+			<if test="entity.email != null">email,</if>                                        <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.useable != null">useable,</if>                                    <!-- 是否可用 varchar2(64)-->
+			<if test="entity.primaryPerson!= null and entity.primaryPerson.id!= null ">primary_person,</if>                    <!-- 主负责人 varchar2(64)-->
+			<if test="entity.deputyPerson!= null and entity.deputyPerson.id!= null ">deputy_person,</if>                      <!-- 副负责人 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by,</if>                              <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks,</if>                                    <!-- remarks nvarchar2(255)-->
+			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- del_flag char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_office_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- 父级编号 number(19)-->
+			<if test="entity.parentIds != null">#{entity.parentIds},</if>                                <!-- 所有父级编号 varchar2(2000)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 机构名称 nvarchar2(100)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.area!= null and entity.area.id!= null ">#{entity.area.id},</if>                                    <!-- 归属区域 number(19)-->
+			<if test="entity.code != null">#{entity.code},</if>                                          <!-- 机构编码 varchar2(100)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			<if test="entity.grade != null">#{entity.grade},</if>                                        <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			<if test="entity.address != null">#{entity.address},</if>                                    <!-- 联系地址 nvarchar2(255)-->
+			<if test="entity.zipCode != null">#{entity.zipCode},</if>                                    <!-- 邮政编码 varchar2(100)-->
+			<if test="entity.master != null">#{entity.master},</if>                                      <!-- 负责人 nvarchar2(100)-->
+			<if test="entity.phone != null">#{entity.phone},</if>                                        <!-- 电话 nvarchar2(200)-->
+			<if test="entity.fax != null">#{entity.fax},</if>                                            <!-- 传真 nvarchar2(200)-->
+			<if test="entity.email != null">#{entity.email},</if>                                        <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.useable != null">#{entity.useable},</if>                                    <!-- 是否可用 varchar2(64)-->
+			<if test="entity.primaryPerson!= null and entity.primaryPerson.id!= null ">#{entity.primaryPerson.id},</if>                  <!-- 主负责人 varchar2(64)-->
+			<if test="entity.deputyPerson!= null and entity.deputyPerson.id!= null ">#{entity.deputyPerson.id},</if>                    <!-- 副负责人 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">#{entity.updateBy.id},</if>                            <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">#{entity.remarks},</if>                                    <!-- remarks nvarchar2(255)-->
+			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- del_flag char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_office 
+		<set>
+			parent_id = #{entity.parent.id},                                <!-- 父级编号 number(19)-->
+			parent_ids = #{entity.parentIds},                               <!-- 所有父级编号 varchar2(2000)-->
+			name = #{entity.name},                                          <!-- 机构名称 nvarchar2(100)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			area_id = #{entity.area.id},                                    <!-- 归属区域 number(19)-->
+			code = #{entity.code},                                          <!-- 机构编码 varchar2(100)-->
+			type = #{entity.type},                                          <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			grade = #{entity.grade},                                        <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			address = #{entity.address},                                    <!-- 联系地址 nvarchar2(255)-->
+			zip_code = #{entity.zipCode},                                   <!-- 邮政编码 varchar2(100)-->
+			master = #{entity.master},                                      <!-- 负责人 nvarchar2(100)-->
+			phone = #{entity.phone},                                        <!-- 电话 nvarchar2(200)-->
+			fax = #{entity.fax},                                            <!-- 传真 nvarchar2(200)-->
+			email = #{entity.email},                                        <!-- 邮箱 nvarchar2(200)-->
+			useable = #{entity.useable},                                    <!-- 是否可用 varchar2(64)-->
+			primary_person = #{entity.primaryPerson.id},                    <!-- 主负责人 varchar2(64)-->
+			deputy_person = #{entity.deputyPerson.id},                      <!-- 副负责人 varchar2(64)-->
+			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- update_date timestamp(6)-->
+			remarks = #{entity.remarks},                                    <!-- remarks nvarchar2(255)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_office a 
+		<set>
+			parent_id = #{entity.parent.id},                                <!-- 父级编号 number(19)-->
+			parent_ids = #{entity.parentIds},                               <!-- 所有父级编号 varchar2(2000)-->
+			name = #{entity.name},                                          <!-- 机构名称 nvarchar2(100)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			area_id = #{entity.area.id},                                    <!-- 归属区域 number(19)-->
+			code = #{entity.code},                                          <!-- 机构编码 varchar2(100)-->
+			type = #{entity.type},                                          <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			grade = #{entity.grade},                                        <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			address = #{entity.address},                                    <!-- 联系地址 nvarchar2(255)-->
+			zip_code = #{entity.zipCode},                                   <!-- 邮政编码 varchar2(100)-->
+			master = #{entity.master},                                      <!-- 负责人 nvarchar2(100)-->
+			phone = #{entity.phone},                                        <!-- 电话 nvarchar2(200)-->
+			fax = #{entity.fax},                                            <!-- 传真 nvarchar2(200)-->
+			email = #{entity.email},                                        <!-- 邮箱 nvarchar2(200)-->
+			useable = #{entity.useable},                                    <!-- 是否可用 varchar2(64)-->
+			primary_person = #{entity.primaryPerson.id},                    <!-- 主负责人 varchar2(64)-->
+			deputy_person = #{entity.deputyPerson.id},                      <!-- 副负责人 varchar2(64)-->
+			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- update_date timestamp(6)-->
+			remarks = #{entity.remarks},                                    <!-- remarks nvarchar2(255)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_office
+		<set>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级编号 number(19)-->
+			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级编号 varchar2(2000)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 机构名称 nvarchar2(100)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.area!= null and entity.area.id!= null ">area_id = #{entity.area.id},</if>                                                 <!-- 归属区域 number(19)-->
+			<if test="entity.code != null">code = #{entity.code},</if>                                                          <!-- 机构编码 varchar2(100)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			<if test="entity.grade != null">grade = #{entity.grade},</if>                                                       <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			<if test="entity.address != null">address = #{entity.address},</if>                                                 <!-- 联系地址 nvarchar2(255)-->
+			<if test="entity.zipCode != null">zip_code = #{entity.zipCode},</if>                                                <!-- 邮政编码 varchar2(100)-->
+			<if test="entity.master != null">master = #{entity.master},</if>                                                    <!-- 负责人 nvarchar2(100)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话 nvarchar2(200)-->
+			<if test="entity.fax != null">fax = #{entity.fax},</if>                                                             <!-- 传真 nvarchar2(200)-->
+			<if test="entity.email != null">email = #{entity.email},</if>                                                       <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.useable != null">useable = #{entity.useable},</if>                                                 <!-- 是否可用 varchar2(64)-->
+			<if test="entity.primaryPerson!= null and entity.primaryPerson.id!= null ">primary_person = #{entity.primaryPerson.id},</if>                        <!-- 主负责人 varchar2(64)-->
+			<if test="entity.deputyPerson!= null and entity.deputyPerson.id!= null ">deputy_person = #{entity.deputyPerson.id},</if>                           <!-- 副负责人 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- remarks nvarchar2(255)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_office a
+		<set>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级编号 number(19)-->
+			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级编号 varchar2(2000)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 机构名称 nvarchar2(100)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.area!= null and entity.area.id!= null ">area_id = #{entity.area.id},</if>                                                 <!-- 归属区域 number(19)-->
+			<if test="entity.code != null">code = #{entity.code},</if>                                                          <!-- 机构编码 varchar2(100)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 机构类型（1：公司；2：部门；3：小组） char(1)-->
+			<if test="entity.grade != null">grade = #{entity.grade},</if>                                                       <!-- 机构等级（1：一级；2：二级；3：三级；4：四级） char(1)-->
+			<if test="entity.address != null">address = #{entity.address},</if>                                                 <!-- 联系地址 nvarchar2(255)-->
+			<if test="entity.zipCode != null">zip_code = #{entity.zipCode},</if>                                                <!-- 邮政编码 varchar2(100)-->
+			<if test="entity.master != null">master = #{entity.master},</if>                                                    <!-- 负责人 nvarchar2(100)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话 nvarchar2(200)-->
+			<if test="entity.fax != null">fax = #{entity.fax},</if>                                                             <!-- 传真 nvarchar2(200)-->
+			<if test="entity.email != null">email = #{entity.email},</if>                                                       <!-- 邮箱 nvarchar2(200)-->
+			<if test="entity.useable != null">useable = #{entity.useable},</if>                                                 <!-- 是否可用 varchar2(64)-->
+			<if test="entity.primaryPerson!= null and entity.primaryPerson.id!= null ">primary_person = #{entity.primaryPerson.id},</if>                        <!-- 主负责人 varchar2(64)-->
+			<if test="entity.deputyPerson!= null and entity.deputyPerson.id!= null ">deputy_person = #{entity.deputyPerson.id},</if>                           <!-- 副负责人 varchar2(64)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- remarks nvarchar2(255)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE sys_office SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_office
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_office a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_office a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

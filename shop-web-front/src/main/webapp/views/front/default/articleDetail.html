@@ -1,0 +1,55 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% 
+	var article=cms.article({id:articleId});
+	var channelId=article.categoryId!+'';
+%>
+<title>
+	<%var articleDetail =fy.getMsg({key:'文章详情'});%>
+	${isEmpty(article)?articleDetail:article.title!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/default/articalList.js"></script>
+<!-- 页面样式 -->
+<style type="text/css">
+	.banner{background:url(${ctx}/views/front/default/images/banner_index_hot.jpg) center no-repeat; height:125px; border-top:#999999 solid 1px;}
+	.content{word-wrap:break-word}
+	.content table{border-collapse:collapse;}
+	.content>*{width:auto;}
+</style>
+</head>
+<body class="bg-f4f5f8">
+<% include("/include/header.html"){}%>
+<div class="banner-ad banner"><div class="wp"><strong>${article.title!}</strong></div></div>
+<div class="wp clearfix mt30 bg-ffffff">
+	<!--目录开始 -->
+	<% include("/include/articleLeft.html",{'channelId':channelId}){}%>
+	<!--目录结束-->
+	<% if(isEmpty(article)){ %>
+	<div class="article_error_div" style="margin-left: 260px;">
+		<div class="article_error_msg">
+			<p>
+				<%	var articleStr=fy.getMsg({key:'文章'});
+					var noDate =fy.getMsg({key:'数据不存在提示',params:articleStr});%>${noDate!}
+			</p><br>
+			<p><a href="${ctxf}/index.htm">(1) <%var returnHomePage =fy.getMsg({key:'返回首页'});%> ${returnHomePage!}</a></p><br>
+			<p><a href="javascript:" onclick="history.go(-1);">(2) <%var returnPreviousPage =fy.getMsg({key:'返回上一页'});%> ${returnPreviousPage!}</a></p><br>
+		</div>
+	</div>
+	<%}else{%>
+	<div class="article-right-content">
+		<div class="crumbs"><%var help =fy.getMsg({key:'帮助'});%> ${help!}> ${article.category.name!}> ${article.title!}</div>
+		<h1 class="title">${article.title!}</h1>
+		<div class="content">${article.articleData.content!}</div>
+	</div>
+	<%}%>
+
+</div>
+<% include("/include/footer.html"){}%>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

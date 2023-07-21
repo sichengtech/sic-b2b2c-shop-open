@@ -1,0 +1,268 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountPlatformDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="accountPlatformColumns">
+	<trim suffixOverrides=",">
+		a.ap_id AS 'apId',                                                   <!-- 平台账户id bigint(20)-->
+		a.account_type AS 'accountType',                                       <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+		a.own_money AS 'ownMoney',                                           <!-- 账户余额 decimal(12,3)-->
+		a.frozen_money AS 'frozenMoney',                                     <!-- 冻结金额 decimal(12,3)-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.apId != null ">AND a.ap_id = #{c.apId}</if>
+		<if test="c.accountType != null ">AND a.account_type = #{c.accountType}</if>
+		<if test="c.ownMoney != null ">AND a.own_money = #{c.ownMoney}</if>
+		<if test="c.frozenMoney != null ">AND a.frozen_money = #{c.frozenMoney}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="AccountPlatform">
+		SELECT 
+		<include refid="accountPlatformColumns"/>
+		FROM account_platform a
+		WHERE a.ap_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="AccountPlatform">
+		SELECT 
+		<include refid="accountPlatformColumns"/>
+		FROM account_platform a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.ap_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="AccountPlatform">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountPlatformColumns"/>
+		FROM account_platform a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ap_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="AccountPlatform">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountPlatformColumns"/>
+		FROM account_platform a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.ap_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.apId" keyColumn="ap_id" useGeneratedKeys="true">
+		INSERT INTO account_platform
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			ap_id,                                             <!-- 平台账户id bigint(20)-->
+			account_type,                                       <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			own_money,                                         <!-- 账户余额 decimal(12,3)-->
+			frozen_money,                                      <!-- 冻结金额 decimal(12,3)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.apId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_platform_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.accountType},                              <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			#{entity.ownMoney},                                <!-- 账户余额 decimal(12,3)-->
+			#{entity.frozenMoney},                             <!-- 冻结金额 decimal(12,3)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.apId" keyColumn="ap_id" useGeneratedKeys="true">
+		INSERT INTO account_platform
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.apId != null">ap_id,</if></if>
+			<if test="entity.pkMode==2">ap_id,</if>
+			<if test="entity.accountType != null">account_type,</if>                             <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			<if test="entity.ownMoney != null">own_money,</if>                                 <!-- 账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money,</if>                           <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.apId != null">#{entity.apId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_platform_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.accountType != null">#{entity.accountType},</if>                              <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			<if test="entity.ownMoney != null">#{entity.ownMoney},</if>                                  <!-- 账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">#{entity.frozenMoney},</if>                            <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE account_platform 
+		<set>
+			account_type = #{entity.accountType},                             <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			own_money = #{entity.ownMoney},                                 <!-- 账户余额 decimal(12,3)-->
+			frozen_money = #{entity.frozenMoney},                           <!-- 冻结金额 decimal(12,3)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE ap_id = #{entity.apId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE account_platform a 
+		<set>
+			account_type = #{entity.accountType},                             <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			own_money = #{entity.ownMoney},                                 <!-- 账户余额 decimal(12,3)-->
+			frozen_money = #{entity.frozenMoney},                           <!-- 冻结金额 decimal(12,3)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE account_platform
+		<set>
+			<if test="entity.accountType != null">account_type = #{entity.accountType},</if>                                       <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			<if test="entity.ownMoney != null">own_money = #{entity.ownMoney},</if>                                             <!-- 账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money = #{entity.frozenMoney},</if>                                    <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE ap_id = #{entity.apId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE account_platform a
+		<set>
+			<if test="entity.accountType != null">account_type = #{entity.accountType},</if>                                       <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+			<if test="entity.ownMoney != null">own_money = #{entity.ownMoney},</if>                                             <!-- 账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money = #{entity.frozenMoney},</if>                                    <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM account_platform
+		WHERE ap_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM account_platform
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					ap_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM account_platform a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM account_platform a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

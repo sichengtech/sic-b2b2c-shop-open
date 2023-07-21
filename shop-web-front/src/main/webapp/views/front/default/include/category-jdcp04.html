@@ -1,0 +1,13 @@
+<div class="wp brand-box clearfix">
+	<h1><a href="javascript:;" class="more">全部入驻品牌<font class="reg">&gt;&gt;&gt;</font></a><i></i>品牌橱窗</h1>
+	<ul class="brand_logo_list clearfix" style="margin-top: -24px;">
+		<% var brandList=site.recommend({number:'category_jdcp_brand_list'});%>
+		<% for(brand in brandList.siteRecommendItemList!){%>
+			<li>
+				<a target="_blank" href="${isNotEmpty(brand.url!)?brand.url!:'javascript:;'}">
+					<img src="${ctxfs}${brand.path!}" onerror="fdp.defaultImage('${ctxfs}/shop_init/store_logo.png');"/>
+				</a>
+			</li>
+		<%}%>
+	</ul>
+</div>

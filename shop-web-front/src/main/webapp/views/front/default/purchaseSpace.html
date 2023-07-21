@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>
+	<%var fy0 =fy.getMsg({key:'采购空间'});%>
+	${isNotEmpty(purchaseSpace.name!)?purchaseSpace.name!:fy0!} Powered by SiC</title>
+<% include("/include/head.html"){}%>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<%
+		var fy1 =fy.getMsg({key:'采购清单'});
+		var fy2 =fy.getMsg({key:'采购标题'});
+		var fy3 =fy.getMsg({key:'发布时间'});
+		var fy4 =fy.getMsg({key:'交易状态'});
+		var fy5 =fy.getMsg({key:'已报价供应商数量'});
+		var fy6 =fy.getMsg({key:'交货周期'});
+		var fy7 =fy.getMsg({key:'报价截止时间'});
+		var fy8 =fy.getMsg({key:'我要报价'});
+		var fy9 =fy.getMsg({key:'无'});
+		var fy10 =fy.getMsg({key:'很遗憾，暂无数据!'});
+		var fy11 =fy.getMsg({key:'更多名气采购'});
+	%>
+	<div class="wp-1920">
+		<div class="page-banner">
+			<img src="${ctxfs}${purchaseSpace.banner!}@!1920x226" alt="" onerror="fdp.defaultImage('${ctx}/views/front/english/images/ban-001.jpg');" />
+		</div>
+	</div>
+	<div class="wp clearfix caigou-zone mb30">
+		<div class="company-info">
+			<div class="caigou-logo logo">
+				<span>
+					<img src="${ctxfs}${purchaseSpace.logo!}@!200x100" alt="" onerror="fdp.defaultImage('${ctx}/views/front/english/images/logo-default.png');" />
+				</span> 
+			</div>
+			<div class="company-info-word">
+				<h1><strong>${purchaseSpace.name!}</strong></h1>
+				<p>${purchaseSpace.synopsis!}</p>
+			</div>
+		</div>
+		<div>
+			<div class="wp clearfix caigou mb30 mt50">
+				<input type="hidden" name="uId" value="${uId!}"/>
+				<div class="biaoti mb30">
+					<h2>
+						${fy1!}
+					</h2>
+				</div>
+				<table class="sui-table table-bordered-simple mt20 cgkj-bd">
+					<thead>
+						<tr>
+							<th class="th1">${fy2!}</th>
+							<th class="th2">${fy3!}</th>
+							<th class="th3">${fy4!}</th>
+							<th class="th4">${fy5!}</th>
+							<th class="th4">${fy6!}</th>
+							<th class="th6">${fy7!}</th>
+							<th class="th7">${fy8!}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<% for(viewPurchase in viewPurchasePage.list){ %>
+							<tr>
+								<td><a href="javascript:void(0);" class="text-a-sky">${isEmpty (viewPurchase.purchaseTitle!)?fy9!:viewPurchase.purchaseTitle!}</a></td>
+								<td>${viewPurchase.purchaseCreateDate!,dateFormat="yyyy-MM-dd"}</td>
+								<td>
+									<% var label=dict.label({value:viewPurchase.purchaseStatus!,type:"purchase_status"});%>
+									${label}
+								</td>
+								<td>${viewPurchase.purchaseCounts!}</td>
+								<td>${isEmpty (viewPurchase.puCycle!)?fy9!:viewPurchase.puCycle!}</td>
+								<td>${viewPurchase.purchaseExpiryTime!,dateFormat="yyyy-MM-dd"}</td>
+								<td class="offer">
+									<a uId="${viewPurchase.purchaseUId!}" href="javascript:void(0);" status="${viewPurchase.purchaseStatus!}" purchaseId="${viewPurchase.purchaseId!}"
+										class="${(viewPurchase.purchaseStatus!) =='35'?'sui-btn btn-primary':'sui-btn btn-bordered disabled'}">${fy8!}</a>
+								</td>
+							</tr>
+						<%}%>
+						<% if(isEmpty(viewPurchasePage.list)){%>
+							<tr>
+								<td style="text-align: center;height: 300px;line-height: 300px;" colspan="7">
+									<img src="${ctx}/views/front/english/images/nodata.png" alt="" style="vertical-align: middle;">
+									<span style="line-height: 30px;">${fy10!}</span>
+								</td>
+							</tr>
+						<%}%>
+					</tbody>
+				</table>
+				<% if(isNotEmpty(viewPurchasePage.list)){include("/page.html",{'page':viewPurchasePage}){}}%>
+			</div>
+		</div>
+		<div class="biaoti mb30">
+			<h2>${fy11!}</h2>
+		</div>
+		<div class="brand-list bg-fff border mt20 clearfix">
+			<ul class="clearfix">
+				<% var purchaseList=site.recommend({number:'purchase_space_more'});%>
+				<% for(purchase2 in purchaseList.siteRecommendItemList!){
+					var purClass="";
+					if(purchase2LP.index ==10){
+						purClass="nth-br-none";
+					}else if(purchase2LP.index ==20){
+						purClass="nth-br-none nth-bb-none";
+					}else if(purchase2LP.index>10 && purchase2LP.index !=20){
+						purClass="nth-bb-none";
+					}%>
+					<li class="${purClass!}"><a href="${purchase2.url!}" class="bg-banner-xinxi"><p>${purchase2.addInfo1!}</p><img src="${ctxfs}${purchase2.path!}"></a></li>
+				<%}%>
+				<% if(isEmpty(purchaseList.siteRecommendItemList)){%>
+					<div style="text-align: center;height: 300px;line-height: 300px;">
+						<img src="${ctx}/views/front/english/images/nodata.png" alt="" style="vertical-align: middle;width: auto;">
+						<span style="line-height: 30px;">${fy10!}</span>
+					</div>
+				<%}%>
+			</ul>
+		</div>
+	</div>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/front/default/purchaseSpace.js"></script>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

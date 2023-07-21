@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.purchase.dao.ViewPurchaseDao">
+	<!-- 全部字段 -->
+	<sql id="viewPurchaseColumns">
+	<trim suffixOverrides=",">
+		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id bigint(20)-->
+		a.purchase_title AS 'purchaseTitle',                                 <!-- 采购标题 varchar(64)-->
+		a.purchase_content AS 'purchaseContent',                             <!-- 采购内容 varchar(2000)-->
+		a.purchase_bom_path AS 'purchaseBomPath',                            <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+		a.purchase_bom_new_path AS 'purchaseBomNewPath',                     <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+		a.purchase_u_id AS 'purchaseUId',                                    <!-- 会员ID bigint(20)-->
+		a.purchase_type AS 'purchaseType',                                   <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+		a.purchase_status AS 'purchaseStatus',                               <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+		a.purchase_expiry_time AS 'purchaseExpiryTime',                      <!-- 采购到期时间 datetime-->
+		a.pu_cycle AS 'puCycle',                                             <!-- 交货周期 varchar(64)-->
+		a.purchase_explain AS 'purchaseExplain',                             <!-- purchase_explain varchar(255)-->
+		a.purchase_create_date AS 'purchaseCreateDate',                      <!-- 创建时间 datetime-->
+		a.purchase_update_date AS 'purchaseUpdateDate',                      <!-- 更新时间 datetime-->
+		a.purchase_counts AS 'purchaseCounts',                               <!-- purchase_counts bigint(21)-->
+		a.pi_id AS 'piId',                                                   <!-- 采购详情id bigint(20)-->
+		a.pi_name AS 'piName',                                               <!-- 产品名称 varchar(64)-->
+		a.pi_model AS 'piModel',                                             <!-- 产品型号 varchar(64)-->
+		a.pi_brand AS 'piBrand',                                             <!-- 产品品牌 varchar(64)-->
+		a.um_login_name AS 'umLoginName',                                    <!-- 用户名、登录名 varchar(64)-->
+		a.um_mobile AS 'umMobile',                                           <!-- 手机号 varchar(64)-->
+		a.ps_id AS 'psId',                                                   <!-- 采购空间id bigint(20)-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.purchaseId != null ">AND a.purchase_id = #{c.purchaseId}</if>
+		<if test="c.purchaseTitle != null and c.purchaseTitle != ''">AND a.purchase_title = #{c.purchaseTitle}</if>
+		<if test="c.purchaseContent != null and c.purchaseContent != ''">AND a.purchase_content = #{c.purchaseContent}</if>
+		<if test="c.purchaseBomPath != null and c.purchaseBomPath != ''">AND a.purchase_bom_path = #{c.purchaseBomPath}</if>
+		<if test="c.purchaseBomNewPath != null and c.purchaseBomNewPath != ''">AND a.purchase_bom_new_path = #{c.purchaseBomNewPath}</if>
+		<if test="c.purchaseUId != null ">AND a.purchase_u_id = #{c.purchaseUId}</if>
+		<if test="c.purchaseType != null and c.purchaseType != ''">AND a.purchase_type = #{c.purchaseType}</if>
+		<if test="c.purchaseStatus != null and c.purchaseStatus != ''">AND a.purchase_status = #{c.purchaseStatus}</if>
+		<if test="c.beginPurchaseExpiryTime != null and c.endPurchaseExpiryTime != null ">AND a.purchase_expiry_time BETWEEN #{c.beginPurchaseExpiryTime} AND #{c.endPurchaseExpiryTime}</if>
+		<if test="c.puCycle != null and c.puCycle != ''">AND a.pu_cycle = #{c.puCycle}</if>
+		<if test="c.purchaseExplain != null and c.purchaseExplain != ''">AND a.purchase_explain = #{c.purchaseExplain}</if>
+		<if test="c.beginPurchaseCreateDate != null and c.endPurchaseCreateDate != null ">AND a.purchase_create_date BETWEEN #{c.beginPurchaseCreateDate} AND #{c.endPurchaseCreateDate}</if>
+		<if test="c.beginPurchaseUpdateDate != null and c.endPurchaseUpdateDate != null ">AND a.purchase_update_date BETWEEN #{c.beginPurchaseUpdateDate} AND #{c.endPurchaseUpdateDate}</if>
+		<if test="c.purchaseCounts != null ">AND a.purchase_counts = #{c.purchaseCounts}</if>
+		<if test="c.piId != null ">AND a.pi_id = #{c.piId}</if>
+		<if test="c.piName != null and c.piName != ''">				
+			<bind name="pattern" value="'%' + c.piName + '%'" />				
+			AND lower(a.pi_name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.piModel != null and c.piModel != ''">				
+			<bind name="pattern" value="'%' + c.piModel + '%'" />				
+			AND lower(a.pi_model) LIKE lower(#{pattern})
+		</if>
+		<if test="c.piBrand != null and c.piBrand != ''">				
+			<bind name="pattern" value="'%' + c.piBrand + '%'" />				
+			AND lower(a.pi_brand) LIKE lower(#{pattern})
+		</if>
+		<if test="c.umLoginName != null and c.umLoginName != ''">AND a.um_login_name = #{c.umLoginName}</if>
+		<if test="c.umMobile != null and c.umMobile != ''">AND a.um_mobile = #{c.umMobile}</if>
+		<if test="c.psId != null ">AND a.ps_id = #{c.psId}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ViewPurchase">
+		SELECT 
+		<include refid="viewPurchaseColumns"/>
+		FROM view_purchase a
+		WHERE a.purchase_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ViewPurchase">
+		SELECT 
+		<include refid="viewPurchaseColumns"/>
+		FROM view_purchase a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.purchase_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ViewPurchase">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="viewPurchaseColumns"/>
+		FROM view_purchase a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ViewPurchase">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="viewPurchaseColumns"/>
+		FROM view_purchase a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO view_purchase
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			purchase_id,                                       <!-- 采购单id bigint(20)-->
+			purchase_title,                                    <!-- 采购标题 varchar(64)-->
+			purchase_content,                                  <!-- 采购内容 varchar(2000)-->
+			purchase_bom_path,                                 <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			purchase_bom_new_path,                             <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			purchase_u_id,                                     <!-- 会员ID bigint(20)-->
+			purchase_type,                                     <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			purchase_status,                                   <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			purchase_expiry_time,                              <!-- 采购到期时间 datetime-->
+			pu_cycle,                                          <!-- 交货周期 varchar(64)-->
+			purchase_explain,                                  <!-- purchase_explain varchar(255)-->
+			purchase_create_date,                              <!-- 创建时间 datetime-->
+			purchase_update_date,                              <!-- 更新时间 datetime-->
+			purchase_counts,                                   <!-- purchase_counts bigint(21)-->
+			pi_id,                                             <!-- 采购详情id bigint(20)-->
+			pi_name,                                           <!-- 产品名称 varchar(64)-->
+			pi_model,                                          <!-- 产品型号 varchar(64)-->
+			pi_brand,                                          <!-- 产品品牌 varchar(64)-->
+			um_login_name,                                     <!-- 用户名、登录名 varchar(64)-->
+			um_mobile,                                         <!-- 手机号 varchar(64)-->
+			ps_id,                                             <!-- 采购空间id bigint(20)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			#{entity.purchaseId},                              <!-- 采购单id bigint(20)-->
+			#{entity.purchaseTitle},                           <!-- 采购标题 varchar(64)-->
+			#{entity.purchaseContent},                         <!-- 采购内容 varchar(2000)-->
+			#{entity.purchaseBomPath},                         <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			#{entity.purchaseBomNewPath},                      <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			#{entity.purchaseUId},                             <!-- 会员ID bigint(20)-->
+			#{entity.purchaseType},                            <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			#{entity.purchaseStatus},                          <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			#{entity.purchaseExpiryTime},                      <!-- 采购到期时间 datetime-->
+			#{entity.puCycle},                                 <!-- 交货周期 varchar(64)-->
+			#{entity.purchaseExplain},                         <!-- purchase_explain varchar(255)-->
+			#{entity.purchaseCreateDate},                      <!-- 创建时间 datetime-->
+			#{entity.purchaseUpdateDate},                      <!-- 更新时间 datetime-->
+			#{entity.purchaseCounts},                          <!-- purchase_counts bigint(21)-->
+			#{entity.piId},                                    <!-- 采购详情id bigint(20)-->
+			#{entity.piName},                                  <!-- 产品名称 varchar(64)-->
+			#{entity.piModel},                                 <!-- 产品型号 varchar(64)-->
+			#{entity.piBrand},                                 <!-- 产品品牌 varchar(64)-->
+			#{entity.umLoginName},                             <!-- 用户名、登录名 varchar(64)-->
+			#{entity.umMobile},                                <!-- 手机号 varchar(64)-->
+			#{entity.psId},                                    <!-- 采购空间id bigint(20)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO view_purchase
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.purchaseId != null">purchase_id,</if>                             <!-- 采购单id bigint(20)-->
+			<if test="entity.purchaseTitle != null">purchase_title,</if>                       <!-- 采购标题 varchar(64)-->
+			<if test="entity.purchaseContent != null">purchase_content,</if>                   <!-- 采购内容 varchar(2000)-->
+			<if test="entity.purchaseBomPath != null">purchase_bom_path,</if>                  <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseBomNewPath != null">purchase_bom_new_path,</if>           <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseUId != null">purchase_u_id,</if>                          <!-- 会员ID bigint(20)-->
+			<if test="entity.purchaseType != null">purchase_type,</if>                         <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.purchaseStatus != null">purchase_status,</if>                     <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			<if test="entity.purchaseExpiryTime != null">purchase_expiry_time,</if>            <!-- 采购到期时间 datetime-->
+			<if test="entity.puCycle != null">pu_cycle,</if>                                   <!-- 交货周期 varchar(64)-->
+			<if test="entity.purchaseExplain != null">purchase_explain,</if>                   <!-- purchase_explain varchar(255)-->
+			<if test="entity.purchaseCreateDate != null">purchase_create_date,</if>            <!-- 创建时间 datetime-->
+			<if test="entity.purchaseUpdateDate != null">purchase_update_date,</if>            <!-- 更新时间 datetime-->
+			<if test="entity.purchaseCounts != null">purchase_counts,</if>                     <!-- purchase_counts bigint(21)-->
+			<if test="entity.piId != null">pi_id,</if>                                         <!-- 采购详情id bigint(20)-->
+			<if test="entity.piName != null">pi_name,</if>                                     <!-- 产品名称 varchar(64)-->
+			<if test="entity.piModel != null">pi_model,</if>                                   <!-- 产品型号 varchar(64)-->
+			<if test="entity.piBrand != null">pi_brand,</if>                                   <!-- 产品品牌 varchar(64)-->
+			<if test="entity.umLoginName != null">um_login_name,</if>                          <!-- 用户名、登录名 varchar(64)-->
+			<if test="entity.umMobile != null">um_mobile,</if>                                 <!-- 手机号 varchar(64)-->
+			<if test="entity.psId != null">ps_id,</if>                                         <!-- 采购空间id bigint(20)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.purchaseId != null">#{entity.purchaseId},</if>                              <!-- 采购单id bigint(20)-->
+			<if test="entity.purchaseTitle != null">#{entity.purchaseTitle},</if>                        <!-- 采购标题 varchar(64)-->
+			<if test="entity.purchaseContent != null">#{entity.purchaseContent},</if>                    <!-- 采购内容 varchar(2000)-->
+			<if test="entity.purchaseBomPath != null">#{entity.purchaseBomPath},</if>                    <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseBomNewPath != null">#{entity.purchaseBomNewPath},</if>              <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseUId != null">#{entity.purchaseUId},</if>                            <!-- 会员ID bigint(20)-->
+			<if test="entity.purchaseType != null">#{entity.purchaseType},</if>                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.purchaseStatus != null">#{entity.purchaseStatus},</if>                      <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			<if test="entity.purchaseExpiryTime != null">#{entity.purchaseExpiryTime},</if>              <!-- 采购到期时间 datetime-->
+			<if test="entity.puCycle != null">#{entity.puCycle},</if>                                    <!-- 交货周期 varchar(64)-->
+			<if test="entity.purchaseExplain != null">#{entity.purchaseExplain},</if>                    <!-- purchase_explain varchar(255)-->
+			<if test="entity.purchaseCreateDate != null">#{entity.purchaseCreateDate},</if>              <!-- 创建时间 datetime-->
+			<if test="entity.purchaseUpdateDate != null">#{entity.purchaseUpdateDate},</if>              <!-- 更新时间 datetime-->
+			<if test="entity.purchaseCounts != null">#{entity.purchaseCounts},</if>                      <!-- purchase_counts bigint(21)-->
+			<if test="entity.piId != null">#{entity.piId},</if>                                          <!-- 采购详情id bigint(20)-->
+			<if test="entity.piName != null">#{entity.piName},</if>                                      <!-- 产品名称 varchar(64)-->
+			<if test="entity.piModel != null">#{entity.piModel},</if>                                    <!-- 产品型号 varchar(64)-->
+			<if test="entity.piBrand != null">#{entity.piBrand},</if>                                    <!-- 产品品牌 varchar(64)-->
+			<if test="entity.umLoginName != null">#{entity.umLoginName},</if>                            <!-- 用户名、登录名 varchar(64)-->
+			<if test="entity.umMobile != null">#{entity.umMobile},</if>                                  <!-- 手机号 varchar(64)-->
+			<if test="entity.psId != null">#{entity.psId},</if>                                          <!-- 采购空间id bigint(20)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE view_purchase 
+		<set>
+			purchase_id = #{entity.purchaseId},                             <!-- 采购单id bigint(20)-->
+			purchase_title = #{entity.purchaseTitle},                       <!-- 采购标题 varchar(64)-->
+			purchase_content = #{entity.purchaseContent},                   <!-- 采购内容 varchar(2000)-->
+			purchase_bom_path = #{entity.purchaseBomPath},                  <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			purchase_bom_new_path = #{entity.purchaseBomNewPath},           <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			purchase_u_id = #{entity.purchaseUId},                          <!-- 会员ID bigint(20)-->
+			purchase_type = #{entity.purchaseType},                         <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			purchase_status = #{entity.purchaseStatus},                     <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			purchase_expiry_time = #{entity.purchaseExpiryTime},            <!-- 采购到期时间 datetime-->
+			pu_cycle = #{entity.puCycle},                                   <!-- 交货周期 varchar(64)-->
+			purchase_explain = #{entity.purchaseExplain},                   <!-- purchase_explain varchar(255)-->
+			purchase_create_date = #{entity.purchaseCreateDate},            <!-- 创建时间 datetime-->
+			purchase_update_date = #{entity.purchaseUpdateDate},            <!-- 更新时间 datetime-->
+			purchase_counts = #{entity.purchaseCounts},                     <!-- purchase_counts bigint(21)-->
+			pi_id = #{entity.piId},                                         <!-- 采购详情id bigint(20)-->
+			pi_name = #{entity.piName},                                     <!-- 产品名称 varchar(64)-->
+			pi_model = #{entity.piModel},                                   <!-- 产品型号 varchar(64)-->
+			pi_brand = #{entity.piBrand},                                   <!-- 产品品牌 varchar(64)-->
+			um_login_name = #{entity.umLoginName},                          <!-- 用户名、登录名 varchar(64)-->
+			um_mobile = #{entity.umMobile},                                 <!-- 手机号 varchar(64)-->
+			ps_id = #{entity.psId},                                         <!-- 采购空间id bigint(20)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE view_purchase a 
+		<set>
+			purchase_id = #{entity.purchaseId},                             <!-- 采购单id bigint(20)-->
+			purchase_title = #{entity.purchaseTitle},                       <!-- 采购标题 varchar(64)-->
+			purchase_content = #{entity.purchaseContent},                   <!-- 采购内容 varchar(2000)-->
+			purchase_bom_path = #{entity.purchaseBomPath},                  <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			purchase_bom_new_path = #{entity.purchaseBomNewPath},           <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			purchase_u_id = #{entity.purchaseUId},                          <!-- 会员ID bigint(20)-->
+			purchase_type = #{entity.purchaseType},                         <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			purchase_status = #{entity.purchaseStatus},                     <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			purchase_expiry_time = #{entity.purchaseExpiryTime},            <!-- 采购到期时间 datetime-->
+			pu_cycle = #{entity.puCycle},                                   <!-- 交货周期 varchar(64)-->
+			purchase_explain = #{entity.purchaseExplain},                   <!-- purchase_explain varchar(255)-->
+			purchase_create_date = #{entity.purchaseCreateDate},            <!-- 创建时间 datetime-->
+			purchase_update_date = #{entity.purchaseUpdateDate},            <!-- 更新时间 datetime-->
+			purchase_counts = #{entity.purchaseCounts},                     <!-- purchase_counts bigint(21)-->
+			pi_id = #{entity.piId},                                         <!-- 采购详情id bigint(20)-->
+			pi_name = #{entity.piName},                                     <!-- 产品名称 varchar(64)-->
+			pi_model = #{entity.piModel},                                   <!-- 产品型号 varchar(64)-->
+			pi_brand = #{entity.piBrand},                                   <!-- 产品品牌 varchar(64)-->
+			um_login_name = #{entity.umLoginName},                          <!-- 用户名、登录名 varchar(64)-->
+			um_mobile = #{entity.umMobile},                                 <!-- 手机号 varchar(64)-->
+			ps_id = #{entity.psId},                                         <!-- 采购空间id bigint(20)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE view_purchase
+		<set>
+			<if test="entity.purchaseId != null">purchase_id = #{entity.purchaseId},</if>                                       <!-- 采购单id bigint(20)-->
+			<if test="entity.purchaseTitle != null">purchase_title = #{entity.purchaseTitle},</if>                              <!-- 采购标题 varchar(64)-->
+			<if test="entity.purchaseContent != null">purchase_content = #{entity.purchaseContent},</if>                        <!-- 采购内容 varchar(2000)-->
+			<if test="entity.purchaseBomPath != null">purchase_bom_path = #{entity.purchaseBomPath},</if>                       <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseBomNewPath != null">purchase_bom_new_path = #{entity.purchaseBomNewPath},</if>             <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseUId != null">purchase_u_id = #{entity.purchaseUId},</if>                                   <!-- 会员ID bigint(20)-->
+			<if test="entity.purchaseType != null">purchase_type = #{entity.purchaseType},</if>                                 <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.purchaseStatus != null">purchase_status = #{entity.purchaseStatus},</if>                           <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			<if test="entity.purchaseExpiryTime != null">purchase_expiry_time = #{entity.purchaseExpiryTime},</if>              <!-- 采购到期时间 datetime-->
+			<if test="entity.puCycle != null">pu_cycle = #{entity.puCycle},</if>                                                <!-- 交货周期 varchar(64)-->
+			<if test="entity.purchaseExplain != null">purchase_explain = #{entity.purchaseExplain},</if>                        <!-- purchase_explain varchar(255)-->
+			<if test="entity.purchaseCreateDate != null">purchase_create_date = #{entity.purchaseCreateDate},</if>              <!-- 创建时间 datetime-->
+			<if test="entity.purchaseUpdateDate != null">purchase_update_date = #{entity.purchaseUpdateDate},</if>              <!-- 更新时间 datetime-->
+			<if test="entity.purchaseCounts != null">purchase_counts = #{entity.purchaseCounts},</if>                           <!-- purchase_counts bigint(21)-->
+			<if test="entity.piId != null">pi_id = #{entity.piId},</if>                                                         <!-- 采购详情id bigint(20)-->
+			<if test="entity.piName != null">pi_name = #{entity.piName},</if>                                                   <!-- 产品名称 varchar(64)-->
+			<if test="entity.piModel != null">pi_model = #{entity.piModel},</if>                                                <!-- 产品型号 varchar(64)-->
+			<if test="entity.piBrand != null">pi_brand = #{entity.piBrand},</if>                                                <!-- 产品品牌 varchar(64)-->
+			<if test="entity.umLoginName != null">um_login_name = #{entity.umLoginName},</if>                                   <!-- 用户名、登录名 varchar(64)-->
+			<if test="entity.umMobile != null">um_mobile = #{entity.umMobile},</if>                                             <!-- 手机号 varchar(64)-->
+			<if test="entity.psId != null">ps_id = #{entity.psId},</if>                                                         <!-- 采购空间id bigint(20)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE view_purchase a
+		<set>
+			<if test="entity.purchaseId != null">purchase_id = #{entity.purchaseId},</if>                                       <!-- 采购单id bigint(20)-->
+			<if test="entity.purchaseTitle != null">purchase_title = #{entity.purchaseTitle},</if>                              <!-- 采购标题 varchar(64)-->
+			<if test="entity.purchaseContent != null">purchase_content = #{entity.purchaseContent},</if>                        <!-- 采购内容 varchar(2000)-->
+			<if test="entity.purchaseBomPath != null">purchase_bom_path = #{entity.purchaseBomPath},</if>                       <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseBomNewPath != null">purchase_bom_new_path = #{entity.purchaseBomNewPath},</if>             <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.purchaseUId != null">purchase_u_id = #{entity.purchaseUId},</if>                                   <!-- 会员ID bigint(20)-->
+			<if test="entity.purchaseType != null">purchase_type = #{entity.purchaseType},</if>                                 <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.purchaseStatus != null">purchase_status = #{entity.purchaseStatus},</if>                           <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+			<if test="entity.purchaseExpiryTime != null">purchase_expiry_time = #{entity.purchaseExpiryTime},</if>              <!-- 采购到期时间 datetime-->
+			<if test="entity.puCycle != null">pu_cycle = #{entity.puCycle},</if>                                                <!-- 交货周期 varchar(64)-->
+			<if test="entity.purchaseExplain != null">purchase_explain = #{entity.purchaseExplain},</if>                        <!-- purchase_explain varchar(255)-->
+			<if test="entity.purchaseCreateDate != null">purchase_create_date = #{entity.purchaseCreateDate},</if>              <!-- 创建时间 datetime-->
+			<if test="entity.purchaseUpdateDate != null">purchase_update_date = #{entity.purchaseUpdateDate},</if>              <!-- 更新时间 datetime-->
+			<if test="entity.purchaseCounts != null">purchase_counts = #{entity.purchaseCounts},</if>                           <!-- purchase_counts bigint(21)-->
+			<if test="entity.piId != null">pi_id = #{entity.piId},</if>                                                         <!-- 采购详情id bigint(20)-->
+			<if test="entity.piName != null">pi_name = #{entity.piName},</if>                                                   <!-- 产品名称 varchar(64)-->
+			<if test="entity.piModel != null">pi_model = #{entity.piModel},</if>                                                <!-- 产品型号 varchar(64)-->
+			<if test="entity.piBrand != null">pi_brand = #{entity.piBrand},</if>                                                <!-- 产品品牌 varchar(64)-->
+			<if test="entity.umLoginName != null">um_login_name = #{entity.umLoginName},</if>                                   <!-- 用户名、登录名 varchar(64)-->
+			<if test="entity.umMobile != null">um_mobile = #{entity.umMobile},</if>                                             <!-- 手机号 varchar(64)-->
+			<if test="entity.psId != null">ps_id = #{entity.psId},</if>                                                         <!-- 采购空间id bigint(20)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM view_purchase
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM view_purchase
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM view_purchase a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM view_purchase a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

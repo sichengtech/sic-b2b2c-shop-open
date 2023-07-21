@@ -1,0 +1,353 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.cms.dao.LinkDao">
+<!-- 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">-->
+<!--		<property name="expire" value="172800"/>&lt;!&ndash; 缓存有效期，单位：秒，默认值2天 &ndash;&gt;-->
+<!--	</cache>-->
+	<!-- 全部字段 -->
+	<sql id="linkColumns">
+		a.id AS "id",                                                        <!-- 编号 number(19)-->
+		a.category_id AS "categoryId",                                       <!-- 栏目编号 number(19)-->
+		a.title AS "title",                                                  <!-- 链接名称 varchar2(255)-->
+		a.color AS "color",                                                  <!-- 标题颜色 varchar2(50)-->
+		a.image AS "image",                                                  <!-- 链接图片 varchar2(255)-->
+		a.href AS "href",                                                    <!-- 链接地址 varchar2(255)-->
+		a.weight AS "weight",                                                <!-- 权重，越大越靠前 number(10)-->
+		a.weight_date AS "weightDate",                                       <!-- 权重期限 timestamp(6)-->
+		a.create_by AS "createBy.id",                                        <!-- 创建者 varchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 timestamp(6)-->
+		a.update_by AS "updateBy.id",                                        <!-- 更新者 varchar2(64)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 timestamp(6)-->
+		a.remarks AS "remarks",                                              <!-- 备注信息 varchar2(255)-->
+		a.del_flag AS "delFlag"                                             <!-- 删除标记 char(1)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="linkJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.categoryId != null ">AND a.category_id = #{c.categoryId}</if>
+		<if test="c.title != null and c.title != ''">				
+			<bind name="pattern" value="'%' + c.title + '%'" />				
+			AND lower(a.title) LIKE lower(#{pattern})
+		</if>
+		<if test="c.color != null and c.color != ''">AND a.color = #{c.color}</if>
+		<if test="c.image != null and c.image != ''">AND a.image = #{c.image}</if>
+		<if test="c.href != null and c.href != ''">AND a.href = #{c.href}</if>
+		<if test="c.weight != null ">AND a.weight = #{c.weight}</if>
+		<if test="c.beginWeightDate != null and c.endWeightDate != null ">AND a.weight_date BETWEEN #{c.beginWeightDate} AND #{c.endWeightDate}</if>
+		<if test="c.createBy != null and c.createBy.id != null ">AND a.create_by = #{c.createBy.id}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.updateBy != null and c.updateBy.id != null ">AND a.update_by = #{c.updateBy.id}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.remarks != null and c.remarks != ''">AND a.remarks = #{c.remarks}</if>
+		<if test="c.delFlag != null and c.delFlag != ''">AND a.del_flag = #{c.delFlag}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="Link">
+		SELECT 
+		<include refid="linkColumns"/>
+		FROM cms_link a
+		<include refid="linkJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="Link">
+		SELECT
+		<include refid="linkColumns"/>
+		FROM cms_link a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="Link">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="linkColumns"/>
+		FROM cms_link a
+		<include refid="linkJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="Link">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="linkColumns"/>
+		FROM cms_link a
+		<include refid="linkJoins"/>
+		<where>
+			<if test="w!=null and w.e!=null">
+				<if test="w.e.delFlag != null and w.e.delFlag != ''">
+				a.del_flag = #{w.e.delFlag}
+				</if>
+			</if>
+		</where>	
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_link(
+			id,                                                <!-- 编号 number(19)-->
+			category_id,                                       <!-- 栏目编号 number(19)-->
+			title,                                             <!-- 链接名称 varchar2(255)-->
+			color,                                             <!-- 标题颜色 varchar2(50)-->
+			image,                                             <!-- 链接图片 varchar2(255)-->
+			href,                                              <!-- 链接地址 varchar2(255)-->
+			weight,                                            <!-- 权重，越大越靠前 number(10)-->
+			weight_date,                                       <!-- 权重期限 timestamp(6)-->
+			create_by,                                         <!-- 创建者 varchar2(64)-->
+			create_date,                                       <!-- 创建时间 timestamp(6)-->
+			update_by,                                         <!-- 更新者 varchar2(64)-->
+			update_date,                                       <!-- 更新时间 timestamp(6)-->
+			remarks,                                           <!-- 备注信息 varchar2(255)-->
+			del_flag                                          <!-- 删除标记 char(1)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">cms_link_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.categoryId},                              <!-- 栏目编号 number(19)-->
+			#{entity.title},                                   <!-- 链接名称 varchar2(255)-->
+			#{entity.color},                                   <!-- 标题颜色 varchar2(50)-->
+			#{entity.image},                                   <!-- 链接图片 varchar2(255)-->
+			#{entity.href},                                    <!-- 链接地址 varchar2(255)-->
+			#{entity.weight},                                  <!-- 权重，越大越靠前 number(10)-->
+			#{entity.weightDate},                              <!-- 权重期限 timestamp(6)-->
+			#{entity.createBy.id},                             <!-- 创建者 varchar2(64)-->
+			#{entity.createDate},                              <!-- 创建时间 timestamp(6)-->
+			#{entity.updateBy.id},                             <!-- 更新者 varchar2(64)-->
+			#{entity.updateDate},                              <!-- 更新时间 timestamp(6)-->
+			#{entity.remarks},                                 <!-- 备注信息 varchar2(255)-->
+			#{entity.delFlag}                                 <!-- 删除标记 char(1)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_link
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 栏目编号 number(19)-->
+			<if test="entity.title != null">title,</if>                                        <!-- 链接名称 varchar2(255)-->
+			<if test="entity.color != null">color,</if>                                        <!-- 标题颜色 varchar2(50)-->
+			<if test="entity.image != null">image,</if>                                        <!-- 链接图片 varchar2(255)-->
+			<if test="entity.href != null">href,</if>                                          <!-- 链接地址 varchar2(255)-->
+			<if test="entity.weight != null">weight,</if>                                      <!-- 权重，越大越靠前 number(10)-->
+			<if test="entity.weightDate != null">weight_date,</if>                             <!-- 权重期限 timestamp(6)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- 创建者 varchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by,</if>                              <!-- 更新者 varchar2(64)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 timestamp(6)-->
+			<if test="entity.remarks != null">remarks,</if>                                    <!-- 备注信息 varchar2(255)-->
+			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- 删除标记 char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">cms_link_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 栏目编号 number(19)-->
+			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 链接名称 varchar2(255)-->
+			<if test="entity.color != null">#{entity.color},</if>                                        <!-- 标题颜色 varchar2(50)-->
+			<if test="entity.image != null">#{entity.image},</if>                                        <!-- 链接图片 varchar2(255)-->
+			<if test="entity.href != null">#{entity.href},</if>                                          <!-- 链接地址 varchar2(255)-->
+			<if test="entity.weight != null">#{entity.weight},</if>                                      <!-- 权重，越大越靠前 number(10)-->
+			<if test="entity.weightDate != null">#{entity.weightDate},</if>                              <!-- 权重期限 timestamp(6)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- 创建者 varchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">#{entity.updateBy.id},</if>                            <!-- 更新者 varchar2(64)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 timestamp(6)-->
+			<if test="entity.remarks != null">#{entity.remarks},</if>                                    <!-- 备注信息 varchar2(255)-->
+			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- 删除标记 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE cms_link SET
+			category_id = #{entity.categoryId},                             <!-- 栏目编号 number(19)-->
+			title = #{entity.title},                                        <!-- 链接名称 varchar2(255)-->
+			color = #{entity.color},                                        <!-- 标题颜色 varchar2(50)-->
+			image = #{entity.image},                                        <!-- 链接图片 varchar2(255)-->
+			href = #{entity.href},                                          <!-- 链接地址 varchar2(255)-->
+			weight = #{entity.weight},                                      <!-- 权重，越大越靠前 number(10)-->
+			weight_date = #{entity.weightDate},                             <!-- 权重期限 timestamp(6)-->
+			create_by = #{entity.createBy.id},                              <!-- 创建者 varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- 更新者 varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 timestamp(6)-->
+			remarks = #{entity.remarks}                                     <!-- 备注信息 varchar2(255)-->
+
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE cms_link a SET
+			category_id = #{entity.categoryId},                             <!-- 栏目编号 number(19)-->
+			title = #{entity.title},                                        <!-- 链接名称 varchar2(255)-->
+			color = #{entity.color},                                        <!-- 标题颜色 varchar2(50)-->
+			image = #{entity.image},                                        <!-- 链接图片 varchar2(255)-->
+			href = #{entity.href},                                          <!-- 链接地址 varchar2(255)-->
+			weight = #{entity.weight},                                      <!-- 权重，越大越靠前 number(10)-->
+			weight_date = #{entity.weightDate},                             <!-- 权重期限 timestamp(6)-->
+			create_by = #{entity.createBy.id},                              <!-- 创建者 varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- 更新者 varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 timestamp(6)-->
+			remarks = #{entity.remarks}                                     <!-- 备注信息 varchar2(255)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE cms_link
+		<set>
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 number(19)-->
+			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 链接名称 varchar2(255)-->
+			<if test="entity.color != null">color = #{entity.color},</if>                                                       <!-- 标题颜色 varchar2(50)-->
+			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 链接图片 varchar2(255)-->
+			<if test="entity.href != null">href = #{entity.href},</if>                                                          <!-- 链接地址 varchar2(255)-->
+			<if test="entity.weight != null">weight = #{entity.weight},</if>                                                    <!-- 权重，越大越靠前 number(10)-->
+			<if test="entity.weightDate != null">weight_date = #{entity.weightDate},</if>                                       <!-- 权重期限 timestamp(6)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- 创建者 varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- 更新者 varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- 备注信息 varchar2(255)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE cms_link a
+		<set>
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 number(19)-->
+			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 链接名称 varchar2(255)-->
+			<if test="entity.color != null">color = #{entity.color},</if>                                                       <!-- 标题颜色 varchar2(50)-->
+			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 链接图片 varchar2(255)-->
+			<if test="entity.href != null">href = #{entity.href},</if>                                                          <!-- 链接地址 varchar2(255)-->
+			<if test="entity.weight != null">weight = #{entity.weight},</if>                                                    <!-- 权重，越大越靠前 number(10)-->
+			<if test="entity.weightDate != null">weight_date = #{entity.weightDate},</if>                                       <!-- 权重期限 timestamp(6)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- 创建者 varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- 更新者 varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- 备注信息 varchar2(255)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE cms_link SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM cms_link
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM cms_link a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM cms_link a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

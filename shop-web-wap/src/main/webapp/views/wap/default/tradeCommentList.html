@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<link rel="stylesheet prefetch" href="${ctx}/views/wap/default/PhotoSwipe-master/dist/photoswipe.css">
+	<link rel="stylesheet prefetch" href="${ctx}/views/wap/default/PhotoSwipe-master/dist/default-skin/default-skin.css">
+	<script type="text/javascript" src="${ctx}/views/wap/default/PhotoSwipe-master/dist/photoswipe.min.js"></script>
+	<script type="text/javascript" src="${ctx}/views/wap/default/PhotoSwipe-master/dist/photoswipe-ui-default.min.js"></script>
+	<% include("/include/head.html"){}%>
+	<% var pid=parameter.pid ;%>
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeCommentList.js"></script>
+	<script type="text/javascript">
+		var pid='${pid}';
+	</script>
+</head>
+<body>
+	<div class="sui-page-group">
+	    <div class="sui-page" id="productView1">
+			<div class="page-group-productComment">
+				<div class="header-default-box weui-border-b">
+					<span class="icon icon-arrowleft l user-route" onclick="javascript:window.history.go(-1);"></span>
+					<h1>商品评价</h1>
+				</div>
+				<div class="weui_tab" id="tab2">
+					<div class="weui_navbar comment_grade_navbar">
+						<div class="weui_navbar_item tab-red" grade="">全部评价</div>
+						<div class="weui_navbar_item" grade="1">好评</div>
+						<div class="weui_navbar_item" grade="2">中评</div>
+						<div class="weui_navbar_item" grade="3">差评</div>
+					</div>
+				</div>
+				<div class="noList"></div>
+				<div class="weui_panel" style="background-color:#f5f5f5;margin-bottom: 0;">
+				    <div class="comment-items comment-items-grade "></div>
+				    <div class="comment-items comment-items-grade1 hide"></div>
+				    <div class="comment-items comment-items-grade2 hide"></div>
+				    <div class="comment-items comment-items-grade3 hide"></div>
+				</div>
+				<!--预览图片的内容-->
+				<div class="pswp" tabindex="-1" role="dialog" aria-hidden="true">
+					<div class="pswp__bg"></div>
+					<!-- Slides wrapper with overflow:hidden. -->
+					<div class="pswp__scroll-wrap">
+						<!-- Container that holds slides. PhotoSwipe keeps only 3 slides in DOM to save memory. -->
+						<div class="pswp__container">
+							<!-- don't modify these 3 pswp__item elements, data is added later on -->
+							<div class="pswp__item"></div>
+							<div class="pswp__item"></div>
+							<div class="pswp__item"></div>
+						</div>
+						<!-- Default (PhotoSwipeUI_Default) interface on top of sliding area. Can be changed. -->
+						<div class="pswp__ui pswp__ui--hidden">
+							<div class="pswp__top-bar">
+								<!--  Controls are self-explanatory. Order can be changed. -->
+								<div class="pswp__counter"></div>
+								<button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+								<!--  <button class="pswp__button pswp__button--share" title="Share"></button>
+								 <button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+								 <button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button> 
+								<!-- Preloader demo http://codepen.io/dimsemenov/pen/yyBWoR -->
+								<!-- element will get class pswp__preloader--active when preloader is running -->
+								<div class="pswp__preloader">
+									<div class="pswp__preloader__icn">
+										<div class="pswp__preloader__cut">
+											<div class="pswp__preloader__donut"></div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap">
+								<div class="pswp__share-tooltip"></div> 
+							</div>
+							<button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)"></button>
+							<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button>
+							<div class="pswp__caption">
+								<div class="pswp__caption__center"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<script type="text/template" id="commet_Tpl" info="评价模板">
+					<div class="comment-item">
+						<div class="comment-user">
+							<p class="l">
+								<img class="weui-avatar-url" alt="" data-src="${ctx}/views/wap/default/img/comm_head_img.png">
+								<p class="l">{{d.username}}</p>
+							</p>
+							<p class="r">{{d.date}}</p>
+						</div>
+						<div class="clear"></div>
+						<div class="contents">
+							<div class="spec">
+								{{d.sku}}
+							</div>
+							<div class="comment-content">
+								{{d.commentContent}}
+							</div>
+							<div class="comment-img">
+								{{d.commentImgs}}
+							</div>
+							{{d.replyComment}}
+							{{d.addComment}}
+							<div class="comment-img">
+								{{d.addCommentImgs}}
+							</div>
+							{{d.replyAddComment}}
+						</div>
+					</div>
+				</script>
+				<script type="text/template" id="comment_img_Tpl" info="评价图片模板">
+					<img alt="" class="commentImgItem" data-src="{{d.path}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+				</script>
+				<script type="text/template" id="comment_reply_Tpl" info="评价回复模板">
+					<div class="comment-reply">					
+						<div class="comment-reply-content">
+							<span class="icon icon-8"></span>
+							{{d.replyContent}}
+						</div>
+					</div>
+				</script>
+				<script type="text/template" id="comment_add_Tpl" info="追加评价模板">
+					<div class="comment-add">
+						<p class="f-red">{{d.days}}</p>
+						<div class="comment-add-content">
+							{{d.addCommentContent}}
+						</div>
+					</div>
+				</script>
+				<script type="text/template" id="comment_product_Tpl" info="评价商品模板">
+					<div class="weui_panel_bd comment-product">
+						<a href="javascript:void(0);" class="weui_media_box weui_media_appmsg">
+							<div class="weui_media_hd">
+								<img src="{{d.productImg}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+							</div>
+							<div class="weui_media_bd">
+	            				<h4 class="weui_media_title">{{d.productName}}</h4>
+	            				<p class="weui_media_desc">￥269.00</p>
+	         				</div>
+						</a>
+					</div>
+				</script>
+			</div>
+		</div>
+		<script type="text/template" id="noList_Tpl" info="暂无评价模板">
+			<div class="noList-div" style="padding-top: 30%;padding-bottom: 49.5%;">
+				<div class="icon icon-xiaoxi1"></div>
+				<span>暂时还没有评价信息哦~</span>
+			</div>
+		</script>
+	</div>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

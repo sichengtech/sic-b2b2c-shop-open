@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeReturnOrderDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="tradeReturnOrderColumns">
+	<trim suffixOverrides=",">
+		a.return_order_id AS "returnOrderId",                                <!-- 主键 number(19)-->
+		a.order_id AS "orderId",                                             <!-- 订单编号(订单表id) number(19)-->
+		a.order_item_id AS "orderItemId",                                    <!-- 订单详情编号(订单详情表id) number(19)-->
+		a.type AS "type",                                                    <!-- 类型，1退货退款、2退款 char(1)-->
+		a.return_money AS "returnMoney",                                     <!-- 退款金额 number(12,3)-->
+		a.return_commission AS "returnCommission",                           <!-- 退还佣金 number(12,3)-->
+		a.return_freight AS "returnFreight",                                 <!-- 退还运费 number(12,3)-->
+		a.return_count AS "returnCount",                                     <!-- 退货数量 number(19)-->
+		a.return_reason AS "returnReason",                                   <!-- 退货原因(从字典里取) char(1)-->
+		a.return_explain AS "returnExplain",                                 <!-- 退货说明 nvarchar2(1024)-->
+		a.apply_date AS "applyDate",                                         <!-- 申请时间 date(7)-->
+		a.u_id AS "uId",                                                     <!-- 申请人(会员表id) number(19)-->
+		a.business_handle AS "businessHandle",                               <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+		a.business_handle_remarks AS "businessHandleRemarks",                <!-- 商家处理备注 nvarchar2(1024)-->
+		a.business_handle_date AS "businessHandleDate",                      <!-- 商家处理时间 date(7)-->
+		a.system_handle AS "systemHandle",                                   <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+		a.system_agree_time AS "systemAgreeTime",                            <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+		a.system_handle_remarks AS "systemHandleRemarks",                    <!-- 平台处理备注 nvarchar2(1024)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 支付方式(支付方式表id) number(19)-->
+		a.admin_id AS "adminId",                                             <!-- 管理员id(管理员表id) number(19)-->
+		a.status AS "status",                                                <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+		a.deliver_product_time AS "deliverProductTime",                      <!-- 买家发货时间 date(7)-->
+		a.logistics_template_id AS "logisticsTemplateId",                    <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+		a.logistics_template_name AS "logisticsTemplateName",                <!-- 物流公司名称 nvarchar2(64)-->
+		a.tracking_no AS "trackingNo",                                       <!-- 运单号 nvarchar2(64)-->
+		a.is_product_receipt AS "isProductReceipt",                          <!-- 商家是否收货，0否、1是 char(1)-->
+		a.product_receipt_time AS "productReceiptTime",                      <!-- 商家收货时间 date(7)-->
+		a.online_return_money AS "onlineReturnMoney",                        <!-- 在线退款金额 number(12,3)-->
+		a.alipay_return_money AS "alipayReturnMoney",                        <!-- 支付宝退款金额 number(12,3)-->
+		a.pre_deposit_return_money AS "preDepositReturnMoney",               <!-- 预存款退款金额 number(12,3)-->
+		a.wx_return_moeny AS "wxReturnMoeny",                                <!-- 微信退款金额 number(12,3)-->
+		a.bak1_return_moeny AS "bak1ReturnMoeny",                            <!-- 备用退款金额1 number(12,3)-->
+		a.bak2_return_moeny AS "bak2ReturnMoeny",                            <!-- 备用退款金额2 number(12,3)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.is_jettison AS "isJettison",                                       <!-- 是否弃货 char(1)-->
+		a.is_return_money AS "isReturnMoney",                                <!-- 是否退款 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="tradeReturnOrderJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.returnOrderId != null ">AND a.return_order_id = #{c.returnOrderId}</if>
+		<if test="c.orderId != null ">AND a.order_id = #{c.orderId}</if>
+		<if test="c.orderItemId != null ">AND a.order_item_id = #{c.orderItemId}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.returnMoney != null ">AND a.return_money = #{c.returnMoney}</if>
+		<if test="c.returnCommission != null ">AND a.return_commission = #{c.returnCommission}</if>
+		<if test="c.returnFreight != null ">AND a.return_freight = #{c.returnFreight}</if>
+		<if test="c.returnCount != null ">AND a.return_count = #{c.returnCount}</if>
+		<if test="c.returnReason != null and c.returnReason != ''">AND a.return_reason = #{c.returnReason}</if>
+		<if test="c.returnExplain != null and c.returnExplain != ''">AND a.return_explain = #{c.returnExplain}</if>
+		<if test="c.beginApplyDate != null and c.endApplyDate != null ">AND a.apply_date BETWEEN #{c.beginApplyDate} AND #{c.endApplyDate}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.businessHandle != null and c.businessHandle != ''">AND a.business_handle = #{c.businessHandle}</if>
+		<if test="c.businessHandleRemarks != null and c.businessHandleRemarks != ''">AND a.business_handle_remarks = #{c.businessHandleRemarks}</if>
+		<if test="c.beginBusinessHandleDate != null and c.endBusinessHandleDate != null ">AND a.business_handle_date BETWEEN #{c.beginBusinessHandleDate} AND #{c.endBusinessHandleDate}</if>
+		<if test="c.systemHandle != null ">AND a.system_handle = #{c.systemHandle}</if>
+		<if test="c.beginSystemAgreeTime != null and c.endSystemAgreeTime != null ">AND a.system_agree_time BETWEEN #{c.beginSystemAgreeTime} AND #{c.endSystemAgreeTime}</if>
+		<if test="c.systemHandleRemarks != null and c.systemHandleRemarks != ''">AND a.system_handle_remarks = #{c.systemHandleRemarks}</if>
+		<if test="c.payWayId != null ">AND a.pay_way_id = #{c.payWayId}</if>
+		<if test="c.adminId != null ">AND a.admin_id = #{c.adminId}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.beginDeliverProductTime != null and c.endDeliverProductTime != null ">AND a.deliver_product_time BETWEEN #{c.beginDeliverProductTime} AND #{c.endDeliverProductTime}</if>
+		<if test="c.logisticsTemplateId != null ">AND a.logistics_template_id = #{c.logisticsTemplateId}</if>
+		<if test="c.logisticsTemplateName != null and c.logisticsTemplateName != ''">AND a.logistics_template_name = #{c.logisticsTemplateName}</if>
+		<if test="c.trackingNo != null and c.trackingNo != ''">AND a.tracking_no = #{c.trackingNo}</if>
+		<if test="c.isProductReceipt != null and c.isProductReceipt != ''">AND a.is_product_receipt = #{c.isProductReceipt}</if>
+		<if test="c.beginProductReceiptTime != null and c.endProductReceiptTime != null ">AND a.product_receipt_time BETWEEN #{c.beginProductReceiptTime} AND #{c.endProductReceiptTime}</if>
+		<if test="c.onlineReturnMoney != null ">AND a.online_return_money = #{c.onlineReturnMoney}</if>
+		<if test="c.alipayReturnMoney != null ">AND a.alipay_return_money = #{c.alipayReturnMoney}</if>
+		<if test="c.preDepositReturnMoney != null ">AND a.pre_deposit_return_money = #{c.preDepositReturnMoney}</if>
+		<if test="c.wxReturnMoeny != null ">AND a.wx_return_moeny = #{c.wxReturnMoeny}</if>
+		<if test="c.bak1ReturnMoeny != null ">AND a.bak1_return_moeny = #{c.bak1ReturnMoeny}</if>
+		<if test="c.bak2ReturnMoeny != null ">AND a.bak2_return_moeny = #{c.bak2ReturnMoeny}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.isJettison != null and c.isJettison != ''">AND a.is_jettison = #{c.isJettison}</if>
+		<if test="c.isReturnMoney != null and c.isReturnMoney != ''">AND a.is_return_money = #{c.isReturnMoney}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="TradeReturnOrder">
+		SELECT 
+		<include refid="tradeReturnOrderColumns"/>
+		FROM trade_return_order a
+		<include refid="tradeReturnOrderJoins"/>
+		WHERE a.return_order_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="TradeReturnOrder">
+		SELECT 
+		<include refid="tradeReturnOrderColumns"/>
+		FROM trade_return_order a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.return_order_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="TradeReturnOrder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeReturnOrderColumns"/>
+		FROM trade_return_order a
+		<include refid="tradeReturnOrderJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.return_order_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="TradeReturnOrder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeReturnOrderColumns"/>
+		FROM trade_return_order a
+		<include refid="tradeReturnOrderJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.return_order_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.returnOrderId" keyColumn="return_order_id" useGeneratedKeys="true">
+		INSERT INTO trade_return_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			return_order_id,                                   <!-- 主键 number(19)-->
+			order_id,                                          <!-- 订单编号(订单表id) number(19)-->
+			order_item_id,                                     <!-- 订单详情编号(订单详情表id) number(19)-->
+			type,                                              <!-- 类型，1退货退款、2退款 char(1)-->
+			return_money,                                      <!-- 退款金额 number(12,3)-->
+			return_commission,                                 <!-- 退还佣金 number(12,3)-->
+			return_freight,                                    <!-- 退还运费 number(12,3)-->
+			return_count,                                      <!-- 退货数量 number(19)-->
+			return_reason,                                     <!-- 退货原因(从字典里取) char(1)-->
+			return_explain,                                    <!-- 退货说明 nvarchar2(1024)-->
+			apply_date,                                        <!-- 申请时间 date(7)-->
+			u_id,                                              <!-- 申请人(会员表id) number(19)-->
+			business_handle,                                   <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			business_handle_remarks,                           <!-- 商家处理备注 nvarchar2(1024)-->
+			business_handle_date,                              <!-- 商家处理时间 date(7)-->
+			system_handle,                                     <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			system_agree_time,                                 <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			system_handle_remarks,                             <!-- 平台处理备注 nvarchar2(1024)-->
+			pay_way_id,                                        <!-- 支付方式(支付方式表id) number(19)-->
+			admin_id,                                          <!-- 管理员id(管理员表id) number(19)-->
+			status,                                            <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			deliver_product_time,                              <!-- 买家发货时间 date(7)-->
+			logistics_template_id,                             <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			logistics_template_name,                           <!-- 物流公司名称 nvarchar2(64)-->
+			tracking_no,                                       <!-- 运单号 nvarchar2(64)-->
+			is_product_receipt,                                <!-- 商家是否收货，0否、1是 char(1)-->
+			product_receipt_time,                              <!-- 商家收货时间 date(7)-->
+			online_return_money,                               <!-- 在线退款金额 number(12,3)-->
+			alipay_return_money,                               <!-- 支付宝退款金额 number(12,3)-->
+			pre_deposit_return_money,                          <!-- 预存款退款金额 number(12,3)-->
+			wx_return_moeny,                                   <!-- 微信退款金额 number(12,3)-->
+			bak1_return_moeny,                                 <!-- 备用退款金额1 number(12,3)-->
+			bak2_return_moeny,                                 <!-- 备用退款金额2 number(12,3)-->
+			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			is_jettison,                                       <!-- 是否弃货 char(1)-->
+			is_return_money,                                   <!-- 是否退款 char(1)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.returnOrderId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_return_order_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.orderId},                                 <!-- 订单编号(订单表id) number(19)-->
+			#{entity.orderItemId},                             <!-- 订单详情编号(订单详情表id) number(19)-->
+			#{entity.type},                                    <!-- 类型，1退货退款、2退款 char(1)-->
+			#{entity.returnMoney},                             <!-- 退款金额 number(12,3)-->
+			#{entity.returnCommission},                        <!-- 退还佣金 number(12,3)-->
+			#{entity.returnFreight},                           <!-- 退还运费 number(12,3)-->
+			#{entity.returnCount},                             <!-- 退货数量 number(19)-->
+			#{entity.returnReason},                            <!-- 退货原因(从字典里取) char(1)-->
+			#{entity.returnExplain},                           <!-- 退货说明 nvarchar2(1024)-->
+			#{entity.applyDate},                               <!-- 申请时间 date(7)-->
+			#{entity.uId},                                     <!-- 申请人(会员表id) number(19)-->
+			#{entity.businessHandle},                          <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			#{entity.businessHandleRemarks},                   <!-- 商家处理备注 nvarchar2(1024)-->
+			#{entity.businessHandleDate},                      <!-- 商家处理时间 date(7)-->
+			#{entity.systemHandle},                            <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			#{entity.systemAgreeTime},                         <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			#{entity.systemHandleRemarks},                     <!-- 平台处理备注 nvarchar2(1024)-->
+			#{entity.payWayId},                                <!-- 支付方式(支付方式表id) number(19)-->
+			#{entity.adminId},                                 <!-- 管理员id(管理员表id) number(19)-->
+			#{entity.status},                                  <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			#{entity.deliverProductTime},                      <!-- 买家发货时间 date(7)-->
+			#{entity.logisticsTemplateId},                     <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			#{entity.logisticsTemplateName},                   <!-- 物流公司名称 nvarchar2(64)-->
+			#{entity.trackingNo},                              <!-- 运单号 nvarchar2(64)-->
+			#{entity.isProductReceipt},                        <!-- 商家是否收货，0否、1是 char(1)-->
+			#{entity.productReceiptTime},                      <!-- 商家收货时间 date(7)-->
+			#{entity.onlineReturnMoney},                       <!-- 在线退款金额 number(12,3)-->
+			#{entity.alipayReturnMoney},                       <!-- 支付宝退款金额 number(12,3)-->
+			#{entity.preDepositReturnMoney},                   <!-- 预存款退款金额 number(12,3)-->
+			#{entity.wxReturnMoeny},                           <!-- 微信退款金额 number(12,3)-->
+			#{entity.bak1ReturnMoeny},                         <!-- 备用退款金额1 number(12,3)-->
+			#{entity.bak2ReturnMoeny},                         <!-- 备用退款金额2 number(12,3)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.isJettison},                              <!-- 是否弃货 char(1)-->
+			#{entity.isReturnMoney},                           <!-- 是否退款 char(1)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.returnOrderId" keyColumn="return_order_id" useGeneratedKeys="true">
+		INSERT INTO trade_return_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.returnOrderId != null">return_order_id,</if></if>
+			<if test="entity.pkMode==2">return_order_id,</if>
+			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单编号(订单表id) number(19)-->
+			<if test="entity.orderItemId != null">order_item_id,</if>                          <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 类型，1退货退款、2退款 char(1)-->
+			<if test="entity.returnMoney != null">return_money,</if>                           <!-- 退款金额 number(12,3)-->
+			<if test="entity.returnCommission != null">return_commission,</if>                 <!-- 退还佣金 number(12,3)-->
+			<if test="entity.returnFreight != null">return_freight,</if>                       <!-- 退还运费 number(12,3)-->
+			<if test="entity.returnCount != null">return_count,</if>                           <!-- 退货数量 number(19)-->
+			<if test="entity.returnReason != null">return_reason,</if>                         <!-- 退货原因(从字典里取) char(1)-->
+			<if test="entity.returnExplain != null">return_explain,</if>                       <!-- 退货说明 nvarchar2(1024)-->
+			<if test="entity.applyDate != null">apply_date,</if>                               <!-- 申请时间 date(7)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.businessHandle != null">business_handle,</if>                     <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			<if test="entity.businessHandleRemarks != null">business_handle_remarks,</if>      <!-- 商家处理备注 nvarchar2(1024)-->
+			<if test="entity.businessHandleDate != null">business_handle_date,</if>            <!-- 商家处理时间 date(7)-->
+			<if test="entity.systemHandle != null">system_handle,</if>                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemAgreeTime != null">system_agree_time,</if>                  <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			<if test="entity.systemHandleRemarks != null">system_handle_remarks,</if>          <!-- 平台处理备注 nvarchar2(1024)-->
+			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式(支付方式表id) number(19)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			<if test="entity.deliverProductTime != null">deliver_product_time,</if>            <!-- 买家发货时间 date(7)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id,</if>          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateName != null">logistics_template_name,</if>      <!-- 物流公司名称 nvarchar2(64)-->
+			<if test="entity.trackingNo != null">tracking_no,</if>                             <!-- 运单号 nvarchar2(64)-->
+			<if test="entity.isProductReceipt != null">is_product_receipt,</if>                <!-- 商家是否收货，0否、1是 char(1)-->
+			<if test="entity.productReceiptTime != null">product_receipt_time,</if>            <!-- 商家收货时间 date(7)-->
+			<if test="entity.onlineReturnMoney != null">online_return_money,</if>              <!-- 在线退款金额 number(12,3)-->
+			<if test="entity.alipayReturnMoney != null">alipay_return_money,</if>              <!-- 支付宝退款金额 number(12,3)-->
+			<if test="entity.preDepositReturnMoney != null">pre_deposit_return_money,</if>     <!-- 预存款退款金额 number(12,3)-->
+			<if test="entity.wxReturnMoeny != null">wx_return_moeny,</if>                      <!-- 微信退款金额 number(12,3)-->
+			<if test="entity.bak1ReturnMoeny != null">bak1_return_moeny,</if>                  <!-- 备用退款金额1 number(12,3)-->
+			<if test="entity.bak2ReturnMoeny != null">bak2_return_moeny,</if>                  <!-- 备用退款金额2 number(12,3)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.isJettison != null">is_jettison,</if>                             <!-- 是否弃货 char(1)-->
+			<if test="entity.isReturnMoney != null">is_return_money,</if>                      <!-- 是否退款 char(1)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.returnOrderId != null">#{entity.returnOrderId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_return_order_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单编号(订单表id) number(19)-->
+			<if test="entity.orderItemId != null">#{entity.orderItemId},</if>                            <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型，1退货退款、2退款 char(1)-->
+			<if test="entity.returnMoney != null">#{entity.returnMoney},</if>                            <!-- 退款金额 number(12,3)-->
+			<if test="entity.returnCommission != null">#{entity.returnCommission},</if>                  <!-- 退还佣金 number(12,3)-->
+			<if test="entity.returnFreight != null">#{entity.returnFreight},</if>                        <!-- 退还运费 number(12,3)-->
+			<if test="entity.returnCount != null">#{entity.returnCount},</if>                            <!-- 退货数量 number(19)-->
+			<if test="entity.returnReason != null">#{entity.returnReason},</if>                          <!-- 退货原因(从字典里取) char(1)-->
+			<if test="entity.returnExplain != null">#{entity.returnExplain},</if>                        <!-- 退货说明 nvarchar2(1024)-->
+			<if test="entity.applyDate != null">#{entity.applyDate},</if>                                <!-- 申请时间 date(7)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.businessHandle != null">#{entity.businessHandle},</if>                      <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			<if test="entity.businessHandleRemarks != null">#{entity.businessHandleRemarks},</if>        <!-- 商家处理备注 nvarchar2(1024)-->
+			<if test="entity.businessHandleDate != null">#{entity.businessHandleDate},</if>              <!-- 商家处理时间 date(7)-->
+			<if test="entity.systemHandle != null">#{entity.systemHandle},</if>                          <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemAgreeTime != null">#{entity.systemAgreeTime},</if>                    <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			<if test="entity.systemHandleRemarks != null">#{entity.systemHandleRemarks},</if>            <!-- 平台处理备注 nvarchar2(1024)-->
+			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式(支付方式表id) number(19)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			<if test="entity.deliverProductTime != null">#{entity.deliverProductTime},</if>              <!-- 买家发货时间 date(7)-->
+			<if test="entity.logisticsTemplateId != null">#{entity.logisticsTemplateId},</if>            <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateName != null">#{entity.logisticsTemplateName},</if>        <!-- 物流公司名称 nvarchar2(64)-->
+			<if test="entity.trackingNo != null">#{entity.trackingNo},</if>                              <!-- 运单号 nvarchar2(64)-->
+			<if test="entity.isProductReceipt != null">#{entity.isProductReceipt},</if>                  <!-- 商家是否收货，0否、1是 char(1)-->
+			<if test="entity.productReceiptTime != null">#{entity.productReceiptTime},</if>              <!-- 商家收货时间 date(7)-->
+			<if test="entity.onlineReturnMoney != null">#{entity.onlineReturnMoney},</if>                <!-- 在线退款金额 number(12,3)-->
+			<if test="entity.alipayReturnMoney != null">#{entity.alipayReturnMoney},</if>                <!-- 支付宝退款金额 number(12,3)-->
+			<if test="entity.preDepositReturnMoney != null">#{entity.preDepositReturnMoney},</if>        <!-- 预存款退款金额 number(12,3)-->
+			<if test="entity.wxReturnMoeny != null">#{entity.wxReturnMoeny},</if>                        <!-- 微信退款金额 number(12,3)-->
+			<if test="entity.bak1ReturnMoeny != null">#{entity.bak1ReturnMoeny},</if>                    <!-- 备用退款金额1 number(12,3)-->
+			<if test="entity.bak2ReturnMoeny != null">#{entity.bak2ReturnMoeny},</if>                    <!-- 备用退款金额2 number(12,3)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.isJettison != null">#{entity.isJettison},</if>                              <!-- 是否弃货 char(1)-->
+			<if test="entity.isReturnMoney != null">#{entity.isReturnMoney},</if>                        <!-- 是否退款 char(1)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE trade_return_order 
+		<set>
+			order_id = #{entity.orderId},                                   <!-- 订单编号(订单表id) number(19)-->
+			order_item_id = #{entity.orderItemId},                          <!-- 订单详情编号(订单详情表id) number(19)-->
+			type = #{entity.type},                                          <!-- 类型，1退货退款、2退款 char(1)-->
+			return_money = #{entity.returnMoney},                           <!-- 退款金额 number(12,3)-->
+			return_commission = #{entity.returnCommission},                 <!-- 退还佣金 number(12,3)-->
+			return_freight = #{entity.returnFreight},                       <!-- 退还运费 number(12,3)-->
+			return_count = #{entity.returnCount},                           <!-- 退货数量 number(19)-->
+			return_reason = #{entity.returnReason},                         <!-- 退货原因(从字典里取) char(1)-->
+			return_explain = #{entity.returnExplain},                       <!-- 退货说明 nvarchar2(1024)-->
+			apply_date = #{entity.applyDate},                               <!-- 申请时间 date(7)-->
+			u_id = #{entity.uId},                                           <!-- 申请人(会员表id) number(19)-->
+			business_handle = #{entity.businessHandle},                     <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			business_handle_remarks = #{entity.businessHandleRemarks},      <!-- 商家处理备注 nvarchar2(1024)-->
+			business_handle_date = #{entity.businessHandleDate},            <!-- 商家处理时间 date(7)-->
+			system_handle = #{entity.systemHandle},                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			system_agree_time = #{entity.systemAgreeTime},                  <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			system_handle_remarks = #{entity.systemHandleRemarks},          <!-- 平台处理备注 nvarchar2(1024)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员id(管理员表id) number(19)-->
+			status = #{entity.status},                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			deliver_product_time = #{entity.deliverProductTime},            <!-- 买家发货时间 date(7)-->
+			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			logistics_template_name = #{entity.logisticsTemplateName},      <!-- 物流公司名称 nvarchar2(64)-->
+			tracking_no = #{entity.trackingNo},                             <!-- 运单号 nvarchar2(64)-->
+			is_product_receipt = #{entity.isProductReceipt},                <!-- 商家是否收货，0否、1是 char(1)-->
+			product_receipt_time = #{entity.productReceiptTime},            <!-- 商家收货时间 date(7)-->
+			online_return_money = #{entity.onlineReturnMoney},              <!-- 在线退款金额 number(12,3)-->
+			alipay_return_money = #{entity.alipayReturnMoney},              <!-- 支付宝退款金额 number(12,3)-->
+			pre_deposit_return_money = #{entity.preDepositReturnMoney},     <!-- 预存款退款金额 number(12,3)-->
+			wx_return_moeny = #{entity.wxReturnMoeny},                      <!-- 微信退款金额 number(12,3)-->
+			bak1_return_moeny = #{entity.bak1ReturnMoeny},                  <!-- 备用退款金额1 number(12,3)-->
+			bak2_return_moeny = #{entity.bak2ReturnMoeny},                  <!-- 备用退款金额2 number(12,3)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			is_jettison = #{entity.isJettison},                             <!-- 是否弃货 char(1)-->
+			is_return_money = #{entity.isReturnMoney},                      <!-- 是否退款 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		WHERE return_order_id = #{entity.returnOrderId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE trade_return_order a 
+		<set>
+			order_id = #{entity.orderId},                                   <!-- 订单编号(订单表id) number(19)-->
+			order_item_id = #{entity.orderItemId},                          <!-- 订单详情编号(订单详情表id) number(19)-->
+			type = #{entity.type},                                          <!-- 类型，1退货退款、2退款 char(1)-->
+			return_money = #{entity.returnMoney},                           <!-- 退款金额 number(12,3)-->
+			return_commission = #{entity.returnCommission},                 <!-- 退还佣金 number(12,3)-->
+			return_freight = #{entity.returnFreight},                       <!-- 退还运费 number(12,3)-->
+			return_count = #{entity.returnCount},                           <!-- 退货数量 number(19)-->
+			return_reason = #{entity.returnReason},                         <!-- 退货原因(从字典里取) char(1)-->
+			return_explain = #{entity.returnExplain},                       <!-- 退货说明 nvarchar2(1024)-->
+			apply_date = #{entity.applyDate},                               <!-- 申请时间 date(7)-->
+			u_id = #{entity.uId},                                           <!-- 申请人(会员表id) number(19)-->
+			business_handle = #{entity.businessHandle},                     <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			business_handle_remarks = #{entity.businessHandleRemarks},      <!-- 商家处理备注 nvarchar2(1024)-->
+			business_handle_date = #{entity.businessHandleDate},            <!-- 商家处理时间 date(7)-->
+			system_handle = #{entity.systemHandle},                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			system_agree_time = #{entity.systemAgreeTime},                  <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			system_handle_remarks = #{entity.systemHandleRemarks},          <!-- 平台处理备注 nvarchar2(1024)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员id(管理员表id) number(19)-->
+			status = #{entity.status},                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			deliver_product_time = #{entity.deliverProductTime},            <!-- 买家发货时间 date(7)-->
+			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			logistics_template_name = #{entity.logisticsTemplateName},      <!-- 物流公司名称 nvarchar2(64)-->
+			tracking_no = #{entity.trackingNo},                             <!-- 运单号 nvarchar2(64)-->
+			is_product_receipt = #{entity.isProductReceipt},                <!-- 商家是否收货，0否、1是 char(1)-->
+			product_receipt_time = #{entity.productReceiptTime},            <!-- 商家收货时间 date(7)-->
+			online_return_money = #{entity.onlineReturnMoney},              <!-- 在线退款金额 number(12,3)-->
+			alipay_return_money = #{entity.alipayReturnMoney},              <!-- 支付宝退款金额 number(12,3)-->
+			pre_deposit_return_money = #{entity.preDepositReturnMoney},     <!-- 预存款退款金额 number(12,3)-->
+			wx_return_moeny = #{entity.wxReturnMoeny},                      <!-- 微信退款金额 number(12,3)-->
+			bak1_return_moeny = #{entity.bak1ReturnMoeny},                  <!-- 备用退款金额1 number(12,3)-->
+			bak2_return_moeny = #{entity.bak2ReturnMoeny},                  <!-- 备用退款金额2 number(12,3)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			is_jettison = #{entity.isJettison},                             <!-- 是否弃货 char(1)-->
+			is_return_money = #{entity.isReturnMoney},                      <!-- 是否退款 char(1)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE trade_return_order
+		<set>
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单编号(订单表id) number(19)-->
+			<if test="entity.orderItemId != null">order_item_id = #{entity.orderItemId},</if>                                   <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，1退货退款、2退款 char(1)-->
+			<if test="entity.returnMoney != null">return_money = #{entity.returnMoney},</if>                                    <!-- 退款金额 number(12,3)-->
+			<if test="entity.returnCommission != null">return_commission = #{entity.returnCommission},</if>                     <!-- 退还佣金 number(12,3)-->
+			<if test="entity.returnFreight != null">return_freight = #{entity.returnFreight},</if>                              <!-- 退还运费 number(12,3)-->
+			<if test="entity.returnCount != null">return_count = #{entity.returnCount},</if>                                    <!-- 退货数量 number(19)-->
+			<if test="entity.returnReason != null">return_reason = #{entity.returnReason},</if>                                 <!-- 退货原因(从字典里取) char(1)-->
+			<if test="entity.returnExplain != null">return_explain = #{entity.returnExplain},</if>                              <!-- 退货说明 nvarchar2(1024)-->
+			<if test="entity.applyDate != null">apply_date = #{entity.applyDate},</if>                                          <!-- 申请时间 date(7)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.businessHandle != null">business_handle = #{entity.businessHandle},</if>                           <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			<if test="entity.businessHandleRemarks != null">business_handle_remarks = #{entity.businessHandleRemarks},</if>     <!-- 商家处理备注 nvarchar2(1024)-->
+			<if test="entity.businessHandleDate != null">business_handle_date = #{entity.businessHandleDate},</if>              <!-- 商家处理时间 date(7)-->
+			<if test="entity.systemHandle != null">system_handle = #{entity.systemHandle},</if>                                 <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemAgreeTime != null">system_agree_time = #{entity.systemAgreeTime},</if>                       <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			<if test="entity.systemHandleRemarks != null">system_handle_remarks = #{entity.systemHandleRemarks},</if>           <!-- 平台处理备注 nvarchar2(1024)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			<if test="entity.deliverProductTime != null">deliver_product_time = #{entity.deliverProductTime},</if>              <!-- 买家发货时间 date(7)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateName != null">logistics_template_name = #{entity.logisticsTemplateName},</if>     <!-- 物流公司名称 nvarchar2(64)-->
+			<if test="entity.trackingNo != null">tracking_no = #{entity.trackingNo},</if>                                       <!-- 运单号 nvarchar2(64)-->
+			<if test="entity.isProductReceipt != null">is_product_receipt = #{entity.isProductReceipt},</if>                    <!-- 商家是否收货，0否、1是 char(1)-->
+			<if test="entity.productReceiptTime != null">product_receipt_time = #{entity.productReceiptTime},</if>              <!-- 商家收货时间 date(7)-->
+			<if test="entity.onlineReturnMoney != null">online_return_money = #{entity.onlineReturnMoney},</if>                 <!-- 在线退款金额 number(12,3)-->
+			<if test="entity.alipayReturnMoney != null">alipay_return_money = #{entity.alipayReturnMoney},</if>                 <!-- 支付宝退款金额 number(12,3)-->
+			<if test="entity.preDepositReturnMoney != null">pre_deposit_return_money = #{entity.preDepositReturnMoney},</if>    <!-- 预存款退款金额 number(12,3)-->
+			<if test="entity.wxReturnMoeny != null">wx_return_moeny = #{entity.wxReturnMoeny},</if>                             <!-- 微信退款金额 number(12,3)-->
+			<if test="entity.bak1ReturnMoeny != null">bak1_return_moeny = #{entity.bak1ReturnMoeny},</if>                       <!-- 备用退款金额1 number(12,3)-->
+			<if test="entity.bak2ReturnMoeny != null">bak2_return_moeny = #{entity.bak2ReturnMoeny},</if>                       <!-- 备用退款金额2 number(12,3)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.isJettison != null">is_jettison = #{entity.isJettison},</if>                                       <!-- 是否弃货 char(1)-->
+			<if test="entity.isReturnMoney != null">is_return_money = #{entity.isReturnMoney},</if>                             <!-- 是否退款 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		WHERE return_order_id = #{entity.returnOrderId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE trade_return_order a
+		<set>
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单编号(订单表id) number(19)-->
+			<if test="entity.orderItemId != null">order_item_id = #{entity.orderItemId},</if>                                   <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，1退货退款、2退款 char(1)-->
+			<if test="entity.returnMoney != null">return_money = #{entity.returnMoney},</if>                                    <!-- 退款金额 number(12,3)-->
+			<if test="entity.returnCommission != null">return_commission = #{entity.returnCommission},</if>                     <!-- 退还佣金 number(12,3)-->
+			<if test="entity.returnFreight != null">return_freight = #{entity.returnFreight},</if>                              <!-- 退还运费 number(12,3)-->
+			<if test="entity.returnCount != null">return_count = #{entity.returnCount},</if>                                    <!-- 退货数量 number(19)-->
+			<if test="entity.returnReason != null">return_reason = #{entity.returnReason},</if>                                 <!-- 退货原因(从字典里取) char(1)-->
+			<if test="entity.returnExplain != null">return_explain = #{entity.returnExplain},</if>                              <!-- 退货说明 nvarchar2(1024)-->
+			<if test="entity.applyDate != null">apply_date = #{entity.applyDate},</if>                                          <!-- 申请时间 date(7)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.businessHandle != null">business_handle = #{entity.businessHandle},</if>                           <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
+			<if test="entity.businessHandleRemarks != null">business_handle_remarks = #{entity.businessHandleRemarks},</if>     <!-- 商家处理备注 nvarchar2(1024)-->
+			<if test="entity.businessHandleDate != null">business_handle_date = #{entity.businessHandleDate},</if>              <!-- 商家处理时间 date(7)-->
+			<if test="entity.systemHandle != null">system_handle = #{entity.systemHandle},</if>                                 <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemAgreeTime != null">system_agree_time = #{entity.systemAgreeTime},</if>                       <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
+			<if test="entity.systemHandleRemarks != null">system_handle_remarks = #{entity.systemHandleRemarks},</if>           <!-- 平台处理备注 nvarchar2(1024)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+			<if test="entity.deliverProductTime != null">deliver_product_time = #{entity.deliverProductTime},</if>              <!-- 买家发货时间 date(7)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateName != null">logistics_template_name = #{entity.logisticsTemplateName},</if>     <!-- 物流公司名称 nvarchar2(64)-->
+			<if test="entity.trackingNo != null">tracking_no = #{entity.trackingNo},</if>                                       <!-- 运单号 nvarchar2(64)-->
+			<if test="entity.isProductReceipt != null">is_product_receipt = #{entity.isProductReceipt},</if>                    <!-- 商家是否收货，0否、1是 char(1)-->
+			<if test="entity.productReceiptTime != null">product_receipt_time = #{entity.productReceiptTime},</if>              <!-- 商家收货时间 date(7)-->
+			<if test="entity.onlineReturnMoney != null">online_return_money = #{entity.onlineReturnMoney},</if>                 <!-- 在线退款金额 number(12,3)-->
+			<if test="entity.alipayReturnMoney != null">alipay_return_money = #{entity.alipayReturnMoney},</if>                 <!-- 支付宝退款金额 number(12,3)-->
+			<if test="entity.preDepositReturnMoney != null">pre_deposit_return_money = #{entity.preDepositReturnMoney},</if>    <!-- 预存款退款金额 number(12,3)-->
+			<if test="entity.wxReturnMoeny != null">wx_return_moeny = #{entity.wxReturnMoeny},</if>                             <!-- 微信退款金额 number(12,3)-->
+			<if test="entity.bak1ReturnMoeny != null">bak1_return_moeny = #{entity.bak1ReturnMoeny},</if>                       <!-- 备用退款金额1 number(12,3)-->
+			<if test="entity.bak2ReturnMoeny != null">bak2_return_moeny = #{entity.bak2ReturnMoeny},</if>                       <!-- 备用退款金额2 number(12,3)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.isJettison != null">is_jettison = #{entity.isJettison},</if>                                       <!-- 是否弃货 char(1)-->
+			<if test="entity.isReturnMoney != null">is_return_money = #{entity.isReturnMoney},</if>                             <!-- 是否退款 char(1)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM trade_return_order
+		WHERE return_order_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM trade_return_order
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					return_order_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM trade_return_order a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM trade_return_order a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

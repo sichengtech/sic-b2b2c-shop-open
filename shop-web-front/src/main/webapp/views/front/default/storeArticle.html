@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<% var articleId=parameter.id;%>
+<% var storeArticle=store.article({sid:sid,id:articleId});%>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<% var storeOne = store.one({sid:sid});%>
+<title>${storeOne.name}-${storeArticle.title!} Powered by SiC</title>
+<% include("/include/head.html"){}%>
+<style type="text/css">
+	.error_div{background-image: url(${ctx}/views/front/default/images/error.jpg);height: 471px;
+    	background-repeat: no-repeat;width: 854px;margin: 0 auto;margin-top: 20px; border: 1px solid white;}
+	.error_div .error_msg{margin-top: 221px;color: orange;font-size: 16px;margin-left: 20px;}
+    .error_div .error_msg a{color: orange;}
+    .content{border: #e0e0e0 solid 1px;padding: 5px;}
+</style>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<% if(isEmpty(storeOne)){ %>
+		<div class="error_div">
+			<div class="error_msg">
+				<p>抱歉，店铺不存在，请查看其他的店铺！</p><br>
+				<p><a href="${ctxf}/index.htm">(1) 返回首页</a></p><br>
+				<p><a href="javascript:" onclick="history.go(-1);">(2) 返回上一页</a></p><br>
+			</div>
+		</div>
+	<%}else{%>
+		<% include("/include/header-store.html",{'storeOne':storeOne}){}%>
+		<div class="wp clearfix mt20">
+			<% include("/include/store_left.html",{'storeOne':storeOne}){}%>
+			<div class="store-index-main">
+				<dl>
+					<dt><strong><b></b>${storeArticle.title!}</strong></dt>
+					<div class="content">${storeArticle.content!}</div>
+				</dl>
+			</div>
+		</div>
+	<%}%>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.cms.dao.ArticleDao">
+
+	<!--
+	请把你的扩展SQL写到 当前 文件中
+	AccountBalanceProorderDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountBalanceProorderDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountBalanceProorderDao.xml文件与AccountBalanceProorderDaoBase.xml文件，在运行时会合并起来。
+	AccountBalanceProorderDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountBalanceProorderDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<sql id="cmsArticleColumns">
+		a.id AS "id",
+		a.category_id AS "category.id",
+		a.title AS "title",
+		a.link AS "link",
+		a.color AS "color",
+		a.image AS "image",
+		a.keywords AS "keywords",
+		a.description AS "description",
+		a.weight AS "weight",
+		a.weight_date AS "weightDate",
+		a.hits AS "hits",
+		a.posid AS "posid",
+		a.custom_content_view AS "customContentView",
+		a.view_config AS "viewConfig",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		c.name AS "category.name",
+		u.name AS "user.name"
+	</sql>
+	
+	<sql id="cmsArticleJoins">
+		JOIN cms_category c ON c.id = a.category_id
+		JOIN sys_office o ON o.id = c.office_id
+		JOIN sys_user u ON u.id = a.create_by
+	</sql>
+	
+	<select id="get" resultType="Article">
+		SELECT 
+			<include refid="cmsArticleColumns"/>
+		FROM cms_article a
+		<include refid="cmsArticleJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Article">
+		SELECT 
+			<include refid="cmsArticleColumns"/>
+		FROM cms_article a
+		<include refid="cmsArticleJoins"/>
+		<where>
+			a.del_flag = #{delFlag}
+			<if test="title != null and title != ''">
+				<bind name="pattern" value="'%' + title + '%'" />				
+				AND lower(a.title) LIKE lower(#{pattern})
+			</if>
+			<if test="posid != null and posid != ''">
+				<bind name="pattern" value="'%' + posid + '%'" />				
+				AND lower(a.posid) LIKE lower(#{pattern})
+			</if>
+			<if test="category.id != null and category.id != ''">
+				AND (a.category_id = #{category.id}
+				<if test="category.parentIds != null and category.parentIds != ''">
+					<bind name="pattern" value="'%' + category.id + '%'" />				
+					OR lower(c.parent_ids) LIKE lower(#{pattern})
+				</if>)
+			</if>
+			<if test="image != null and image != ''">
+				AND a.image  = #{image}
+			</if>
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">
+				AND a.create_by  = #{createBy.id}
+			</if>
+			<!-- ${sqlMap.dsf}-->
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.weight DESC, a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Article">
+		SELECT 
+			<include refid="cmsArticleColumns"/>
+		FROM cms_article a
+		<include refid="cmsArticleJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.weight DESC, a.update_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insertArticle" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_article(
+			id,
+			category_id,
+			title,
+			link,
+			color,
+			image,
+			keywords,
+			description,
+			weight,
+			weight_date,
+			hits,
+			posid,
+			custom_content_view,
+			view_config,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			<if test="pkMode==1">#{id},</if>			
+			<if test="pkMode==2">
+				<if test="dbType$ == 'oracle'">cms_article_seq.nextval,</if>
+				<if test="dbType$ == 'mssql'">null,</if>
+				<if test="dbType$ == 'mysql'">null,</if>
+			</if>
+			#{category.id},
+			#{title},
+			#{link},
+			#{color},
+			#{image},
+			#{keywords},
+			#{description},
+			#{weight},
+			#{weightDate},
+			#{hits},
+			#{posid},
+			#{customContentView},
+			#{viewConfig},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_article SET 	
+			category_id = #{category.id},
+			title = #{title},
+			link = #{link},
+			color = #{color},
+			image = #{image},
+			keywords = #{keywords},
+			description = #{description},
+			weight = #{weight},
+			weight_date = #{weightDate},
+			hits = #{hits},
+			posid = #{posid},
+			custom_content_view = #{customContentView},
+			view_config = #{viewConfig},
+			create_date = #{createDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE cms_article a SET 
+			del_flag = #{DEL_FLAG_DELETE}
+			<include refid="cmsArticleJoins"/>
+		<where>
+			<if test="id != null and id != ''">
+				And a.id = #{id}
+			</if>
+			<if test="category.id != null and category.id != ''">
+				AND (a.category_id = #{category.id}
+				<if test="category.parentIds != null and category.parentIds != ''">
+					<bind name="pattern" value="'%' + category.id + '%'" />				
+					OR lower(c.parent_ids) LIKE lower(#{pattern})
+				</if>)
+			</if>
+		</where>
+	</update>
+	
+	<select id="findByIdIn" resultType="Article" >
+		SELECT 
+			<include refid="cmsArticleColumns"/>
+		from cms_article a where 
+		<where>
+			id in (${id});
+		</where>		
+	</select>
+	
+	<!-- 根据多个id查询出一个列表 -->
+	<!-- <select id="selectByIdIn" resultType="Article">
+		SELECT * FROM cms_article where id in
+		<foreach close=")" collection="list" item="item" open="(" separator=",">
+		  #{item}
+		</foreach>
+	</select> -->
+ 
+	<update id="updateExpiredWeight">
+		update cms_article SET
+			 weight = 0
+		WHERE weight &gt; 0 AND weight_date &lt; 
+			<if test="dbType$ == 'oracle'">sysdate</if>
+			<if test="dbType$ == 'mssql'">FLOOR(CONVERT(FLOAT,GETDATE()))</if>
+			<if test="dbType$ == 'mysql'">CURDATE()</if>
+	</update>
+	
+	<update id="updateHitsAddOne">
+		update cms_article set
+			 hits = hits+1
+		 WHERE id = #{id}
+	</update>
+	
+	<select id="findStats" resultType="Category">
+		select max(c.id) AS "id",
+			   max(c.name) AS "name",
+			   max(cp.id) AS "parent.id",
+			   max(cp.name) AS "parent.name",
+			   count(*) AS "cnt",
+			   sum(a.hits) AS "hits",
+			   max(a.update_date) as "updateDate",
+			   max(o.id) AS "office.id",
+			   max(o.name) AS "office.name"
+		  FROM cms_article a
+		  RIGHT JOIN cms_category c ON c.id = a.category_id
+		  JOIN cms_category cp ON c.parent_id = cp.id
+		  JOIN sys_office o ON o.id = c.office_id
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL} 
+			AND c.site_id = #{site.id}
+			<if test="office.id != null and office.id != ''">
+				AND (c.office_id = #{office.id}  
+					<bind name="pattern" value="'%' + office.id + '%'" />				
+					OR lower(o.parent_ids) LIKE lower(#{pattern})
+					)
+			</if>
+			<if test="beginDate != null">
+				AND a.update_date <![CDATA[ >= #{beginDate} ]]>
+			</if>
+			<if test="endDate != null">
+				AND a.update_date <![CDATA[ <= #{endDate} ]]>
+			</if>
+			<if test="id != null and id != ''">
+				AND (c.id = #{id} 
+					<bind name="pattern" value="'%' + id + '%'" />				
+					OR lower(c.parent_ids) LIKE lower(#{pattern})
+					)
+			</if>
+			group by cp.sort, cp.id, c.sort, c.id
+			order by cp.sort, cp.id, c.sort, c.id
+		</where>		
+	</select>
+
+	<!--点击量原子性自增-->
+	<update id="raiseHitsById">
+		UPDATE cms_article SET `hits` = `hits` + 1 WHERE `id` = #{id}
+	</update>
+</mapper>

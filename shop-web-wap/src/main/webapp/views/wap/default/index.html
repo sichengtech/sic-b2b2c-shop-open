@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<script type="text/javascript">
+		var storeId = '${storeId!}';
+	</script>
+	<!-- 轮播图 -->
+	<link rel="stylesheet" href="${ctx}/views/wap/default/Swiper-4.0.3/dist/css/swiper.min.css">
+	<script type="text/javascript" src="${ctx}/views/wap/default/Swiper-4.0.3/dist/js/swiper.min.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/index.js"></script>
+	<style type="text/css">
+		.sui-page, .sui-page-group{position: absolute;}
+	</style>
+</head>
+<body class="index index-body">
+	<div class="sui-page-group content">
+		<div class="sui-page sui-page-current" id="page-index">
+			<% include("/include/foot-nav.html"){}%>
+			<div class="content" style="overflow-x: hidden;">
+				<% include("/include/header.html"){}%>
+				<% include("/include/nav.html"){}%>
+				<!-- 轮播图 start -->
+				<!-- <div class="swiper-container" style="height: 30%"> -->
+				<div class="swiper-container"><!-- 2018-12-3 修改 -->
+					<div class="swiper-wrapper"></div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+				</div>
+				<!-- 轮播图 end -->
+				<!-- 广告位banner start -->
+				<div class="banner-index weui-border-b clearfix index_ad"></div>
+				<!-- 广告位banner end -->
+				<!-- 搜索 start -->
+				<div class="search-box">
+					<a href="#page-search" class="use-router">
+						<div class="word-text weui-border-radius">
+							<span class="icon icon-wxbsousuotuiguang"></span> 
+							<div class="button">搜索</div>热水器
+						</div>
+					</a>
+				</div>
+				<!-- 搜索 end -->
+				<!-- 活动快捷方式按钮 start -->
+				<div class="weui-flex type_icon weui-border-b">
+					<div class="weui-flex-item"><a href="${ctxw}/product/list.htm?cid=1" class="weui-border-radius"><img src="${ctx}/views/wap/default/images/type_ico_01.png" /></a></div>
+					<div class="weui-flex-item"><a href="${ctxw}/product/list.htm?cid=329" class="weui-border-radius"><img src="${ctx}/views/wap/default/images/type_ico_02.png" /></a></div>
+					<div class="weui-flex-item"><a href="${ctxw}/product/list.htm?cid=108" class="weui-border-radius"><img src="${ctx}/views/wap/default/images/type_ico_03.png" /></a></div>
+					<div class="weui-flex-item"><a href="${ctxw}/product/list.htm?cid=240" class="weui-border-radius"><img src="${ctx}/views/wap/default/images/type_ico_04.png" /></a></div>
+					<div class="weui-flex-item"><a href="${ctxw}/product/list.htm?cid=179" class="weui-border-radius"><img src="${ctx}/views/wap/default/images/type_ico_05.png" /></a></div>
+				</div>
+				<!-- 活动快捷方式按钮 end -->
+				<!-- 活动专题 start -->
+				<div class="weui_panel weui_panel_access index_hdzt_div">
+					<div class="weui_panel_hd"><h2>活动专题<span>抢低价</span></h2></div>
+					<div class="weui_panel_bd special_list clearfix">
+						<ul class="index_hdzt"></ul>
+					</div>
+				</div>
+				<!-- 活动专题 end -->
+				<!-- 品牌购 start -->
+				<div class="weui_panel weui_panel_access index_brand_div">
+					<div class="weui_panel_hd brand_title"><h2>品 / 牌 / 购</h2></div>
+					<div class="weui_panel_bd logo_list clearfix">
+						<ul class="clearfix index_brand"></ul>
+					</div>
+				</div>
+				<!-- 品牌购 end -->
+				<!-- 活动轮播图 start -->
+				<div class="activity">
+					<div id="activitynav" class="weui-navigator weui-navigator-wrapper activity_list">
+					   <ul class="weui-navigator-list index_carousel_hd"></ul>
+					</div>
+				</div>
+				<!-- 活动轮播图 end -->
+				<!-- 工程机械专区 start -->
+				<div class="weui_panel weui_panel_access prod_list mt0 index_gcjx_div">
+					<div class="weui_panel_hd brand_title"><h2>工程机械专区</h2></div>
+					<div class="weui_panel_bd clearfix">
+						<ul class="top1 weui-border-b clearfix index_gcjx_hd"></ul>
+						<ul class="top2 clearfix index_gcjx_product"></ul>
+					</div>
+				</div>
+				<!-- 工程机械专区 end -->
+				<!-- 猜你喜欢 start -->
+				<div class="weui_panel weui_panel_access index_product_div">
+					<div class="weui_panel_hd guess_title"><h2>猜你喜欢</h2></div>
+					<div class="weui_panel_bd prods_list_def clearfix">
+						<ul class="weui-updown index_product"></ul>
+					</div>
+				</div>
+				<!-- 猜你喜欢 end -->
+			</div>
+		</div>
+		<div class="sui-page" id="page-search">
+			<% include("productSearch.html"){}%>
+		</div>
+	</div>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/viewTradePrice.html"){}%>
+	<script type="text/template" id="index_carouselPicture_Tpl" info="首页轮播图片模板">
+    	<div class="swiper-slide">
+			<a href="{{d.url}}" style="width:100%;">
+				<img src="{{d.picturePath}}" />
+			</a>
+		</div>
+	</script>
+	<script type="text/template" id="index_recommend_hdzt_Tpl" info="首页活动专题模板">
+    	<li><a href="{{d.url}}"><div><img data-src="{{d.path}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></div></a></li>
+	</script>
+	<script type="text/template" id="index_recommend_brand_Tpl" info="首页品牌模板">
+    	<li><a href="{{d.url}}" class="weui-border"><div><img data-src="{{d.path}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></div></a></li>
+	</script>
+	<script type="text/template" id="index_carousel_hd_Tpl" info="首页活动轮播图片模板">
+    	<li><a href="{{d.url}}" class="weui-border"><div><img data-src="{{d.path}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></div></a></li>
+	</script>
+	<script type="text/template" id="index_recommend_gcjx_hd_Tpl" info="首页工程机械活动图片模板">
+		<li class="{{d.class}}"><a href="{{d.url}}"><div><img data-src="{{d.path}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></div></a></li>
+	</script>
+	<script type="text/template" id="index_recommend_gcjx_product_Tpl" info="首页工程机械活动商品模板">
+		<li><a href="{{d.url}}"><div><img data-src="{{d.path}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></div><p class="p-name">{{d.name}}</p><p class="p-price">{{d.minPrice}}<span style="{{d.marketPriceCla}}">{{d.marketPrice}}</span></p></a></li>
+	</script>
+	<script type="text/template" id="index_recommend_product_list_Tpl" info="首页猜你喜欢商品模板">
+		<li>
+			<a href="{{d.url}}">
+				<div><img data-src="{{d.path}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/></div>
+			</a>
+			<a href="{{d.url}}">
+				<p class="p-name">
+					<span class="storetype" style="{{d.storeTypeClass}}">{{d.storeType}}</span>
+					{{d.name}}
+				</p>
+			</a>
+			<p class="p-price">
+				<span class="p-price1">{{d.minPrice}}</span>
+				<span class="p-type">{{d.type}}</span>
+			</p>
+		</li>
+	</script>
+</body>
+</html>

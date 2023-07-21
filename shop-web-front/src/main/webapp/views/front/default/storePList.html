@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<% var storeOne = store.one({sid:sid});%>
+<title>${isEmpty(storeOne.seoTitle!)?(storeOne.name!):(storeOne.seoTitle!)} Powered by SiC</title>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/default/storePList.js"></script>
+</head>
+<body class="storeListBody">
+<% include("/include/header.html"){}%>
+<% 	
+	var sort = parameter.sort;
+	var sortMode = parameter.sortMode;
+	var scid = parameter.scid;
+	var price = parameter.price;
+	var k =parameter.k;
+	var mixPrice1 ="";
+	var maxPrice1 ="";
+	if(price!= null){
+		var prices = reg.split(price,"-");
+		if(prices.~size==1){
+			if("-" == strutil.subStringTo(price,0,1)){
+				maxPrice1 = prices[0];
+			}
+			if("-" == strutil.subStringTo(price,strutil.length(price)-1,strutil.length(price))){
+				mixPrice1 = prices[0];
+			}
+		}
+		if(prices.~size>1){
+			mixPrice1 = prices[0];
+			maxPrice1 = prices[1];
+		}
+	}
+%>
+	<% if(isEmpty(storeOne)){ %>
+		<div class="error_div">
+			<div class="error_msg">
+				<p>抱歉，店铺不存在，请查看其他的店铺！</p><br>
+				<p><a href="${ctxf}/index.htm">(1) 返回首页</a></p><br>
+				<p><a href="javascript:" onclick="history.go(-1);">(2) 返回上一页</a></p><br>
+			</div>
+		</div>
+	<%}else{%>
+		<% include("/include/header-store.html",{'storeOne':storeOne}){}%>
+		<div class="wp clearfix mt20">
+			<% include("/include/store_left.html",{'storeOne':storeOne}){}%>
+			<div class="store-prod-list">
+				<dl>
+					<% if(scid!=null){%>
+						<% var sc=store.category({cid:scid,sid:sid});%>
+						<dt><strong><b></b>${sc.name!}</strong></dt>
+					<%}%>
+					<%  var page = product.page({k:k,sid:sid,scid:scid,price:price,sort:sort,sortMode:sortMode});
+						var productList = page["search"].items;
+					%>
+					<dd class="tool">
+						<div class="sui-navbar list-tool">
+							<div class="search-navbar-inner">
+								<div class="r">共找到：${page["page"].count!}个产品</div>
+								<ul class="sui-nav sortType">
+									<li class="${isEmpty(sort)?'active':''} all"><a href="javascript:" id="comprehensiveSort"><i></i>综合</a></li>
+									<li class="${sort =='allSales'?'active':''}"><a href="javascript:" id="salesVolumeSort"><i></i>销量</a></li>
+									<li class="${sort =='collectionCount'?'active':''}"><a href="javascript:" id="collectionSort"><i></i>收藏</a></li>
+									<li class="${sort =='commentCount'?'active':''}"><a href="javascript:" id="commentCountSort"><i></i>评论</a></li>
+									<li class="${sort =='minPrice'?'active':''}">
+										<a href="javascript:" id="priceSort">价格
+											<span class="sortMode"><i class="asc"></i></span>
+										</a>
+									</li>
+								</ul>
+								<form class="sui-form sui-form pull-left" action="#" method="get">
+									<input id="mixPrice1" type="text" class="input-small" placeholder="¥" value="${mixPrice1}"> - 
+									<input id="maxPrice1" type="text" class="input-small" placeholder="¥" value="${maxPrice1}">
+									<button class="sui-btn searchBtn" type="button">搜索</button>
+								</form>
+							</div>
+						</div>
+					
+					</dd>
+					<dd class="store-goods-list">
+						<ul class="goods-pic-list">
+							<% if(isEmpty(page["search"].items)){%>
+								<div class="noProduct">
+									<i class="sui-icon icon-touch-face"></i> 很遗憾，暂无商品！
+								</div>
+							<%}else{%>
+								<% for(product in productList){%>
+									<li>
+										<div class="p-picture">
+											<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+												<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}@220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+											<%}else{%>
+												<img src="${ctxfs}${product.image}@220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+											<%}%>
+										</div>
+										<% if((product.type!)=='1' || (product.type!)=='2'){%>
+											<div class="go-color">
+												<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+													<% for(img in product.storeAlbumPictureList2!){%>
+														<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}"/>
+													<%}%>
+												<%}%>
+											</div>
+										<%}%>
+										<div class="text">
+											<p class="p-price">
+												<% if((product.type!)=='2'){%>
+													¥${product.minPrice2!}<small class="p-type-1"></small>
+												<%}else{%>
+													¥${product.minPrice1!}<small class="p-type-2"></small>
+												<%}%>
+											</p>
+											<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+												<p class="p-name">${product.name!}</p>
+											</a>
+										</div>
+										<div class="button"><a href="javaScript:" class="fav" pId="${product.pId}"><i class="sui-icon icon-tb-favor"></i> 加入收藏</a><a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="buy"><i class="sui-icon icon-tb-goods"></i> 立即购买</a></div>
+									</li>
+								<%}%>	
+							<%}%>
+							<div class="clear"></div>
+						</ul>
+					</dd>
+					<!--分页开始-->
+					<% if(isNotEmpty(productList)){
+						include("/page.html",{'page':page["page"]}){}
+					}%>
+					<!--分页结束-->
+				</dl>
+			</div>
+		</div>
+		<div class="store-by">${storeOne.name!} BY SiC B2B2C Shop</div>
+	<%}%>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+</body>
+</html>

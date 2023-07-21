@@ -1,0 +1,359 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductParamDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productParamColumns">
+		a.param_id AS "paramId",                                             <!-- id number(19)-->
+		a.category_id AS "categoryId",                                       <!-- 分类id number(19)-->
+		a.param_sort AS "paramSort",                                         <!-- 排序 number(10)-->
+		a.name AS "name",                                                    <!-- 参数名 nvarchar2(64)-->
+		a.param_values AS "paramValues",                                     <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+		a.values_img AS "valuesImg",                                         <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+		a.type AS "type",                                                    <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+		a.format AS "format",                                                <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.is_display AS "isDisplay",                                         <!-- 是否显示，0否1是 char(1)-->
+		a.is_required AS "isRequired"                                       <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productParamJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.paramId != null ">AND a.param_id = #{c.paramId}</if>
+		<if test="c.categoryId != null ">AND a.category_id = #{c.categoryId}</if>
+		<if test="c.paramSort != null ">AND a.param_sort = #{c.paramSort}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.paramValues != null and c.paramValues != ''">AND a.param_values = #{c.paramValues}</if>
+		<if test="c.valuesImg != null and c.valuesImg != ''">AND a.values_img = #{c.valuesImg}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.format != null and c.format != ''">AND a.format = #{c.format}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.isDisplay != null and c.isDisplay != ''">AND a.is_display = #{c.isDisplay}</if>
+		<if test="c.isRequired != null and c.isRequired != ''">AND a.is_required = #{c.isRequired}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductParam">
+		SELECT 
+		<include refid="productParamColumns"/>
+		FROM product_param a
+		<include refid="productParamJoins"/>
+		WHERE a.param_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductParam">
+		SELECT 
+		<include refid="productParamColumns"/>
+		FROM product_param a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.param_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductParam">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productParamColumns"/>
+		FROM product_param a
+		<include refid="productParamJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.param_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductParam">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productParamColumns"/>
+		FROM product_param a
+		<include refid="productParamJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.param_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.paramId" keyColumn="param_id" useGeneratedKeys="true">
+		INSERT INTO product_param(
+			param_id,                                          <!-- id number(19)-->
+			category_id,                                       <!-- 分类id number(19)-->
+			param_sort,                                        <!-- 排序 number(10)-->
+			name,                                              <!-- 参数名 nvarchar2(64)-->
+			param_values,                                      <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			values_img,                                        <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			type,                                              <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			format,                                            <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			is_display,                                        <!-- 是否显示，0否1是 char(1)-->
+			is_required                                       <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.paramId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_param_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.categoryId},                              <!-- 分类id number(19)-->
+			#{entity.paramSort},                               <!-- 排序 number(10)-->
+			#{entity.name},                                    <!-- 参数名 nvarchar2(64)-->
+			#{entity.paramValues},                             <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			#{entity.valuesImg},                               <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			#{entity.type},                                    <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			#{entity.format},                                  <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.isDisplay},                               <!-- 是否显示，0否1是 char(1)-->
+			#{entity.isRequired}                              <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.paramId" keyColumn="param_id" useGeneratedKeys="true">
+		INSERT INTO product_param
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.paramId != null">param_id,</if></if>
+			<if test="entity.pkMode==2">param_id,</if>
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 分类id number(19)-->
+			<if test="entity.paramSort != null">param_sort,</if>                               <!-- 排序 number(10)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 参数名 nvarchar2(64)-->
+			<if test="entity.paramValues != null">param_values,</if>                           <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			<if test="entity.valuesImg != null">values_img,</if>                               <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			<if test="entity.format != null">format,</if>                                      <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.isDisplay != null">is_display,</if>                               <!-- 是否显示，0否1是 char(1)-->
+			<if test="entity.isRequired != null">is_required,</if>                             <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.paramId != null">#{entity.paramId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_param_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 分类id number(19)-->
+			<if test="entity.paramSort != null">#{entity.paramSort},</if>                                <!-- 排序 number(10)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 参数名 nvarchar2(64)-->
+			<if test="entity.paramValues != null">#{entity.paramValues},</if>                            <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			<if test="entity.valuesImg != null">#{entity.valuesImg},</if>                                <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			<if test="entity.format != null">#{entity.format},</if>                                      <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.isDisplay != null">#{entity.isDisplay},</if>                                <!-- 是否显示，0否1是 char(1)-->
+			<if test="entity.isRequired != null">#{entity.isRequired},</if>                              <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_param SET
+			category_id = #{entity.categoryId},                             <!-- 分类id number(19)-->
+			param_sort = #{entity.paramSort},                               <!-- 排序 number(10)-->
+			name = #{entity.name},                                          <!-- 参数名 nvarchar2(64)-->
+			param_values = #{entity.paramValues},                           <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			values_img = #{entity.valuesImg},                               <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			type = #{entity.type},                                          <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			format = #{entity.format},                                      <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			is_display = #{entity.isDisplay},                               <!-- 是否显示，0否1是 char(1)-->
+			is_required = #{entity.isRequired}                             <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+
+		WHERE param_id = #{entity.paramId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_param a SET
+			category_id = #{entity.categoryId},                             <!-- 分类id number(19)-->
+			param_sort = #{entity.paramSort},                               <!-- 排序 number(10)-->
+			name = #{entity.name},                                          <!-- 参数名 nvarchar2(64)-->
+			param_values = #{entity.paramValues},                           <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			values_img = #{entity.valuesImg},                               <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			type = #{entity.type},                                          <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			format = #{entity.format},                                      <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			is_display = #{entity.isDisplay},                               <!-- 是否显示，0否1是 char(1)-->
+			is_required = #{entity.isRequired}                             <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_param
+		<set>
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id number(19)-->
+			<if test="entity.paramSort != null">param_sort = #{entity.paramSort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 参数名 nvarchar2(64)-->
+			<if test="entity.paramValues != null">param_values = #{entity.paramValues},</if>                                    <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			<if test="entity.valuesImg != null">values_img = #{entity.valuesImg},</if>                                          <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			<if test="entity.format != null">format = #{entity.format},</if>                                                    <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.isDisplay != null">is_display = #{entity.isDisplay},</if>                                          <!-- 是否显示，0否1是 char(1)-->
+			<if test="entity.isRequired != null">is_required = #{entity.isRequired},</if>                                       <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+		</set>
+		WHERE param_id = #{entity.paramId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_param a
+		<set>
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id number(19)-->
+			<if test="entity.paramSort != null">param_sort = #{entity.paramSort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 参数名 nvarchar2(64)-->
+			<if test="entity.paramValues != null">param_values = #{entity.paramValues},</if>                                    <!-- 参数值文字，多个值用逗号隔开 nvarchar2(1024)-->
+			<if test="entity.valuesImg != null">values_img = #{entity.valuesImg},</if>                                          <!-- 参数值图片，多个值用逗号隔开values_img与values按下标对应 nvarchar2(1024)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 1核心参数、2辅助参数、3自定义参数。核心参数做为筛选条件。自定义参数只出现在product_parameter_mapping表中 char(1)-->
+			<if test="entity.format != null">format = #{entity.format},</if>                                                    <!-- 1图片、2文字、3文字+图片（颜色要配图片） char(1)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.isDisplay != null">is_display = #{entity.isDisplay},</if>                                          <!-- 是否显示，0否1是 char(1)-->
+			<if test="entity.isRequired != null">is_required = #{entity.isRequired},</if>                                       <!-- 是否必填，0否1是，商家发布商品的时候必填项必须填写 char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_param
+		WHERE param_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_param
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					param_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_param a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_param a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

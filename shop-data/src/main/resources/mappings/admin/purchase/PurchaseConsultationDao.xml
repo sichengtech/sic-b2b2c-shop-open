@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.purchase.dao.PurchaseConsultationDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	PurchaseConsultationDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	PurchaseConsultationDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	PurchaseConsultationDao.xml文件与PurchaseConsultationDaoBase.xml文件，在运行时会合并起来。
+	PurchaseConsultationDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，PurchaseConsultationDao.xml文件的内容你要自行做好备份。
+	-->
+
+</mapper>

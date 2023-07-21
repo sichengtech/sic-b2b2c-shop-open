@@ -1,0 +1,104 @@
+/**
+ * SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
+ * Copyright (c) 2016 SiCheng.Net
+ * SiC B2B2C Shop is licensed under Mulan PubL v2.
+ * You can use this software according to the terms and conditions of the Mulan PubL v2.
+ * You may obtain a copy of Mulan PubL v2 at:
+ *          http://license.coscl.org.cn/MulanPubL-2.0
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PubL v2 for more details.
+ */
+package com.sicheng.admin.store.entity;
+
+
+import com.sicheng.common.persistence.DataEntity;
+
+/**
+ * 店铺装修 Entity 父类
+ *
+ * @author 蔡龙
+ * @version 2017-06-20
+ */
+public class StoreDecorateBase<T> extends DataEntity<T> {
+
+    private static final long serialVersionUID = 1L;
+    private Long storeId;                   // 主键(店铺id)
+    private String solution;                // 店铺装修方案(1模板一2模板二3模板三)
+    private String content;                 // 店铺装修方案在2和3的时候填写的东西
+
+    public StoreDecorateBase() {
+        super();
+    }
+
+    public StoreDecorateBase(Long id) {
+        super(id);
+    }
+
+    /**
+     * 描述: 获取ID
+     *
+     * @return
+     * @see com.sicheng.common.persistence.BaseEntity#getId()
+     */
+    @Override
+    public Long getId() {
+        return id;
+    }
+
+    /**
+     * 描述: 设置ID
+     *
+     * @param id
+     * @see com.sicheng.common.persistence.BaseEntity#setId(java.lang.Long)
+     */
+    @Override
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    /**
+     * getter storeId(主键(店铺id))
+     */
+    public Long getStoreId() {
+        return storeId;
+    }
+
+    /**
+     * setter storeId(主键(店铺id))
+     */
+    public void setStoreId(Long storeId) {
+        this.storeId = storeId;
+    }
+
+    /**
+     * getter solution(店铺装修方案(1模板一2模板二3模板三))
+     */
+    public String getSolution() {
+        return solution;
+    }
+
+    /**
+     * setter solution(店铺装修方案(1模板一2模板二3模板三))
+     */
+    public void setSolution(String solution) {
+        this.solution = solution;
+    }
+
+    /**
+     * getter content(店铺装修方案在2和3的时候填写的东西)
+     */
+    public String getContent() {
+        return content;
+    }
+
+    /**
+     * setter content(店铺装修方案在2和3的时候填写的东西)
+     */
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+
+}

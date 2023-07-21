@@ -1,0 +1,264 @@
+/**
+ * SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
+ * Copyright (c) 2016 SiCheng.Net
+ * SiC B2B2C Shop is licensed under Mulan PubL v2.
+ * You can use this software according to the terms and conditions of the Mulan PubL v2.
+ * You may obtain a copy of Mulan PubL v2 at:
+ *          http://license.coscl.org.cn/MulanPubL-2.0
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PubL v2 for more details.
+ *  
+ */
+package com.sicheng.admin.report.web;
+
+import com.sicheng.admin.report.dao.ReportDao;
+import com.sicheng.admin.report.service.ReportService;
+
+import com.sicheng.common.config.Global;
+import com.sicheng.common.persistence.Page;
+import com.sicheng.common.utils.DateUtils;
+import com.sicheng.common.web.BaseController;
+import com.sicheng.common.web.R;
+import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+  * <p>标题: ReportController</p>
+  * <p>描述: </p>
+  * <p>公司: 思程科技 www.sicheng.net</p>
+  * @author zhangjiali
+  * @version 2017年7月4日 下午7:58:07
+  *
+  */
+@Controller
+@RequestMapping(value = "${adminPath}/report/product")
+public class ReportProductController extends BaseController {
+
+
+
+    @Autowired
+    private ReportService reportService;
+
+    @Autowired
+    private ReportDao reportDao;
+
+    /**
+     * 菜单高亮
+     * @param id
+     * @param model
+     */
+    @ModelAttribute
+    public void get(Long id, Model model) {
+        String menu3 = "010603";//请修改为正确的三级菜单编号
+        //手动控制菜单高亮,90%的情况无须手动控制。注意：本方法已淘汰，请使用 menuHighLighting(Long menuId) 方法来替代。
+        super.menuHighLighting(menu3);
+    }
+
+    /**
+      * 统计一天的商品销售 
+      * @param request
+      * @param response
+      * @param model
+      * @return
+     */
+    @RequiresPermissions("report:product:view")
+    @RequestMapping(value = "countDayNum")
+    public String countDayNum(HttpServletRequest request, HttpServletResponse response, Model model) {
+        //搜索条件
+        String proName = R.get("proName");//商品名称
+        String pCategory = R.get("pCategory");//下单商品的分类
+        Date searchTime = R.getDate("searchTime", "yyyy-MM-dd", new Date());//搜索时间
+        Map<String, Date> mapTime = reportService.getDayTime(searchTime);//获取昨天、今天的开始时间与结束时间
+        //初始化下单商品的分类
+        Page<Map<String, Object>> pageCategory = new Page<Map<String, Object>>(request, response);
+        pageCategory.setPageSize(10);
+        pageCategory.setPageNo(1);
+        Map<String, Object> mapCategory = new HashMap<String, Object>();
+        mapCategory.put("page", pageCategory);
+        mapCategory.put("startDate", mapTime.get("todayStart"));
+        mapCategory.put("endDate", mapTime.get("todayEnd"));
+        List<Map<String, Object>> listCategory = reportDao.report15(mapCategory);
+        if (!listCategory.isEmpty()) {
+            for (int i = 0; i < listCategory.size(); i++) {
+                if (listCategory.get(i) == null) {
+                    listCategory.remove(i);//错误数据的处理
+                }
+            }
+        }
+        //当天24小时商品销售数据
+        Page<Map<String, Object>> page = new Page<Map<String, Object>>(request, response);
+        page.setPageSize(20);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("proName", proName);
+        map.put("pCategory", pCategory);
+        map.put("dbType$", Global.getConfig("jdbc.type"));
+        map.put("startDate", mapTime.get("todayStart"));
+        map.put("endDate", mapTime.get("todayEnd"));
+        map.put("page", page);
+        List<Map<String, Object>> list = reportDao.report5(map);
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).get("PRODUCTID") == null) {
+                    list.remove(i);//错误数据的处理
+                }
+            }
+        }
+        //回显列表数据
+        model.addAttribute("list", list);
+        model.addAttribute("page", page);
+        //回显搜索条件
+        model.addAttribute("searchTime", searchTime);
+        model.addAttribute("proName", proName);
+        model.addAttribute("pCategory", pCategory);
+        model.addAttribute("listCategory", listCategory);
+        return "admin/report/reportProductDayNum";
+    }
+
+    /**
+      * 统计一周的商品销售 
+      * @param request
+      * @param response
+      * @param model
+      * @return
+     */
+    @RequiresPermissions("report:product:view")
+    @RequestMapping(value = "countWeekNum")
+    public String countWeekNum(HttpServletRequest request, HttpServletResponse response, Model model) {
+        //搜索条件
+        String proName = R.get("proName");//商品名称
+        String pCategory = R.get("pCategory");//下单商品的分类
+        String[] months = ReportService.MONTHS;//初始化一年12个月
+        String year = R.get("year", DateUtils.formatDate(new Date(), "yyyy"));//年
+        String serchMonth = R.get("serchMonth", DateUtils.formatDate(new Date(), "MM"));//月
+        Date yearMonth = null;
+        try {
+            yearMonth = DateUtils.parseDate(year + "/" + serchMonth, "yyyy/MM");//年月
+        } catch (ParseException e) {
+            logger.error("日期转换发生异常", e);
+        }
+        List<String> listWeek = reportService.getWeek(yearMonth);
+        String searchTime = R.get("searchTime", listWeek.get(0));//搜索时间
+        Map<String, Date> mapTime = reportService.getWeekTime(searchTime);//获取昨天、今天的开始时间与结束时间
+        //初始化下单商品的分类
+        Page<Map<String, Object>> pageCategory = new Page<Map<String, Object>>(request, response);
+        pageCategory.setPageSize(10);
+        pageCategory.setPageNo(1);
+        Map<String, Object> mapCategory = new HashMap<String, Object>();
+        mapCategory.put("page", pageCategory);
+        mapCategory.put("startDate", mapTime.get("thisWeekStart"));
+        mapCategory.put("endDate", mapTime.get("thisWeekEnd"));
+        List<Map<String, Object>> listCategory = reportDao.report15(mapCategory);
+        if (!listCategory.isEmpty()) {
+            for (int i = 0; i < listCategory.size(); i++) {
+                if (listCategory.get(i) == null) {
+                    listCategory.remove(i);//错误数据的处理
+                }
+            }
+        }
+        //本周商品销售数据
+        Page<Map<String, Object>> page = new Page<Map<String, Object>>(request, response);
+        page.setPageSize(20);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("proName", proName);
+        map.put("pCategory", pCategory);
+        map.put("dbType$", Global.getConfig("jdbc.type"));
+        map.put("startDate", mapTime.get("thisWeekStart"));
+        map.put("endDate", mapTime.get("thisWeekEnd"));
+        map.put("page", page);
+        List<Map<String, Object>> list = reportDao.report5(map);
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).get("PRODUCTID") == null) {
+                    list.remove(i);//错误数据的处理
+                }
+            }
+        }
+        //回显列表数据
+        model.addAttribute("list", list);
+        model.addAttribute("page", page);
+        //回显搜索条件
+        model.addAttribute("months", months);
+        model.addAttribute("year", year);
+        model.addAttribute("serchMonth", serchMonth);
+        model.addAttribute("listWeek", listWeek);
+        model.addAttribute("searchTime", searchTime);
+        model.addAttribute("proName", proName);
+        model.addAttribute("pCategory", pCategory);
+        model.addAttribute("listCategory", listCategory);
+        return "admin/report/reportProductWeekNum";
+    }
+
+    /**
+      * 统计一月的商品销售
+      * @param request
+      * @param response
+      * @param model
+      * @return
+     */
+    @RequiresPermissions("report:product:view")
+    @RequestMapping(value = "countMonthNum")
+    public String countMonthNum(HttpServletRequest request, HttpServletResponse response, Model model) {
+        //搜索条件
+        String proName = R.get("proName");//商品名称
+        String pCategory = R.get("pCategory");//下单商品的分类
+        Date searchTime = R.getDate("searchTime", "yyyy-MM", new Date());//搜索时间
+        Map<String, Object> mapTime = reportService.getMonthTime(searchTime);//获取昨天、今天的开始时间与结束时间和本月的天数
+        //初始化下单商品的分类
+        Page<Map<String, Object>> pageCategory = new Page<Map<String, Object>>(request, response);
+        pageCategory.setPageSize(10);
+        pageCategory.setPageNo(1);
+        Map<String, Object> mapCategory = new HashMap<String, Object>();
+        mapCategory.put("page", pageCategory);
+        mapCategory.put("startDate", mapTime.get("thisMonthStart"));
+        mapCategory.put("endDate", mapTime.get("thisMonthEnd"));
+        List<Map<String, Object>> listCategory = reportDao.report15(mapCategory);
+        if (!listCategory.isEmpty()) {
+            for (int i = 0; i < listCategory.size(); i++) {
+                if (listCategory.get(i) == null) {
+                    listCategory.remove(i);//错误数据的处理
+                }
+            }
+        }
+        //本月商品销售数据
+        Page<Map<String, Object>> page = new Page<Map<String, Object>>(request, response);
+        page.setPageSize(20);
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("proName", proName);
+        map.put("pCategory", pCategory);
+        map.put("dbType$", Global.getConfig("jdbc.type"));
+        map.put("startDate", mapTime.get("thisMonthStart"));
+        map.put("endDate", mapTime.get("thisMonthEnd"));
+        map.put("page", page);
+        List<Map<String, Object>> list = reportDao.report5(map);
+        if (!list.isEmpty()) {
+            for (int i = 0; i < list.size(); i++) {
+                if (list.get(i).get("PRODUCTID") == null) {
+                    list.remove(i);//错误数据的处理
+                }
+            }
+        }
+        //回显列表数据
+        model.addAttribute("list", list);
+        model.addAttribute("page", page);
+        //回显搜索条件
+        model.addAttribute("searchTime", searchTime);
+        model.addAttribute("proName", proName);
+        model.addAttribute("pCategory", pCategory);
+        model.addAttribute("listCategory", listCategory);
+        return "admin/report/reportProductMonthNum";
+    }
+}

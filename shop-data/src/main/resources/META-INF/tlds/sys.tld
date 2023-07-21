@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+    <description>jsp自定义tag标签--宏模板</description>
+    <display-name>jsp自定义tag标签--宏模板</display-name>
+    <tlib-version>1.1</tlib-version>
+    <short-name>sys</short-name>
+    <uri>https://java.sicheng.net/jsp/jstl/sys</uri>
+
+    <!-- 图标选择宏模板 -->
+    <tag-file>
+        <name>iconselect</name>
+        <path>/META-INF/tags/sys/iconselect.tag</path>
+    </tag-file>
+    <!-- 提示消息宏模板 -->
+    <tag-file>
+        <name>message</name>
+        <path>/META-INF/tags/sys/message.tag</path>
+    </tag-file>
+    <!-- tableSort宏模板 -->
+    <tag-file>
+        <name>tableSort</name>
+        <path>/META-INF/tags/sys/tableSort.tag</path>
+    </tag-file>
+    <!-- 选择树宏模板 -->
+    <tag-file>
+        <name>treeselect</name>
+        <path>/META-INF/tags/sys/treeselect.tag</path>
+    </tag-file>
+    <!-- 验证码宏模板 -->
+    <tag-file>
+        <name>validateCode</name>
+        <path>/META-INF/tags/sys/validateCode.tag</path>
+    </tag-file>
+</taglib>

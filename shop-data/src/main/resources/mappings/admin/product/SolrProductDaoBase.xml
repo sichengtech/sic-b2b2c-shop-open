@@ -1,0 +1,756 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.SolrProductDao">
+	<!-- 全部字段 -->
+	<sql id="solrProductColumns">
+	<trim suffixOverrides=",">
+		a.user_name AS "userName",                                           <!-- 卖家登录名 varchar(64)-->
+		a.store_name AS "storeName",                                         <!-- 店铺名称 varchar(255)-->
+		a.province_id AS "provinceId",                                       <!-- 省id bigint(20)-->
+		a.city_id AS "cityId",                                               <!-- 市id bigint(20)-->
+		a.province_name AS "provinceName",                                   <!-- 省名称 varchar(64)-->
+		a.city_name AS "cityName",                                           <!-- 市名称 varchar(64)-->
+		a.category_name AS "categoryName",                                   <!-- 分类名称 varchar(64)-->
+		a.category_level AS "categoryLevel",                                 <!-- 分类等级 int(11)-->
+		a.store_type AS "storeType",                                         <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+		a.cate_first_letter AS "cateFirstLetter",                            <!-- 分类首字母 varchar(64)-->
+		a.cate_parent_ids AS "cateParentIds",                                <!-- 分类父ids text-->
+		a.store_cate_name AS "storeCateName",                                <!-- 店铺分类名 varchar(64)-->
+		a.is_open AS "isOpen",                                               <!-- 是否开店 char(1)-->
+		a.store_cate_parent_ids AS "storeCateParentIds",                     <!-- 店铺分类父ids text-->
+		a.brand_name AS "brandName",                                         <!-- 品牌名 varchar(64)-->
+		a.brand_first_leftter AS "brandFirstLeftter",                        <!-- 品牌首字母 varchar(64)-->
+		a.brand_english_name AS "brandEnglishName",                          <!-- 品牌英文名 varchar(64)-->
+		a.all_sales AS "allSales",                                           <!-- 总销量 int(11)-->
+		a.week_sales AS "weekSales",                                         <!-- 周销量 int(11)-->
+		a.month_sales AS "monthSales",                                       <!-- 月销量 int(11)-->
+		a.month3_sales AS "month3Sales",                                     <!-- 三个月销量 int(11)-->
+		a.car_ids AS "carIds",                                               <!-- 车型ids varchar(4000)-->
+		a.param_value AS "paramValue",                                       <!-- 参数值 mediumtext-->
+		a.collection_count AS "collectionCount",                             <!-- 收藏量 bigint(21)-->
+		a.comment_count AS "commentCount",                                   <!-- 评论量 bigint(21)-->
+		a.p_id AS "pId",                                                     <!-- 商品id bigint(20)-->
+		a.u_id AS "uId",                                                     <!-- 用户id bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 店铺id bigint(20)-->
+		a.name AS "name",                                                    <!-- 商品名称 varchar(128)-->
+		a.status AS "status",                                                <!-- 状态 char(2)-->
+		a.category_id AS "categoryId",                                       <!-- 分类id bigint(20)-->
+		a.store_category_id AS "storeCategoryId",                            <!-- 店内分类 bigint(20)-->
+		a.image AS "image",                                                  <!-- 封面图 varchar(128)-->
+		a.brand_id AS "brandId",                                             <!-- 品牌id bigint(20)-->
+		a.name_sub AS "nameSub",                                             <!-- 副标题 varchar(255)-->
+		a.unit AS "unit",                                                    <!-- 单位 varchar(12)-->
+		a.type AS "type",                                                    <!-- 类型(1零售、2批发、3混合) char(1)-->
+		a.is_gift AS "isGift",                                               <!-- 是否是礼品 char(1)-->
+		a.is_recommend AS "isRecommend",                                     <!-- 是否推荐 char(1)-->
+		a.benefit AS "benefit",                                              <!-- 优惠 varchar(128)-->
+		a.recommend_sort AS "recommendSort",                                 <!-- 活动积分 int(11)-->
+		a.market_price AS "marketPrice",                                     <!-- 市场价 decimal(12,3)-->
+		a.point AS "point",                                                  <!-- 赠送积分 varchar(64)-->
+		a.max_price AS "maxPrice",                                           <!-- 最高价 decimal(12,3)-->
+		a.min_price AS "minPrice",                                           <!-- 最低价 decimal(12,3)-->
+		a.action AS "action",                                                <!-- 是否参加活动 char(1)-->
+		a.max_price1 AS "maxPrice1",                                         <!-- 最高零售价 decimal(12,3)-->
+		a.min_price1 AS "minPrice1",                                         <!-- 最低零售价 decimal(12,3)-->
+		a.max_price2 AS "maxPrice2",                                         <!-- 最高批发价 decimal(12,3)-->
+		a.min_price2 AS "minPrice2",                                         <!-- 最低批发价 decimal(12,3)-->
+		a.shelf_time AS "shelfTime",                                         <!-- 上架时间 datetime-->
+		a.deliver_goods_date AS "deliverGoodsDate",                          <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.purchasing_amount AS "purchasingAmount",                           <!-- 起购量 varchar(64)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="solrProductJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.userName != null and c.userName != ''">AND a.user_name = #{c.userName}</if>
+		<if test="c.storeName != null and c.storeName != ''">AND a.store_name = #{c.storeName}</if>
+		<if test="c.provinceId != null ">AND a.province_id = #{c.provinceId}</if>
+		<if test="c.cityId != null ">AND a.city_id = #{c.cityId}</if>
+		<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+		<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+		<if test="c.categoryName != null and c.categoryName != ''">AND a.category_name = #{c.categoryName}</if>
+		<if test="c.categoryLevel != null ">AND a.category_level = #{c.categoryLevel}</if>
+		<if test="c.storeType != null and c.storeType != ''">AND a.store_type = #{c.storeType}</if>
+		<if test="c.cateFirstLetter != null and c.cateFirstLetter != ''">AND a.cate_first_letter = #{c.cateFirstLetter}</if>
+		<if test="c.cateParentIds != null and c.cateParentIds != ''">AND a.cate_parent_ids = #{c.cateParentIds}</if>
+		<if test="c.storeCateName != null and c.storeCateName != ''">AND a.store_cate_name = #{c.storeCateName}</if>
+		<if test="c.isOpen != null and c.isOpen != ''">AND a.is_open = #{c.isOpen}</if>
+		<if test="c.storeCateParentIds != null and c.storeCateParentIds != ''">AND a.store_cate_parent_ids = #{c.storeCateParentIds}</if>
+		<if test="c.brandName != null and c.brandName != ''">AND a.brand_name = #{c.brandName}</if>
+		<if test="c.brandFirstLeftter != null and c.brandFirstLeftter != ''">AND a.brand_first_leftter = #{c.brandFirstLeftter}</if>
+		<if test="c.brandEnglishName != null and c.brandEnglishName != ''">AND a.brand_english_name = #{c.brandEnglishName}</if>
+		<if test="c.allSales != null ">AND a.all_sales = #{c.allSales}</if>
+		<if test="c.weekSales != null ">AND a.week_sales = #{c.weekSales}</if>
+		<if test="c.monthSales != null ">AND a.month_sales = #{c.monthSales}</if>
+		<if test="c.month3Sales != null ">AND a.month3_sales = #{c.month3Sales}</if>
+		<if test="c.carIds != null and c.carIds != ''">AND a.car_ids = #{c.carIds}</if>
+		<if test="c.paramValue != null and c.paramValue != ''">AND a.param_value = #{c.paramValue}</if>
+		<if test="c.collectionCount != null ">AND a.collection_count = #{c.collectionCount}</if>
+		<if test="c.commentCount != null ">AND a.comment_count = #{c.commentCount}</if>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.categoryId != null ">AND a.category_id = #{c.categoryId}</if>
+		<if test="c.storeCategoryId != null ">AND a.store_category_id = #{c.storeCategoryId}</if>
+		<if test="c.image != null and c.image != ''">AND a.image = #{c.image}</if>
+		<if test="c.brandId != null ">AND a.brand_id = #{c.brandId}</if>
+		<if test="c.nameSub != null and c.nameSub != ''">AND a.name_sub = #{c.nameSub}</if>
+		<if test="c.unit != null and c.unit != ''">AND a.unit = #{c.unit}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.isGift != null and c.isGift != ''">AND a.is_gift = #{c.isGift}</if>
+		<if test="c.isRecommend != null and c.isRecommend != ''">AND a.is_recommend = #{c.isRecommend}</if>
+		<if test="c.benefit != null and c.benefit != ''">AND a.benefit = #{c.benefit}</if>
+		<if test="c.recommendSort != null ">AND a.recommend_sort = #{c.recommendSort}</if>
+		<if test="c.marketPrice != null ">AND a.market_price = #{c.marketPrice}</if>
+		<if test="c.point != null and c.point != ''">AND a.point = #{c.point}</if>
+		<if test="c.maxPrice != null ">AND a.max_price = #{c.maxPrice}</if>
+		<if test="c.minPrice != null ">AND a.min_price = #{c.minPrice}</if>
+		<if test="c.action != null and c.action != ''">AND a.action = #{c.action}</if>
+		<if test="c.maxPrice1 != null ">AND a.max_price1 = #{c.maxPrice1}</if>
+		<if test="c.minPrice1 != null ">AND a.min_price1 = #{c.minPrice1}</if>
+		<if test="c.maxPrice2 != null ">AND a.max_price2 = #{c.maxPrice2}</if>
+		<if test="c.minPrice2 != null ">AND a.min_price2 = #{c.minPrice2}</if>
+		<if test="c.beginShelfTime != null and c.endShelfTime != null ">AND a.shelf_time BETWEEN #{c.beginShelfTime} AND #{c.endShelfTime}</if>
+		<if test="c.deliverGoodsDate != null and c.deliverGoodsDate != ''">AND a.deliver_goods_date = #{c.deliverGoodsDate}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.purchasingAmount != null and c.purchasingAmount != ''">AND a.purchasing_amount = #{c.purchasingAmount}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SolrProduct">
+		SELECT 
+		<include refid="solrProductColumns"/>
+		FROM solr_product a
+		<include refid="solrProductJoins"/>
+		WHERE a.p_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SolrProduct">
+		SELECT 
+		<include refid="solrProductColumns"/>
+		FROM solr_product a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SolrProduct">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="solrProductColumns"/>
+		FROM solr_product a
+		<include refid="solrProductJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SolrProduct">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="solrProductColumns"/>
+		FROM solr_product a
+		<include refid="solrProductJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO solr_product
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			user_name,                                         <!-- 卖家登录名 varchar(64)-->
+			store_name,                                        <!-- 店铺名称 varchar(255)-->
+			province_id,                                       <!-- 省id bigint(20)-->
+			city_id,                                           <!-- 市id bigint(20)-->
+			province_name,                                     <!-- 省名称 varchar(64)-->
+			city_name,                                         <!-- 市名称 varchar(64)-->
+			category_name,                                     <!-- 分类名称 varchar(64)-->
+			category_level,                                    <!-- 分类等级 int(11)-->
+			store_type,                                        <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			cate_first_letter,                                 <!-- 分类首字母 varchar(64)-->
+			cate_parent_ids,                                   <!-- 分类父ids text-->
+			store_cate_name,                                   <!-- 店铺分类名 varchar(64)-->
+			is_open,                                           <!-- 是否开店 char(1)-->
+			store_cate_parent_ids,                             <!-- 店铺分类父ids text-->
+			brand_name,                                        <!-- 品牌名 varchar(64)-->
+			brand_first_leftter,                               <!-- 品牌首字母 varchar(64)-->
+			brand_english_name,                                <!-- 品牌英文名 varchar(64)-->
+			all_sales,                                         <!-- 总销量 int(11)-->
+			week_sales,                                        <!-- 周销量 int(11)-->
+			month_sales,                                       <!-- 月销量 int(11)-->
+			month3_sales,                                      <!-- 三个月销量 int(11)-->
+			car_ids,                                           <!-- 车型ids varchar(4000)-->
+			param_value,                                       <!-- 参数值 mediumtext-->
+			collection_count,                                  <!-- 收藏量 bigint(21)-->
+			comment_count,                                     <!-- 评论量 bigint(21)-->
+			p_id,                                              <!-- 商品id bigint(20)-->
+			u_id,                                              <!-- 用户id bigint(20)-->
+			store_id,                                          <!-- 店铺id bigint(20)-->
+			name,                                              <!-- 商品名称 varchar(128)-->
+			status,                                            <!-- 状态 char(2)-->
+			category_id,                                       <!-- 分类id bigint(20)-->
+			store_category_id,                                 <!-- 店内分类 bigint(20)-->
+			image,                                             <!-- 封面图 varchar(128)-->
+			brand_id,                                          <!-- 品牌id bigint(20)-->
+			name_sub,                                          <!-- 副标题 varchar(255)-->
+			unit,                                              <!-- 单位 varchar(12)-->
+			type,                                              <!-- 类型(1零售、2批发、3混合) char(1)-->
+			is_gift,                                           <!-- 是否是礼品 char(1)-->
+			is_recommend,                                      <!-- 是否推荐 char(1)-->
+			benefit,                                           <!-- 优惠 varchar(128)-->
+			recommend_sort,                                    <!-- 活动积分 int(11)-->
+			market_price,                                      <!-- 市场价 decimal(12,3)-->
+			point,                                             <!-- 赠送积分 varchar(64)-->
+			max_price,                                         <!-- 最高价 decimal(12,3)-->
+			min_price,                                         <!-- 最低价 decimal(12,3)-->
+			action,                                            <!-- 是否参加活动 char(1)-->
+			max_price1,                                        <!-- 最高零售价 decimal(12,3)-->
+			min_price1,                                        <!-- 最低零售价 decimal(12,3)-->
+			max_price2,                                        <!-- 最高批发价 decimal(12,3)-->
+			min_price2,                                        <!-- 最低批发价 decimal(12,3)-->
+			shelf_time,                                        <!-- 上架时间 datetime-->
+			deliver_goods_date,                                <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			purchasing_amount,                                 <!-- 起购量 varchar(64)-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			#{entity.userName},                                <!-- 卖家登录名 varchar(64)-->
+			#{entity.storeName},                               <!-- 店铺名称 varchar(255)-->
+			#{entity.provinceId},                              <!-- 省id bigint(20)-->
+			#{entity.cityId},                                  <!-- 市id bigint(20)-->
+			#{entity.provinceName},                            <!-- 省名称 varchar(64)-->
+			#{entity.cityName},                                <!-- 市名称 varchar(64)-->
+			#{entity.categoryName},                            <!-- 分类名称 varchar(64)-->
+			#{entity.categoryLevel},                           <!-- 分类等级 int(11)-->
+			#{entity.storeType},                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			#{entity.cateFirstLetter},                         <!-- 分类首字母 varchar(64)-->
+			#{entity.cateParentIds},                           <!-- 分类父ids text-->
+			#{entity.storeCateName},                           <!-- 店铺分类名 varchar(64)-->
+			#{entity.isOpen},                                  <!-- 是否开店 char(1)-->
+			#{entity.storeCateParentIds},                      <!-- 店铺分类父ids text-->
+			#{entity.brandName},                               <!-- 品牌名 varchar(64)-->
+			#{entity.brandFirstLeftter},                       <!-- 品牌首字母 varchar(64)-->
+			#{entity.brandEnglishName},                        <!-- 品牌英文名 varchar(64)-->
+			#{entity.allSales},                                <!-- 总销量 int(11)-->
+			#{entity.weekSales},                               <!-- 周销量 int(11)-->
+			#{entity.monthSales},                              <!-- 月销量 int(11)-->
+			#{entity.month3Sales},                             <!-- 三个月销量 int(11)-->
+			#{entity.carIds},                                  <!-- 车型ids varchar(4000)-->
+			#{entity.paramValue},                              <!-- 参数值 mediumtext-->
+			#{entity.collectionCount},                         <!-- 收藏量 bigint(21)-->
+			#{entity.commentCount},                            <!-- 评论量 bigint(21)-->
+			#{entity.pId},                                     <!-- 商品id bigint(20)-->
+			#{entity.uId},                                     <!-- 用户id bigint(20)-->
+			#{entity.storeId},                                 <!-- 店铺id bigint(20)-->
+			#{entity.name},                                    <!-- 商品名称 varchar(128)-->
+			#{entity.status},                                  <!-- 状态 char(2)-->
+			#{entity.categoryId},                              <!-- 分类id bigint(20)-->
+			#{entity.storeCategoryId},                         <!-- 店内分类 bigint(20)-->
+			#{entity.image},                                   <!-- 封面图 varchar(128)-->
+			#{entity.brandId},                                 <!-- 品牌id bigint(20)-->
+			#{entity.nameSub},                                 <!-- 副标题 varchar(255)-->
+			#{entity.unit},                                    <!-- 单位 varchar(12)-->
+			#{entity.type},                                    <!-- 类型(1零售、2批发、3混合) char(1)-->
+			#{entity.isGift},                                  <!-- 是否是礼品 char(1)-->
+			#{entity.isRecommend},                             <!-- 是否推荐 char(1)-->
+			#{entity.benefit},                                 <!-- 优惠 varchar(128)-->
+			#{entity.recommendSort},                           <!-- 活动积分 int(11)-->
+			#{entity.marketPrice},                             <!-- 市场价 decimal(12,3)-->
+			#{entity.point},                                   <!-- 赠送积分 varchar(64)-->
+			#{entity.maxPrice},                                <!-- 最高价 decimal(12,3)-->
+			#{entity.minPrice},                                <!-- 最低价 decimal(12,3)-->
+			#{entity.action},                                  <!-- 是否参加活动 char(1)-->
+			#{entity.maxPrice1},                               <!-- 最高零售价 decimal(12,3)-->
+			#{entity.minPrice1},                               <!-- 最低零售价 decimal(12,3)-->
+			#{entity.maxPrice2},                               <!-- 最高批发价 decimal(12,3)-->
+			#{entity.minPrice2},                               <!-- 最低批发价 decimal(12,3)-->
+			#{entity.shelfTime},                               <!-- 上架时间 datetime-->
+			#{entity.deliverGoodsDate},                        <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.purchasingAmount},                        <!-- 起购量 varchar(64)-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO solr_product
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.userName != null">user_name,</if>                                 <!-- 卖家登录名 varchar(64)-->
+			<if test="entity.storeName != null">store_name,</if>                               <!-- 店铺名称 varchar(255)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省id bigint(20)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市id bigint(20)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 省名称 varchar(64)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 市名称 varchar(64)-->
+			<if test="entity.categoryName != null">category_name,</if>                         <!-- 分类名称 varchar(64)-->
+			<if test="entity.categoryLevel != null">category_level,</if>                       <!-- 分类等级 int(11)-->
+			<if test="entity.storeType != null">store_type,</if>                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.cateFirstLetter != null">cate_first_letter,</if>                  <!-- 分类首字母 varchar(64)-->
+			<if test="entity.cateParentIds != null">cate_parent_ids,</if>                      <!-- 分类父ids text-->
+			<if test="entity.storeCateName != null">store_cate_name,</if>                      <!-- 店铺分类名 varchar(64)-->
+			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 是否开店 char(1)-->
+			<if test="entity.storeCateParentIds != null">store_cate_parent_ids,</if>           <!-- 店铺分类父ids text-->
+			<if test="entity.brandName != null">brand_name,</if>                               <!-- 品牌名 varchar(64)-->
+			<if test="entity.brandFirstLeftter != null">brand_first_leftter,</if>              <!-- 品牌首字母 varchar(64)-->
+			<if test="entity.brandEnglishName != null">brand_english_name,</if>                <!-- 品牌英文名 varchar(64)-->
+			<if test="entity.allSales != null">all_sales,</if>                                 <!-- 总销量 int(11)-->
+			<if test="entity.weekSales != null">week_sales,</if>                               <!-- 周销量 int(11)-->
+			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销量 int(11)-->
+			<if test="entity.month3Sales != null">month3_sales,</if>                           <!-- 三个月销量 int(11)-->
+			<if test="entity.carIds != null">car_ids,</if>                                     <!-- 车型ids varchar(4000)-->
+			<if test="entity.paramValue != null">param_value,</if>                             <!-- 参数值 mediumtext-->
+			<if test="entity.collectionCount != null">collection_count,</if>                   <!-- 收藏量 bigint(21)-->
+			<if test="entity.commentCount != null">comment_count,</if>                         <!-- 评论量 bigint(21)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品id bigint(20)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 用户id bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 店铺id bigint(20)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 商品名称 varchar(128)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 状态 char(2)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 分类id bigint(20)-->
+			<if test="entity.storeCategoryId != null">store_category_id,</if>                  <!-- 店内分类 bigint(20)-->
+			<if test="entity.image != null">image,</if>                                        <!-- 封面图 varchar(128)-->
+			<if test="entity.brandId != null">brand_id,</if>                                   <!-- 品牌id bigint(20)-->
+			<if test="entity.nameSub != null">name_sub,</if>                                   <!-- 副标题 varchar(255)-->
+			<if test="entity.unit != null">unit,</if>                                          <!-- 单位 varchar(12)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 类型(1零售、2批发、3混合) char(1)-->
+			<if test="entity.isGift != null">is_gift,</if>                                     <!-- 是否是礼品 char(1)-->
+			<if test="entity.isRecommend != null">is_recommend,</if>                           <!-- 是否推荐 char(1)-->
+			<if test="entity.benefit != null">benefit,</if>                                    <!-- 优惠 varchar(128)-->
+			<if test="entity.recommendSort != null">recommend_sort,</if>                       <!-- 活动积分 int(11)-->
+			<if test="entity.marketPrice != null">market_price,</if>                           <!-- 市场价 decimal(12,3)-->
+			<if test="entity.point != null">point,</if>                                        <!-- 赠送积分 varchar(64)-->
+			<if test="entity.maxPrice != null">max_price,</if>                                 <!-- 最高价 decimal(12,3)-->
+			<if test="entity.minPrice != null">min_price,</if>                                 <!-- 最低价 decimal(12,3)-->
+			<if test="entity.action != null">action,</if>                                      <!-- 是否参加活动 char(1)-->
+			<if test="entity.maxPrice1 != null">max_price1,</if>                               <!-- 最高零售价 decimal(12,3)-->
+			<if test="entity.minPrice1 != null">min_price1,</if>                               <!-- 最低零售价 decimal(12,3)-->
+			<if test="entity.maxPrice2 != null">max_price2,</if>                               <!-- 最高批发价 decimal(12,3)-->
+			<if test="entity.minPrice2 != null">min_price2,</if>                               <!-- 最低批发价 decimal(12,3)-->
+			<if test="entity.shelfTime != null">shelf_time,</if>                               <!-- 上架时间 datetime-->
+			<if test="entity.deliverGoodsDate != null">deliver_goods_date,</if>                <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.purchasingAmount != null">purchasing_amount,</if>                 <!-- 起购量 varchar(64)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.userName != null">#{entity.userName},</if>                                  <!-- 卖家登录名 varchar(64)-->
+			<if test="entity.storeName != null">#{entity.storeName},</if>                                <!-- 店铺名称 varchar(255)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省id bigint(20)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市id bigint(20)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 省名称 varchar(64)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 市名称 varchar(64)-->
+			<if test="entity.categoryName != null">#{entity.categoryName},</if>                          <!-- 分类名称 varchar(64)-->
+			<if test="entity.categoryLevel != null">#{entity.categoryLevel},</if>                        <!-- 分类等级 int(11)-->
+			<if test="entity.storeType != null">#{entity.storeType},</if>                                <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.cateFirstLetter != null">#{entity.cateFirstLetter},</if>                    <!-- 分类首字母 varchar(64)-->
+			<if test="entity.cateParentIds != null">#{entity.cateParentIds},</if>                        <!-- 分类父ids text-->
+			<if test="entity.storeCateName != null">#{entity.storeCateName},</if>                        <!-- 店铺分类名 varchar(64)-->
+			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 是否开店 char(1)-->
+			<if test="entity.storeCateParentIds != null">#{entity.storeCateParentIds},</if>              <!-- 店铺分类父ids text-->
+			<if test="entity.brandName != null">#{entity.brandName},</if>                                <!-- 品牌名 varchar(64)-->
+			<if test="entity.brandFirstLeftter != null">#{entity.brandFirstLeftter},</if>                <!-- 品牌首字母 varchar(64)-->
+			<if test="entity.brandEnglishName != null">#{entity.brandEnglishName},</if>                  <!-- 品牌英文名 varchar(64)-->
+			<if test="entity.allSales != null">#{entity.allSales},</if>                                  <!-- 总销量 int(11)-->
+			<if test="entity.weekSales != null">#{entity.weekSales},</if>                                <!-- 周销量 int(11)-->
+			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销量 int(11)-->
+			<if test="entity.month3Sales != null">#{entity.month3Sales},</if>                            <!-- 三个月销量 int(11)-->
+			<if test="entity.carIds != null">#{entity.carIds},</if>                                      <!-- 车型ids varchar(4000)-->
+			<if test="entity.paramValue != null">#{entity.paramValue},</if>                              <!-- 参数值 mediumtext-->
+			<if test="entity.collectionCount != null">#{entity.collectionCount},</if>                    <!-- 收藏量 bigint(21)-->
+			<if test="entity.commentCount != null">#{entity.commentCount},</if>                          <!-- 评论量 bigint(21)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品id bigint(20)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 用户id bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 店铺id bigint(20)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 商品名称 varchar(128)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态 char(2)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 分类id bigint(20)-->
+			<if test="entity.storeCategoryId != null">#{entity.storeCategoryId},</if>                    <!-- 店内分类 bigint(20)-->
+			<if test="entity.image != null">#{entity.image},</if>                                        <!-- 封面图 varchar(128)-->
+			<if test="entity.brandId != null">#{entity.brandId},</if>                                    <!-- 品牌id bigint(20)-->
+			<if test="entity.nameSub != null">#{entity.nameSub},</if>                                    <!-- 副标题 varchar(255)-->
+			<if test="entity.unit != null">#{entity.unit},</if>                                          <!-- 单位 varchar(12)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型(1零售、2批发、3混合) char(1)-->
+			<if test="entity.isGift != null">#{entity.isGift},</if>                                      <!-- 是否是礼品 char(1)-->
+			<if test="entity.isRecommend != null">#{entity.isRecommend},</if>                            <!-- 是否推荐 char(1)-->
+			<if test="entity.benefit != null">#{entity.benefit},</if>                                    <!-- 优惠 varchar(128)-->
+			<if test="entity.recommendSort != null">#{entity.recommendSort},</if>                        <!-- 活动积分 int(11)-->
+			<if test="entity.marketPrice != null">#{entity.marketPrice},</if>                            <!-- 市场价 decimal(12,3)-->
+			<if test="entity.point != null">#{entity.point},</if>                                        <!-- 赠送积分 varchar(64)-->
+			<if test="entity.maxPrice != null">#{entity.maxPrice},</if>                                  <!-- 最高价 decimal(12,3)-->
+			<if test="entity.minPrice != null">#{entity.minPrice},</if>                                  <!-- 最低价 decimal(12,3)-->
+			<if test="entity.action != null">#{entity.action},</if>                                      <!-- 是否参加活动 char(1)-->
+			<if test="entity.maxPrice1 != null">#{entity.maxPrice1},</if>                                <!-- 最高零售价 decimal(12,3)-->
+			<if test="entity.minPrice1 != null">#{entity.minPrice1},</if>                                <!-- 最低零售价 decimal(12,3)-->
+			<if test="entity.maxPrice2 != null">#{entity.maxPrice2},</if>                                <!-- 最高批发价 decimal(12,3)-->
+			<if test="entity.minPrice2 != null">#{entity.minPrice2},</if>                                <!-- 最低批发价 decimal(12,3)-->
+			<if test="entity.shelfTime != null">#{entity.shelfTime},</if>                                <!-- 上架时间 datetime-->
+			<if test="entity.deliverGoodsDate != null">#{entity.deliverGoodsDate},</if>                  <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.purchasingAmount != null">#{entity.purchasingAmount},</if>                  <!-- 起购量 varchar(64)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE solr_product 
+		<set>
+			user_name = #{entity.userName},                                 <!-- 卖家登录名 varchar(64)-->
+			store_name = #{entity.storeName},                               <!-- 店铺名称 varchar(255)-->
+			province_id = #{entity.provinceId},                             <!-- 省id bigint(20)-->
+			city_id = #{entity.cityId},                                     <!-- 市id bigint(20)-->
+			province_name = #{entity.provinceName},                         <!-- 省名称 varchar(64)-->
+			city_name = #{entity.cityName},                                 <!-- 市名称 varchar(64)-->
+			category_name = #{entity.categoryName},                         <!-- 分类名称 varchar(64)-->
+			category_level = #{entity.categoryLevel},                       <!-- 分类等级 int(11)-->
+			store_type = #{entity.storeType},                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			cate_first_letter = #{entity.cateFirstLetter},                  <!-- 分类首字母 varchar(64)-->
+			cate_parent_ids = #{entity.cateParentIds},                      <!-- 分类父ids text-->
+			store_cate_name = #{entity.storeCateName},                      <!-- 店铺分类名 varchar(64)-->
+			is_open = #{entity.isOpen},                                     <!-- 是否开店 char(1)-->
+			store_cate_parent_ids = #{entity.storeCateParentIds},           <!-- 店铺分类父ids text-->
+			brand_name = #{entity.brandName},                               <!-- 品牌名 varchar(64)-->
+			brand_first_leftter = #{entity.brandFirstLeftter},              <!-- 品牌首字母 varchar(64)-->
+			brand_english_name = #{entity.brandEnglishName},                <!-- 品牌英文名 varchar(64)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 int(11)-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 int(11)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 int(11)-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 int(11)-->
+			car_ids = #{entity.carIds},                                     <!-- 车型ids varchar(4000)-->
+			param_value = #{entity.paramValue},                             <!-- 参数值 mediumtext-->
+			collection_count = #{entity.collectionCount},                   <!-- 收藏量 bigint(21)-->
+			comment_count = #{entity.commentCount},                         <!-- 评论量 bigint(21)-->
+			p_id = #{entity.pId},                                           <!-- 商品id bigint(20)-->
+			u_id = #{entity.uId},                                           <!-- 用户id bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 店铺id bigint(20)-->
+			name = #{entity.name},                                          <!-- 商品名称 varchar(128)-->
+			status = #{entity.status},                                      <!-- 状态 char(2)-->
+			category_id = #{entity.categoryId},                             <!-- 分类id bigint(20)-->
+			store_category_id = #{entity.storeCategoryId},                  <!-- 店内分类 bigint(20)-->
+			image = #{entity.image},                                        <!-- 封面图 varchar(128)-->
+			brand_id = #{entity.brandId},                                   <!-- 品牌id bigint(20)-->
+			name_sub = #{entity.nameSub},                                   <!-- 副标题 varchar(255)-->
+			unit = #{entity.unit},                                          <!-- 单位 varchar(12)-->
+			type = #{entity.type},                                          <!-- 类型(1零售、2批发、3混合) char(1)-->
+			is_gift = #{entity.isGift},                                     <!-- 是否是礼品 char(1)-->
+			is_recommend = #{entity.isRecommend},                           <!-- 是否推荐 char(1)-->
+			benefit = #{entity.benefit},                                    <!-- 优惠 varchar(128)-->
+			recommend_sort = #{entity.recommendSort},                       <!-- 活动积分 int(11)-->
+			market_price = #{entity.marketPrice},                           <!-- 市场价 decimal(12,3)-->
+			point = #{entity.point},                                        <!-- 赠送积分 varchar(64)-->
+			max_price = #{entity.maxPrice},                                 <!-- 最高价 decimal(12,3)-->
+			min_price = #{entity.minPrice},                                 <!-- 最低价 decimal(12,3)-->
+			action = #{entity.action},                                      <!-- 是否参加活动 char(1)-->
+			max_price1 = #{entity.maxPrice1},                               <!-- 最高零售价 decimal(12,3)-->
+			min_price1 = #{entity.minPrice1},                               <!-- 最低零售价 decimal(12,3)-->
+			max_price2 = #{entity.maxPrice2},                               <!-- 最高批发价 decimal(12,3)-->
+			min_price2 = #{entity.minPrice2},                               <!-- 最低批发价 decimal(12,3)-->
+			shelf_time = #{entity.shelfTime},                               <!-- 上架时间 datetime-->
+			deliver_goods_date = #{entity.deliverGoodsDate},                <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			purchasing_amount = #{entity.purchasingAmount},                 <!-- 起购量 varchar(64)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE solr_product a 
+		<set>
+			user_name = #{entity.userName},                                 <!-- 卖家登录名 varchar(64)-->
+			store_name = #{entity.storeName},                               <!-- 店铺名称 varchar(255)-->
+			province_id = #{entity.provinceId},                             <!-- 省id bigint(20)-->
+			city_id = #{entity.cityId},                                     <!-- 市id bigint(20)-->
+			province_name = #{entity.provinceName},                         <!-- 省名称 varchar(64)-->
+			city_name = #{entity.cityName},                                 <!-- 市名称 varchar(64)-->
+			category_name = #{entity.categoryName},                         <!-- 分类名称 varchar(64)-->
+			category_level = #{entity.categoryLevel},                       <!-- 分类等级 int(11)-->
+			store_type = #{entity.storeType},                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			cate_first_letter = #{entity.cateFirstLetter},                  <!-- 分类首字母 varchar(64)-->
+			cate_parent_ids = #{entity.cateParentIds},                      <!-- 分类父ids text-->
+			store_cate_name = #{entity.storeCateName},                      <!-- 店铺分类名 varchar(64)-->
+			is_open = #{entity.isOpen},                                     <!-- 是否开店 char(1)-->
+			store_cate_parent_ids = #{entity.storeCateParentIds},           <!-- 店铺分类父ids text-->
+			brand_name = #{entity.brandName},                               <!-- 品牌名 varchar(64)-->
+			brand_first_leftter = #{entity.brandFirstLeftter},              <!-- 品牌首字母 varchar(64)-->
+			brand_english_name = #{entity.brandEnglishName},                <!-- 品牌英文名 varchar(64)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 int(11)-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 int(11)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 int(11)-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 int(11)-->
+			car_ids = #{entity.carIds},                                     <!-- 车型ids varchar(4000)-->
+			param_value = #{entity.paramValue},                             <!-- 参数值 mediumtext-->
+			collection_count = #{entity.collectionCount},                   <!-- 收藏量 bigint(21)-->
+			comment_count = #{entity.commentCount},                         <!-- 评论量 bigint(21)-->
+			p_id = #{entity.pId},                                           <!-- 商品id bigint(20)-->
+			u_id = #{entity.uId},                                           <!-- 用户id bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 店铺id bigint(20)-->
+			name = #{entity.name},                                          <!-- 商品名称 varchar(128)-->
+			status = #{entity.status},                                      <!-- 状态 char(2)-->
+			category_id = #{entity.categoryId},                             <!-- 分类id bigint(20)-->
+			store_category_id = #{entity.storeCategoryId},                  <!-- 店内分类 bigint(20)-->
+			image = #{entity.image},                                        <!-- 封面图 varchar(128)-->
+			brand_id = #{entity.brandId},                                   <!-- 品牌id bigint(20)-->
+			name_sub = #{entity.nameSub},                                   <!-- 副标题 varchar(255)-->
+			unit = #{entity.unit},                                          <!-- 单位 varchar(12)-->
+			type = #{entity.type},                                          <!-- 类型(1零售、2批发、3混合) char(1)-->
+			is_gift = #{entity.isGift},                                     <!-- 是否是礼品 char(1)-->
+			is_recommend = #{entity.isRecommend},                           <!-- 是否推荐 char(1)-->
+			benefit = #{entity.benefit},                                    <!-- 优惠 varchar(128)-->
+			recommend_sort = #{entity.recommendSort},                       <!-- 活动积分 int(11)-->
+			market_price = #{entity.marketPrice},                           <!-- 市场价 decimal(12,3)-->
+			point = #{entity.point},                                        <!-- 赠送积分 varchar(64)-->
+			max_price = #{entity.maxPrice},                                 <!-- 最高价 decimal(12,3)-->
+			min_price = #{entity.minPrice},                                 <!-- 最低价 decimal(12,3)-->
+			action = #{entity.action},                                      <!-- 是否参加活动 char(1)-->
+			max_price1 = #{entity.maxPrice1},                               <!-- 最高零售价 decimal(12,3)-->
+			min_price1 = #{entity.minPrice1},                               <!-- 最低零售价 decimal(12,3)-->
+			max_price2 = #{entity.maxPrice2},                               <!-- 最高批发价 decimal(12,3)-->
+			min_price2 = #{entity.minPrice2},                               <!-- 最低批发价 decimal(12,3)-->
+			shelf_time = #{entity.shelfTime},                               <!-- 上架时间 datetime-->
+			deliver_goods_date = #{entity.deliverGoodsDate},                <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			purchasing_amount = #{entity.purchasingAmount},                 <!-- 起购量 varchar(64)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE solr_product
+		<set>
+			<if test="entity.userName != null">user_name = #{entity.userName},</if>                                             <!-- 卖家登录名 varchar(64)-->
+			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名称 varchar(255)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省id bigint(20)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市id bigint(20)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名称 varchar(64)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名称 varchar(64)-->
+			<if test="entity.categoryName != null">category_name = #{entity.categoryName},</if>                                 <!-- 分类名称 varchar(64)-->
+			<if test="entity.categoryLevel != null">category_level = #{entity.categoryLevel},</if>                              <!-- 分类等级 int(11)-->
+			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.cateFirstLetter != null">cate_first_letter = #{entity.cateFirstLetter},</if>                       <!-- 分类首字母 varchar(64)-->
+			<if test="entity.cateParentIds != null">cate_parent_ids = #{entity.cateParentIds},</if>                             <!-- 分类父ids text-->
+			<if test="entity.storeCateName != null">store_cate_name = #{entity.storeCateName},</if>                             <!-- 店铺分类名 varchar(64)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开店 char(1)-->
+			<if test="entity.storeCateParentIds != null">store_cate_parent_ids = #{entity.storeCateParentIds},</if>             <!-- 店铺分类父ids text-->
+			<if test="entity.brandName != null">brand_name = #{entity.brandName},</if>                                          <!-- 品牌名 varchar(64)-->
+			<if test="entity.brandFirstLeftter != null">brand_first_leftter = #{entity.brandFirstLeftter},</if>                 <!-- 品牌首字母 varchar(64)-->
+			<if test="entity.brandEnglishName != null">brand_english_name = #{entity.brandEnglishName},</if>                    <!-- 品牌英文名 varchar(64)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 int(11)-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 int(11)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 int(11)-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 int(11)-->
+			<if test="entity.carIds != null">car_ids = #{entity.carIds},</if>                                                   <!-- 车型ids varchar(4000)-->
+			<if test="entity.paramValue != null">param_value = #{entity.paramValue},</if>                                       <!-- 参数值 mediumtext-->
+			<if test="entity.collectionCount != null">collection_count = #{entity.collectionCount},</if>                        <!-- 收藏量 bigint(21)-->
+			<if test="entity.commentCount != null">comment_count = #{entity.commentCount},</if>                                 <!-- 评论量 bigint(21)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id bigint(20)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 用户id bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id bigint(20)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 商品名称 varchar(128)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态 char(2)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id bigint(20)-->
+			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 店内分类 bigint(20)-->
+			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图 varchar(128)-->
+			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌id bigint(20)-->
+			<if test="entity.nameSub != null">name_sub = #{entity.nameSub},</if>                                                <!-- 副标题 varchar(255)-->
+			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 单位 varchar(12)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型(1零售、2批发、3混合) char(1)-->
+			<if test="entity.isGift != null">is_gift = #{entity.isGift},</if>                                                   <!-- 是否是礼品 char(1)-->
+			<if test="entity.isRecommend != null">is_recommend = #{entity.isRecommend},</if>                                    <!-- 是否推荐 char(1)-->
+			<if test="entity.benefit != null">benefit = #{entity.benefit},</if>                                                 <!-- 优惠 varchar(128)-->
+			<if test="entity.recommendSort != null">recommend_sort = #{entity.recommendSort},</if>                              <!-- 活动积分 int(11)-->
+			<if test="entity.marketPrice != null">market_price = #{entity.marketPrice},</if>                                    <!-- 市场价 decimal(12,3)-->
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 赠送积分 varchar(64)-->
+			<if test="entity.maxPrice != null">max_price = #{entity.maxPrice},</if>                                             <!-- 最高价 decimal(12,3)-->
+			<if test="entity.minPrice != null">min_price = #{entity.minPrice},</if>                                             <!-- 最低价 decimal(12,3)-->
+			<if test="entity.action != null">action = #{entity.action},</if>                                                    <!-- 是否参加活动 char(1)-->
+			<if test="entity.maxPrice1 != null">max_price1 = #{entity.maxPrice1},</if>                                          <!-- 最高零售价 decimal(12,3)-->
+			<if test="entity.minPrice1 != null">min_price1 = #{entity.minPrice1},</if>                                          <!-- 最低零售价 decimal(12,3)-->
+			<if test="entity.maxPrice2 != null">max_price2 = #{entity.maxPrice2},</if>                                          <!-- 最高批发价 decimal(12,3)-->
+			<if test="entity.minPrice2 != null">min_price2 = #{entity.minPrice2},</if>                                          <!-- 最低批发价 decimal(12,3)-->
+			<if test="entity.shelfTime != null">shelf_time = #{entity.shelfTime},</if>                                          <!-- 上架时间 datetime-->
+			<if test="entity.deliverGoodsDate != null">deliver_goods_date = #{entity.deliverGoodsDate},</if>                    <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.purchasingAmount != null">purchasing_amount = #{entity.purchasingAmount},</if>                     <!-- 起购量 varchar(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE solr_product a
+		<set>
+			<if test="entity.userName != null">user_name = #{entity.userName},</if>                                             <!-- 卖家登录名 varchar(64)-->
+			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名称 varchar(255)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省id bigint(20)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市id bigint(20)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名称 varchar(64)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名称 varchar(64)-->
+			<if test="entity.categoryName != null">category_name = #{entity.categoryName},</if>                                 <!-- 分类名称 varchar(64)-->
+			<if test="entity.categoryLevel != null">category_level = #{entity.categoryLevel},</if>                              <!-- 分类等级 int(11)-->
+			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.cateFirstLetter != null">cate_first_letter = #{entity.cateFirstLetter},</if>                       <!-- 分类首字母 varchar(64)-->
+			<if test="entity.cateParentIds != null">cate_parent_ids = #{entity.cateParentIds},</if>                             <!-- 分类父ids text-->
+			<if test="entity.storeCateName != null">store_cate_name = #{entity.storeCateName},</if>                             <!-- 店铺分类名 varchar(64)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开店 char(1)-->
+			<if test="entity.storeCateParentIds != null">store_cate_parent_ids = #{entity.storeCateParentIds},</if>             <!-- 店铺分类父ids text-->
+			<if test="entity.brandName != null">brand_name = #{entity.brandName},</if>                                          <!-- 品牌名 varchar(64)-->
+			<if test="entity.brandFirstLeftter != null">brand_first_leftter = #{entity.brandFirstLeftter},</if>                 <!-- 品牌首字母 varchar(64)-->
+			<if test="entity.brandEnglishName != null">brand_english_name = #{entity.brandEnglishName},</if>                    <!-- 品牌英文名 varchar(64)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 int(11)-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 int(11)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 int(11)-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 int(11)-->
+			<if test="entity.carIds != null">car_ids = #{entity.carIds},</if>                                                   <!-- 车型ids varchar(4000)-->
+			<if test="entity.paramValue != null">param_value = #{entity.paramValue},</if>                                       <!-- 参数值 mediumtext-->
+			<if test="entity.collectionCount != null">collection_count = #{entity.collectionCount},</if>                        <!-- 收藏量 bigint(21)-->
+			<if test="entity.commentCount != null">comment_count = #{entity.commentCount},</if>                                 <!-- 评论量 bigint(21)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id bigint(20)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 用户id bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id bigint(20)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 商品名称 varchar(128)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态 char(2)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id bigint(20)-->
+			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 店内分类 bigint(20)-->
+			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图 varchar(128)-->
+			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌id bigint(20)-->
+			<if test="entity.nameSub != null">name_sub = #{entity.nameSub},</if>                                                <!-- 副标题 varchar(255)-->
+			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 单位 varchar(12)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型(1零售、2批发、3混合) char(1)-->
+			<if test="entity.isGift != null">is_gift = #{entity.isGift},</if>                                                   <!-- 是否是礼品 char(1)-->
+			<if test="entity.isRecommend != null">is_recommend = #{entity.isRecommend},</if>                                    <!-- 是否推荐 char(1)-->
+			<if test="entity.benefit != null">benefit = #{entity.benefit},</if>                                                 <!-- 优惠 varchar(128)-->
+			<if test="entity.recommendSort != null">recommend_sort = #{entity.recommendSort},</if>                              <!-- 活动积分 int(11)-->
+			<if test="entity.marketPrice != null">market_price = #{entity.marketPrice},</if>                                    <!-- 市场价 decimal(12,3)-->
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 赠送积分 varchar(64)-->
+			<if test="entity.maxPrice != null">max_price = #{entity.maxPrice},</if>                                             <!-- 最高价 decimal(12,3)-->
+			<if test="entity.minPrice != null">min_price = #{entity.minPrice},</if>                                             <!-- 最低价 decimal(12,3)-->
+			<if test="entity.action != null">action = #{entity.action},</if>                                                    <!-- 是否参加活动 char(1)-->
+			<if test="entity.maxPrice1 != null">max_price1 = #{entity.maxPrice1},</if>                                          <!-- 最高零售价 decimal(12,3)-->
+			<if test="entity.minPrice1 != null">min_price1 = #{entity.minPrice1},</if>                                          <!-- 最低零售价 decimal(12,3)-->
+			<if test="entity.maxPrice2 != null">max_price2 = #{entity.maxPrice2},</if>                                          <!-- 最高批发价 decimal(12,3)-->
+			<if test="entity.minPrice2 != null">min_price2 = #{entity.minPrice2},</if>                                          <!-- 最低批发价 decimal(12,3)-->
+			<if test="entity.shelfTime != null">shelf_time = #{entity.shelfTime},</if>                                          <!-- 上架时间 datetime-->
+			<if test="entity.deliverGoodsDate != null">deliver_goods_date = #{entity.deliverGoodsDate},</if>                    <!-- 发货日期，1 一天内，2两天内，3三天内，4四天内，5五天内，6六天内，7七天内，8八天内，9九天内，10天内，11面议 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.purchasingAmount != null">purchasing_amount = #{entity.purchasingAmount},</if>                     <!-- 起购量 varchar(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM solr_product
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM solr_product
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM solr_product a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM solr_product a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

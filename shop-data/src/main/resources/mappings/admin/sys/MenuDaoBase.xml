@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sys.dao.MenuDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="menuColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- id number(19)-->
+		a.parent_id AS "parent.id",                                          <!-- parent_id number(19)-->
+		a.parent_ids AS "parentIds",                                         <!-- parent_ids varchar2(2000)-->
+		a.name AS "name",                                                    <!-- name nvarchar2(100)-->
+		a.sort AS "sort",                                                    <!-- sort number(10)-->
+		a.href AS "href",                                                    <!-- href varchar2(2000)-->
+		a.target AS "target",                                                <!-- target varchar2(20)-->
+		a.icon AS "icon",                                                    <!-- icon varchar2(100)-->
+		a.is_show AS "isShow",                                               <!-- is_show char(1)-->
+		a.permission AS "permission",                                        <!-- permission varchar2(200)-->
+		a.create_by AS "createBy.id",                                        <!-- create_by varchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- create_date timestamp(6)-->
+		a.update_by AS "updateBy.id",                                        <!-- update_by varchar2(64)-->
+		a.update_date AS "updateDate",                                       <!-- update_date timestamp(6)-->
+		a.remarks AS "remarks",                                              <!-- remarks nvarchar2(255)-->
+		a.del_flag AS "delFlag",                                             <!-- del_flag char(1)-->
+		a.menu_num AS "menuNum",                                             <!-- menu_num varchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="menuJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.parent != null and c.parent.id != null ">AND a.parent_id = #{c.parent.id}</if>
+		<if test="c.parentIds != null and c.parentIds != ''">				
+			<bind name="pattern" value="'%' + c.parentIds + '%'" />				
+			AND lower(a.parent_ids) LIKE lower(#{pattern})
+		</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.href != null and c.href != ''">AND a.href = #{c.href}</if>
+		<if test="c.target != null and c.target != ''">AND a.target = #{c.target}</if>
+		<if test="c.icon != null and c.icon != ''">AND a.icon = #{c.icon}</if>
+		<if test="c.isShow != null and c.isShow != ''">AND a.is_show = #{c.isShow}</if>
+		<if test="c.permission != null and c.permission != ''">AND a.permission = #{c.permission}</if>
+		<if test="c.createBy != null and c.createBy.id != null ">AND a.create_by = #{c.createBy.id}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.updateBy != null and c.updateBy.id != null ">AND a.update_by = #{c.updateBy.id}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.remarks != null and c.remarks != ''">AND a.remarks = #{c.remarks}</if>
+		<if test="c.delFlag != null and c.delFlag != ''">AND a.del_flag = #{c.delFlag}</if>
+		<if test="c.menuNum != null and c.menuNum != ''">AND a.menu_num = #{c.menuNum}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="Menu">
+		SELECT 
+		<include refid="menuColumns"/>
+		FROM sys_menu a
+		<include refid="menuJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="Menu">
+		SELECT 
+		<include refid="menuColumns"/>
+		FROM sys_menu a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="Menu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="menuColumns"/>
+		FROM sys_menu a
+		<include refid="menuJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="Menu">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="menuColumns"/>
+		FROM sys_menu a
+		<include refid="menuJoins"/>
+		<where>
+			<if test="w!=null and w.e!=null">
+				<if test="w.e.delFlag != null and w.e.delFlag != ''">
+				a.del_flag =  #{w.e.delFlag}
+				</if>
+			</if>
+		</where>	
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- id number(19)-->
+			parent_id,                                         <!-- parent_id number(19)-->
+			parent_ids,                                        <!-- parent_ids varchar2(2000)-->
+			name,                                              <!-- name nvarchar2(100)-->
+			sort,                                              <!-- sort number(10)-->
+			href,                                              <!-- href varchar2(2000)-->
+			target,                                            <!-- target varchar2(20)-->
+			icon,                                              <!-- icon varchar2(100)-->
+			is_show,                                           <!-- is_show char(1)-->
+			permission,                                        <!-- permission varchar2(200)-->
+			create_by,                                         <!-- create_by varchar2(64)-->
+			create_date,                                       <!-- create_date timestamp(6)-->
+			update_by,                                         <!-- update_by varchar2(64)-->
+			update_date,                                       <!-- update_date timestamp(6)-->
+			remarks,                                           <!-- remarks nvarchar2(255)-->
+			del_flag,                                          <!-- del_flag char(1)-->
+			menu_num,                                          <!-- menu_num varchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_menu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.parent.id},                               <!-- parent_id number(19)-->
+			#{entity.parentIds},                               <!-- parent_ids varchar2(2000)-->
+			#{entity.name},                                    <!-- name nvarchar2(100)-->
+			#{entity.sort},                                    <!-- sort number(10)-->
+			#{entity.href},                                    <!-- href varchar2(2000)-->
+			#{entity.target},                                  <!-- target varchar2(20)-->
+			#{entity.icon},                                    <!-- icon varchar2(100)-->
+			#{entity.isShow},                                  <!-- is_show char(1)-->
+			#{entity.permission},                              <!-- permission varchar2(200)-->
+			#{entity.createBy.id},                             <!-- create_by varchar2(64)-->
+			#{entity.createDate},                              <!-- create_date timestamp(6)-->
+			#{entity.updateBy.id},                             <!-- update_by varchar2(64)-->
+			#{entity.updateDate},                              <!-- update_date timestamp(6)-->
+			#{entity.remarks},                                 <!-- remarks nvarchar2(255)-->
+			#{entity.delFlag},                                 <!-- del_flag char(1)-->
+			#{entity.menuNum},                                 <!-- menu_num varchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO sys_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- parent_id number(19)-->
+			<if test="entity.parentIds != null">parent_ids,</if>                               <!-- parent_ids varchar2(2000)-->
+			<if test="entity.name != null">name,</if>                                          <!-- name nvarchar2(100)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- sort number(10)-->
+			<if test="entity.href != null">href,</if>                                          <!-- href varchar2(2000)-->
+			<if test="entity.target != null">target,</if>                                      <!-- target varchar2(20)-->
+			<if test="entity.icon != null">icon,</if>                                          <!-- icon varchar2(100)-->
+			<if test="entity.isShow != null">is_show,</if>                                     <!-- is_show char(1)-->
+			<if test="entity.permission != null">permission,</if>                              <!-- permission varchar2(200)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by,</if>                              <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks,</if>                                    <!-- remarks nvarchar2(255)-->
+			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- del_flag char(1)-->
+			<if test="entity.menuNum != null">menu_num,</if>                                   <!-- menu_num varchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">sys_menu_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- parent_id number(19)-->
+			<if test="entity.parentIds != null">#{entity.parentIds},</if>                                <!-- parent_ids varchar2(2000)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- name nvarchar2(100)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- sort number(10)-->
+			<if test="entity.href != null">#{entity.href},</if>                                          <!-- href varchar2(2000)-->
+			<if test="entity.target != null">#{entity.target},</if>                                      <!-- target varchar2(20)-->
+			<if test="entity.icon != null">#{entity.icon},</if>                                          <!-- icon varchar2(100)-->
+			<if test="entity.isShow != null">#{entity.isShow},</if>                                      <!-- is_show char(1)-->
+			<if test="entity.permission != null">#{entity.permission},</if>                              <!-- permission varchar2(200)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">#{entity.updateBy.id},</if>                            <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">#{entity.remarks},</if>                                    <!-- remarks nvarchar2(255)-->
+			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- del_flag char(1)-->
+			<if test="entity.menuNum != null">#{entity.menuNum},</if>                                    <!-- menu_num varchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE sys_menu 
+		<set>
+			parent_id = #{entity.parent.id},                                <!-- parent_id number(19)-->
+			parent_ids = #{entity.parentIds},                               <!-- parent_ids varchar2(2000)-->
+			name = #{entity.name},                                          <!-- name nvarchar2(100)-->
+			sort = #{entity.sort},                                          <!-- sort number(10)-->
+			href = #{entity.href},                                          <!-- href varchar2(2000)-->
+			target = #{entity.target},                                      <!-- target varchar2(20)-->
+			icon = #{entity.icon},                                          <!-- icon varchar2(100)-->
+			is_show = #{entity.isShow},                                     <!-- is_show char(1)-->
+			permission = #{entity.permission},                              <!-- permission varchar2(200)-->
+			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- update_date timestamp(6)-->
+			remarks = #{entity.remarks},                                    <!-- remarks nvarchar2(255)-->
+			menu_num = #{entity.menuNum},                                   <!-- menu_num varchar2(64)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE sys_menu a 
+		<set>
+			parent_id = #{entity.parent.id},                                <!-- parent_id number(19)-->
+			parent_ids = #{entity.parentIds},                               <!-- parent_ids varchar2(2000)-->
+			name = #{entity.name},                                          <!-- name nvarchar2(100)-->
+			sort = #{entity.sort},                                          <!-- sort number(10)-->
+			href = #{entity.href},                                          <!-- href varchar2(2000)-->
+			target = #{entity.target},                                      <!-- target varchar2(20)-->
+			icon = #{entity.icon},                                          <!-- icon varchar2(100)-->
+			is_show = #{entity.isShow},                                     <!-- is_show char(1)-->
+			permission = #{entity.permission},                              <!-- permission varchar2(200)-->
+			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
+			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
+			update_date = #{entity.updateDate},                             <!-- update_date timestamp(6)-->
+			remarks = #{entity.remarks},                                    <!-- remarks nvarchar2(255)-->
+			menu_num = #{entity.menuNum},                                   <!-- menu_num varchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE sys_menu
+		<set>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- parent_id number(19)-->
+			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- parent_ids varchar2(2000)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- name nvarchar2(100)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- sort number(10)-->
+			<if test="entity.href != null">href = #{entity.href},</if>                                                          <!-- href varchar2(2000)-->
+			<if test="entity.target != null">target = #{entity.target},</if>                                                    <!-- target varchar2(20)-->
+			<if test="entity.icon != null">icon = #{entity.icon},</if>                                                          <!-- icon varchar2(100)-->
+			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- is_show char(1)-->
+			<if test="entity.permission != null">permission = #{entity.permission},</if>                                        <!-- permission varchar2(200)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- remarks nvarchar2(255)-->
+			<if test="entity.menuNum != null">menu_num = #{entity.menuNum},</if>                                                <!-- menu_num varchar2(64)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE sys_menu a
+		<set>
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- parent_id number(19)-->
+			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- parent_ids varchar2(2000)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- name nvarchar2(100)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- sort number(10)-->
+			<if test="entity.href != null">href = #{entity.href},</if>                                                          <!-- href varchar2(2000)-->
+			<if test="entity.target != null">target = #{entity.target},</if>                                                    <!-- target varchar2(20)-->
+			<if test="entity.icon != null">icon = #{entity.icon},</if>                                                          <!-- icon varchar2(100)-->
+			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- is_show char(1)-->
+			<if test="entity.permission != null">permission = #{entity.permission},</if>                                        <!-- permission varchar2(200)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
+			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- update_date timestamp(6)-->
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>                                                 <!-- remarks nvarchar2(255)-->
+			<if test="entity.menuNum != null">menu_num = #{entity.menuNum},</if>                                                <!-- menu_num varchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE sys_menu SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM sys_menu
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM sys_menu a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM sys_menu a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

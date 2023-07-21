@@ -1,0 +1,413 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<taglib xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-jsptaglibrary_2_0.xsd"
+        version="2.0">
+
+    <description>jsp自定义函数--基础通用函数</description>
+    <display-name>jsp自定义函数--基础通用函数</display-name>
+    <tlib-version>1.1</tlib-version>
+    <short-name>fns</short-name>
+    <uri>https://java.sicheng.net/jsp/jstl/fns</uri>
+    <!--	<function>-->
+    <!--		<description>获取网站域名</description>-->
+    <!--		<name>getDoMainPath</name>-->
+    <!--		<function-class>com.sicheng.common.config.Global</function-class>-->
+    <!--		<function-signature>java.lang.String getDoMainPath()</function-signature>-->
+    <!--		<example>${fns:getDoMainPath()}</example>-->
+    <!--	</function>-->
+    <function>
+        <description>获取管理后台的基础路径</description>
+        <name>getAdminPath</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getAdminPath()</function-signature>
+        <example>${fns:getAdminPath()}</example>
+    </function>
+    <function>
+        <description>获取商家后台的基础路径</description>
+        <name>getSellerPath</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getSellerPath()</function-signature>
+        <example>${fns:getSellerPath()}</example>
+    </function>
+    <function>
+        <description>获取会员中心的基础路径</description>
+        <name>getMemberPath</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getMemberPath()</function-signature>
+        <example>${fns:getMemberPath()}</example>
+    </function>
+    <function>
+        <description>获取前台的基础路径</description>
+        <name>getFrontPath</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getFrontPath()</function-signature>
+        <example>${fns:getFrontPath()}</example>
+    </function>
+    <function>
+        <description>获取SSO的基础路径</description>
+        <name>getSsoPath</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getSsoPath()</function-signature>
+        <example>${fns:getSsoPath()}</example>
+    </function>
+    <function>
+        <description>获取微信商城的基础路径</description>
+        <name>getWapPath</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getWapPath()</function-signature>
+        <example>${fns:getWapPath()}</example>
+    </function>
+
+    <function>
+        <description>获取网站前台URL的后缀(如*.htm)</description>
+        <name>getUrlSuffix</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getUrlSuffix()</function-signature>
+        <example>${fns:getUrlSuffix()}</example>
+    </function>
+    <function>
+        <description>获取配置</description>
+        <name>getConfig</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.String getConfig(java.lang.String)</function-signature>
+        <example>${fns:getConfig(key)}</example>
+    </function>
+    <function>
+        <description>获取常量</description>
+        <name>getConst</name>
+        <function-class>com.sicheng.common.config.Global</function-class>
+        <function-signature>java.lang.Object getConst(java.lang.String)</function-signature>
+        <example>${fns:getConst(key)}</example>
+    </function>
+
+    <!-- SsoUtils
+     ${fns:getSiteInfo()}只在Seller子系统里可用，admin子系统里不可用。
+     -->
+    <function>
+        <description>获取站点设置</description>
+        <name>getSiteInfo</name>
+        <function-class>com.sicheng.sso.utils.SsoUtils</function-class>
+        <function-signature>com.sicheng.admin.site.entity.SiteInfo getSiteInfo()</function-signature>
+        <example>${fns:getSiteInfo()}</example>
+    </function>
+
+    <!-- UserUtils -->
+    <function>
+        <description>获取当前用户对象(Admin后台用户)</description>
+        <name>getUser</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>com.sicheng.admin.sys.entity.User getUser()</function-signature>
+        <example>${fns:getUser()}</example>
+    </function>
+    <function>
+        <description>获取当前用户对象(Seller前台用户)</description>
+        <name>getUserMain</name>
+        <function-class>com.sicheng.sso.utils.SsoUtils</function-class>
+        <function-signature>com.sicheng.admin.sso.entity.UserMain getUserMain()</function-signature>
+        <example>${fns:getUserMain()}</example>
+    </function>
+<!--    <function>-->
+<!--        <description>根据ID获取用户对象</description>-->
+<!--        <name>getUserById</name>-->
+<!--        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>-->
+<!--        <function-signature>com.sicheng.admin.sys.entity.User get(java.lang.String)</function-signature>-->
+<!--        <example>${fns:getUserById(id)}</example>-->
+<!--    </function>-->
+
+    <function>
+        <description>获取授权用户信息(Admin后台)</description>
+        <name>getPrincipal</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>com.sicheng.admin.sys.security.SystemAuthorizingRealm.Principal getPrincipal()</function-signature>
+        <example>${fns:getPrincipal()}</example>
+    </function>
+
+    <function>
+        <description>获取当前用户的菜单对象列表(Admin后台)</description>
+        <name>getMenuList</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.util.List getMenuList()</function-signature>
+        <example>${fns:getMenuList()}</example>
+    </function>
+
+    <function>
+        <description>获取子菜单列表(Admin后台)</description>
+        <name>getChildMenuList</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.util.List getChildMenuList(java.lang.Long)</function-signature>
+        <example>${fns:getChildMenuList(menuId)}</example>
+    </function>
+
+    <function>
+        <description>获取当前用户的区域对象列表(Admin后台)</description>
+        <name>getAreaList</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.util.List getAreaList()</function-signature>
+        <example>${fns:getAreaList()}</example>
+    </function>
+    <function>
+        <description>根据id获取区域label(Admin后台)</description>
+        <name>getAreaLabel</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.lang.String getAreaLabel(java.lang.String,java.lang.String)</function-signature>
+        <example>${fns:getAreaLabel(value,defaultValue)}</example>
+    </function>
+    <function>
+        <description>获取当前用户的部门对象列表(Admin后台)</description>
+        <name>getOfficeList</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.util.List getOfficeList()</function-signature>
+        <example>${fns:getOfficeList()}</example>
+    </function>
+
+    <function>
+        <description>获取当前用户缓存(Admin后台)</description>
+        <name>getCache</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.lang.Object getCache(java.lang.String,java.lang.Object)</function-signature>
+        <example>${fns:getCache(cacheName, defaultValue)}</example>
+    </function>
+
+    <function>
+        <description>获取用户(交易员)</description>
+        <name>getUserMainList</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.util.List getUserMainList()</function-signature>
+        <example>${fns:getUserMainList()}</example>
+    </function>
+    <function>
+        <description>根据id获取用户label</description>
+        <name>getUserLabel</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.lang.String getUserLabel(java.lang.String,java.lang.String)</function-signature>
+        <example>${fns:getUserLabel(value,defaultValue)}</example>
+    </function>
+    <function>
+        <description>根据id获取用户</description>
+        <name>getUserObj</name>
+        <function-class>com.sicheng.admin.sys.utils.UserUtils</function-class>
+        <function-signature>java.lang.String getUserObj(java.lang.String)</function-signature>
+        <example>${fns:getUserObj(value)}</example>
+    </function>
+
+    <!-- CateUtils -->
+    <function>
+        <description>获取所有产品类别</description>
+        <name>getProductCateAllList</name>
+        <function-class>com.sicheng.admin.product.utils.CateUtils</function-class>
+        <function-signature>java.util.List getAllList()</function-signature>
+        <example>${fns:getProductCateAllList()}</example>
+    </function>
+    <function>
+        <description>根据id获取类别label</description>
+        <name>getProductCateLabel</name>
+        <function-class>com.sicheng.admin.product.utils.CateUtils</function-class>
+        <function-signature>java.lang.String getLabel(java.lang.String,java.lang.String)</function-signature>
+        <example>${fns:getProductCateLabel(value,defaultValue)}</example>
+    </function>
+    <!-- FloorUtils -->
+    <function>
+        <description>获取所有楼层</description>
+        <name>getFloorAllList</name>
+        <function-class>com.sicheng.admin.floor.utils.FloorUtils</function-class>
+        <function-signature>java.util.List getAllList()</function-signature>
+        <example>${fns:getFloorAllList()}</example>
+    </function>
+    <function>
+        <description>根据id获取楼层label</description>
+        <name>getFloorLabel</name>
+        <function-class>com.sicheng.admin.floor.utils.FloorUtils</function-class>
+        <function-signature>java.lang.String getLabel(java.lang.String,java.lang.String)</function-signature>
+        <example>${fns:getFloorLabel(value,defaultValue)}</example>
+    </function>
+    <!-- DictUtils -->
+    <function>
+        <description>获取字典标签</description>
+        <name>getDictLabel</name>
+        <function-class>com.sicheng.admin.sys.utils.DictUtils</function-class>
+        <function-signature>java.lang.String getDictLabel(java.lang.String,java.lang.String, java.lang.String)</function-signature>
+        <example>${fns:getDictLabel(value, type, defaultValue)}</example>
+    </function>
+
+    <function>
+        <description>获取字典标签(多个)</description>
+        <name>getDictLabels</name>
+        <function-class>com.sicheng.admin.sys.utils.DictUtils</function-class>
+        <function-signature>java.lang.String getDictLabels(java.lang.String,java.lang.String, java.lang.String)</function-signature>
+        <example>${fns:getDictLabels(values, type, defaultValue)}</example>
+    </function>
+
+    <function>
+        <description>获取字典值</description>
+        <name>getDictValue</name>
+        <function-class>com.sicheng.admin.sys.utils.DictUtils</function-class>
+        <function-signature>java.lang.String getDictValue(java.lang.String,java.lang.String, java.lang.String)</function-signature>
+        <example>${fns:getDictValue(label, type, defaultValue)}</example>
+    </function>
+
+    <function>
+        <description>获取字典对象列表</description>
+        <name>getDictList</name>
+        <function-class>com.sicheng.admin.sys.utils.DictUtils</function-class>
+        <function-signature>java.util.List getDictList(java.lang.String)</function-signature>
+        <example>${fns:getDictList(type)}</example>
+    </function>
+
+    <function>
+        <description>获取字典对象列表</description>
+        <name>getDictListJson</name>
+        <function-class>com.sicheng.admin.sys.utils.DictUtils</function-class>
+        <function-signature>java.lang.String getDictListJson(java.lang.String)</function-signature>
+        <example>${fns:getDictListJson(type)}</example>
+    </function>
+
+    <!-- Encodes -->
+    <function>
+        <description>URL编码</description>
+        <name>urlEncode</name>
+        <function-class>com.sicheng.common.utils.Encodes</function-class>
+        <function-signature>java.lang.String urlEncode(java.lang.String)</function-signature>
+        <example>${fns:urlEncode(part)}</example>
+    </function>
+    <function>
+        <description>URL解码</description>
+        <name>urlDecode</name>
+        <function-class>com.sicheng.common.utils.Encodes</function-class>
+        <function-signature>java.lang.String urlDecode(java.lang.String)</function-signature>
+        <example>${fns:urlDecode(part)}</example>
+    </function>
+    <function>
+        <description>HTML编码</description>
+        <name>escapeHtml</name>
+        <function-class>com.sicheng.common.utils.Encodes</function-class>
+        <function-signature>java.lang.String escapeHtml(java.lang.String)</function-signature>
+        <example>${fns:escapeHtml(html)}</example>
+    </function>
+    <function>
+        <description>HTML解码</description>
+        <name>unescapeHtml</name>
+        <function-class>com.sicheng.common.utils.Encodes</function-class>
+        <function-signature>java.lang.String unescapeHtml(java.lang.String)</function-signature>
+        <example>${fns:unescapeHtml(html)}</example>
+    </function>
+
+    <!-- StringUtils -->
+    <function>
+        <description>从后边开始截取字符串</description>
+        <name>substringAfterLast</name>
+        <function-class>org.apache.commons.lang3.StringUtils</function-class>
+        <function-signature>java.lang.String substringAfterLast(java.lang.String, java.lang.String)</function-signature>
+        <example>${fns:substringAfterLast(str,separator)}</example>
+    </function>
+    <function>
+        <description>判断字符串是否以某某开头</description>
+        <name>startsWith</name>
+        <function-class>org.apache.commons.lang3.StringUtils</function-class>
+        <function-signature>boolean startsWith(java.lang.CharSequence,java.lang.CharSequence)</function-signature>
+        <example>${fns:startsWith(str,prefix)}</example>
+    </function>
+    <function>
+        <description>判断字符串是否以某某结尾</description>
+        <name>endsWith</name>
+        <function-class>org.apache.commons.lang3.StringUtils</function-class>
+        <function-signature>boolean endsWith(java.lang.CharSequence,java.lang.CharSequence)</function-signature>
+        <example>${fns:endsWith(str,suffix)}</example>
+    </function>
+    <function>
+        <description>缩写字符串，超过最大宽度用“...”表示</description>
+        <name>abbr</name>
+        <function-class>com.sicheng.common.utils.StringUtils</function-class>
+        <function-signature>java.lang.String abbr(java.lang.String, int)</function-signature>
+        <example>${fns:abbr(str,length)}</example>
+    </function>
+    <function>
+        <description>缩略字符串（不区分中英文字符）（保留html标签可自动补全被截断的html标签）</description>
+        <name>abbr2</name>
+        <function-class>com.sicheng.common.utils.StringUtils</function-class>
+        <function-signature>java.lang.String abbr2(java.lang.String, int)</function-signature>
+        <example>${fns:abbr2(str,length)}</example>
+    </function>
+    <function>
+        <description>替换掉HTML标签</description>
+        <name>replaceHtml</name>
+        <function-class>com.sicheng.common.utils.StringUtils</function-class>
+        <function-signature>java.lang.String replaceHtml(java.lang.String)</function-signature>
+        <example>${fns:replaceHtml(html)}</example>
+    </function>
+    <function>
+        <description>转换为JS获取对象值，生成三目运算返回结果</description>
+        <name>jsGetVal</name>
+        <function-class>com.sicheng.common.utils.StringUtils</function-class>
+        <function-signature>java.lang.String jsGetVal(java.lang.String)</function-signature>
+        <example>${fns:jsGetVal('row.user.id')} 返回：!row?'':!row.user?'':!row.user.id?'':row.user.id</example>
+    </function>
+
+    <!-- DateUtils -->
+    <function>
+        <description>获取当前日期</description>
+        <name>getDate</name>
+        <function-class>com.sicheng.common.utils.DateUtils</function-class>
+        <function-signature>java.lang.String getDate(java.lang.String)</function-signature>
+        <example>${fns:getDate(pattern)}</example>
+    </function>
+    <function>
+        <description>获取过去的天数</description>
+        <name>pastDays</name>
+        <function-class>com.sicheng.common.utils.DateUtils</function-class>
+        <function-signature>long pastDays(java.util.Date)</function-signature>
+        <example>${fns:pastDays(date)}</example>
+    </function>
+
+    <!-- JsonMapper -->
+    <function>
+        <description>对象转换JSON字符串</description>
+        <name>toJson</name>
+        <function-class>com.sicheng.common.mapper.JsonMapper</function-class>
+        <function-signature>java.lang.String toJsonString(java.lang.Object)</function-signature>
+        <example>${fns:toJson(object)}</example>
+    </function>
+
+    <!-- 商家后台菜单一级菜单 -->
+    <function>
+        <description>获取商家当前用户的菜单对象列表</description>
+        <name>getStoreMenuList</name>
+        <function-class>com.sicheng.sso.utils.SsoUtils</function-class>
+        <function-signature>java.util.List getStoreMenuList()</function-signature>
+        <example>${fns:getStoreMenuList()}</example>
+    </function>
+    <!-- 商家后台菜单三级菜单 -->
+    <function>
+        <description>获取商家子菜单列表</description>
+        <name>getStoreChildMenuList</name>
+        <function-class>com.sicheng.sso.utils.SsoUtils</function-class>
+        <function-signature>java.util.List getStoreChildMenuList(java.lang.Long)</function-signature>
+        <example>${fns:getStoreChildMenuList(menuId)}</example>
+    </function>
+
+    <!-- 翻译 -->
+    <function>
+        <description>翻译（不带参数）</description>
+        <name>fy</name>
+        <function-class>com.sicheng.common.utils.FYUtils</function-class>
+        <function-signature>java.lang.String fy(java.lang.String)</function-signature>
+        <example>${fns:fy(code)}</example>
+    </function>
+
+    <function>
+        <description>翻译（带一个参数）</description>
+        <name>fyParam</name>
+        <function-class>com.sicheng.common.utils.FYUtils</function-class>
+        <function-signature>java.lang.String fyParam(java.lang.String,java.lang.String))</function-signature>
+        <example>${fns:fyParam(code,args)}</example>
+    </function>
+
+    <function>
+        <description>翻译（带多个参数）</description>
+        <name>fyParams</name>
+        <function-class>com.sicheng.common.utils.FYUtils</function-class>
+        <function-signature>java.lang.String fyParams(java.lang.String,java.lang.String[]))</function-signature>
+        <example>${fns:fyParams(code,args,args)}</example>
+    </function>
+
+</taglib>

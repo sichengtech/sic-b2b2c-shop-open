@@ -1,0 +1,188 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>发布采购单 Powered by SiC</title>
+<% include("/include/head.html"){}%>
+<!-- 百度上传js文件 -->
+<script type="text/javascript" src="${ctxStatic}/MyUpload/webuploader/webuploader.min.js"></script>
+<!-- MyUploader方法文件 -->
+<script type="text/javascript" src="${ctxStatic}/MyUpload/js/MyUpload-2.0.0.js"></script>
+<style type="text/css">
+	/* 上传 */
+	.uploadCloseBtn{width: 16px;height: 16px;border: 0px solid #d7d7d7;border-radius:9px;text-align: center;
+	line-height: 15px;position: absolute;left: 91px;top:0px;background: #ffffff;cursor: pointer;}
+	.uploadImgDiv{position: relative;margin-top: 10px;}
+	img.preview{width: 100px!important;height: 100px;margin-left: 100px;}
+	label.error{margin-left: 0;}
+</style>
+<script type="text/javascript">
+	var releaseType=${releaseType};
+</script>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<div>
+		<div class="wp clearfix jinrong mb30 mt30">
+			<ul class="fabu mb30">
+				<li class="cur" type="0"><a href="javascript:void(0);">批量发布</a></li>
+				<li type="1"><a href="javascript:void(0);">一句话发布</a></li>
+				<li type="2"><a href="javascript:void(0);">发布BOM表</a></li>
+			</ul>
+			<!-- 批量发布 -->
+			<div class="piliang-fb">
+				<form id="inputForm" action="${ctxf}/purchase/release/batch.htm" method="post" class="sui-form">
+					<div class="add_btn" id="add_btn">
+						<ul class="gongsimingzi clear">
+							<li>
+								<span><span style="display: inline"><font color="red">*</font></span>采购标题：</span>
+								<input name="title" type="text" class="input-xfat input-xlarge" maxlength="64" style="line-height: 20px;" autocomplete="off" />
+							</li>
+							<li style="margin-left: 61px;">
+								<span style="width: 110px;"><span style="display: inline"><font color="red">*</font></span>采购到期时间：</span>
+								<input type="text" class="input-xlarge input-date input-xfat" name="expiryTime" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'%y-%M-{%d+1}'});"/>
+							</li>
+							<li>
+								<span><span style="display: inline"><font color="red">*</font></span>交易周期：</span>
+								<input type="text" class="input-xfat input-xlarge" name="cycle" maxlength="64" autocomplete="off" />
+							</li>
+							<li>
+								<span style="width: 106px;">采购说明：</span>
+								<input type="text" name="purchaseExplain" class="input-xlarge input-xfat" style="line-height: 18px;" autocomplete="off" />
+							</li>
+						</ul>
+						<table border="0" cellspacing="0" cellpadding="0" width="1190" id="listTable" class="mt20">
+							<tr class="lastone">
+								<th scope="col">
+									<span><font color="red">*</font></span>产品名称
+								</th>
+								<th scope="col">
+									<span><font color="red">*</font></span>型号
+								</th>
+								<th scope="col">品牌</th>
+								<th scope="col">
+									<span><font color="red">*</font></span>数量
+								</th>
+								<th scope="col">单价(元)</th>
+								<th scope="col">
+									<span><font color="red">*</font></span>单位
+								</th>
+								<th scope="col">备注</th>
+								<th scope="col">操作</th>
+							</tr>
+						</table>
+						<div style="margin:5px 0 10px 20px">
+							<a href="javascript:;" id="addrow" class="sui-btn btn-large btn-primary">新增</a>
+						</div>
+					</div>
+					<br>
+					<div class="fabuanniu fr">
+						<br>
+						<button href="javascript:void(0);" id="fabu" class="sui-btn btn-large btn-primary">发布</button>
+					</div>
+				</form>
+			</div>
+			<!-- 批量发布 end -->
+			<!-- 一句话发布 -->
+			<div class="piliang-fb-1 hide">
+				<form id="releaseOneForm" name="form" class="from-yiju" action="${ctxf}/purchase/release/one.htm" method="post">
+					<div class="fr zhanghusafe">
+						<div class="ninde-wt sui-form">
+							<p style="font-size: 14px;"><span><font color="red">*</font></span>采购标题：</p>
+							<input name="title" type="text" class="input-xfat input-xlarge" maxlength="64" style="line-height: 20px; width: 692px;" autocomplete="off" />
+							<p style="font-size: 14px;"><span><font color="red">*</font></span>交易周期：</p>
+							<input name="cycle" type="text" class="input-xfat input-xlarge" maxlength="64" style="line-height: 20px; width: 692px;" autocomplete="off" />
+							<p style="font-size: 14px;">采购说明：</p>
+							<input name="purchaseExplain" type="text" class="input-xfat input-xlarge" maxlength="64" style="line-height: 20px; width: 692px;" autocomplete="off" />
+							<p style="font-size: 14px;"><span><font color="red">*</font></span>采购到期时间：</p>
+							<input name="expiryTime" type="text" class="input-xxlarge input-date input-xfat" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'%y-%M-{%d+1}'});" style="width: 693px;"/>
+							<p><span style="display: inline"><font color="red">*</font></span>您的委托采购内容</p>
+							<input type="hidden" name="type" value="2">
+							<textarea id="content" name="content" rows="" class="ninde-wtnr" style="height: 240px;" maxlength="2000"></textarea>
+						</div>
+						<div class="fabuanniu-1 mt20">
+							<button id="fabu1" class="sui-btn btn-large btn-primary">发布</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<!-- 一句话发布 end -->
+			<!-- 上传BOM表 -->
+			<div class="fr zhanghusafe piliang-fb-2">
+				<div class="chuanbom mt20 clear">
+					<form action="${ctxf}/purchase/release/bom.htm" id="releaseBomForm" method="post" class="frombox sui-form m0">
+						<div class="mt20">
+							<span class="" style="font-size: 14px; width: 104px; display: inline-block; text-align: right;"><span><font color="red">*</font></span>采购标题：</span>
+							<input name="title" type="text" class="input-xfat input-xxlarge" maxlength="64" style="line-height: 20px;" autocomplete="off" />
+							<br /><br />
+							<span class="" style="font-size: 14px; width: 104px; display: inline-block; text-align: right;"><span><font color="red">*</font></span>交易周期：</span>
+							<input name="cycle" type="text" class="input-xfat input-xxlarge" maxlength="64" style="line-height: 20px;" autocomplete="off" />
+							<br /><br />
+							<span class="" style="font-size: 14px; width: 104px; display: inline-block; text-align: right;">采购说明：</span>
+							<input name="purchaseExplain" type="text" class="input-xfat input-xxlarge" maxlength="64" style="line-height: 20px;" autocomplete="off" />
+							<br /><br />
+							<span class="" style="font-size: 14px; width: 105px; display: inline-block; text-align: right;"><span><font color="red">*</font></span>采购到期时间：</span>
+							<input name="expiryTime" type="text" class="input-xxlarge input-date input-xfat" onclick="WdatePicker({dateFmt:'yyyy-MM-dd',minDate:'%y-%M-{%d+1}'});"/>
+							<br />
+							<div class="writetit" style="font-size: 14px;"><span><font color="red">*</font></span>上传BOM表：</div>
+					        <div class="input-append">
+			        			<input type="hidden" class="imgPath" name="bomPath" value=""/>
+			        			<input type="hidden" class="imgPath" name="content" value=""/>
+			        			<div id="vessel"></div>
+			        		</div>
+					        
+					        
+					        <br />
+					        <span class="" style="font-size: 14px; width: 104px; display: inline-block; text-align: right;"></span>
+							<button id="fabu2" type="submit" class="sui-btn mt20 btn-large btn-primary" style="width: 100px; font-size: 16px;">发布</button>
+							<!-- <div class="fastrelease J_fastrelease">
+								上传BOM表
+								<span></span>
+							</div> -->
+						</div>
+					</form>
+				</div>
+			</div>
+			<!-- 上传BOM表 end -->
+		</div>
+	</div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/front/english/purchaseForm.js"></script>
+	<script type="text/javascript">
+		var content='${message!}';
+		var type='${type!}';
+		sysMessage(content,type);
+	</script>
+	<script type="text/template" id="purchase_batch_tr_tpl" info="模板">
+		<tr class="purchase_content">
+			<td>
+				<input name="name" id="{{d.nameId}}" type="text" htmlEscape="false" maxlength="64" class="required input-large input-xfat" /></br>
+			</td>
+			<td>
+				<input name="model" id="{{d.modelId}}" type="text" htmlEscape="false" maxlength="64" class="required input-large input-xfat" /></br>
+			</td>
+			<td>
+				<input name="brand" type="text" htmlEscape="false" maxlength="64" class="input-large input-xfat"/></br>
+			</td>
+			<td>
+				<input name="amount" id="{{d.amountId}}" type="text" htmlEscape="false" maxlength="9" class="required input-small input-xfat" /></br>
+			</td>
+			<td>
+				<input name="priceRequirement" type="text" htmlEscape="false" maxlength="64" class="input-small input-xfat"/></br>
+			</td>
+			<td>
+				<input name="unit" id="{{d.unitId}}" type="text" htmlEscape="false" maxlength="64" class="input-small input-xfat" /></br>
+			</td>
+			<td>
+				<input name="purchaseRemark" type="text" htmlEscape="false" maxlength="64" class="input-large input-xfat"/></br>
+			</td>
+			<td>
+				<button type="button" name="delButton" class="sui-btn btn-bordered btn-large btn-danger delButton">删除</button>
+			</td>
+		</tr>
+	</script>
+</body>
+</html>

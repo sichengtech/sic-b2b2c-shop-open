@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.AccountTiedCardDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="accountTiedCardColumns">
+	<trim suffixOverrides=",">
+		a.tied_card_id AS 'tiedCardId',                                      <!-- 主键ID bigint(20) unsigned-->
+		a.u_id AS 'uId',                                                     <!-- 会员id bigint(20)-->
+		a.bank_card_number AS 'bankCardNumber',                              <!-- 银行卡号 varchar(64)-->
+		a.payee AS 'payee',                                                  <!-- 收款人 varchar(64)-->
+		a.id_number AS 'idNumber',                                           <!-- 身份证号 bigint(64)-->
+		a.account_opening_bank AS 'accountOpeningBank',                      <!-- 开户银行 varchar(64)-->
+		a.mobile_phone_number AS 'mobilePhoneNumber',                        <!-- 开户手机号 varchar(64)-->
+		a.audit_status AS 'auditStatus',                                     <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+		a.audit_opinion AS 'auditOpinion',                                   <!-- 审核理由 varchar(255)-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.tiedCardId != null ">AND a.tied_card_id = #{c.tiedCardId}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.bankCardNumber != null and c.bankCardNumber != ''">AND a.bank_card_number = #{c.bankCardNumber}</if>
+		<if test="c.payee != null and c.payee != ''">AND a.payee = #{c.payee}</if>
+		<if test="c.idNumber != null ">AND a.id_number = #{c.idNumber}</if>
+		<if test="c.accountOpeningBank != null and c.accountOpeningBank != ''">AND a.account_opening_bank = #{c.accountOpeningBank}</if>
+		<if test="c.mobilePhoneNumber != null and c.mobilePhoneNumber != ''">AND a.mobile_phone_number = #{c.mobilePhoneNumber}</if>
+		<if test="c.auditStatus != null and c.auditStatus != ''">AND a.audit_status = #{c.auditStatus}</if>
+		<if test="c.auditOpinion != null and c.auditOpinion != ''">AND a.audit_opinion = #{c.auditOpinion}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="AccountTiedCard">
+		SELECT 
+		<include refid="accountTiedCardColumns"/>
+		FROM account_tied_card a
+		WHERE a.tied_card_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="AccountTiedCard">
+		SELECT 
+		<include refid="accountTiedCardColumns"/>
+		FROM account_tied_card a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.tied_card_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="AccountTiedCard">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountTiedCardColumns"/>
+		FROM account_tied_card a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.tied_card_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="AccountTiedCard">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="accountTiedCardColumns"/>
+		FROM account_tied_card a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.tied_card_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.tiedCardId" keyColumn="tied_card_id" useGeneratedKeys="true">
+		INSERT INTO account_tied_card
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			tied_card_id,                                      <!-- 主键ID bigint(20) unsigned-->
+			u_id,                                              <!-- 会员id bigint(20)-->
+			bank_card_number,                                  <!-- 银行卡号 varchar(64)-->
+			payee,                                             <!-- 收款人 varchar(64)-->
+			id_number,                                         <!-- 身份证号 bigint(64)-->
+			account_opening_bank,                              <!-- 开户银行 varchar(64)-->
+			mobile_phone_number,                               <!-- 开户手机号 varchar(64)-->
+			audit_status,                                      <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			audit_opinion,                                     <!-- 审核理由 varchar(255)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.tiedCardId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_tied_card_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.uId},                                     <!-- 会员id bigint(20)-->
+			#{entity.bankCardNumber},                          <!-- 银行卡号 varchar(64)-->
+			#{entity.payee},                                   <!-- 收款人 varchar(64)-->
+			#{entity.idNumber},                                <!-- 身份证号 bigint(64)-->
+			#{entity.accountOpeningBank},                      <!-- 开户银行 varchar(64)-->
+			#{entity.mobilePhoneNumber},                       <!-- 开户手机号 varchar(64)-->
+			#{entity.auditStatus},                             <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			#{entity.auditOpinion},                            <!-- 审核理由 varchar(255)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.tiedCardId" keyColumn="tied_card_id" useGeneratedKeys="true">
+		INSERT INTO account_tied_card
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.tiedCardId != null">tied_card_id,</if></if>
+			<if test="entity.pkMode==2">tied_card_id,</if>
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id bigint(20)-->
+			<if test="entity.bankCardNumber != null">bank_card_number,</if>                    <!-- 银行卡号 varchar(64)-->
+			<if test="entity.payee != null">payee,</if>                                        <!-- 收款人 varchar(64)-->
+			<if test="entity.idNumber != null">id_number,</if>                                 <!-- 身份证号 bigint(64)-->
+			<if test="entity.accountOpeningBank != null">account_opening_bank,</if>            <!-- 开户银行 varchar(64)-->
+			<if test="entity.mobilePhoneNumber != null">mobile_phone_number,</if>              <!-- 开户手机号 varchar(64)-->
+			<if test="entity.auditStatus != null">audit_status,</if>                           <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">audit_opinion,</if>                         <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.tiedCardId != null">#{entity.tiedCardId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">account_tied_card_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id bigint(20)-->
+			<if test="entity.bankCardNumber != null">#{entity.bankCardNumber},</if>                      <!-- 银行卡号 varchar(64)-->
+			<if test="entity.payee != null">#{entity.payee},</if>                                        <!-- 收款人 varchar(64)-->
+			<if test="entity.idNumber != null">#{entity.idNumber},</if>                                  <!-- 身份证号 bigint(64)-->
+			<if test="entity.accountOpeningBank != null">#{entity.accountOpeningBank},</if>              <!-- 开户银行 varchar(64)-->
+			<if test="entity.mobilePhoneNumber != null">#{entity.mobilePhoneNumber},</if>                <!-- 开户手机号 varchar(64)-->
+			<if test="entity.auditStatus != null">#{entity.auditStatus},</if>                            <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">#{entity.auditOpinion},</if>                          <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE account_tied_card 
+		<set>
+			u_id = #{entity.uId},                                           <!-- 会员id bigint(20)-->
+			bank_card_number = #{entity.bankCardNumber},                    <!-- 银行卡号 varchar(64)-->
+			payee = #{entity.payee},                                        <!-- 收款人 varchar(64)-->
+			id_number = #{entity.idNumber},                                 <!-- 身份证号 bigint(64)-->
+			account_opening_bank = #{entity.accountOpeningBank},            <!-- 开户银行 varchar(64)-->
+			mobile_phone_number = #{entity.mobilePhoneNumber},              <!-- 开户手机号 varchar(64)-->
+			audit_status = #{entity.auditStatus},                           <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			audit_opinion = #{entity.auditOpinion},                         <!-- 审核理由 varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE tied_card_id = #{entity.tiedCardId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE account_tied_card a 
+		<set>
+			u_id = #{entity.uId},                                           <!-- 会员id bigint(20)-->
+			bank_card_number = #{entity.bankCardNumber},                    <!-- 银行卡号 varchar(64)-->
+			payee = #{entity.payee},                                        <!-- 收款人 varchar(64)-->
+			id_number = #{entity.idNumber},                                 <!-- 身份证号 bigint(64)-->
+			account_opening_bank = #{entity.accountOpeningBank},            <!-- 开户银行 varchar(64)-->
+			mobile_phone_number = #{entity.mobilePhoneNumber},              <!-- 开户手机号 varchar(64)-->
+			audit_status = #{entity.auditStatus},                           <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			audit_opinion = #{entity.auditOpinion},                         <!-- 审核理由 varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE account_tied_card
+		<set>
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id bigint(20)-->
+			<if test="entity.bankCardNumber != null">bank_card_number = #{entity.bankCardNumber},</if>                          <!-- 银行卡号 varchar(64)-->
+			<if test="entity.payee != null">payee = #{entity.payee},</if>                                                       <!-- 收款人 varchar(64)-->
+			<if test="entity.idNumber != null">id_number = #{entity.idNumber},</if>                                             <!-- 身份证号 bigint(64)-->
+			<if test="entity.accountOpeningBank != null">account_opening_bank = #{entity.accountOpeningBank},</if>              <!-- 开户银行 varchar(64)-->
+			<if test="entity.mobilePhoneNumber != null">mobile_phone_number = #{entity.mobilePhoneNumber},</if>                 <!-- 开户手机号 varchar(64)-->
+			<if test="entity.auditStatus != null">audit_status = #{entity.auditStatus},</if>                                    <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">audit_opinion = #{entity.auditOpinion},</if>                                 <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE tied_card_id = #{entity.tiedCardId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE account_tied_card a
+		<set>
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id bigint(20)-->
+			<if test="entity.bankCardNumber != null">bank_card_number = #{entity.bankCardNumber},</if>                          <!-- 银行卡号 varchar(64)-->
+			<if test="entity.payee != null">payee = #{entity.payee},</if>                                                       <!-- 收款人 varchar(64)-->
+			<if test="entity.idNumber != null">id_number = #{entity.idNumber},</if>                                             <!-- 身份证号 bigint(64)-->
+			<if test="entity.accountOpeningBank != null">account_opening_bank = #{entity.accountOpeningBank},</if>              <!-- 开户银行 varchar(64)-->
+			<if test="entity.mobilePhoneNumber != null">mobile_phone_number = #{entity.mobilePhoneNumber},</if>                 <!-- 开户手机号 varchar(64)-->
+			<if test="entity.auditStatus != null">audit_status = #{entity.auditStatus},</if>                                    <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+			<if test="entity.auditOpinion != null">audit_opinion = #{entity.auditOpinion},</if>                                 <!-- 审核理由 varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM account_tied_card
+		WHERE tied_card_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM account_tied_card
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					tied_card_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM account_tied_card a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM account_tied_card a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

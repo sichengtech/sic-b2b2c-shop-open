@@ -1,0 +1,398 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.app.dao.AppAdDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="appAdColumns">
+		<trim suffixOverrides=",">
+			a.id AS "id",                                                        <!-- id bigint(20)-->
+			a.background_color AS "backgroundColor",                             <!-- 背景颜色 varchar(32)-->
+			a.background_image AS "backgroundImage",                             <!-- 背景图 varchar(64)-->
+			a.is_show AS "isShow",                                               <!-- 是否展示：0为否，1为是 char(1)-->
+			a.word_one AS "wordOne",                                             <!-- 文本描述1 varchar(128)-->
+			a.word_one_color AS "wordOneColor",                                  <!-- 文本1颜色 varchar(32)-->
+			a.word_three AS "wordThree",                                         <!-- 文本描述3 varchar(128)-->
+			a.word_two AS "wordTwo",                                             <!-- 文本描述2 varchar(128)-->
+			a.button_word AS "buttonWord",                                       <!-- 第三页按钮文字 varchar(64)-->
+			a.word_two_color AS "wordTwoColor",                                  <!-- 文本2颜色 varchar(32)-->
+			a.button_colour AS "buttonColour",                                   <!-- 第三页按钮颜色 varchar(32)-->
+			a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+			a.word_three_color AS "wordThreeColor",                              <!-- 文本3颜色 varchar(32)-->
+			a.update_date AS "updateDate",                                       <!-- 修改日期 datetime-->
+			a.bak1 AS "bak1",                                                    <!-- 备用字段1 varchar(64)-->
+			a.bak2 AS "bak2",                                                    <!-- 备用字段2 varchar(64)-->
+			a.bak3 AS "bak3",                                                    <!-- 备用字段3 varchar(64)-->
+			a.bak4 AS "bak4",                                                    <!-- 备用字段4 varchar(64)-->
+			a.bak5 AS "bak5",                                                    <!-- 备用字段5 varchar(64)-->
+
+		</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+		<if test="w!=null and w.e!=null">
+			<bind name="c" value="w.e"/>
+			<if test="c.id != null ">AND a.id = #{c.id}</if>
+			<if test="c.backgroundColor != null and c.backgroundColor != ''">AND a.background_color = #{c.backgroundColor}</if>
+			<if test="c.backgroundImage != null and c.backgroundImage != ''">AND a.background_image = #{c.backgroundImage}</if>
+			<if test="c.isShow != null and c.isShow != ''">AND a.is_show = #{c.isShow}</if>
+			<if test="c.wordOne != null and c.wordOne != ''">AND a.word_one = #{c.wordOne}</if>
+			<if test="c.wordOneColor != null and c.wordOneColor != ''">AND a.word_one_color = #{c.wordOneColor}</if>
+			<if test="c.wordThree != null and c.wordThree != ''">AND a.word_three = #{c.wordThree}</if>
+			<if test="c.wordTwo != null and c.wordTwo != ''">AND a.word_two = #{c.wordTwo}</if>
+			<if test="c.buttonWord != null and c.buttonWord != ''">AND a.button_word = #{c.buttonWord}</if>
+			<if test="c.wordTwoColor != null and c.wordTwoColor != ''">AND a.word_two_color = #{c.wordTwoColor}</if>
+			<if test="c.buttonColour != null and c.buttonColour != ''">AND a.button_colour = #{c.buttonColour}</if>
+			<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+			<if test="c.wordThreeColor != null and c.wordThreeColor != ''">AND a.word_three_color = #{c.wordThreeColor}</if>
+			<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+			<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+			<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+			<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+			<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+			<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		</if>
+	</sql>
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="AppAd">
+		SELECT
+		<include refid="appAdColumns"/>
+		FROM app_ad a
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="AppAd">
+		SELECT
+		<include refid="appAdColumns"/>
+		FROM app_ad a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="AppAd">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="appAdColumns"/>
+		FROM app_ad a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="AppAd">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="appAdColumns"/>
+		FROM app_ad a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO app_ad
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- id bigint(20)-->
+			background_color,                                  <!-- 背景颜色 varchar(32)-->
+			background_image,                                  <!-- 背景图 varchar(64)-->
+			is_show,                                           <!-- 是否展示：0为否，1为是 char(1)-->
+			word_one,                                          <!-- 文本描述1 varchar(128)-->
+			word_one_color,                                    <!-- 文本1颜色 varchar(32)-->
+			word_three,                                        <!-- 文本描述3 varchar(128)-->
+			word_two,                                          <!-- 文本描述2 varchar(128)-->
+			button_word,                                       <!-- 第三页按钮文字 varchar(64)-->
+			word_two_color,                                    <!-- 文本2颜色 varchar(32)-->
+			button_colour,                                     <!-- 第三页按钮颜色 varchar(32)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			word_three_color,                                  <!-- 文本3颜色 varchar(32)-->
+			update_date,                                       <!-- 修改日期 datetime-->
+			bak1,                                              <!-- 备用字段1 varchar(64)-->
+			bak2,                                              <!-- 备用字段2 varchar(64)-->
+			bak3,                                              <!-- 备用字段3 varchar(64)-->
+			bak4,                                              <!-- 备用字段4 varchar(64)-->
+			bak5,                                              <!-- 备用字段5 varchar(64)-->
+
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">app_ad_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.backgroundColor},                         <!-- 背景颜色 varchar(32)-->
+			#{entity.backgroundImage},                         <!-- 背景图 varchar(64)-->
+			#{entity.isShow},                                  <!-- 是否展示：0为否，1为是 char(1)-->
+			#{entity.wordOne},                                 <!-- 文本描述1 varchar(128)-->
+			#{entity.wordOneColor},                            <!-- 文本1颜色 varchar(32)-->
+			#{entity.wordThree},                               <!-- 文本描述3 varchar(128)-->
+			#{entity.wordTwo},                                 <!-- 文本描述2 varchar(128)-->
+			#{entity.buttonWord},                              <!-- 第三页按钮文字 varchar(64)-->
+			#{entity.wordTwoColor},                            <!-- 文本2颜色 varchar(32)-->
+			#{entity.buttonColour},                            <!-- 第三页按钮颜色 varchar(32)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.wordThreeColor},                          <!-- 文本3颜色 varchar(32)-->
+			#{entity.updateDate},                              <!-- 修改日期 datetime-->
+			#{entity.bak1},                                    <!-- 备用字段1 varchar(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 varchar(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 varchar(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 varchar(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 varchar(64)-->
+
+		</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO app_ad
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.backgroundColor != null">background_color,</if>                   <!-- 背景颜色 varchar(32)-->
+			<if test="entity.backgroundImage != null">background_image,</if>                   <!-- 背景图 varchar(64)-->
+			<if test="entity.isShow != null">is_show,</if>                                     <!-- 是否展示：0为否，1为是 char(1)-->
+			<if test="entity.wordOne != null">word_one,</if>                                   <!-- 文本描述1 varchar(128)-->
+			<if test="entity.wordOneColor != null">word_one_color,</if>                        <!-- 文本1颜色 varchar(32)-->
+			<if test="entity.wordThree != null">word_three,</if>                               <!-- 文本描述3 varchar(128)-->
+			<if test="entity.wordTwo != null">word_two,</if>                                   <!-- 文本描述2 varchar(128)-->
+			<if test="entity.buttonWord != null">button_word,</if>                             <!-- 第三页按钮文字 varchar(64)-->
+			<if test="entity.wordTwoColor != null">word_two_color,</if>                        <!-- 文本2颜色 varchar(32)-->
+			<if test="entity.buttonColour != null">button_colour,</if>                         <!-- 第三页按钮颜色 varchar(32)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.wordThreeColor != null">word_three_color,</if>                    <!-- 文本3颜色 varchar(32)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 修改日期 datetime-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 varchar(64)-->
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">app_ad_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.backgroundColor != null">#{entity.backgroundColor},</if>                    <!-- 背景颜色 varchar(32)-->
+			<if test="entity.backgroundImage != null">#{entity.backgroundImage},</if>                    <!-- 背景图 varchar(64)-->
+			<if test="entity.isShow != null">#{entity.isShow},</if>                                      <!-- 是否展示：0为否，1为是 char(1)-->
+			<if test="entity.wordOne != null">#{entity.wordOne},</if>                                    <!-- 文本描述1 varchar(128)-->
+			<if test="entity.wordOneColor != null">#{entity.wordOneColor},</if>                          <!-- 文本1颜色 varchar(32)-->
+			<if test="entity.wordThree != null">#{entity.wordThree},</if>                                <!-- 文本描述3 varchar(128)-->
+			<if test="entity.wordTwo != null">#{entity.wordTwo},</if>                                    <!-- 文本描述2 varchar(128)-->
+			<if test="entity.buttonWord != null">#{entity.buttonWord},</if>                              <!-- 第三页按钮文字 varchar(64)-->
+			<if test="entity.wordTwoColor != null">#{entity.wordTwoColor},</if>                          <!-- 文本2颜色 varchar(32)-->
+			<if test="entity.buttonColour != null">#{entity.buttonColour},</if>                          <!-- 第三页按钮颜色 varchar(32)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.wordThreeColor != null">#{entity.wordThreeColor},</if>                      <!-- 文本3颜色 varchar(32)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 修改日期 datetime-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 varchar(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE app_ad
+		<set>
+			background_color = #{entity.backgroundColor},                   <!-- 背景颜色 varchar(32)-->
+			background_image = #{entity.backgroundImage},                   <!-- 背景图 varchar(64)-->
+			is_show = #{entity.isShow},                                     <!-- 是否展示：0为否，1为是 char(1)-->
+			word_one = #{entity.wordOne},                                   <!-- 文本描述1 varchar(128)-->
+			word_one_color = #{entity.wordOneColor},                        <!-- 文本1颜色 varchar(32)-->
+			word_three = #{entity.wordThree},                               <!-- 文本描述3 varchar(128)-->
+			word_two = #{entity.wordTwo},                                   <!-- 文本描述2 varchar(128)-->
+			button_word = #{entity.buttonWord},                             <!-- 第三页按钮文字 varchar(64)-->
+			word_two_color = #{entity.wordTwoColor},                        <!-- 文本2颜色 varchar(32)-->
+			button_colour = #{entity.buttonColour},                         <!-- 第三页按钮颜色 varchar(32)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			word_three_color = #{entity.wordThreeColor},                    <!-- 文本3颜色 varchar(32)-->
+			update_date = #{entity.updateDate},                             <!-- 修改日期 datetime-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE app_ad a
+		<set>
+			background_color = #{entity.backgroundColor},                   <!-- 背景颜色 varchar(32)-->
+			background_image = #{entity.backgroundImage},                   <!-- 背景图 varchar(64)-->
+			is_show = #{entity.isShow},                                     <!-- 是否展示：0为否，1为是 char(1)-->
+			word_one = #{entity.wordOne},                                   <!-- 文本描述1 varchar(128)-->
+			word_one_color = #{entity.wordOneColor},                        <!-- 文本1颜色 varchar(32)-->
+			word_three = #{entity.wordThree},                               <!-- 文本描述3 varchar(128)-->
+			word_two = #{entity.wordTwo},                                   <!-- 文本描述2 varchar(128)-->
+			button_word = #{entity.buttonWord},                             <!-- 第三页按钮文字 varchar(64)-->
+			word_two_color = #{entity.wordTwoColor},                        <!-- 文本2颜色 varchar(32)-->
+			button_colour = #{entity.buttonColour},                         <!-- 第三页按钮颜色 varchar(32)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			word_three_color = #{entity.wordThreeColor},                    <!-- 文本3颜色 varchar(32)-->
+			update_date = #{entity.updateDate},                             <!-- 修改日期 datetime-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE app_ad
+		<set>
+			<if test="entity.backgroundColor != null">background_color = #{entity.backgroundColor},</if>                        <!-- 背景颜色 varchar(32)-->
+			<if test="entity.backgroundImage != null">background_image = #{entity.backgroundImage},</if>                        <!-- 背景图 varchar(64)-->
+			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- 是否展示：0为否，1为是 char(1)-->
+			<if test="entity.wordOne != null">word_one = #{entity.wordOne},</if>                                                <!-- 文本描述1 varchar(128)-->
+			<if test="entity.wordOneColor != null">word_one_color = #{entity.wordOneColor},</if>                                <!-- 文本1颜色 varchar(32)-->
+			<if test="entity.wordThree != null">word_three = #{entity.wordThree},</if>                                          <!-- 文本描述3 varchar(128)-->
+			<if test="entity.wordTwo != null">word_two = #{entity.wordTwo},</if>                                                <!-- 文本描述2 varchar(128)-->
+			<if test="entity.buttonWord != null">button_word = #{entity.buttonWord},</if>                                       <!-- 第三页按钮文字 varchar(64)-->
+			<if test="entity.wordTwoColor != null">word_two_color = #{entity.wordTwoColor},</if>                                <!-- 文本2颜色 varchar(32)-->
+			<if test="entity.buttonColour != null">button_colour = #{entity.buttonColour},</if>                                 <!-- 第三页按钮颜色 varchar(32)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.wordThreeColor != null">word_three_color = #{entity.wordThreeColor},</if>                          <!-- 文本3颜色 varchar(32)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改日期 datetime-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE app_ad a
+		<set>
+			<if test="entity.backgroundColor != null">background_color = #{entity.backgroundColor},</if>                        <!-- 背景颜色 varchar(32)-->
+			<if test="entity.backgroundImage != null">background_image = #{entity.backgroundImage},</if>                        <!-- 背景图 varchar(64)-->
+			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- 是否展示：0为否，1为是 char(1)-->
+			<if test="entity.wordOne != null">word_one = #{entity.wordOne},</if>                                                <!-- 文本描述1 varchar(128)-->
+			<if test="entity.wordOneColor != null">word_one_color = #{entity.wordOneColor},</if>                                <!-- 文本1颜色 varchar(32)-->
+			<if test="entity.wordThree != null">word_three = #{entity.wordThree},</if>                                          <!-- 文本描述3 varchar(128)-->
+			<if test="entity.wordTwo != null">word_two = #{entity.wordTwo},</if>                                                <!-- 文本描述2 varchar(128)-->
+			<if test="entity.buttonWord != null">button_word = #{entity.buttonWord},</if>                                       <!-- 第三页按钮文字 varchar(64)-->
+			<if test="entity.wordTwoColor != null">word_two_color = #{entity.wordTwoColor},</if>                                <!-- 文本2颜色 varchar(32)-->
+			<if test="entity.buttonColour != null">button_colour = #{entity.buttonColour},</if>                                 <!-- 第三页按钮颜色 varchar(32)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.wordThreeColor != null">word_three_color = #{entity.wordThreeColor},</if>                          <!-- 文本3颜色 varchar(32)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 修改日期 datetime-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM app_ad
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM app_ad
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM app_ad a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM app_ad a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

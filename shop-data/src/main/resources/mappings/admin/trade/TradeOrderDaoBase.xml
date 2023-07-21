@@ -1,0 +1,888 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeOrderDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="tradeOrderColumns">
+	<trim suffixOverrides=",">
+		a.order_id AS "orderId",                                             <!-- 主键 bigint(20)-->
+		a.out_trade_no AS "outTradeNo",                                      <!-- 商户订单号 varchar(64)-->
+		a.u_id AS "uId",                                                     <!-- 买家id(关联会员表) bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
+		a.b_name AS "bName",                                                 <!-- 商家公司名称(快照) varchar(64)-->
+		a.admin_id AS "adminId",                                             <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+		a.address_id AS "addressId",                                         <!-- 收货地址id(关联收货地址) bigint(20)-->
+		a.consignee AS "consignee",                                          <!-- 收货人(快照) varchar(64)-->
+		a.phone AS "phone",                                                  <!-- 电话(快照) varchar(64)-->
+		a.zip_code AS "zipCode",                                             <!-- 邮编(快照) varchar(64)-->
+		a.amount_paid AS "amountPaid",                                       <!-- 订单总金额 decimal(12,3)-->
+		a.offset_amount AS "offsetAmount",                                   <!-- 调整后的金额 decimal(12,3)-->
+		a.coupon_discount AS "couponDiscount",                               <!-- 优惠券id(预留) bigint(20)-->
+		a.cash_coupon_id AS "cashCouponId",                                  <!-- 代金券id(预留) bigint(20)-->
+		a.promotion_discount AS "promotionDiscount",                         <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+		a.promotion AS "promotion",                                          <!-- 促销(预留)，促销活动名称 varchar(64)-->
+		a.red_packet AS "redPacket",                                         <!-- 平台红包(预留) decimal(12,3)-->
+		a.fee AS "fee",                                                      <!-- 支付佣金 decimal(12,3)-->
+		a.order_status AS "orderStatus",                                     <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+		a.is_return_status AS "isReturnStatus",                              <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+		a.payment_method_name AS "paymentMethodName",                        <!-- 支付方式名称（快照） varchar(64)-->
+		a.payment_method_id AS "paymentMethodId",                            <!-- 支付方式(支付方式表Id) bigint(20)-->
+		a.freight AS "freight",                                              <!-- 运费，计算出来的总运费 decimal(12,3)-->
+		a.shipping_method_name AS "shippingMethodName",                      <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+		a.shipping_method_id AS "shippingMethodId",                          <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+		a.point AS "point",                                                  <!-- 赠送的积分 varchar(64)-->
+		a.is_need_logistics AS "isNeedLogistics",                            <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+		a.logistics_template_id AS "logisticsTemplateId",                    <!-- 物流公司id(物流公司表外键) bigint(20)-->
+		a.logistics_template_name AS "logisticsTemplateName",                <!-- 物流公司名称（快照） varchar(64)-->
+		a.tracking_no AS "trackingNo",                                       <!-- 运单号 varchar(64)-->
+		a.tax AS "tax",                                                      <!-- 税金 varchar(64)-->
+		a.is_invoice AS "isInvoice",                                         <!-- 是否开据发票，0否、1是 char(1)-->
+		a.deliver_id AS "deliverId",                                         <!-- 发票id(发票表id) bigint(20)-->
+		a.memo AS "memo",                                                    <!-- 买家附言 varchar(255)-->
+		a.place_order_time AS "placeOrderTime",                              <!-- 下单时间 datetime-->
+		a.pay_order_time AS "payOrderTime",                                  <!-- 付款时间（结算时以此时间为准） datetime-->
+		a.deliver_product_date AS "deliverProductDate",                      <!-- 发货时间 datetime-->
+		a.product_receipt_date AS "productReceiptDate",                      <!-- 收货时间 datetime-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 varchar(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 varchar(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 varchar(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 varchar(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 varchar(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 varchar(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 varchar(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 varchar(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 varchar(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 varchar(64)-->
+		a.pay_order_number AS "payOrderNumber",                              <!-- 支付单号 varchar(64)-->
+		a.sources AS "sources",                                              <!-- 来源(0pc、1移动端) char(1)-->
+		a.pre_deposit_pay AS "preDepositPay",                                <!-- 预存款支付(元) decimal(12,3)-->
+		a.pay_terminal AS "payTerminal",                                     <!-- 支付终端(0pc、1移动端) char(1)-->
+		a.third_pay_order_number AS "thirdPayOrderNumber",                   <!-- 第三方付款平台交易号 varchar(64)-->
+		a.online_pay_money AS "onlinePayMoney",                              <!-- 在线支付金额 decimal(12,3)-->
+		a.cancel_order_reason AS "cancelOrderReason",                        <!-- 取消订单理由 varchar(255)-->
+		a.city_name AS "cityName",                                           <!-- 收货地址所在市(快照) varchar(64)-->
+		a.detailed_address AS "detailedAddress",                             <!-- 详细地址(快照) varchar(255)-->
+		a.district_name AS "districtName",                                   <!-- 收货地址所在县(快照) varchar(64)-->
+		a.province_name AS "provinceName",                                   <!-- 收货地址所在省(快照) varchar(64)-->
+		a.seller_memo AS "sellerMemo",                                       <!-- 卖家附言 varchar(255)-->
+		a.cancel_order_date AS "cancelOrderDate",                            <!-- 取消订单时间 datetime-->
+		a.delay_days AS "delayDays",                                         <!-- 延迟收货天数 int(11)-->
+		a.is_additional_comment AS "isAdditionalComment",                    <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+		a.is_settlement AS "isSettlement",                                   <!-- 是否已结算 char(1)-->
+		a.settlement_money AS "settlementMoney",                             <!-- 结算金额 decimal(12,3)-->
+		a.need_pay AS "needPay",                                             <!-- 0.不需要、1.需要。 char(1)-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.orderId != null ">AND a.order_id = #{c.orderId}</if>
+		<if test="c.outTradeNo != null and c.outTradeNo != ''">AND a.out_trade_no = #{c.outTradeNo}</if>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.bName != null and c.bName != ''">AND a.b_name = #{c.bName}</if>
+		<if test="c.adminId != null ">AND a.admin_id = #{c.adminId}</if>
+		<if test="c.addressId != null ">AND a.address_id = #{c.addressId}</if>
+		<if test="c.consignee != null and c.consignee != ''">AND a.consignee = #{c.consignee}</if>
+		<if test="c.phone != null and c.phone != ''">AND a.phone = #{c.phone}</if>
+		<if test="c.zipCode != null and c.zipCode != ''">AND a.zip_code = #{c.zipCode}</if>
+		<if test="c.amountPaid != null ">AND a.amount_paid = #{c.amountPaid}</if>
+		<if test="c.offsetAmount != null ">AND a.offset_amount = #{c.offsetAmount}</if>
+		<if test="c.couponDiscount != null ">AND a.coupon_discount = #{c.couponDiscount}</if>
+		<if test="c.cashCouponId != null ">AND a.cash_coupon_id = #{c.cashCouponId}</if>
+		<if test="c.promotionDiscount != null ">AND a.promotion_discount = #{c.promotionDiscount}</if>
+		<if test="c.promotion != null and c.promotion != ''">AND a.promotion = #{c.promotion}</if>
+		<if test="c.redPacket != null ">AND a.red_packet = #{c.redPacket}</if>
+		<if test="c.fee != null ">AND a.fee = #{c.fee}</if>
+		<if test="c.orderStatus != null and c.orderStatus != ''">AND a.order_status = #{c.orderStatus}</if>
+		<if test="c.isReturnStatus != null and c.isReturnStatus != ''">AND a.is_return_status = #{c.isReturnStatus}</if>
+		<if test="c.paymentMethodName != null and c.paymentMethodName != ''">AND a.payment_method_name = #{c.paymentMethodName}</if>
+		<if test="c.paymentMethodId != null ">AND a.payment_method_id = #{c.paymentMethodId}</if>
+		<if test="c.freight != null ">AND a.freight = #{c.freight}</if>
+		<if test="c.shippingMethodName != null and c.shippingMethodName != ''">AND a.shipping_method_name = #{c.shippingMethodName}</if>
+		<if test="c.shippingMethodId != null ">AND a.shipping_method_id = #{c.shippingMethodId}</if>
+		<if test="c.point != null and c.point != ''">AND a.point = #{c.point}</if>
+		<if test="c.isNeedLogistics != null and c.isNeedLogistics != ''">AND a.is_need_logistics = #{c.isNeedLogistics}</if>
+		<if test="c.logisticsTemplateId != null ">AND a.logistics_template_id = #{c.logisticsTemplateId}</if>
+		<if test="c.logisticsTemplateName != null and c.logisticsTemplateName != ''">AND a.logistics_template_name = #{c.logisticsTemplateName}</if>
+		<if test="c.trackingNo != null and c.trackingNo != ''">AND a.tracking_no = #{c.trackingNo}</if>
+		<if test="c.tax != null and c.tax != ''">AND a.tax = #{c.tax}</if>
+		<if test="c.isInvoice != null and c.isInvoice != ''">AND a.is_invoice = #{c.isInvoice}</if>
+		<if test="c.deliverId != null ">AND a.deliver_id = #{c.deliverId}</if>
+		<if test="c.memo != null and c.memo != ''">AND a.memo = #{c.memo}</if>
+		<if test="c.beginPlaceOrderTime != null and c.endPlaceOrderTime != null ">AND a.place_order_time BETWEEN #{c.beginPlaceOrderTime} AND #{c.endPlaceOrderTime}</if>
+		<if test="c.beginPayOrderTime != null and c.endPayOrderTime != null ">AND a.pay_order_time BETWEEN #{c.beginPayOrderTime} AND #{c.endPayOrderTime}</if>
+		<if test="c.beginDeliverProductDate != null and c.endDeliverProductDate != null ">AND a.deliver_product_date BETWEEN #{c.beginDeliverProductDate} AND #{c.endDeliverProductDate}</if>
+		<if test="c.beginProductReceiptDate != null and c.endProductReceiptDate != null ">AND a.product_receipt_date BETWEEN #{c.beginProductReceiptDate} AND #{c.endProductReceiptDate}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+		<if test="c.payOrderNumber != null and c.payOrderNumber != ''">AND a.pay_order_number = #{c.payOrderNumber}</if>
+		<if test="c.sources != null and c.sources != ''">AND a.sources = #{c.sources}</if>
+		<if test="c.preDepositPay != null ">AND a.pre_deposit_pay = #{c.preDepositPay}</if>
+		<if test="c.payTerminal != null and c.payTerminal != ''">AND a.pay_terminal = #{c.payTerminal}</if>
+		<if test="c.thirdPayOrderNumber != null and c.thirdPayOrderNumber != ''">AND a.third_pay_order_number = #{c.thirdPayOrderNumber}</if>
+		<if test="c.onlinePayMoney != null ">AND a.online_pay_money = #{c.onlinePayMoney}</if>
+		<if test="c.cancelOrderReason != null and c.cancelOrderReason != ''">AND a.cancel_order_reason = #{c.cancelOrderReason}</if>
+		<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+		<if test="c.detailedAddress != null and c.detailedAddress != ''">AND a.detailed_address = #{c.detailedAddress}</if>
+		<if test="c.districtName != null and c.districtName != ''">AND a.district_name = #{c.districtName}</if>
+		<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+		<if test="c.sellerMemo != null and c.sellerMemo != ''">AND a.seller_memo = #{c.sellerMemo}</if>
+		<if test="c.beginCancelOrderDate != null and c.endCancelOrderDate != null ">AND a.cancel_order_date BETWEEN #{c.beginCancelOrderDate} AND #{c.endCancelOrderDate}</if>
+		<if test="c.delayDays != null ">AND a.delay_days = #{c.delayDays}</if>
+		<if test="c.isAdditionalComment != null and c.isAdditionalComment != ''">AND a.is_additional_comment = #{c.isAdditionalComment}</if>
+		<if test="c.isSettlement != null and c.isSettlement != ''">AND a.is_settlement = #{c.isSettlement}</if>
+		<if test="c.settlementMoney != null ">AND a.settlement_money = #{c.settlementMoney}</if>
+		<if test="c.needPay != null and c.needPay != ''">AND a.need_pay = #{c.needPay}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="TradeOrder">
+		SELECT 
+		<include refid="tradeOrderColumns"/>
+		FROM trade_order a
+		WHERE a.order_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="TradeOrder">
+		SELECT 
+		<include refid="tradeOrderColumns"/>
+		FROM trade_order a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.order_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="TradeOrder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeOrderColumns"/>
+		FROM trade_order a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.order_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="TradeOrder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeOrderColumns"/>
+		FROM trade_order a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.order_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.orderId" keyColumn="order_id" useGeneratedKeys="true">
+		INSERT INTO trade_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			order_id,                                          <!-- 主键 bigint(20)-->
+			out_trade_no,                                      <!-- 商户订单号 varchar(64)-->
+			u_id,                                              <!-- 买家id(关联会员表) bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
+			b_name,                                            <!-- 商家公司名称(快照) varchar(64)-->
+			admin_id,                                          <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			address_id,                                        <!-- 收货地址id(关联收货地址) bigint(20)-->
+			consignee,                                         <!-- 收货人(快照) varchar(64)-->
+			phone,                                             <!-- 电话(快照) varchar(64)-->
+			zip_code,                                          <!-- 邮编(快照) varchar(64)-->
+			amount_paid,                                       <!-- 订单总金额 decimal(12,3)-->
+			offset_amount,                                     <!-- 调整后的金额 decimal(12,3)-->
+			coupon_discount,                                   <!-- 优惠券id(预留) bigint(20)-->
+			cash_coupon_id,                                    <!-- 代金券id(预留) bigint(20)-->
+			promotion_discount,                                <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			promotion,                                         <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			red_packet,                                        <!-- 平台红包(预留) decimal(12,3)-->
+			fee,                                               <!-- 支付佣金 decimal(12,3)-->
+			order_status,                                      <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			is_return_status,                                  <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			payment_method_name,                               <!-- 支付方式名称（快照） varchar(64)-->
+			payment_method_id,                                 <!-- 支付方式(支付方式表Id) bigint(20)-->
+			freight,                                           <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			shipping_method_name,                              <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			shipping_method_id,                                <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			point,                                             <!-- 赠送的积分 varchar(64)-->
+			is_need_logistics,                                 <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			logistics_template_id,                             <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			logistics_template_name,                           <!-- 物流公司名称（快照） varchar(64)-->
+			tracking_no,                                       <!-- 运单号 varchar(64)-->
+			tax,                                               <!-- 税金 varchar(64)-->
+			is_invoice,                                        <!-- 是否开据发票，0否、1是 char(1)-->
+			deliver_id,                                        <!-- 发票id(发票表id) bigint(20)-->
+			memo,                                              <!-- 买家附言 varchar(255)-->
+			place_order_time,                                  <!-- 下单时间 datetime-->
+			pay_order_time,                                    <!-- 付款时间（结算时以此时间为准） datetime-->
+			deliver_product_date,                              <!-- 发货时间 datetime-->
+			product_receipt_date,                              <!-- 收货时间 datetime-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+			bak1,                                              <!-- 备用字段1 varchar(64)-->
+			bak2,                                              <!-- 备用字段2 varchar(64)-->
+			bak3,                                              <!-- 备用字段3 varchar(64)-->
+			bak4,                                              <!-- 备用字段4 varchar(64)-->
+			bak5,                                              <!-- 备用字段5 varchar(64)-->
+			bak6,                                              <!-- 备用字段6 varchar(64)-->
+			bak7,                                              <!-- 备用字段7 varchar(64)-->
+			bak8,                                              <!-- 备用字段8 varchar(64)-->
+			bak9,                                              <!-- 备用字段9 varchar(64)-->
+			bak10,                                             <!-- 备用字段10 varchar(64)-->
+			pay_order_number,                                  <!-- 支付单号 varchar(64)-->
+			sources,                                           <!-- 来源(0pc、1移动端) char(1)-->
+			pre_deposit_pay,                                   <!-- 预存款支付(元) decimal(12,3)-->
+			pay_terminal,                                      <!-- 支付终端(0pc、1移动端) char(1)-->
+			third_pay_order_number,                            <!-- 第三方付款平台交易号 varchar(64)-->
+			online_pay_money,                                  <!-- 在线支付金额 decimal(12,3)-->
+			cancel_order_reason,                               <!-- 取消订单理由 varchar(255)-->
+			city_name,                                         <!-- 收货地址所在市(快照) varchar(64)-->
+			detailed_address,                                  <!-- 详细地址(快照) varchar(255)-->
+			district_name,                                     <!-- 收货地址所在县(快照) varchar(64)-->
+			province_name,                                     <!-- 收货地址所在省(快照) varchar(64)-->
+			seller_memo,                                       <!-- 卖家附言 varchar(255)-->
+			cancel_order_date,                                 <!-- 取消订单时间 datetime-->
+			delay_days,                                        <!-- 延迟收货天数 int(11)-->
+			is_additional_comment,                             <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			is_settlement,                                     <!-- 是否已结算 char(1)-->
+			settlement_money,                                  <!-- 结算金额 decimal(12,3)-->
+			need_pay,                                          <!-- 0.不需要、1.需要。 char(1)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.orderId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_order_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.outTradeNo},                              <!-- 商户订单号 varchar(64)-->
+			#{entity.uId},                                     <!-- 买家id(关联会员表) bigint(20)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
+			#{entity.bName},                                   <!-- 商家公司名称(快照) varchar(64)-->
+			#{entity.adminId},                                 <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			#{entity.addressId},                               <!-- 收货地址id(关联收货地址) bigint(20)-->
+			#{entity.consignee},                               <!-- 收货人(快照) varchar(64)-->
+			#{entity.phone},                                   <!-- 电话(快照) varchar(64)-->
+			#{entity.zipCode},                                 <!-- 邮编(快照) varchar(64)-->
+			#{entity.amountPaid},                              <!-- 订单总金额 decimal(12,3)-->
+			#{entity.offsetAmount},                            <!-- 调整后的金额 decimal(12,3)-->
+			#{entity.couponDiscount},                          <!-- 优惠券id(预留) bigint(20)-->
+			#{entity.cashCouponId},                            <!-- 代金券id(预留) bigint(20)-->
+			#{entity.promotionDiscount},                       <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			#{entity.promotion},                               <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			#{entity.redPacket},                               <!-- 平台红包(预留) decimal(12,3)-->
+			#{entity.fee},                                     <!-- 支付佣金 decimal(12,3)-->
+			#{entity.orderStatus},                             <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			#{entity.isReturnStatus},                          <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			#{entity.paymentMethodName},                       <!-- 支付方式名称（快照） varchar(64)-->
+			#{entity.paymentMethodId},                         <!-- 支付方式(支付方式表Id) bigint(20)-->
+			#{entity.freight},                                 <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			#{entity.shippingMethodName},                      <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			#{entity.shippingMethodId},                        <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			#{entity.point},                                   <!-- 赠送的积分 varchar(64)-->
+			#{entity.isNeedLogistics},                         <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			#{entity.logisticsTemplateId},                     <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			#{entity.logisticsTemplateName},                   <!-- 物流公司名称（快照） varchar(64)-->
+			#{entity.trackingNo},                              <!-- 运单号 varchar(64)-->
+			#{entity.tax},                                     <!-- 税金 varchar(64)-->
+			#{entity.isInvoice},                               <!-- 是否开据发票，0否、1是 char(1)-->
+			#{entity.deliverId},                               <!-- 发票id(发票表id) bigint(20)-->
+			#{entity.memo},                                    <!-- 买家附言 varchar(255)-->
+			#{entity.placeOrderTime},                          <!-- 下单时间 datetime-->
+			#{entity.payOrderTime},                            <!-- 付款时间（结算时以此时间为准） datetime-->
+			#{entity.deliverProductDate},                      <!-- 发货时间 datetime-->
+			#{entity.productReceiptDate},                      <!-- 收货时间 datetime-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+			#{entity.bak1},                                    <!-- 备用字段1 varchar(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 varchar(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 varchar(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 varchar(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 varchar(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 varchar(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 varchar(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 varchar(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 varchar(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 varchar(64)-->
+			#{entity.payOrderNumber},                          <!-- 支付单号 varchar(64)-->
+			#{entity.sources},                                 <!-- 来源(0pc、1移动端) char(1)-->
+			#{entity.preDepositPay},                           <!-- 预存款支付(元) decimal(12,3)-->
+			#{entity.payTerminal},                             <!-- 支付终端(0pc、1移动端) char(1)-->
+			#{entity.thirdPayOrderNumber},                     <!-- 第三方付款平台交易号 varchar(64)-->
+			#{entity.onlinePayMoney},                          <!-- 在线支付金额 decimal(12,3)-->
+			#{entity.cancelOrderReason},                       <!-- 取消订单理由 varchar(255)-->
+			#{entity.cityName},                                <!-- 收货地址所在市(快照) varchar(64)-->
+			#{entity.detailedAddress},                         <!-- 详细地址(快照) varchar(255)-->
+			#{entity.districtName},                            <!-- 收货地址所在县(快照) varchar(64)-->
+			#{entity.provinceName},                            <!-- 收货地址所在省(快照) varchar(64)-->
+			#{entity.sellerMemo},                              <!-- 卖家附言 varchar(255)-->
+			#{entity.cancelOrderDate},                         <!-- 取消订单时间 datetime-->
+			#{entity.delayDays},                               <!-- 延迟收货天数 int(11)-->
+			#{entity.isAdditionalComment},                     <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			#{entity.isSettlement},                            <!-- 是否已结算 char(1)-->
+			#{entity.settlementMoney},                         <!-- 结算金额 decimal(12,3)-->
+			#{entity.needPay},                                 <!-- 0.不需要、1.需要。 char(1)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.orderId" keyColumn="order_id" useGeneratedKeys="true">
+		INSERT INTO trade_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.orderId != null">order_id,</if></if>
+			<if test="entity.pkMode==2">order_id,</if>
+			<if test="entity.outTradeNo != null">out_trade_no,</if>                            <!-- 商户订单号 varchar(64)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 买家id(关联会员表) bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.bName != null">b_name,</if>                                       <!-- 商家公司名称(快照) varchar(64)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			<if test="entity.addressId != null">address_id,</if>                               <!-- 收货地址id(关联收货地址) bigint(20)-->
+			<if test="entity.consignee != null">consignee,</if>                                <!-- 收货人(快照) varchar(64)-->
+			<if test="entity.phone != null">phone,</if>                                        <!-- 电话(快照) varchar(64)-->
+			<if test="entity.zipCode != null">zip_code,</if>                                   <!-- 邮编(快照) varchar(64)-->
+			<if test="entity.amountPaid != null">amount_paid,</if>                             <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.offsetAmount != null">offset_amount,</if>                         <!-- 调整后的金额 decimal(12,3)-->
+			<if test="entity.couponDiscount != null">coupon_discount,</if>                     <!-- 优惠券id(预留) bigint(20)-->
+			<if test="entity.cashCouponId != null">cash_coupon_id,</if>                        <!-- 代金券id(预留) bigint(20)-->
+			<if test="entity.promotionDiscount != null">promotion_discount,</if>               <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			<if test="entity.promotion != null">promotion,</if>                                <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			<if test="entity.redPacket != null">red_packet,</if>                               <!-- 平台红包(预留) decimal(12,3)-->
+			<if test="entity.fee != null">fee,</if>                                            <!-- 支付佣金 decimal(12,3)-->
+			<if test="entity.orderStatus != null">order_status,</if>                           <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			<if test="entity.isReturnStatus != null">is_return_status,</if>                    <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			<if test="entity.paymentMethodName != null">payment_method_name,</if>              <!-- 支付方式名称（快照） varchar(64)-->
+			<if test="entity.paymentMethodId != null">payment_method_id,</if>                  <!-- 支付方式(支付方式表Id) bigint(20)-->
+			<if test="entity.freight != null">freight,</if>                                    <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			<if test="entity.shippingMethodName != null">shipping_method_name,</if>            <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			<if test="entity.shippingMethodId != null">shipping_method_id,</if>                <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			<if test="entity.point != null">point,</if>                                        <!-- 赠送的积分 varchar(64)-->
+			<if test="entity.isNeedLogistics != null">is_need_logistics,</if>                  <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id,</if>          <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			<if test="entity.logisticsTemplateName != null">logistics_template_name,</if>      <!-- 物流公司名称（快照） varchar(64)-->
+			<if test="entity.trackingNo != null">tracking_no,</if>                             <!-- 运单号 varchar(64)-->
+			<if test="entity.tax != null">tax,</if>                                            <!-- 税金 varchar(64)-->
+			<if test="entity.isInvoice != null">is_invoice,</if>                               <!-- 是否开据发票，0否、1是 char(1)-->
+			<if test="entity.deliverId != null">deliver_id,</if>                               <!-- 发票id(发票表id) bigint(20)-->
+			<if test="entity.memo != null">memo,</if>                                          <!-- 买家附言 varchar(255)-->
+			<if test="entity.placeOrderTime != null">place_order_time,</if>                    <!-- 下单时间 datetime-->
+			<if test="entity.payOrderTime != null">pay_order_time,</if>                        <!-- 付款时间（结算时以此时间为准） datetime-->
+			<if test="entity.deliverProductDate != null">deliver_product_date,</if>            <!-- 发货时间 datetime-->
+			<if test="entity.productReceiptDate != null">product_receipt_date,</if>            <!-- 收货时间 datetime-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 varchar(64)-->
+			<if test="entity.payOrderNumber != null">pay_order_number,</if>                    <!-- 支付单号 varchar(64)-->
+			<if test="entity.sources != null">sources,</if>                                    <!-- 来源(0pc、1移动端) char(1)-->
+			<if test="entity.preDepositPay != null">pre_deposit_pay,</if>                      <!-- 预存款支付(元) decimal(12,3)-->
+			<if test="entity.payTerminal != null">pay_terminal,</if>                           <!-- 支付终端(0pc、1移动端) char(1)-->
+			<if test="entity.thirdPayOrderNumber != null">third_pay_order_number,</if>         <!-- 第三方付款平台交易号 varchar(64)-->
+			<if test="entity.onlinePayMoney != null">online_pay_money,</if>                    <!-- 在线支付金额 decimal(12,3)-->
+			<if test="entity.cancelOrderReason != null">cancel_order_reason,</if>              <!-- 取消订单理由 varchar(255)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 收货地址所在市(快照) varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 详细地址(快照) varchar(255)-->
+			<if test="entity.districtName != null">district_name,</if>                         <!-- 收货地址所在县(快照) varchar(64)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 收货地址所在省(快照) varchar(64)-->
+			<if test="entity.sellerMemo != null">seller_memo,</if>                             <!-- 卖家附言 varchar(255)-->
+			<if test="entity.cancelOrderDate != null">cancel_order_date,</if>                  <!-- 取消订单时间 datetime-->
+			<if test="entity.delayDays != null">delay_days,</if>                               <!-- 延迟收货天数 int(11)-->
+			<if test="entity.isAdditionalComment != null">is_additional_comment,</if>          <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			<if test="entity.isSettlement != null">is_settlement,</if>                         <!-- 是否已结算 char(1)-->
+			<if test="entity.settlementMoney != null">settlement_money,</if>                   <!-- 结算金额 decimal(12,3)-->
+			<if test="entity.needPay != null">need_pay,</if>                                   <!-- 0.不需要、1.需要。 char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.orderId != null">#{entity.orderId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">trade_order_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.outTradeNo != null">#{entity.outTradeNo},</if>                              <!-- 商户订单号 varchar(64)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 买家id(关联会员表) bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.bName != null">#{entity.bName},</if>                                        <!-- 商家公司名称(快照) varchar(64)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			<if test="entity.addressId != null">#{entity.addressId},</if>                                <!-- 收货地址id(关联收货地址) bigint(20)-->
+			<if test="entity.consignee != null">#{entity.consignee},</if>                                <!-- 收货人(快照) varchar(64)-->
+			<if test="entity.phone != null">#{entity.phone},</if>                                        <!-- 电话(快照) varchar(64)-->
+			<if test="entity.zipCode != null">#{entity.zipCode},</if>                                    <!-- 邮编(快照) varchar(64)-->
+			<if test="entity.amountPaid != null">#{entity.amountPaid},</if>                              <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.offsetAmount != null">#{entity.offsetAmount},</if>                          <!-- 调整后的金额 decimal(12,3)-->
+			<if test="entity.couponDiscount != null">#{entity.couponDiscount},</if>                      <!-- 优惠券id(预留) bigint(20)-->
+			<if test="entity.cashCouponId != null">#{entity.cashCouponId},</if>                          <!-- 代金券id(预留) bigint(20)-->
+			<if test="entity.promotionDiscount != null">#{entity.promotionDiscount},</if>                <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			<if test="entity.promotion != null">#{entity.promotion},</if>                                <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			<if test="entity.redPacket != null">#{entity.redPacket},</if>                                <!-- 平台红包(预留) decimal(12,3)-->
+			<if test="entity.fee != null">#{entity.fee},</if>                                            <!-- 支付佣金 decimal(12,3)-->
+			<if test="entity.orderStatus != null">#{entity.orderStatus},</if>                            <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			<if test="entity.isReturnStatus != null">#{entity.isReturnStatus},</if>                      <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			<if test="entity.paymentMethodName != null">#{entity.paymentMethodName},</if>                <!-- 支付方式名称（快照） varchar(64)-->
+			<if test="entity.paymentMethodId != null">#{entity.paymentMethodId},</if>                    <!-- 支付方式(支付方式表Id) bigint(20)-->
+			<if test="entity.freight != null">#{entity.freight},</if>                                    <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			<if test="entity.shippingMethodName != null">#{entity.shippingMethodName},</if>              <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			<if test="entity.shippingMethodId != null">#{entity.shippingMethodId},</if>                  <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			<if test="entity.point != null">#{entity.point},</if>                                        <!-- 赠送的积分 varchar(64)-->
+			<if test="entity.isNeedLogistics != null">#{entity.isNeedLogistics},</if>                    <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			<if test="entity.logisticsTemplateId != null">#{entity.logisticsTemplateId},</if>            <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			<if test="entity.logisticsTemplateName != null">#{entity.logisticsTemplateName},</if>        <!-- 物流公司名称（快照） varchar(64)-->
+			<if test="entity.trackingNo != null">#{entity.trackingNo},</if>                              <!-- 运单号 varchar(64)-->
+			<if test="entity.tax != null">#{entity.tax},</if>                                            <!-- 税金 varchar(64)-->
+			<if test="entity.isInvoice != null">#{entity.isInvoice},</if>                                <!-- 是否开据发票，0否、1是 char(1)-->
+			<if test="entity.deliverId != null">#{entity.deliverId},</if>                                <!-- 发票id(发票表id) bigint(20)-->
+			<if test="entity.memo != null">#{entity.memo},</if>                                          <!-- 买家附言 varchar(255)-->
+			<if test="entity.placeOrderTime != null">#{entity.placeOrderTime},</if>                      <!-- 下单时间 datetime-->
+			<if test="entity.payOrderTime != null">#{entity.payOrderTime},</if>                          <!-- 付款时间（结算时以此时间为准） datetime-->
+			<if test="entity.deliverProductDate != null">#{entity.deliverProductDate},</if>              <!-- 发货时间 datetime-->
+			<if test="entity.productReceiptDate != null">#{entity.productReceiptDate},</if>              <!-- 收货时间 datetime-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 varchar(64)-->
+			<if test="entity.payOrderNumber != null">#{entity.payOrderNumber},</if>                      <!-- 支付单号 varchar(64)-->
+			<if test="entity.sources != null">#{entity.sources},</if>                                    <!-- 来源(0pc、1移动端) char(1)-->
+			<if test="entity.preDepositPay != null">#{entity.preDepositPay},</if>                        <!-- 预存款支付(元) decimal(12,3)-->
+			<if test="entity.payTerminal != null">#{entity.payTerminal},</if>                            <!-- 支付终端(0pc、1移动端) char(1)-->
+			<if test="entity.thirdPayOrderNumber != null">#{entity.thirdPayOrderNumber},</if>            <!-- 第三方付款平台交易号 varchar(64)-->
+			<if test="entity.onlinePayMoney != null">#{entity.onlinePayMoney},</if>                      <!-- 在线支付金额 decimal(12,3)-->
+			<if test="entity.cancelOrderReason != null">#{entity.cancelOrderReason},</if>                <!-- 取消订单理由 varchar(255)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 收货地址所在市(快照) varchar(64)-->
+			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 详细地址(快照) varchar(255)-->
+			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 收货地址所在县(快照) varchar(64)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 收货地址所在省(快照) varchar(64)-->
+			<if test="entity.sellerMemo != null">#{entity.sellerMemo},</if>                              <!-- 卖家附言 varchar(255)-->
+			<if test="entity.cancelOrderDate != null">#{entity.cancelOrderDate},</if>                    <!-- 取消订单时间 datetime-->
+			<if test="entity.delayDays != null">#{entity.delayDays},</if>                                <!-- 延迟收货天数 int(11)-->
+			<if test="entity.isAdditionalComment != null">#{entity.isAdditionalComment},</if>            <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			<if test="entity.isSettlement != null">#{entity.isSettlement},</if>                          <!-- 是否已结算 char(1)-->
+			<if test="entity.settlementMoney != null">#{entity.settlementMoney},</if>                    <!-- 结算金额 decimal(12,3)-->
+			<if test="entity.needPay != null">#{entity.needPay},</if>                                    <!-- 0.不需要、1.需要。 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE trade_order 
+		<set>
+			out_trade_no = #{entity.outTradeNo},                            <!-- 商户订单号 varchar(64)-->
+			u_id = #{entity.uId},                                           <!-- 买家id(关联会员表) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			b_name = #{entity.bName},                                       <!-- 商家公司名称(快照) varchar(64)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			address_id = #{entity.addressId},                               <!-- 收货地址id(关联收货地址) bigint(20)-->
+			consignee = #{entity.consignee},                                <!-- 收货人(快照) varchar(64)-->
+			phone = #{entity.phone},                                        <!-- 电话(快照) varchar(64)-->
+			zip_code = #{entity.zipCode},                                   <!-- 邮编(快照) varchar(64)-->
+			amount_paid = #{entity.amountPaid},                             <!-- 订单总金额 decimal(12,3)-->
+			offset_amount = #{entity.offsetAmount},                         <!-- 调整后的金额 decimal(12,3)-->
+			coupon_discount = #{entity.couponDiscount},                     <!-- 优惠券id(预留) bigint(20)-->
+			cash_coupon_id = #{entity.cashCouponId},                        <!-- 代金券id(预留) bigint(20)-->
+			promotion_discount = #{entity.promotionDiscount},               <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			promotion = #{entity.promotion},                                <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			red_packet = #{entity.redPacket},                               <!-- 平台红包(预留) decimal(12,3)-->
+			fee = #{entity.fee},                                            <!-- 支付佣金 decimal(12,3)-->
+			order_status = #{entity.orderStatus},                           <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			is_return_status = #{entity.isReturnStatus},                    <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			payment_method_name = #{entity.paymentMethodName},              <!-- 支付方式名称（快照） varchar(64)-->
+			payment_method_id = #{entity.paymentMethodId},                  <!-- 支付方式(支付方式表Id) bigint(20)-->
+			freight = #{entity.freight},                                    <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			shipping_method_name = #{entity.shippingMethodName},            <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			shipping_method_id = #{entity.shippingMethodId},                <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			point = #{entity.point},                                        <!-- 赠送的积分 varchar(64)-->
+			is_need_logistics = #{entity.isNeedLogistics},                  <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			logistics_template_name = #{entity.logisticsTemplateName},      <!-- 物流公司名称（快照） varchar(64)-->
+			tracking_no = #{entity.trackingNo},                             <!-- 运单号 varchar(64)-->
+			tax = #{entity.tax},                                            <!-- 税金 varchar(64)-->
+			is_invoice = #{entity.isInvoice},                               <!-- 是否开据发票，0否、1是 char(1)-->
+			deliver_id = #{entity.deliverId},                               <!-- 发票id(发票表id) bigint(20)-->
+			memo = #{entity.memo},                                          <!-- 买家附言 varchar(255)-->
+			place_order_time = #{entity.placeOrderTime},                    <!-- 下单时间 datetime-->
+			pay_order_time = #{entity.payOrderTime},                        <!-- 付款时间（结算时以此时间为准） datetime-->
+			deliver_product_date = #{entity.deliverProductDate},            <!-- 发货时间 datetime-->
+			product_receipt_date = #{entity.productReceiptDate},            <!-- 收货时间 datetime-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 varchar(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 varchar(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 varchar(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 varchar(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 varchar(64)-->
+			pay_order_number = #{entity.payOrderNumber},                    <!-- 支付单号 varchar(64)-->
+			sources = #{entity.sources},                                    <!-- 来源(0pc、1移动端) char(1)-->
+			pre_deposit_pay = #{entity.preDepositPay},                      <!-- 预存款支付(元) decimal(12,3)-->
+			pay_terminal = #{entity.payTerminal},                           <!-- 支付终端(0pc、1移动端) char(1)-->
+			third_pay_order_number = #{entity.thirdPayOrderNumber},         <!-- 第三方付款平台交易号 varchar(64)-->
+			online_pay_money = #{entity.onlinePayMoney},                    <!-- 在线支付金额 decimal(12,3)-->
+			cancel_order_reason = #{entity.cancelOrderReason},              <!-- 取消订单理由 varchar(255)-->
+			city_name = #{entity.cityName},                                 <!-- 收货地址所在市(快照) varchar(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址(快照) varchar(255)-->
+			district_name = #{entity.districtName},                         <!-- 收货地址所在县(快照) varchar(64)-->
+			province_name = #{entity.provinceName},                         <!-- 收货地址所在省(快照) varchar(64)-->
+			seller_memo = #{entity.sellerMemo},                             <!-- 卖家附言 varchar(255)-->
+			cancel_order_date = #{entity.cancelOrderDate},                  <!-- 取消订单时间 datetime-->
+			delay_days = #{entity.delayDays},                               <!-- 延迟收货天数 int(11)-->
+			is_additional_comment = #{entity.isAdditionalComment},          <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			is_settlement = #{entity.isSettlement},                         <!-- 是否已结算 char(1)-->
+			settlement_money = #{entity.settlementMoney},                   <!-- 结算金额 decimal(12,3)-->
+			need_pay = #{entity.needPay},                                   <!-- 0.不需要、1.需要。 char(1)-->
+
+		</set>
+		WHERE order_id = #{entity.orderId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE trade_order a 
+		<set>
+			out_trade_no = #{entity.outTradeNo},                            <!-- 商户订单号 varchar(64)-->
+			u_id = #{entity.uId},                                           <!-- 买家id(关联会员表) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			b_name = #{entity.bName},                                       <!-- 商家公司名称(快照) varchar(64)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			address_id = #{entity.addressId},                               <!-- 收货地址id(关联收货地址) bigint(20)-->
+			consignee = #{entity.consignee},                                <!-- 收货人(快照) varchar(64)-->
+			phone = #{entity.phone},                                        <!-- 电话(快照) varchar(64)-->
+			zip_code = #{entity.zipCode},                                   <!-- 邮编(快照) varchar(64)-->
+			amount_paid = #{entity.amountPaid},                             <!-- 订单总金额 decimal(12,3)-->
+			offset_amount = #{entity.offsetAmount},                         <!-- 调整后的金额 decimal(12,3)-->
+			coupon_discount = #{entity.couponDiscount},                     <!-- 优惠券id(预留) bigint(20)-->
+			cash_coupon_id = #{entity.cashCouponId},                        <!-- 代金券id(预留) bigint(20)-->
+			promotion_discount = #{entity.promotionDiscount},               <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			promotion = #{entity.promotion},                                <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			red_packet = #{entity.redPacket},                               <!-- 平台红包(预留) decimal(12,3)-->
+			fee = #{entity.fee},                                            <!-- 支付佣金 decimal(12,3)-->
+			order_status = #{entity.orderStatus},                           <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			is_return_status = #{entity.isReturnStatus},                    <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			payment_method_name = #{entity.paymentMethodName},              <!-- 支付方式名称（快照） varchar(64)-->
+			payment_method_id = #{entity.paymentMethodId},                  <!-- 支付方式(支付方式表Id) bigint(20)-->
+			freight = #{entity.freight},                                    <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			shipping_method_name = #{entity.shippingMethodName},            <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			shipping_method_id = #{entity.shippingMethodId},                <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			point = #{entity.point},                                        <!-- 赠送的积分 varchar(64)-->
+			is_need_logistics = #{entity.isNeedLogistics},                  <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			logistics_template_name = #{entity.logisticsTemplateName},      <!-- 物流公司名称（快照） varchar(64)-->
+			tracking_no = #{entity.trackingNo},                             <!-- 运单号 varchar(64)-->
+			tax = #{entity.tax},                                            <!-- 税金 varchar(64)-->
+			is_invoice = #{entity.isInvoice},                               <!-- 是否开据发票，0否、1是 char(1)-->
+			deliver_id = #{entity.deliverId},                               <!-- 发票id(发票表id) bigint(20)-->
+			memo = #{entity.memo},                                          <!-- 买家附言 varchar(255)-->
+			place_order_time = #{entity.placeOrderTime},                    <!-- 下单时间 datetime-->
+			pay_order_time = #{entity.payOrderTime},                        <!-- 付款时间（结算时以此时间为准） datetime-->
+			deliver_product_date = #{entity.deliverProductDate},            <!-- 发货时间 datetime-->
+			product_receipt_date = #{entity.productReceiptDate},            <!-- 收货时间 datetime-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 varchar(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 varchar(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 varchar(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 varchar(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 varchar(64)-->
+			pay_order_number = #{entity.payOrderNumber},                    <!-- 支付单号 varchar(64)-->
+			sources = #{entity.sources},                                    <!-- 来源(0pc、1移动端) char(1)-->
+			pre_deposit_pay = #{entity.preDepositPay},                      <!-- 预存款支付(元) decimal(12,3)-->
+			pay_terminal = #{entity.payTerminal},                           <!-- 支付终端(0pc、1移动端) char(1)-->
+			third_pay_order_number = #{entity.thirdPayOrderNumber},         <!-- 第三方付款平台交易号 varchar(64)-->
+			online_pay_money = #{entity.onlinePayMoney},                    <!-- 在线支付金额 decimal(12,3)-->
+			cancel_order_reason = #{entity.cancelOrderReason},              <!-- 取消订单理由 varchar(255)-->
+			city_name = #{entity.cityName},                                 <!-- 收货地址所在市(快照) varchar(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址(快照) varchar(255)-->
+			district_name = #{entity.districtName},                         <!-- 收货地址所在县(快照) varchar(64)-->
+			province_name = #{entity.provinceName},                         <!-- 收货地址所在省(快照) varchar(64)-->
+			seller_memo = #{entity.sellerMemo},                             <!-- 卖家附言 varchar(255)-->
+			cancel_order_date = #{entity.cancelOrderDate},                  <!-- 取消订单时间 datetime-->
+			delay_days = #{entity.delayDays},                               <!-- 延迟收货天数 int(11)-->
+			is_additional_comment = #{entity.isAdditionalComment},          <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			is_settlement = #{entity.isSettlement},                         <!-- 是否已结算 char(1)-->
+			settlement_money = #{entity.settlementMoney},                   <!-- 结算金额 decimal(12,3)-->
+			need_pay = #{entity.needPay},                                   <!-- 0.不需要、1.需要。 char(1)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE trade_order
+		<set>
+			<if test="entity.outTradeNo != null">out_trade_no = #{entity.outTradeNo},</if>                                      <!-- 商户订单号 varchar(64)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 买家id(关联会员表) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.bName != null">b_name = #{entity.bName},</if>                                                      <!-- 商家公司名称(快照) varchar(64)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			<if test="entity.addressId != null">address_id = #{entity.addressId},</if>                                          <!-- 收货地址id(关联收货地址) bigint(20)-->
+			<if test="entity.consignee != null">consignee = #{entity.consignee},</if>                                           <!-- 收货人(快照) varchar(64)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话(快照) varchar(64)-->
+			<if test="entity.zipCode != null">zip_code = #{entity.zipCode},</if>                                                <!-- 邮编(快照) varchar(64)-->
+			<if test="entity.amountPaid != null">amount_paid = #{entity.amountPaid},</if>                                       <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.offsetAmount != null">offset_amount = #{entity.offsetAmount},</if>                                 <!-- 调整后的金额 decimal(12,3)-->
+			<if test="entity.couponDiscount != null">coupon_discount = #{entity.couponDiscount},</if>                           <!-- 优惠券id(预留) bigint(20)-->
+			<if test="entity.cashCouponId != null">cash_coupon_id = #{entity.cashCouponId},</if>                                <!-- 代金券id(预留) bigint(20)-->
+			<if test="entity.promotionDiscount != null">promotion_discount = #{entity.promotionDiscount},</if>                  <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			<if test="entity.promotion != null">promotion = #{entity.promotion},</if>                                           <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			<if test="entity.redPacket != null">red_packet = #{entity.redPacket},</if>                                          <!-- 平台红包(预留) decimal(12,3)-->
+			<if test="entity.fee != null">fee = #{entity.fee},</if>                                                             <!-- 支付佣金 decimal(12,3)-->
+			<if test="entity.orderStatus != null">order_status = #{entity.orderStatus},</if>                                    <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			<if test="entity.isReturnStatus != null">is_return_status = #{entity.isReturnStatus},</if>                          <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			<if test="entity.paymentMethodName != null">payment_method_name = #{entity.paymentMethodName},</if>                 <!-- 支付方式名称（快照） varchar(64)-->
+			<if test="entity.paymentMethodId != null">payment_method_id = #{entity.paymentMethodId},</if>                       <!-- 支付方式(支付方式表Id) bigint(20)-->
+			<if test="entity.freight != null">freight = #{entity.freight},</if>                                                 <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			<if test="entity.shippingMethodName != null">shipping_method_name = #{entity.shippingMethodName},</if>              <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			<if test="entity.shippingMethodId != null">shipping_method_id = #{entity.shippingMethodId},</if>                    <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 赠送的积分 varchar(64)-->
+			<if test="entity.isNeedLogistics != null">is_need_logistics = #{entity.isNeedLogistics},</if>                       <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			<if test="entity.logisticsTemplateName != null">logistics_template_name = #{entity.logisticsTemplateName},</if>     <!-- 物流公司名称（快照） varchar(64)-->
+			<if test="entity.trackingNo != null">tracking_no = #{entity.trackingNo},</if>                                       <!-- 运单号 varchar(64)-->
+			<if test="entity.tax != null">tax = #{entity.tax},</if>                                                             <!-- 税金 varchar(64)-->
+			<if test="entity.isInvoice != null">is_invoice = #{entity.isInvoice},</if>                                          <!-- 是否开据发票，0否、1是 char(1)-->
+			<if test="entity.deliverId != null">deliver_id = #{entity.deliverId},</if>                                          <!-- 发票id(发票表id) bigint(20)-->
+			<if test="entity.memo != null">memo = #{entity.memo},</if>                                                          <!-- 买家附言 varchar(255)-->
+			<if test="entity.placeOrderTime != null">place_order_time = #{entity.placeOrderTime},</if>                          <!-- 下单时间 datetime-->
+			<if test="entity.payOrderTime != null">pay_order_time = #{entity.payOrderTime},</if>                                <!-- 付款时间（结算时以此时间为准） datetime-->
+			<if test="entity.deliverProductDate != null">deliver_product_date = #{entity.deliverProductDate},</if>              <!-- 发货时间 datetime-->
+			<if test="entity.productReceiptDate != null">product_receipt_date = #{entity.productReceiptDate},</if>              <!-- 收货时间 datetime-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 varchar(64)-->
+			<if test="entity.payOrderNumber != null">pay_order_number = #{entity.payOrderNumber},</if>                          <!-- 支付单号 varchar(64)-->
+			<if test="entity.sources != null">sources = #{entity.sources},</if>                                                 <!-- 来源(0pc、1移动端) char(1)-->
+			<if test="entity.preDepositPay != null">pre_deposit_pay = #{entity.preDepositPay},</if>                             <!-- 预存款支付(元) decimal(12,3)-->
+			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 支付终端(0pc、1移动端) char(1)-->
+			<if test="entity.thirdPayOrderNumber != null">third_pay_order_number = #{entity.thirdPayOrderNumber},</if>          <!-- 第三方付款平台交易号 varchar(64)-->
+			<if test="entity.onlinePayMoney != null">online_pay_money = #{entity.onlinePayMoney},</if>                          <!-- 在线支付金额 decimal(12,3)-->
+			<if test="entity.cancelOrderReason != null">cancel_order_reason = #{entity.cancelOrderReason},</if>                 <!-- 取消订单理由 varchar(255)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 收货地址所在市(快照) varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址(快照) varchar(255)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 收货地址所在县(快照) varchar(64)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 收货地址所在省(快照) varchar(64)-->
+			<if test="entity.sellerMemo != null">seller_memo = #{entity.sellerMemo},</if>                                       <!-- 卖家附言 varchar(255)-->
+			<if test="entity.cancelOrderDate != null">cancel_order_date = #{entity.cancelOrderDate},</if>                       <!-- 取消订单时间 datetime-->
+			<if test="entity.delayDays != null">delay_days = #{entity.delayDays},</if>                                          <!-- 延迟收货天数 int(11)-->
+			<if test="entity.isAdditionalComment != null">is_additional_comment = #{entity.isAdditionalComment},</if>           <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			<if test="entity.isSettlement != null">is_settlement = #{entity.isSettlement},</if>                                 <!-- 是否已结算 char(1)-->
+			<if test="entity.settlementMoney != null">settlement_money = #{entity.settlementMoney},</if>                        <!-- 结算金额 decimal(12,3)-->
+			<if test="entity.needPay != null">need_pay = #{entity.needPay},</if>                                                <!-- 0.不需要、1.需要。 char(1)-->
+		</set>
+		WHERE order_id = #{entity.orderId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE trade_order a
+		<set>
+			<if test="entity.outTradeNo != null">out_trade_no = #{entity.outTradeNo},</if>                                      <!-- 商户订单号 varchar(64)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 买家id(关联会员表) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.bName != null">b_name = #{entity.bName},</if>                                                      <!-- 商家公司名称(快照) varchar(64)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(关联管理员,管理员可以取消订单和确认收款) bigint(20)-->
+			<if test="entity.addressId != null">address_id = #{entity.addressId},</if>                                          <!-- 收货地址id(关联收货地址) bigint(20)-->
+			<if test="entity.consignee != null">consignee = #{entity.consignee},</if>                                           <!-- 收货人(快照) varchar(64)-->
+			<if test="entity.phone != null">phone = #{entity.phone},</if>                                                       <!-- 电话(快照) varchar(64)-->
+			<if test="entity.zipCode != null">zip_code = #{entity.zipCode},</if>                                                <!-- 邮编(快照) varchar(64)-->
+			<if test="entity.amountPaid != null">amount_paid = #{entity.amountPaid},</if>                                       <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.offsetAmount != null">offset_amount = #{entity.offsetAmount},</if>                                 <!-- 调整后的金额 decimal(12,3)-->
+			<if test="entity.couponDiscount != null">coupon_discount = #{entity.couponDiscount},</if>                           <!-- 优惠券id(预留) bigint(20)-->
+			<if test="entity.cashCouponId != null">cash_coupon_id = #{entity.cashCouponId},</if>                                <!-- 代金券id(预留) bigint(20)-->
+			<if test="entity.promotionDiscount != null">promotion_discount = #{entity.promotionDiscount},</if>                  <!-- 促销折扣，0.95表示95折(预留) decimal(12,3)-->
+			<if test="entity.promotion != null">promotion = #{entity.promotion},</if>                                           <!-- 促销(预留)，促销活动名称 varchar(64)-->
+			<if test="entity.redPacket != null">red_packet = #{entity.redPacket},</if>                                          <!-- 平台红包(预留) decimal(12,3)-->
+			<if test="entity.fee != null">fee = #{entity.fee},</if>                                                             <!-- 支付佣金 decimal(12,3)-->
+			<if test="entity.orderStatus != null">order_status = #{entity.orderStatus},</if>                                    <!-- 订单状态，10待付款、20待发货、30待收货、40(已完成)待评价、50已评价、60已取消、70退货退款中 char(2)-->
+			<if test="entity.isReturnStatus != null">is_return_status = #{entity.isReturnStatus},</if>                          <!-- 是否退货退款，0否、1退货退款、2退款 char(1)-->
+			<if test="entity.paymentMethodName != null">payment_method_name = #{entity.paymentMethodName},</if>                 <!-- 支付方式名称（快照） varchar(64)-->
+			<if test="entity.paymentMethodId != null">payment_method_id = #{entity.paymentMethodId},</if>                       <!-- 支付方式(支付方式表Id) bigint(20)-->
+			<if test="entity.freight != null">freight = #{entity.freight},</if>                                                 <!-- 运费，计算出来的总运费 decimal(12,3)-->
+			<if test="entity.shippingMethodName != null">shipping_method_name = #{entity.shippingMethodName},</if>              <!-- 运费模板名称(只用于显示)(快照) varchar(64)-->
+			<if test="entity.shippingMethodId != null">shipping_method_id = #{entity.shippingMethodId},</if>                    <!-- 运费模板详情Id,dti_id(通过此id可间接找到运费模板id) bigint(20)-->
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 赠送的积分 varchar(64)-->
+			<if test="entity.isNeedLogistics != null">is_need_logistics = #{entity.isNeedLogistics},</if>                       <!-- 是否需物流，0无需物流、1需物流 char(1)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键) bigint(20)-->
+			<if test="entity.logisticsTemplateName != null">logistics_template_name = #{entity.logisticsTemplateName},</if>     <!-- 物流公司名称（快照） varchar(64)-->
+			<if test="entity.trackingNo != null">tracking_no = #{entity.trackingNo},</if>                                       <!-- 运单号 varchar(64)-->
+			<if test="entity.tax != null">tax = #{entity.tax},</if>                                                             <!-- 税金 varchar(64)-->
+			<if test="entity.isInvoice != null">is_invoice = #{entity.isInvoice},</if>                                          <!-- 是否开据发票，0否、1是 char(1)-->
+			<if test="entity.deliverId != null">deliver_id = #{entity.deliverId},</if>                                          <!-- 发票id(发票表id) bigint(20)-->
+			<if test="entity.memo != null">memo = #{entity.memo},</if>                                                          <!-- 买家附言 varchar(255)-->
+			<if test="entity.placeOrderTime != null">place_order_time = #{entity.placeOrderTime},</if>                          <!-- 下单时间 datetime-->
+			<if test="entity.payOrderTime != null">pay_order_time = #{entity.payOrderTime},</if>                                <!-- 付款时间（结算时以此时间为准） datetime-->
+			<if test="entity.deliverProductDate != null">deliver_product_date = #{entity.deliverProductDate},</if>              <!-- 发货时间 datetime-->
+			<if test="entity.productReceiptDate != null">product_receipt_date = #{entity.productReceiptDate},</if>              <!-- 收货时间 datetime-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 varchar(64)-->
+			<if test="entity.payOrderNumber != null">pay_order_number = #{entity.payOrderNumber},</if>                          <!-- 支付单号 varchar(64)-->
+			<if test="entity.sources != null">sources = #{entity.sources},</if>                                                 <!-- 来源(0pc、1移动端) char(1)-->
+			<if test="entity.preDepositPay != null">pre_deposit_pay = #{entity.preDepositPay},</if>                             <!-- 预存款支付(元) decimal(12,3)-->
+			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 支付终端(0pc、1移动端) char(1)-->
+			<if test="entity.thirdPayOrderNumber != null">third_pay_order_number = #{entity.thirdPayOrderNumber},</if>          <!-- 第三方付款平台交易号 varchar(64)-->
+			<if test="entity.onlinePayMoney != null">online_pay_money = #{entity.onlinePayMoney},</if>                          <!-- 在线支付金额 decimal(12,3)-->
+			<if test="entity.cancelOrderReason != null">cancel_order_reason = #{entity.cancelOrderReason},</if>                 <!-- 取消订单理由 varchar(255)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 收货地址所在市(快照) varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址(快照) varchar(255)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 收货地址所在县(快照) varchar(64)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 收货地址所在省(快照) varchar(64)-->
+			<if test="entity.sellerMemo != null">seller_memo = #{entity.sellerMemo},</if>                                       <!-- 卖家附言 varchar(255)-->
+			<if test="entity.cancelOrderDate != null">cancel_order_date = #{entity.cancelOrderDate},</if>                       <!-- 取消订单时间 datetime-->
+			<if test="entity.delayDays != null">delay_days = #{entity.delayDays},</if>                                          <!-- 延迟收货天数 int(11)-->
+			<if test="entity.isAdditionalComment != null">is_additional_comment = #{entity.isAdditionalComment},</if>           <!-- 是否追评,0否、1是(订单状态是已完成时如果是0显示追评，1不显示追评) char(1)-->
+			<if test="entity.isSettlement != null">is_settlement = #{entity.isSettlement},</if>                                 <!-- 是否已结算 char(1)-->
+			<if test="entity.settlementMoney != null">settlement_money = #{entity.settlementMoney},</if>                        <!-- 结算金额 decimal(12,3)-->
+			<if test="entity.needPay != null">need_pay = #{entity.needPay},</if>                                                <!-- 0.不需要、1.需要。 char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM trade_order
+		WHERE order_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM trade_order
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					order_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM trade_order a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM trade_order a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

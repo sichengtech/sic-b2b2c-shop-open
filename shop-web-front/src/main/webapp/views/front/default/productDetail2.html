@@ -1,0 +1,24 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% include("/include/head.html"){}%>
+</head>
+<body class="productDetailBodyeee">
+	<script type="text/javascript">
+	$(function(){
+		var pid=${pId};
+		alert(pid);
+	});
+		
+	</script>
+		<div class="error_div">
+			<div class="error_msg">
+				<p>抱歉，商品不存在，请查看其他的商品！</p>
+				<p><a href="${ctxf}/index.htm">(1) 返回首页</a></p>
+				<p><a href="javascript:;" onclick="history.go(-1);">(2) 返回上一页</a></p>
+			</div>
+		</div>
+</body>
+</html>

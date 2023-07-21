@@ -1,0 +1,528 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.account.dao.SettlementBillDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="settlementBillColumns">
+	<trim suffixOverrides=",">
+		a.bill_id AS 'billId',                                               <!-- 主键 bigint(20)-->
+		a.bill_type AS 'billType',                                           <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+		a.store_id AS 'storeId',                                             <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+		a.balance_date AS 'balanceDate',                                     <!-- 出账日期 datetime-->
+		a.bill_amount AS 'billAmount',                                       <!-- 本期应结(元) decimal(12,3)-->
+		a.status AS 'status',                                                <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+		a.order_amount AS 'orderAmount',                                     <!-- 订单总金额 decimal(12,3)-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.platform_commission AS 'platformCommission',                       <!-- 平台分佣金额 decimal(12,3)-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.return_commission AS 'returnCommission',                           <!-- 退还佣金 decimal(12,3)-->
+		a.refund AS 'refund',                                                <!-- 退单金额 decimal(12,3)-->
+		a.promotion_expenses AS 'promotionExpenses',                         <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+		a.red_packets AS 'redPackets',                                       <!-- 红包(促销时用) decimal(12,3)-->
+		a.return_red_packets AS 'returnRedPackets',                          <!-- 退还红包(促销时用) decimal(12,3)-->
+		a.deposit AS 'deposit',                                              <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+		a.begin_time AS 'beginTime',                                         <!-- 账单开始时间 datetime-->
+		a.end_time AS 'endTime',                                             <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+		a.pay_date AS 'payDate',                                             <!-- 付款时间 datetime-->
+		a.pay_person AS 'payPerson',                                         <!-- 付款人 varchar(64)-->
+		a.pay_remarks AS 'payRemarks',                                       <!-- 付款备注 varchar(1024)-->
+		a.bak1 AS 'bak1',                                                    <!-- 备用字段1 varchar(64)-->
+		a.bak2 AS 'bak2',                                                    <!-- 备用字段2 varchar(64)-->
+		a.bak3 AS 'bak3',                                                    <!-- 备用字段3 varchar(64)-->
+		a.bak4 AS 'bak4',                                                    <!-- 备用字段4 varchar(64)-->
+		a.bak5 AS 'bak5',                                                    <!-- 备用字段5 varchar(64)-->
+		a.bak6 AS 'bak6',                                                    <!-- 备用字段6 varchar(64)-->
+		a.bak7 AS 'bak7',                                                    <!-- 备用字段7 varchar(64)-->
+		a.bak8 AS 'bak8',                                                    <!-- 备用字段8 varchar(64)-->
+		a.bak9 AS 'bak9',                                                    <!-- 备用字段9 varchar(64)-->
+		a.bak10 AS 'bak10',                                                  <!-- 备用字段10 varchar(64)-->
+		a.tasksubid AS 'tasksubid',                                          <!-- 子任务id bigint(20)-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.billId != null ">AND a.bill_id = #{c.billId}</if>
+		<if test="c.billType != null and c.billType != ''">AND a.bill_type = #{c.billType}</if>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.beginBalanceDate != null and c.endBalanceDate != null ">AND a.balance_date BETWEEN #{c.beginBalanceDate} AND #{c.endBalanceDate}</if>
+		<if test="c.billAmount != null ">AND a.bill_amount = #{c.billAmount}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.orderAmount != null ">AND a.order_amount = #{c.orderAmount}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.platformCommission != null ">AND a.platform_commission = #{c.platformCommission}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.returnCommission != null ">AND a.return_commission = #{c.returnCommission}</if>
+		<if test="c.refund != null ">AND a.refund = #{c.refund}</if>
+		<if test="c.promotionExpenses != null ">AND a.promotion_expenses = #{c.promotionExpenses}</if>
+		<if test="c.redPackets != null ">AND a.red_packets = #{c.redPackets}</if>
+		<if test="c.returnRedPackets != null ">AND a.return_red_packets = #{c.returnRedPackets}</if>
+		<if test="c.deposit != null ">AND a.deposit = #{c.deposit}</if>
+		<if test="c.beginBeginTime != null and c.endBeginTime != null ">AND a.begin_time BETWEEN #{c.beginBeginTime} AND #{c.endBeginTime}</if>
+		<if test="c.beginEndTime != null and c.endEndTime != null ">AND a.end_time BETWEEN #{c.beginEndTime} AND #{c.endEndTime}</if>
+		<if test="c.beginPayDate != null and c.endPayDate != null ">AND a.pay_date BETWEEN #{c.beginPayDate} AND #{c.endPayDate}</if>
+		<if test="c.payPerson != null and c.payPerson != ''">AND a.pay_person = #{c.payPerson}</if>
+		<if test="c.payRemarks != null and c.payRemarks != ''">AND a.pay_remarks = #{c.payRemarks}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+		<if test="c.tasksubid != null ">AND a.tasksubid = #{c.tasksubid}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SettlementBill">
+		SELECT 
+		<include refid="settlementBillColumns"/>
+		FROM settlement_bill a
+		WHERE a.bill_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SettlementBill">
+		SELECT 
+		<include refid="settlementBillColumns"/>
+		FROM settlement_bill a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.bill_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SettlementBill">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="settlementBillColumns"/>
+		FROM settlement_bill a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.bill_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SettlementBill">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="settlementBillColumns"/>
+		FROM settlement_bill a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.bill_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.billId" keyColumn="bill_id" useGeneratedKeys="true">
+		INSERT INTO settlement_bill
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			bill_id,                                           <!-- 主键 bigint(20)-->
+			bill_type,                                         <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			store_id,                                          <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			balance_date,                                      <!-- 出账日期 datetime-->
+			bill_amount,                                       <!-- 本期应结(元) decimal(12,3)-->
+			status,                                            <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			order_amount,                                      <!-- 订单总金额 decimal(12,3)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			platform_commission,                               <!-- 平台分佣金额 decimal(12,3)-->
+			update_date,                                       <!-- 更新时间 datetime-->
+			return_commission,                                 <!-- 退还佣金 decimal(12,3)-->
+			refund,                                            <!-- 退单金额 decimal(12,3)-->
+			promotion_expenses,                                <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			red_packets,                                       <!-- 红包(促销时用) decimal(12,3)-->
+			return_red_packets,                                <!-- 退还红包(促销时用) decimal(12,3)-->
+			deposit,                                           <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			begin_time,                                        <!-- 账单开始时间 datetime-->
+			end_time,                                          <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			pay_date,                                          <!-- 付款时间 datetime-->
+			pay_person,                                        <!-- 付款人 varchar(64)-->
+			pay_remarks,                                       <!-- 付款备注 varchar(1024)-->
+			bak1,                                              <!-- 备用字段1 varchar(64)-->
+			bak2,                                              <!-- 备用字段2 varchar(64)-->
+			bak3,                                              <!-- 备用字段3 varchar(64)-->
+			bak4,                                              <!-- 备用字段4 varchar(64)-->
+			bak5,                                              <!-- 备用字段5 varchar(64)-->
+			bak6,                                              <!-- 备用字段6 varchar(64)-->
+			bak7,                                              <!-- 备用字段7 varchar(64)-->
+			bak8,                                              <!-- 备用字段8 varchar(64)-->
+			bak9,                                              <!-- 备用字段9 varchar(64)-->
+			bak10,                                             <!-- 备用字段10 varchar(64)-->
+			tasksubid,                                         <!-- 子任务id bigint(20)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.billId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">settlement_bill_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.billType},                                <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			#{entity.balanceDate},                             <!-- 出账日期 datetime-->
+			#{entity.billAmount},                              <!-- 本期应结(元) decimal(12,3)-->
+			#{entity.status},                                  <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			#{entity.orderAmount},                             <!-- 订单总金额 decimal(12,3)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.platformCommission},                      <!-- 平台分佣金额 decimal(12,3)-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+			#{entity.returnCommission},                        <!-- 退还佣金 decimal(12,3)-->
+			#{entity.refund},                                  <!-- 退单金额 decimal(12,3)-->
+			#{entity.promotionExpenses},                       <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			#{entity.redPackets},                              <!-- 红包(促销时用) decimal(12,3)-->
+			#{entity.returnRedPackets},                        <!-- 退还红包(促销时用) decimal(12,3)-->
+			#{entity.deposit},                                 <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			#{entity.beginTime},                               <!-- 账单开始时间 datetime-->
+			#{entity.endTime},                                 <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			#{entity.payDate},                                 <!-- 付款时间 datetime-->
+			#{entity.payPerson},                               <!-- 付款人 varchar(64)-->
+			#{entity.payRemarks},                              <!-- 付款备注 varchar(1024)-->
+			#{entity.bak1},                                    <!-- 备用字段1 varchar(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 varchar(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 varchar(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 varchar(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 varchar(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 varchar(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 varchar(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 varchar(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 varchar(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 varchar(64)-->
+			#{entity.tasksubid},                               <!-- 子任务id bigint(20)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.billId" keyColumn="bill_id" useGeneratedKeys="true">
+		INSERT INTO settlement_bill
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.billId != null">bill_id,</if></if>
+			<if test="entity.pkMode==2">bill_id,</if>
+			<if test="entity.billType != null">bill_type,</if>                                 <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			<if test="entity.balanceDate != null">balance_date,</if>                           <!-- 出账日期 datetime-->
+			<if test="entity.billAmount != null">bill_amount,</if>                             <!-- 本期应结(元) decimal(12,3)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			<if test="entity.orderAmount != null">order_amount,</if>                           <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.platformCommission != null">platform_commission,</if>             <!-- 平台分佣金额 decimal(12,3)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+			<if test="entity.returnCommission != null">return_commission,</if>                 <!-- 退还佣金 decimal(12,3)-->
+			<if test="entity.refund != null">refund,</if>                                      <!-- 退单金额 decimal(12,3)-->
+			<if test="entity.promotionExpenses != null">promotion_expenses,</if>               <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			<if test="entity.redPackets != null">red_packets,</if>                             <!-- 红包(促销时用) decimal(12,3)-->
+			<if test="entity.returnRedPackets != null">return_red_packets,</if>                <!-- 退还红包(促销时用) decimal(12,3)-->
+			<if test="entity.deposit != null">deposit,</if>                                    <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			<if test="entity.beginTime != null">begin_time,</if>                               <!-- 账单开始时间 datetime-->
+			<if test="entity.endTime != null">end_time,</if>                                   <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			<if test="entity.payDate != null">pay_date,</if>                                   <!-- 付款时间 datetime-->
+			<if test="entity.payPerson != null">pay_person,</if>                               <!-- 付款人 varchar(64)-->
+			<if test="entity.payRemarks != null">pay_remarks,</if>                             <!-- 付款备注 varchar(1024)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 varchar(64)-->
+			<if test="entity.tasksubid != null">tasksubid,</if>                                <!-- 子任务id bigint(20)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.billId != null">#{entity.billId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">settlement_bill_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.billType != null">#{entity.billType},</if>                                  <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			<if test="entity.balanceDate != null">#{entity.balanceDate},</if>                            <!-- 出账日期 datetime-->
+			<if test="entity.billAmount != null">#{entity.billAmount},</if>                              <!-- 本期应结(元) decimal(12,3)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			<if test="entity.orderAmount != null">#{entity.orderAmount},</if>                            <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.platformCommission != null">#{entity.platformCommission},</if>              <!-- 平台分佣金额 decimal(12,3)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+			<if test="entity.returnCommission != null">#{entity.returnCommission},</if>                  <!-- 退还佣金 decimal(12,3)-->
+			<if test="entity.refund != null">#{entity.refund},</if>                                      <!-- 退单金额 decimal(12,3)-->
+			<if test="entity.promotionExpenses != null">#{entity.promotionExpenses},</if>                <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			<if test="entity.redPackets != null">#{entity.redPackets},</if>                              <!-- 红包(促销时用) decimal(12,3)-->
+			<if test="entity.returnRedPackets != null">#{entity.returnRedPackets},</if>                  <!-- 退还红包(促销时用) decimal(12,3)-->
+			<if test="entity.deposit != null">#{entity.deposit},</if>                                    <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			<if test="entity.beginTime != null">#{entity.beginTime},</if>                                <!-- 账单开始时间 datetime-->
+			<if test="entity.endTime != null">#{entity.endTime},</if>                                    <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			<if test="entity.payDate != null">#{entity.payDate},</if>                                    <!-- 付款时间 datetime-->
+			<if test="entity.payPerson != null">#{entity.payPerson},</if>                                <!-- 付款人 varchar(64)-->
+			<if test="entity.payRemarks != null">#{entity.payRemarks},</if>                              <!-- 付款备注 varchar(1024)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 varchar(64)-->
+			<if test="entity.tasksubid != null">#{entity.tasksubid},</if>                                <!-- 子任务id bigint(20)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE settlement_bill 
+		<set>
+			bill_type = #{entity.billType},                                 <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			balance_date = #{entity.balanceDate},                           <!-- 出账日期 datetime-->
+			bill_amount = #{entity.billAmount},                             <!-- 本期应结(元) decimal(12,3)-->
+			status = #{entity.status},                                      <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			order_amount = #{entity.orderAmount},                           <!-- 订单总金额 decimal(12,3)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			platform_commission = #{entity.platformCommission},             <!-- 平台分佣金额 decimal(12,3)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			return_commission = #{entity.returnCommission},                 <!-- 退还佣金 decimal(12,3)-->
+			refund = #{entity.refund},                                      <!-- 退单金额 decimal(12,3)-->
+			promotion_expenses = #{entity.promotionExpenses},               <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			red_packets = #{entity.redPackets},                             <!-- 红包(促销时用) decimal(12,3)-->
+			return_red_packets = #{entity.returnRedPackets},                <!-- 退还红包(促销时用) decimal(12,3)-->
+			deposit = #{entity.deposit},                                    <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			begin_time = #{entity.beginTime},                               <!-- 账单开始时间 datetime-->
+			end_time = #{entity.endTime},                                   <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			pay_date = #{entity.payDate},                                   <!-- 付款时间 datetime-->
+			pay_person = #{entity.payPerson},                               <!-- 付款人 varchar(64)-->
+			pay_remarks = #{entity.payRemarks},                             <!-- 付款备注 varchar(1024)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 varchar(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 varchar(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 varchar(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 varchar(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 varchar(64)-->
+			tasksubid = #{entity.tasksubid},                                <!-- 子任务id bigint(20)-->
+
+		</set>
+		WHERE bill_id = #{entity.billId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE settlement_bill a 
+		<set>
+			bill_type = #{entity.billType},                                 <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			balance_date = #{entity.balanceDate},                           <!-- 出账日期 datetime-->
+			bill_amount = #{entity.billAmount},                             <!-- 本期应结(元) decimal(12,3)-->
+			status = #{entity.status},                                      <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			order_amount = #{entity.orderAmount},                           <!-- 订单总金额 decimal(12,3)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			platform_commission = #{entity.platformCommission},             <!-- 平台分佣金额 decimal(12,3)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			return_commission = #{entity.returnCommission},                 <!-- 退还佣金 decimal(12,3)-->
+			refund = #{entity.refund},                                      <!-- 退单金额 decimal(12,3)-->
+			promotion_expenses = #{entity.promotionExpenses},               <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			red_packets = #{entity.redPackets},                             <!-- 红包(促销时用) decimal(12,3)-->
+			return_red_packets = #{entity.returnRedPackets},                <!-- 退还红包(促销时用) decimal(12,3)-->
+			deposit = #{entity.deposit},                                    <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			begin_time = #{entity.beginTime},                               <!-- 账单开始时间 datetime-->
+			end_time = #{entity.endTime},                                   <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			pay_date = #{entity.payDate},                                   <!-- 付款时间 datetime-->
+			pay_person = #{entity.payPerson},                               <!-- 付款人 varchar(64)-->
+			pay_remarks = #{entity.payRemarks},                             <!-- 付款备注 varchar(1024)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 varchar(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 varchar(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 varchar(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 varchar(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 varchar(64)-->
+			tasksubid = #{entity.tasksubid},                                <!-- 子任务id bigint(20)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE settlement_bill
+		<set>
+			<if test="entity.billType != null">bill_type = #{entity.billType},</if>                                             <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			<if test="entity.balanceDate != null">balance_date = #{entity.balanceDate},</if>                                    <!-- 出账日期 datetime-->
+			<if test="entity.billAmount != null">bill_amount = #{entity.billAmount},</if>                                       <!-- 本期应结(元) decimal(12,3)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			<if test="entity.orderAmount != null">order_amount = #{entity.orderAmount},</if>                                    <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.platformCommission != null">platform_commission = #{entity.platformCommission},</if>               <!-- 平台分佣金额 decimal(12,3)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.returnCommission != null">return_commission = #{entity.returnCommission},</if>                     <!-- 退还佣金 decimal(12,3)-->
+			<if test="entity.refund != null">refund = #{entity.refund},</if>                                                    <!-- 退单金额 decimal(12,3)-->
+			<if test="entity.promotionExpenses != null">promotion_expenses = #{entity.promotionExpenses},</if>                  <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			<if test="entity.redPackets != null">red_packets = #{entity.redPackets},</if>                                       <!-- 红包(促销时用) decimal(12,3)-->
+			<if test="entity.returnRedPackets != null">return_red_packets = #{entity.returnRedPackets},</if>                    <!-- 退还红包(促销时用) decimal(12,3)-->
+			<if test="entity.deposit != null">deposit = #{entity.deposit},</if>                                                 <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			<if test="entity.beginTime != null">begin_time = #{entity.beginTime},</if>                                          <!-- 账单开始时间 datetime-->
+			<if test="entity.endTime != null">end_time = #{entity.endTime},</if>                                                <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			<if test="entity.payDate != null">pay_date = #{entity.payDate},</if>                                                <!-- 付款时间 datetime-->
+			<if test="entity.payPerson != null">pay_person = #{entity.payPerson},</if>                                          <!-- 付款人 varchar(64)-->
+			<if test="entity.payRemarks != null">pay_remarks = #{entity.payRemarks},</if>                                       <!-- 付款备注 varchar(1024)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 varchar(64)-->
+			<if test="entity.tasksubid != null">tasksubid = #{entity.tasksubid},</if>                                           <!-- 子任务id bigint(20)-->
+		</set>
+		WHERE bill_id = #{entity.billId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE settlement_bill a
+		<set>
+			<if test="entity.billType != null">bill_type = #{entity.billType},</if>                                             <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+			<if test="entity.balanceDate != null">balance_date = #{entity.balanceDate},</if>                                    <!-- 出账日期 datetime-->
+			<if test="entity.billAmount != null">bill_amount = #{entity.billAmount},</if>                                       <!-- 本期应结(元) decimal(12,3)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+			<if test="entity.orderAmount != null">order_amount = #{entity.orderAmount},</if>                                    <!-- 订单总金额 decimal(12,3)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.platformCommission != null">platform_commission = #{entity.platformCommission},</if>               <!-- 平台分佣金额 decimal(12,3)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.returnCommission != null">return_commission = #{entity.returnCommission},</if>                     <!-- 退还佣金 decimal(12,3)-->
+			<if test="entity.refund != null">refund = #{entity.refund},</if>                                                    <!-- 退单金额 decimal(12,3)-->
+			<if test="entity.promotionExpenses != null">promotion_expenses = #{entity.promotionExpenses},</if>                  <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+			<if test="entity.redPackets != null">red_packets = #{entity.redPackets},</if>                                       <!-- 红包(促销时用) decimal(12,3)-->
+			<if test="entity.returnRedPackets != null">return_red_packets = #{entity.returnRedPackets},</if>                    <!-- 退还红包(促销时用) decimal(12,3)-->
+			<if test="entity.deposit != null">deposit = #{entity.deposit},</if>                                                 <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+			<if test="entity.beginTime != null">begin_time = #{entity.beginTime},</if>                                          <!-- 账单开始时间 datetime-->
+			<if test="entity.endTime != null">end_time = #{entity.endTime},</if>                                                <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+			<if test="entity.payDate != null">pay_date = #{entity.payDate},</if>                                                <!-- 付款时间 datetime-->
+			<if test="entity.payPerson != null">pay_person = #{entity.payPerson},</if>                                          <!-- 付款人 varchar(64)-->
+			<if test="entity.payRemarks != null">pay_remarks = #{entity.payRemarks},</if>                                       <!-- 付款备注 varchar(1024)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 varchar(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 varchar(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 varchar(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 varchar(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 varchar(64)-->
+			<if test="entity.tasksubid != null">tasksubid = #{entity.tasksubid},</if>                                           <!-- 子任务id bigint(20)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM settlement_bill
+		WHERE bill_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM settlement_bill
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					bill_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM settlement_bill a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM settlement_bill a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

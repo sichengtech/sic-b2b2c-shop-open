@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>
+    <%var paymentCompleted =fy.getMsg({key:'支付完成'});%>
+    ${paymentCompleted!} Powered by SiC
+</title>
+<% include("/include/head.html"){}%>
+<style type="text/css">
+	.payOkBody .sui-container{width: 900px;height: 400px;}
+	.payOkBody .sui-container .payOrder{border: 1px solid #f3f3f3;box-shadow: 0 0 3px 1px #f3f3f3;}
+	.payOkBody .sui-container .payOrder .title{font-size: 20px;padding: 20px;border-bottom: 1px solid #65595930;}
+   .sui-center {display: inline-block;position:relative;/*top: 50%;*/ left: 50%; margin: 40px 0 0 -325px; width: 650px; height: 260px;}
+    .icon-ok {margin: 0 auto;width: 100px; height: 130px;}
+    .title1 {text-align: center; font-size: 40px; color: #ee7a23;line-height: 46px; font-weight: 900;}
+    .title2 {text-align: center;font-size: 20px; color: #999;line-height: 46px;}
+    .back-a {font-size: 24px;line-height: 40px;}
+    .back1 {float: left; margin-left: 120px;}
+    .back2 {float: right; margin-right: 120px;}
+</style>
+</head>
+<body class="bgfff payOkBody">
+	<% include("/include/header.html"){}%>
+	<div class="sui-container">
+		<div class="sui-container payOrder">
+            <%var paymentResult=fy.getMsg({key:'付款结果'});%>
+       <p class="title">${paymentResult!}</p>
+
+       <div class="sui-center">
+           <%var paymentSuccess=fy.getMsg({key:'付款成功'});
+           var ship=fy.getMsg({key:'我们会在24小时为你发货'});
+           %>
+        <div class="icon-ok"><img src="${ctx}/views/front/default/img/ok-2.png" alt="${paymentSuccess!}"></div>
+        <p class="title1">${paymentSuccess!}</p>
+        <p class="title2">${ship!}</p>
+        <div class="back">
+            <%var myOrder=fy.getMsg({key:'去我的订单'});
+            var mallHome=fy.getMsg({key:'去商城首页'});
+            %>
+            <a class="back1 back-a" href="${ctxm}/trade/tradeOrder/list.htm"><i class="sui-icon icon-tb-back"></i><span> ${myOrder!}</span></a>
+            <a class="back2 back-a" href="${ctx}/index.htm"><span> ${mallHome!} </span><i class="sui-icon icon-tb-right"></i></a>
+        </div>
+       </div>
+            
+		</div>
+	</div>
+	<div class="footer-simple"></div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

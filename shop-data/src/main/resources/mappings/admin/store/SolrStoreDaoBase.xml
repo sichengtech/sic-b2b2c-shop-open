@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.SolrStoreDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="solrStoreColumns">
+		<trim suffixOverrides=",">
+			a.store_id AS "storeId",                                             <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			a.head_pic AS "headPic",                                             <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			a.logo AS "logo",                                                    <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			a.banner AS "banner",                                                <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			a.name AS "name",                                                    <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			a.product_count AS "productCount",                                   <!-- 店铺商品spu数 int(11)-->
+			a.is_open AS "isOpen",                                               <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			a.settlement_period AS "settlementPeriod",                           <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			a.country_id AS "countryId",                                         <!-- 国家(关联地区表) bigint(20)-->
+			a.country_name AS "countryName",                                     <!-- 国家名字 varchar(64)-->
+			a.province_id AS "provinceId",                                       <!-- 省(关联地区表) bigint(20)-->
+			a.province_name AS "provinceName",                                   <!-- 省名字 varchar(64)-->
+			a.city_id AS "cityId",                                               <!-- 市(关联地区表) bigint(20)-->
+			a.city_name AS "cityName",                                           <!-- 市名字 varchar(64)-->
+			a.district_id AS "districtId",                                       <!-- 县(关联地区表) bigint(20)-->
+			a.district_name AS "districtName",                                   <!-- 县名字 varchar(64)-->
+			a.detailed_address AS "detailedAddress",                             <!-- 详细地址 varchar(255)-->
+			a.store_tel AS "storeTel",                                           <!-- 店铺客服电话 varchar(64)-->
+			a.store_qq AS "storeQq",                                             <!-- 店铺QQ varchar(64)-->
+			a.store_wechat AS "storeWechat",                                     <!-- 店铺联系微信 varchar(64)-->
+			a.seo_title AS "seoTitle",                                           <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			a.seo_keyword AS "seoKeyword",                                       <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			a.seo_describe AS "seoDescribe",                                     <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			a.create_date AS "createDate",                                       <!-- 创建时间（开店日期） datetime-->
+			a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+			a.industry AS "industry",                                            <!-- 店铺主营产品 varchar(255)-->
+			a.store_type AS "storeType",                                         <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			a.level_id AS "levelId",                                             <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			a.industry_id AS "industryId",                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			a.commission AS "commission",                                        <!-- 分佣比例 decimal(12,3)-->
+			a.marking_img_path AS "markingImgPath",                              <!-- 店铺打标地址path varchar(64)-->
+			a.all_sales AS "allSales",                                           <!-- 总销量 int(11)-->
+			a.all_sales_date AS "allSalesDate",                                  <!-- 总销量更新日期 datetime-->
+			a.week_sales AS "weekSales",                                         <!-- 周销量 int(11)-->
+			a.week_sales_date AS "weekSalesDate",                                <!-- 周销量更新日期 datetime-->
+			a.month_sales AS "monthSales",                                       <!-- 月销量 int(11)-->
+			a.month_sales_date AS "monthSalesDate",                              <!-- 月销量更新日期 datetime-->
+			a.month3_sales AS "month3Sales",                                     <!-- 三个月销量 int(11)-->
+			a.month3_sales_date AS "month3SalesDate",                            <!-- 三个月销量更新日期 datetime-->
+			a.product_score AS "productScore",                                   <!-- 产品评分 float-->
+			a.logistics_score AS "logisticsScore",                               <!-- 物流评分 float-->
+			a.service_attitude_score AS "serviceAttitudeScore",                  <!-- 服务评分 float-->
+			a.count_collection AS "countCollection",                             <!-- count_collection bigint(21)-->
+			a.product_score_up_or_down AS "productScoreUpOrDown",                <!-- 1为商品评分上升，0为下降 char(1)-->
+			a.logistics_score_up_or_down AS "logisticsScoreUpOrDown",            <!-- 1为物流评分上升，0为下降 char(1)-->
+			a.service_attitude_score_up_or_down AS "serviceAttitudeScoreUpOrDown",   <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+		<if test="w!=null and w.e!=null">
+			<bind name="c" value="w.e"/>
+			<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+			<if test="c.headPic != null and c.headPic != ''">AND a.head_pic = #{c.headPic}</if>
+			<if test="c.logo != null and c.logo != ''">AND a.logo = #{c.logo}</if>
+			<if test="c.banner != null and c.banner != ''">AND a.banner = #{c.banner}</if>
+			<if test="c.name != null and c.name != ''">AND a.name = #{c.name}</if>
+			<if test="c.productCount != null ">AND a.product_count = #{c.productCount}</if>
+			<if test="c.isOpen != null and c.isOpen != ''">AND a.is_open = #{c.isOpen}</if>
+			<if test="c.settlementPeriod != null and c.settlementPeriod != ''">AND a.settlement_period = #{c.settlementPeriod}</if>
+			<if test="c.countryId != null ">AND a.country_id = #{c.countryId}</if>
+			<if test="c.countryName != null and c.countryName != ''">AND a.country_name = #{c.countryName}</if>
+			<if test="c.provinceId != null ">AND a.province_id = #{c.provinceId}</if>
+			<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+			<if test="c.cityId != null ">AND a.city_id = #{c.cityId}</if>
+			<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+			<if test="c.districtId != null ">AND a.district_id = #{c.districtId}</if>
+			<if test="c.districtName != null and c.districtName != ''">AND a.district_name = #{c.districtName}</if>
+			<if test="c.detailedAddress != null and c.detailedAddress != ''">AND a.detailed_address = #{c.detailedAddress}</if>
+			<if test="c.storeTel != null and c.storeTel != ''">AND a.store_tel = #{c.storeTel}</if>
+			<if test="c.storeQq != null and c.storeQq != ''">AND a.store_qq = #{c.storeQq}</if>
+			<if test="c.storeWechat != null and c.storeWechat != ''">AND a.store_wechat = #{c.storeWechat}</if>
+			<if test="c.seoTitle != null and c.seoTitle != ''">AND a.seo_title = #{c.seoTitle}</if>
+			<if test="c.seoKeyword != null and c.seoKeyword != ''">AND a.seo_keyword = #{c.seoKeyword}</if>
+			<if test="c.seoDescribe != null and c.seoDescribe != ''">AND a.seo_describe = #{c.seoDescribe}</if>
+			<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+			<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+			<if test="c.industry != null and c.industry != ''">AND a.industry = #{c.industry}</if>
+			<if test="c.storeType != null and c.storeType != ''">AND a.store_type = #{c.storeType}</if>
+			<if test="c.levelId != null ">AND a.level_id = #{c.levelId}</if>
+			<if test="c.industryId != null ">AND a.industry_id = #{c.industryId}</if>
+			<if test="c.commission != null ">AND a.commission = #{c.commission}</if>
+			<if test="c.markingImgPath != null and c.markingImgPath != ''">AND a.marking_img_path = #{c.markingImgPath}</if>
+			<if test="c.allSales != null ">AND a.all_sales = #{c.allSales}</if>
+			<if test="c.beginAllSalesDate != null and c.endAllSalesDate != null ">AND a.all_sales_date BETWEEN #{c.beginAllSalesDate} AND #{c.endAllSalesDate}</if>
+			<if test="c.weekSales != null ">AND a.week_sales = #{c.weekSales}</if>
+			<if test="c.beginWeekSalesDate != null and c.endWeekSalesDate != null ">AND a.week_sales_date BETWEEN #{c.beginWeekSalesDate} AND #{c.endWeekSalesDate}</if>
+			<if test="c.monthSales != null ">AND a.month_sales = #{c.monthSales}</if>
+			<if test="c.beginMonthSalesDate != null and c.endMonthSalesDate != null ">AND a.month_sales_date BETWEEN #{c.beginMonthSalesDate} AND #{c.endMonthSalesDate}</if>
+			<if test="c.month3Sales != null ">AND a.month3_sales = #{c.month3Sales}</if>
+			<if test="c.beginMonth3SalesDate != null and c.endMonth3SalesDate != null ">AND a.month3_sales_date BETWEEN #{c.beginMonth3SalesDate} AND #{c.endMonth3SalesDate}</if>
+			<if test="c.productScore != null and c.productScore != ''">AND a.product_score = #{c.productScore}</if>
+			<if test="c.logisticsScore != null and c.logisticsScore != ''">AND a.logistics_score = #{c.logisticsScore}</if>
+			<if test="c.serviceAttitudeScore != null and c.serviceAttitudeScore != ''">AND a.service_attitude_score = #{c.serviceAttitudeScore}</if>
+			<if test="c.countCollection != null ">AND a.count_collection = #{c.countCollection}</if>
+			<if test="c.productScoreUpOrDown != null and c.productScoreUpOrDown != ''">AND a.product_score_up_or_down = #{c.productScoreUpOrDown}</if>
+			<if test="c.logisticsScoreUpOrDown != null and c.logisticsScoreUpOrDown != ''">AND a.logistics_score_up_or_down = #{c.logisticsScoreUpOrDown}</if>
+			<if test="c.serviceAttitudeScoreUpOrDown != null and c.serviceAttitudeScoreUpOrDown != ''">AND a.service_attitude_score_up_or_down = #{c.serviceAttitudeScoreUpOrDown}</if>
+		</if>
+	</sql>
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SolrStore">
+		SELECT
+		<include refid="solrStoreColumns"/>
+		FROM solr_store a
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SolrStore">
+		SELECT
+		<include refid="solrStoreColumns"/>
+		FROM solr_store a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SolrStore">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="solrStoreColumns"/>
+		FROM solr_store a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SolrStore">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="solrStoreColumns"/>
+		FROM solr_store a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO solr_store
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			store_id,                                          <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			head_pic,                                          <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			logo,                                              <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			banner,                                            <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			name,                                              <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			product_count,                                     <!-- 店铺商品spu数 int(11)-->
+			is_open,                                           <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			settlement_period,                                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			country_id,                                        <!-- 国家(关联地区表) bigint(20)-->
+			country_name,                                      <!-- 国家名字 varchar(64)-->
+			province_id,                                       <!-- 省(关联地区表) bigint(20)-->
+			province_name,                                     <!-- 省名字 varchar(64)-->
+			city_id,                                           <!-- 市(关联地区表) bigint(20)-->
+			city_name,                                         <!-- 市名字 varchar(64)-->
+			district_id,                                       <!-- 县(关联地区表) bigint(20)-->
+			district_name,                                     <!-- 县名字 varchar(64)-->
+			detailed_address,                                  <!-- 详细地址 varchar(255)-->
+			store_tel,                                         <!-- 店铺客服电话 varchar(64)-->
+			store_qq,                                          <!-- 店铺QQ varchar(64)-->
+			store_wechat,                                      <!-- 店铺联系微信 varchar(64)-->
+			seo_title,                                         <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			seo_keyword,                                       <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			seo_describe,                                      <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			create_date,                                       <!-- 创建时间（开店日期） datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+			industry,                                          <!-- 店铺主营产品 varchar(255)-->
+			store_type,                                        <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			level_id,                                          <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			industry_id,                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			commission,                                        <!-- 分佣比例 decimal(12,3)-->
+			marking_img_path,                                  <!-- 店铺打标地址path varchar(64)-->
+			all_sales,                                         <!-- 总销量 int(11)-->
+			all_sales_date,                                    <!-- 总销量更新日期 datetime-->
+			week_sales,                                        <!-- 周销量 int(11)-->
+			week_sales_date,                                   <!-- 周销量更新日期 datetime-->
+			month_sales,                                       <!-- 月销量 int(11)-->
+			month_sales_date,                                  <!-- 月销量更新日期 datetime-->
+			month3_sales,                                      <!-- 三个月销量 int(11)-->
+			month3_sales_date,                                 <!-- 三个月销量更新日期 datetime-->
+			product_score,                                     <!-- 产品评分 float-->
+			logistics_score,                                   <!-- 物流评分 float-->
+			service_attitude_score,                            <!-- 服务评分 float-->
+			count_collection,                                  <!-- count_collection bigint(21)-->
+			product_score_up_or_down,                          <!-- 1为商品评分上升，0为下降 char(1)-->
+			logistics_score_up_or_down,                        <!-- 1为物流评分上升，0为下降 char(1)-->
+			service_attitude_score_up_or_down,                 <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			#{entity.storeId},                                 <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			#{entity.headPic},                                 <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			#{entity.logo},                                    <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			#{entity.banner},                                  <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			#{entity.name},                                    <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			#{entity.productCount},                            <!-- 店铺商品spu数 int(11)-->
+			#{entity.isOpen},                                  <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			#{entity.settlementPeriod},                        <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			#{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
+			#{entity.countryName},                             <!-- 国家名字 varchar(64)-->
+			#{entity.provinceId},                              <!-- 省(关联地区表) bigint(20)-->
+			#{entity.provinceName},                            <!-- 省名字 varchar(64)-->
+			#{entity.cityId},                                  <!-- 市(关联地区表) bigint(20)-->
+			#{entity.cityName},                                <!-- 市名字 varchar(64)-->
+			#{entity.districtId},                              <!-- 县(关联地区表) bigint(20)-->
+			#{entity.districtName},                            <!-- 县名字 varchar(64)-->
+			#{entity.detailedAddress},                         <!-- 详细地址 varchar(255)-->
+			#{entity.storeTel},                                <!-- 店铺客服电话 varchar(64)-->
+			#{entity.storeQq},                                 <!-- 店铺QQ varchar(64)-->
+			#{entity.storeWechat},                             <!-- 店铺联系微信 varchar(64)-->
+			#{entity.seoTitle},                                <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			#{entity.seoKeyword},                              <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			#{entity.seoDescribe},                             <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			#{entity.createDate},                              <!-- 创建时间（开店日期） datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+			#{entity.industry},                                <!-- 店铺主营产品 varchar(255)-->
+			#{entity.storeType},                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			#{entity.levelId},                                 <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			#{entity.industryId},                              <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			#{entity.commission},                              <!-- 分佣比例 decimal(12,3)-->
+			#{entity.markingImgPath},                          <!-- 店铺打标地址path varchar(64)-->
+			#{entity.allSales},                                <!-- 总销量 int(11)-->
+			#{entity.allSalesDate},                            <!-- 总销量更新日期 datetime-->
+			#{entity.weekSales},                               <!-- 周销量 int(11)-->
+			#{entity.weekSalesDate},                           <!-- 周销量更新日期 datetime-->
+			#{entity.monthSales},                              <!-- 月销量 int(11)-->
+			#{entity.monthSalesDate},                          <!-- 月销量更新日期 datetime-->
+			#{entity.month3Sales},                             <!-- 三个月销量 int(11)-->
+			#{entity.month3SalesDate},                         <!-- 三个月销量更新日期 datetime-->
+			#{entity.productScore},                            <!-- 产品评分 float-->
+			#{entity.logisticsScore},                          <!-- 物流评分 float-->
+			#{entity.serviceAttitudeScore},                    <!-- 服务评分 float-->
+			#{entity.countCollection},                         <!-- count_collection bigint(21)-->
+			#{entity.productScoreUpOrDown},                    <!-- 1为商品评分上升，0为下降 char(1)-->
+			#{entity.logisticsScoreUpOrDown},                  <!-- 1为物流评分上升，0为下降 char(1)-->
+			#{entity.serviceAttitudeScoreUpOrDown},            <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO solr_store
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			<if test="entity.headPic != null">head_pic,</if>                                   <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			<if test="entity.logo != null">logo,</if>                                          <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			<if test="entity.banner != null">banner,</if>                                      <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			<if test="entity.productCount != null">product_count,</if>                         <!-- 店铺商品spu数 int(11)-->
+			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			<if test="entity.settlementPeriod != null">settlement_period,</if>                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">country_name,</if>                           <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 详细地址 varchar(255)-->
+			<if test="entity.storeTel != null">store_tel,</if>                                 <!-- 店铺客服电话 varchar(64)-->
+			<if test="entity.storeQq != null">store_qq,</if>                                   <!-- 店铺QQ varchar(64)-->
+			<if test="entity.storeWechat != null">store_wechat,</if>                           <!-- 店铺联系微信 varchar(64)-->
+			<if test="entity.seoTitle != null">seo_title,</if>                                 <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			<if test="entity.seoKeyword != null">seo_keyword,</if>                             <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			<if test="entity.seoDescribe != null">seo_describe,</if>                           <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间（开店日期） datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+			<if test="entity.industry != null">industry,</if>                                  <!-- 店铺主营产品 varchar(255)-->
+			<if test="entity.storeType != null">store_type,</if>                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.levelId != null">level_id,</if>                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">industry_id,</if>                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.commission != null">commission,</if>                              <!-- 分佣比例 decimal(12,3)-->
+			<if test="entity.markingImgPath != null">marking_img_path,</if>                    <!-- 店铺打标地址path varchar(64)-->
+			<if test="entity.allSales != null">all_sales,</if>                                 <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">all_sales_date,</if>                        <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">week_sales,</if>                               <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">week_sales_date,</if>                      <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">month_sales_date,</if>                    <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">month3_sales,</if>                           <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date,</if>                  <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">product_score,</if>                         <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">logistics_score,</if>                     <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">service_attitude_score,</if>        <!-- 服务评分 float-->
+			<if test="entity.countCollection != null">count_collection,</if>                   <!-- count_collection bigint(21)-->
+			<if test="entity.productScoreUpOrDown != null">product_score_up_or_down,</if>      <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">logistics_score_up_or_down,</if>  <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">service_attitude_score_up_or_down,</if>             <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</trim>
+		VALUES
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			<if test="entity.headPic != null">#{entity.headPic},</if>                                    <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			<if test="entity.logo != null">#{entity.logo},</if>                                          <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			<if test="entity.banner != null">#{entity.banner},</if>                                      <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			<if test="entity.productCount != null">#{entity.productCount},</if>                          <!-- 店铺商品spu数 int(11)-->
+			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			<if test="entity.settlementPeriod != null">#{entity.settlementPeriod},</if>                  <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 详细地址 varchar(255)-->
+			<if test="entity.storeTel != null">#{entity.storeTel},</if>                                  <!-- 店铺客服电话 varchar(64)-->
+			<if test="entity.storeQq != null">#{entity.storeQq},</if>                                    <!-- 店铺QQ varchar(64)-->
+			<if test="entity.storeWechat != null">#{entity.storeWechat},</if>                            <!-- 店铺联系微信 varchar(64)-->
+			<if test="entity.seoTitle != null">#{entity.seoTitle},</if>                                  <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			<if test="entity.seoKeyword != null">#{entity.seoKeyword},</if>                              <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			<if test="entity.seoDescribe != null">#{entity.seoDescribe},</if>                            <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间（开店日期） datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+			<if test="entity.industry != null">#{entity.industry},</if>                                  <!-- 店铺主营产品 varchar(255)-->
+			<if test="entity.storeType != null">#{entity.storeType},</if>                                <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.levelId != null">#{entity.levelId},</if>                                    <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">#{entity.industryId},</if>                              <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.commission != null">#{entity.commission},</if>                              <!-- 分佣比例 decimal(12,3)-->
+			<if test="entity.markingImgPath != null">#{entity.markingImgPath},</if>                      <!-- 店铺打标地址path varchar(64)-->
+			<if test="entity.allSales != null">#{entity.allSales},</if>                                  <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">#{entity.allSalesDate},</if>                          <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">#{entity.weekSales},</if>                                <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">#{entity.weekSalesDate},</if>                        <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">#{entity.monthSalesDate},</if>                      <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">#{entity.month3Sales},</if>                            <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">#{entity.month3SalesDate},</if>                    <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">#{entity.productScore},</if>                          <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">#{entity.logisticsScore},</if>                      <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">#{entity.serviceAttitudeScore},</if>          <!-- 服务评分 float-->
+			<if test="entity.countCollection != null">#{entity.countCollection},</if>                    <!-- count_collection bigint(21)-->
+			<if test="entity.productScoreUpOrDown != null">#{entity.productScoreUpOrDown},</if>          <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">#{entity.logisticsScoreUpOrDown},</if>      <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">#{entity.serviceAttitudeScoreUpOrDown},</if>        <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE solr_store
+		<set>
+			store_id = #{entity.storeId},                                   <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			head_pic = #{entity.headPic},                                   <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			logo = #{entity.logo},                                          <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			banner = #{entity.banner},                                      <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			name = #{entity.name},                                          <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			product_count = #{entity.productCount},                         <!-- 店铺商品spu数 int(11)-->
+			is_open = #{entity.isOpen},                                     <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			settlement_period = #{entity.settlementPeriod},                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
+			country_name = #{entity.countryName},                           <!-- 国家名字 varchar(64)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
+			province_name = #{entity.provinceName},                         <!-- 省名字 varchar(64)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
+			city_name = #{entity.cityName},                                 <!-- 市名字 varchar(64)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 varchar(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 varchar(255)-->
+			store_tel = #{entity.storeTel},                                 <!-- 店铺客服电话 varchar(64)-->
+			store_qq = #{entity.storeQq},                                   <!-- 店铺QQ varchar(64)-->
+			store_wechat = #{entity.storeWechat},                           <!-- 店铺联系微信 varchar(64)-->
+			seo_title = #{entity.seoTitle},                                 <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			seo_keyword = #{entity.seoKeyword},                             <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			seo_describe = #{entity.seoDescribe},                           <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间（开店日期） datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			industry = #{entity.industry},                                  <!-- 店铺主营产品 varchar(255)-->
+			store_type = #{entity.storeType},                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			commission = #{entity.commission},                              <!-- 分佣比例 decimal(12,3)-->
+			marking_img_path = #{entity.markingImgPath},                    <!-- 店铺打标地址path varchar(64)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 int(11)-->
+			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 datetime-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 int(11)-->
+			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 datetime-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 int(11)-->
+			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 datetime-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 int(11)-->
+			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 datetime-->
+			product_score = #{entity.productScore},                         <!-- 产品评分 float-->
+			logistics_score = #{entity.logisticsScore},                     <!-- 物流评分 float-->
+			service_attitude_score = #{entity.serviceAttitudeScore},        <!-- 服务评分 float-->
+			count_collection = #{entity.countCollection},                   <!-- count_collection bigint(21)-->
+			product_score_up_or_down = #{entity.productScoreUpOrDown},      <!-- 1为商品评分上升，0为下降 char(1)-->
+			logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},  <!-- 1为物流评分上升，0为下降 char(1)-->
+			service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},             <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE solr_store a
+		<set>
+			store_id = #{entity.storeId},                                   <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			head_pic = #{entity.headPic},                                   <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			logo = #{entity.logo},                                          <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			banner = #{entity.banner},                                      <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			name = #{entity.name},                                          <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			product_count = #{entity.productCount},                         <!-- 店铺商品spu数 int(11)-->
+			is_open = #{entity.isOpen},                                     <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			settlement_period = #{entity.settlementPeriod},                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
+			country_name = #{entity.countryName},                           <!-- 国家名字 varchar(64)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
+			province_name = #{entity.provinceName},                         <!-- 省名字 varchar(64)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
+			city_name = #{entity.cityName},                                 <!-- 市名字 varchar(64)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 varchar(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 varchar(255)-->
+			store_tel = #{entity.storeTel},                                 <!-- 店铺客服电话 varchar(64)-->
+			store_qq = #{entity.storeQq},                                   <!-- 店铺QQ varchar(64)-->
+			store_wechat = #{entity.storeWechat},                           <!-- 店铺联系微信 varchar(64)-->
+			seo_title = #{entity.seoTitle},                                 <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			seo_keyword = #{entity.seoKeyword},                             <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			seo_describe = #{entity.seoDescribe},                           <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间（开店日期） datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			industry = #{entity.industry},                                  <!-- 店铺主营产品 varchar(255)-->
+			store_type = #{entity.storeType},                               <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			commission = #{entity.commission},                              <!-- 分佣比例 decimal(12,3)-->
+			marking_img_path = #{entity.markingImgPath},                    <!-- 店铺打标地址path varchar(64)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 int(11)-->
+			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 datetime-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 int(11)-->
+			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 datetime-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 int(11)-->
+			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 datetime-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 int(11)-->
+			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 datetime-->
+			product_score = #{entity.productScore},                         <!-- 产品评分 float-->
+			logistics_score = #{entity.logisticsScore},                     <!-- 物流评分 float-->
+			service_attitude_score = #{entity.serviceAttitudeScore},        <!-- 服务评分 float-->
+			count_collection = #{entity.countCollection},                   <!-- count_collection bigint(21)-->
+			product_score_up_or_down = #{entity.productScoreUpOrDown},      <!-- 1为商品评分上升，0为下降 char(1)-->
+			logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},  <!-- 1为物流评分上升，0为下降 char(1)-->
+			service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},             <!-- 1为服务态度评分上升，0为下降 char(1)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE solr_store
+		<set>
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			<if test="entity.headPic != null">head_pic = #{entity.headPic},</if>                                                <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			<if test="entity.logo != null">logo = #{entity.logo},</if>                                                          <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			<if test="entity.banner != null">banner = #{entity.banner},</if>                                                    <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			<if test="entity.productCount != null">product_count = #{entity.productCount},</if>                                 <!-- 店铺商品spu数 int(11)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			<if test="entity.settlementPeriod != null">settlement_period = #{entity.settlementPeriod},</if>                     <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 varchar(255)-->
+			<if test="entity.storeTel != null">store_tel = #{entity.storeTel},</if>                                             <!-- 店铺客服电话 varchar(64)-->
+			<if test="entity.storeQq != null">store_qq = #{entity.storeQq},</if>                                                <!-- 店铺QQ varchar(64)-->
+			<if test="entity.storeWechat != null">store_wechat = #{entity.storeWechat},</if>                                    <!-- 店铺联系微信 varchar(64)-->
+			<if test="entity.seoTitle != null">seo_title = #{entity.seoTitle},</if>                                             <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			<if test="entity.seoKeyword != null">seo_keyword = #{entity.seoKeyword},</if>                                       <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			<if test="entity.seoDescribe != null">seo_describe = #{entity.seoDescribe},</if>                                    <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间（开店日期） datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 店铺主营产品 varchar(255)-->
+			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.commission != null">commission = #{entity.commission},</if>                                        <!-- 分佣比例 decimal(12,3)-->
+			<if test="entity.markingImgPath != null">marking_img_path = #{entity.markingImgPath},</if>                          <!-- 店铺打标地址path varchar(64)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">product_score = #{entity.productScore},</if>                                 <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">logistics_score = #{entity.logisticsScore},</if>                           <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">service_attitude_score = #{entity.serviceAttitudeScore},</if>        <!-- 服务评分 float-->
+			<if test="entity.countCollection != null">count_collection = #{entity.countCollection},</if>                        <!-- count_collection bigint(21)-->
+			<if test="entity.productScoreUpOrDown != null">product_score_up_or_down = #{entity.productScoreUpOrDown},</if>      <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},</if>  <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},</if>                     <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE solr_store a
+		<set>
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
+			<if test="entity.headPic != null">head_pic = #{entity.headPic},</if>                                                <!-- 店铺头像图片路径（默认图片） varchar(64)-->
+			<if test="entity.logo != null">logo = #{entity.logo},</if>                                                          <!-- 店铺logo图片路径（默认图片） varchar(64)-->
+			<if test="entity.banner != null">banner = #{entity.banner},</if>                                                    <!-- 店铺横幅图片路径（默认图片） varchar(64)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 店铺名称（默认注册账号名称） varchar(255)-->
+			<if test="entity.productCount != null">product_count = #{entity.productCount},</if>                                 <!-- 店铺商品spu数 int(11)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
+			<if test="entity.settlementPeriod != null">settlement_period = #{entity.settlementPeriod},</if>                     <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 varchar(255)-->
+			<if test="entity.storeTel != null">store_tel = #{entity.storeTel},</if>                                             <!-- 店铺客服电话 varchar(64)-->
+			<if test="entity.storeQq != null">store_qq = #{entity.storeQq},</if>                                                <!-- 店铺QQ varchar(64)-->
+			<if test="entity.storeWechat != null">store_wechat = #{entity.storeWechat},</if>                                    <!-- 店铺联系微信 varchar(64)-->
+			<if test="entity.seoTitle != null">seo_title = #{entity.seoTitle},</if>                                             <!-- SEO Title(用于店铺搜索引擎的优化。) varchar(255)-->
+			<if test="entity.seoKeyword != null">seo_keyword = #{entity.seoKeyword},</if>                                       <!-- SEO关键字(用于店铺搜索引擎的优化，关键字之间请用英文逗号分隔。) varchar(255)-->
+			<if test="entity.seoDescribe != null">seo_describe = #{entity.seoDescribe},</if>                                    <!-- SEO店铺描述(用于店铺搜索引擎的优化，建议输入120字以内对店铺经营内容的简单描述) varchar(255)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间（开店日期） datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 店铺主营产品 varchar(255)-->
+			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型字典（10普通店铺，20旗舰店） char(2)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.commission != null">commission = #{entity.commission},</if>                                        <!-- 分佣比例 decimal(12,3)-->
+			<if test="entity.markingImgPath != null">marking_img_path = #{entity.markingImgPath},</if>                          <!-- 店铺打标地址path varchar(64)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 int(11)-->
+			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 datetime-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 int(11)-->
+			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 datetime-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 int(11)-->
+			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 datetime-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 int(11)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 datetime-->
+			<if test="entity.productScore != null">product_score = #{entity.productScore},</if>                                 <!-- 产品评分 float-->
+			<if test="entity.logisticsScore != null">logistics_score = #{entity.logisticsScore},</if>                           <!-- 物流评分 float-->
+			<if test="entity.serviceAttitudeScore != null">service_attitude_score = #{entity.serviceAttitudeScore},</if>        <!-- 服务评分 float-->
+			<if test="entity.countCollection != null">count_collection = #{entity.countCollection},</if>                        <!-- count_collection bigint(21)-->
+			<if test="entity.productScoreUpOrDown != null">product_score_up_or_down = #{entity.productScoreUpOrDown},</if>      <!-- 1为商品评分上升，0为下降 char(1)-->
+			<if test="entity.logisticsScoreUpOrDown != null">logistics_score_up_or_down = #{entity.logisticsScoreUpOrDown},</if>  <!-- 1为物流评分上升，0为下降 char(1)-->
+			<if test="entity.serviceAttitudeScoreUpOrDown != null">service_attitude_score_up_or_down = #{entity.serviceAttitudeScoreUpOrDown},</if>                     <!-- 1为服务态度评分上升，0为下降 char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM solr_store
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM solr_store
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM solr_store a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM solr_store a
+		<where>
+			<if test="w!=null">
+				<include refid="Where_Clause" />
+				${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

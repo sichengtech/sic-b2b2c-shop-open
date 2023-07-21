@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var orderId=parameter.orderId ;
+	var isAddComment=parameter.isAddComment ;
+	%>
+	<script type="text/javascript">
+		var orderId='${orderId!}';
+		var isAddComment='${isAddComment!}';
+	</script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeCommentForm.js"></script>
+	<!-- 微信js -->
+	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<!-- 微信上传图片js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wxUploadImg.js"></script>
+</head>
+<body ontouchstart class="comment-form-body">
+	<form id="form" action="" method="post">
+		<!-- 头部开始 -->
+		<div class="header-default-box weui-border-b">
+			<a href="javascript:void(0);" class="icon icon-arrowleft l back" onclick="javascript:window.history.go(-1);"></a>
+			<a id="formSubmitBtn" href="javascript:" class="submitBtn">提交</a>
+			<h1>商品评价</h1>
+		</div>
+		<input type="hidden" name="orderId" value="${orderId!}" class="orderId"/>
+		<input type="hidden" name="replyId" value="${replyId!}" class="replyId"/>
+		<input type="hidden" name="isAddComment" value="${isAddComment!}" class="isAddComment"/>
+		<!-- 头部结束 -->
+		<!-- 评价内容开始 -->
+
+		<!-- 评价内容结束 -->
+		<!-- 店铺评分开始 -->
+		<div class="store_score"><span class="text_size">店铺评分</span></div>
+		<div class="page-hd service-score-hd">
+			<div class="text_size score_title">卖家的服务态度</div>
+			<div class="weui-rater" id="3">
+				<a data-num = "0" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "1" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "2" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "3" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "4" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<input type="hidden" name="serviceAttitudeScore" class="serviceAttitudeScore" value="5"/>
+			</div>
+			<div id='fen3' class="weui_cells_title score_number">5分</div>
+		</div>
+		<div class="page-hd delivery-score-hd">
+			<div class="text_size score_title">卖家发货的速度</div>
+			<div class="weui-rater" id="4">
+				<a data-num = "0" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "1" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "2" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "3" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<a data-num = "4" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+				<input type="hidden" name="deliverySpeedScore" class="deliverySpeedScore" value="5"/>
+			</div>
+			<div id='fen4' class="weui_cells_title score_number">5分</div>
+		</div>
+		<!-- 店铺评分结束 -->
+	</form>
+	<script type="text/template" id="comment_panel_Tpl" info="评价表单模板">
+		<div class="weui_panel">
+			<div class="weui_media_box weui_media_appmsg comment-product">
+				<div class="weui_media_hd">
+					<a href="${ctxw}/product/detail.htm?pid={{d.productId}}">
+						<img data-src="{{d.productImg}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+					</a>
+					<input type="hidden" name="pid" value="{{d.productId}}"/>
+					<input type="hidden" name="skuId" value="{{d.skuId}}"/>
+					<input type="hidden" name="serverIds" value="" class="serverIds"/>
+					<input type="hidden" name="imgPath" value="" class="imgPath"/>
+				</div>
+				<div class="weui_media_bd">
+		        	<a href="${ctxw}/product/detail.htm?pid={{d.productId}}"><h4 class="weui_media_title">{{d.productName}}</h4></a>
+		        	<div class="page-hd {{d.addComment}}">
+						<div class="text_size score_title">宝贝评分</div>
+						<div class="weui-rater" id="1">
+							<a data-num = "0" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+							<a data-num = "1" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+							<a data-num = "2" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+							<a data-num = "3" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+							<a data-num = "4" class="weui-rater-box checked"> <span class="weui-rater-inner">★</span> </a>
+							<input type="hidden" name="productScore" class="productScore" value="5"/>
+						</div>
+						<div id='fen1' class="weui_cells_title score_number">5分</div>
+					</div>
+					<div class="weui_cells weui_cells_checkbox {{d.addComment}}" style="margin-top: 7px;">
+						<div class="comment_grade">评价等级</div>
+						<label class="weui_cell weui_check_label comment_grade_input default_label" for="{{d.productId}}1">
+							<div class="weui_cell_hd">
+								<input type="checkbox" class="weui_check" name="grade" id="{{d.productId}}1" checked="checked" value="1"/>
+								<i class="weui_icon_checked"></i>
+							</div>
+							<div class="weui_cell_bd weui_cell_primary comment_grade_item">
+								<p class="text_size">好评</p>
+							</div>
+						</label>
+						<label class="weui_cell weui_check_label comment_grade_input default_label" for="{{d.productId}}2">
+							<div class="weui_cell_hd">
+								<input type="checkbox" name="grade" class="weui_check" id="{{d.productId}}2" value="2"/>
+								<i class="weui_icon_checked"></i>
+							</div>
+							<div class="weui_cell_bd weui_cell_primary comment_grade_item">
+								<p class="text_size">中评</p>
+							</div>
+						</label>
+						<label class="weui_cell weui_check_label comment_grade_input default_label" for="{{d.productId}}3">
+							<div class="weui_cell_hd">
+								<input type="checkbox" name="grade" class="weui_check" id="{{d.productId}}3" value="3"/>
+								<i class="weui_icon_checked"></i>
+							</div>
+							<div class="weui_cell_bd weui_cell_primary comment_grade_item">
+								<p class="text_size">差评</p>
+							</div>
+						</label>  
+					</div>
+		        </div>
+			</div>
+			<div class="weui_cells weui_cells_form">
+				<div class="weui_cell weui_cell_content">
+					<div class="weui_cell_bd weui_cell_primary comment-content">
+						<textarea name="content" id="textarea" class="weui_textarea text_size" placeholder="宝贝满足你的期待吗？说说你的使用心得，分享给想买的他们吧" rows="3" maxLength="500"></textarea>
+					</div>
+				</div>
+				<div class="weui_cell weui_cell_img">
+					<div class="weui_uploader">
+		                 <div class="weui_uploader_bd">
+		                     <ul class="weui_uploader_files comment_imgs" id='img2'>
+								<div class="addCommentImg">
+									<span class="icon icon-xiangji1"></span>
+									<span class="commentImgcount">添加图片</span>
+								</div>
+ 							</ul>
+		                 </div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="comment_img_Tpl" info="评价图片模板">
+		<div class="comment_img">
+			<span class="icon icon-guanbi2fill close"></span>
+			<img src="{{d.imgUrl}}"/>
+		</div>
+	</script>
+	<% include("/include/foot-nav.html"){}%>
+</body>
+</html>

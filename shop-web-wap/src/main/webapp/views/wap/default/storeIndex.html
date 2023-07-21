@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% var storeId=parameter.storeId;%>
+	<% include("/include/head.html"){}%>
+	<!-- 轮播图 -->
+	<link rel="stylesheet" href="${ctx}/views/wap/default/Swiper-4.0.3/dist/css/swiper.min.css">
+	<script type='text/javascript' src="${ctx}/views/wap/default/Swiper-4.0.3/dist/js/swiper.min.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/include/storeNav.js"></script>
+	<script type="text/javascript" src="${ctx}/views/wap/default/storeIndex.js"></script>
+	<style type="text/css">
+		.sui-page, .sui-page-group{position: absolute;}
+	</style>
+</head>
+<body class="store storeIndex-body">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id='storeIndex_page'>
+				<% include("/include/store-footer-nav.html",{'storeId':(storeId!)}){}%>
+			<div class="content" style="overflow-x: hidden;">
+				<% include("/include/header-store.html",{'storeId':(storeId!)}){}%>
+				<% include("/include/store-nav.html",{'storeId':(storeId!)}){}%>
+				<div class="swiper-container">
+					<div class="swiper-wrapper"></div>
+					<!-- Add Pagination -->
+					<div class="swiper-pagination"></div>
+				</div>
+				<!-- 热门产品 -->
+				<div class="weui_panel weui_panel_access">
+					<div class="weui_panel_hd index_title"><h2>热卖产品</h2></div>
+					<div class="weui_panel_bd prods_list_def clearfix">
+						<ul class="weui-updown hotProductList"></div>
+				</div>
+				<!-- 推荐产品 -->
+				<div class="weui_panel weui_panel_access">
+					<div class="weui_panel_hd index_title"><h2>推荐产品</h2></div>
+					<div class="weui_panel_bd prods_list_def clearfix">
+						<ul class="weui-updown recommendProductList"></ul>
+					</div>
+				</div>
+				<!-- 新品上市 -->
+				<div class="weui_panel weui_panel_access">
+					<div class="weui_panel_hd index_title"><h2>新品上市</h2></div>
+					<div class="weui_panel_bd prods_list_def clearfix">
+						<ul class="weui-updown newProductList"></ul>
+					</div>
+				</div>
+			</div>
+			<% include("/include/foot.html"){}%>
+		</div>
+		<div class="sui-page" id="page-search">
+			<% include("productSearch.html"){}%>
+		</div>
+	</div>
+	<% include("/include/viewTradePrice.html"){}%>
+	<script type="text/template" id="storeCarouselPicture_Tpl" info="店铺轮播图片模板">
+    	<div class="swiper-slide">
+			<a href="{{d.url}}" style="width:100%;">
+				<img src="{{d.picturePath}}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+			</a>
+		</div>
+	</script>
+	<script type="text/template" id="storeProduct_Tpl" info="店铺商品模板">
+    	<li>
+			<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+				<div><img data-src="{{d.imgPath}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');" style="height:200px;"/></div>
+			</a>
+			<a href="${ctxw}/product/detail.htm?pid={{d.pid}}">
+				<p class="p-name">
+					<span class="storetype" style="{{d.storeTypeClass}}">{{d.storeType}}</span>{{d.name}}
+				</p>
+			</a>
+			<p class="p-price">
+				<span class="p-price1">¥{{d.price}}</span>
+				<span class="p-type">{{d.type}}</span>
+			</p>
+		</li>
+	</script>
+	<script type="text/template" id="storeNoProduct_Tpl" info="店铺无商品模板">
+    	<div class="noProduct"><i class="icon icon-help"></i> 很遗憾，暂无商品！</div>
+	</script>
+</body>
+</html>

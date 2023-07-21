@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeOrderDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	TradeOrderDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	TradeOrderDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	TradeOrderDao.xml文件与TradeOrderDaoBase.xml文件，在运行时会合并起来。
+	TradeOrderDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，TradeOrderDao.xml文件的内容你要自行做好备份。
+	-->
+
+	
+	<!-- 
+	oracle方案,生成订单号
+	获取自己增长的主键，用于生成订单号
+	此语法目前只支持Oracle
+	-->
+	<select id="generateOrderNumber4Oracle" resultType="java.lang.Long">
+		select getOrderNum() from dual
+	</select>
+	
+	<!-- 
+	mysql方案,生成订单号
+	获取自己增长的主键，用于生成订单号
+	此语法目前只支持mysql
+	插入。并返回自增长的主键值
+	--> 
+    <select id="generateOrderNumber4Mysql" parameterType="java.util.Map" statementType="CALLABLE" resultType="java.lang.Long" >  
+      {call generateOrderNo(#{id,jdbcType=BIGINT,mode=OUT})}
+    </select>        
+    
+	<!-- 成交额 -->
+	<select id="sumByWhere" parameterType="java.util.Map" resultType="java.util.HashMap">
+		SELECT SUM(amount_paid) as AMOUNTPAID
+		FROM trade_order a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+</mapper>

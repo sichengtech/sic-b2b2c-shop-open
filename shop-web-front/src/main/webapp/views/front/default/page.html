@@ -1,0 +1,93 @@
+<% var page = page ;%>
+<% if(page!=null){%>
+	<div class="pages">
+		<%
+			var pageURL = page.pageURL;
+			var prev = page.prev;
+			var next = page.next;
+			var first = page.first;
+			var length = 6;
+			var last = page.last;
+			var pageNo = page.pageNo;
+			var slider = page.slider;
+			var totalPage = page.totalPage;
+		%>
+		<ul class="page-list mt50">
+			<%var previous =fy.getMsg({key:'上一页'});%>
+			<%var nextPage =fy.getMsg({key:'下一页'});%>
+		 	<%if(pageNo == first){ %>
+		 		<li><a href='javascript:;'> ${previous!}</a></li>
+		 	<% }else{ %>
+		 		<li><a href='${pageURL}${prev}'>${previous!}</a></li>
+		 	<%}
+	 		var begin = pageNo - (length / 2);
+			if (begin < first) {
+				begin = first;
+			}
+			var end = begin + length - 1;
+			if (end >= last) {
+				end = last;
+				begin = end - length + 1;
+				if (begin < first) {
+					begin = first;
+				}
+			}
+			if (begin > first) {
+				var i = 0;
+				for (i = first; i < first + slider && i < begin; i++) {
+		 		%>
+		 		<% var page_var1 = i + 1 - first ;%>
+		 		<% var page_var2 = pageURL + i ;%>
+		 		<li><a href="${page_var2}">${page_var1}</a></li>
+			 	<%}
+			 	if (i < begin) {%>
+		 		<li><a href='javascript:;'>...</a></li>
+		 		<%}
+		 	}
+			for (var i = begin; i <= end; i++) {
+				if (i == pageNo) {
+				%>
+				<% var page_var3 = i + 1 - first ;%>
+				<li><a href="javascript:;" class="cur">${page_var3}</a></li>
+				<% } else {%>
+				<% var page_var4 = i + 1 - first ;%>
+				<% var page_var5 = pageURL + i ;%>
+				<li><a href="${page_var5}">${page_var4}</a></li>
+				<% }
+			}
+			if (last - end > slider) {
+			%>
+				<li><a href='javascript:;'>...</a></li>
+			<%
+				end = last - slider;
+			}
+			for (var i = end + 1; i <= last; i++) {
+			%>
+				<% var page_var6 = i + 1 - first ;%>
+				<% var page_var7 = pageURL + i ;%>
+				<li><a href="${page_var7}">${page_var6}</a></li>
+			<%}if (pageNo == last) {%>
+				<li><a href='javascript:;'>${nextPage!}</a></li>
+			<%} else {%>
+				<li><a href='${pageURL}${next}'>${nextPage!}</a></li>
+			<%}%>
+			<div class="goto">
+				<%var total =fy.getMsg({key:'共'});%>
+				<%var pageNum =fy.getMsg({key:'页'});%>
+				<%var to =fy.getMsg({key:'到'});%>
+				<!--<form class="sui-form form-inline" onsubmit="false">-->${total!}${totalPage}${pageNum!}  ${to!}
+					<input type="hidden" class="comment" value=""/>
+			 		<input id="appendedInputButton" type="text" class="input-mini" href="${pageURL}" value="${pageNo}" onkeypress="(function(obj){var e=window.event||this;var c=e.keyCode||e.which;if(c==13)window.location.href=obj.getAttribute('href')+(obj.value)+$('.comment').val();})(this);"/>${pageNum!}
+			 		<button type="button" id="iptPageSubmit" class="sui-btn" onclick="(function(obj){var input=document.getElementById('appendedInputButton');if(input.value==''){return;}window.location.href=input.getAttribute('href')+input.value+$('.comment').val();})(this);"><%var jump =fy.getMsg({key:'跳转'});%> ${jump!}</button>
+				<!--</form>-->
+			</div>
+			<div class="clear"></div>
+		</ul>
+		<div class="clear"></div>
+	</div>
+<%}%>
+<style>
+	#appendedInputButton{margin: 0 5px;margin-top: -3px;height: 36px;line-height: 36px;
+		padding: 0 10px;width: 30px;}
+	#iptPageSubmit{height: 38px;line-height: 38px;padding: 0 20px;margin-top: -3px;}
+</style>

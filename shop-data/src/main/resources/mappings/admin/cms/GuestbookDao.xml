@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.cms.dao.GuestbookDao">
+
+	<!--
+	请把你的扩展SQL写到 当前 文件中
+	AccountBalanceProorderDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	AccountBalanceProorderDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	AccountBalanceProorderDao.xml文件与AccountBalanceProorderDaoBase.xml文件，在运行时会合并起来。
+	AccountBalanceProorderDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，AccountBalanceProorderDao.xml文件的内容你要自行做好备份。
+	-->
+
+	<sql id="cmsGuestbookColumns">
+		a.id AS "id",
+		a.type AS "type",
+		a.content AS "content",
+		a.name AS "name",
+		a.email AS "email",
+		a.phone AS "phone",
+		a.workunit AS "workunit",
+		a.ip AS "ip",
+		a.create_date AS "createDate",
+		a.re_user_id AS "reUser.id",
+		a.re_date AS "reDate",
+		a.re_content AS "reContent",
+		a.del_flag AS "delFlag",
+		u.name AS "reUser.name"		
+	</sql>
+	
+	<sql id="cmsGuestbookJoins">
+		LEFT JOIN sys_user u ON u.id = a.re_user_id
+	</sql>
+	
+	<select id="get" resultType="Guestbook">
+		SELECT 
+			<include refid="cmsGuestbookColumns"/>
+		FROM cms_guestbook a
+		<include refid="cmsGuestbookJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="Guestbook">
+		SELECT 
+			<include refid="cmsGuestbookColumns"/>
+		FROM cms_guestbook a
+		<include refid="cmsGuestbookJoins"/>
+		<where>
+			a.del_flag = #{delFlag}
+			<if test="content != null and content != ''">
+				<bind name="pattern" value="'%' + content + '%'" />				
+				AND lower(a.content) LIKE lower(#{pattern})
+			</if>
+			<if test="type != null and type != ''">
+				AND a.type = #{type}
+			</if>
+		</where>
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="Guestbook">
+		SELECT 
+			<include refid="cmsGuestbookColumns"/>
+		FROM cms_guestbook a
+		<include refid="cmsGuestbookJoins"/>
+		<where>
+			a.del_flag = #{DEL_FLAG_NORMAL}
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!-- <insert id="insert" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_guestbook(
+			id,
+			type,
+			content,
+			name,
+			email,
+			phone,
+			workunit,
+			ip,
+			create_date,
+			re_user_id,
+			re_date,
+			re_content,
+			del_flag
+		) VALUES (
+			<if test="pkMode==1">#{id},</if>			
+			<if test="pkMode==2">
+				<if test="dbType$ == 'oracle'">cms_guestbook_seq.nextval,</if>
+				<if test="dbType$ == 'mssql'">null,</if>
+				<if test="dbType$ == 'mysql'">null,</if>
+			</if>
+			#{type},
+			#{content},
+			#{name},
+			#{email},
+			#{phone},
+			#{workunit},
+			#{ip},
+			#{createDate},
+			#{reUser.id},
+			#{reDate},
+			#{reContent},
+			#{delFlag}
+		)
+	</insert> -->
+	
+	<update id="update">
+		UPDATE cms_guestbook SET 	
+			type = #{type},
+			content = #{content},
+			name = #{name},
+			email = #{email},
+			phone = #{phone},
+			workunit = #{workunit},
+			ip = #{ip},
+			create_date = #{createDate},
+			re_user_id = #{reUser.id},
+			re_date = #{reDate},
+			re_content = #{reContent},
+			del_flag = #{delFlag}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		UPDATE cms_guestbook SET 
+			del_flag = #{DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<select id="findByIdIn" resultType="Guestbook">
+		SELECT 
+			<include refid="cmsGuestbookColumns"/>
+		from cms_guestbook a where 
+		<where>
+			id in ();
+		</where>		
+	</select>
+	
+</mapper>

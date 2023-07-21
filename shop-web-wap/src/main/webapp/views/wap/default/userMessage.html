@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 页面返回js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-back.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/userMessage.js"></script>
+</head>
+<body class="myMessage-body">
+	<% include("/include/foot-nav.html"){}%>
+	<div class="messageContent">
+		<div class="header-default-box weui-border-b">
+			<a href="javascript:;" class="icon icon-arrowleft l back click_back"></a>
+			<span class="icon icon-category administration" style="display: block;"> 管理</span>
+			<span class="icon icon-duihao administrationOK" style="display: none;"> 完成</span>
+			<h1>我的消息</h1>
+		</div>
+		<div class="weui_cells">
+			<a type="" class="messageType" href="javaScript:;">
+				<div class="weui_cells_div" style="margin-left: 18px;">
+					<img class="weui_media_appmsg_thumb" src="${ctx}/views/wap/default/img/sys_message_all.jpg" alt="">
+					<div class="messageStyle type_style">全部消息</div>
+				</div>
+			</a>
+			<a type="1" class="messageType" href="javaScript:;">
+				<div class="weui_cells_div">
+					<img class="weui_media_appmsg_thumb" src="${ctx}/views/wap/default/img/sys_message_04.jpg" alt="">
+					<div class="messageStyle" >交易消息</div>
+				</div>
+			</a>
+			<a type="2" class="messageType" href="javaScript:;">
+				<div class="weui_cells_div">
+					<img class="weui_media_appmsg_thumb" src="${ctx}/views/wap/default/img/sys_message_02.jpg" alt="">
+					<div class="messageStyle">退货消息</div>
+				</div>
+			</a>
+			<a type="3" class="messageType" href="javaScript:;">
+				<div class="weui_cells_div">
+					<img class="weui_media_appmsg_thumb" src="${ctx}/views/wap/default/img/sys_message_03.jpg" alt="">
+					<div class="messageStyle">商品消息</div>
+				</div>
+			</a>
+			<a type="4" class="messageType" href="javaScript:;">
+				<div class="weui_cells_div">
+					<img class="weui_media_appmsg_thumb" src="${ctx}/views/wap/default/img/sys_message_01.jpg" alt="">
+					<div class="messageStyle">运营消息</div>
+				</div>
+			</a>
+		</div>
+		<div class="noList"></div>
+		<div class="weui_panel weui_cells_checkbox">
+			<div class="weui_panel_bd message_type"></div>
+			<div class="weui_panel_bd message_type1 hide"></div>
+			<div class="weui_panel_bd message_type2 hide"></div>
+			<div class="weui_panel_bd message_type3 hide"></div>
+			<div class="weui_panel_bd message_type4 hide"></div>
+		</div>
+		<div class="weui_tabbar weui_cells_checkbox administration_footer" style="display: none;">
+			<label class="weui_cell myMessageAll">
+				<div class="weui_cell_hd">
+					<input type="checkbox" class="weui_check" name="myMessageAll">
+					<i class="weui_icon_checked"></i>
+				</div>
+			</label>
+			<span>全选</span>
+			<a href="javascript:;" class="deleteCollection">
+				<p class="view_nav_label">删除</p>
+			</a>
+		</div>
+	</div>
+	<script type="text/template" id="myMessage_Tpl" info="我的消息模板">
+		<div class="weui_media_box weui_media_appmsg">
+			<label class="weui_cell weui_check_label myMessage" style="display: none;">
+					<div class="weui_cell_hd">
+					    <input type="checkbox" class="weui_check" name="myMessage" value="{{d.messageId}}"/>
+					    <i class="weui_icon_checked"></i>
+					</div>
+            </label>
+			<div class="weui_media_bd">
+				<p class="p-name">
+					<a href="javaScript:;">{{d.content}}</a>
+				</p>
+				<p class="p-time">{{d.time}}</p>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="没有收藏模板">
+		<div class="noList-div" style="padding-top: 20%;padding-bottom: 24%;">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>您还没有消息呦~</span>
+		</div>
+	</script>
+</body>
+</html>

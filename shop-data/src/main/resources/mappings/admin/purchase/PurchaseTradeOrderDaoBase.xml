@@ -1,0 +1,332 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.purchase.dao.PurchaseTradeOrderDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="purchaseTradeOrderColumns">
+	<trim suffixOverrides=",">
+		a.purchase_trade_id AS 'purchaseTradeId',                            <!-- 订单id bigint(20)-->
+		a.purchase_u_id AS 'purchaseUId',                                    <!-- 采购方 bigint(20)-->
+		a.offer_u_id AS 'offerUId',                                          <!-- 报价方 bigint(20)-->
+		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id bigint(20)-->
+		a.title AS 'title',                                                  <!-- 采购标题 varchar(64)-->
+		a.content AS 'content',                                              <!-- 采购内容 varchar(2000)-->
+		a.bom_path AS 'bomPath',                                             <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+		a.price AS 'price',                                                  <!-- 总价格 decimal(12,3)-->
+		a.type AS 'type',                                                    <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+		a.status AS 'status',                                                <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.purchaseTradeId != null ">AND a.purchase_trade_id = #{c.purchaseTradeId}</if>
+		<if test="c.purchaseUId != null ">AND a.purchase_u_id = #{c.purchaseUId}</if>
+		<if test="c.offerUId != null ">AND a.offer_u_id = #{c.offerUId}</if>
+		<if test="c.purchaseId != null ">AND a.purchase_id = #{c.purchaseId}</if>
+		<if test="c.title != null and c.title != ''">AND a.title = #{c.title}</if>
+		<if test="c.content != null and c.content != ''">AND a.content = #{c.content}</if>
+		<if test="c.bomPath != null and c.bomPath != ''">AND a.bom_path = #{c.bomPath}</if>
+		<if test="c.price != null ">AND a.price = #{c.price}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.status != null and c.status != ''">AND a.status = #{c.status}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="PurchaseTradeOrder">
+		SELECT 
+		<include refid="purchaseTradeOrderColumns"/>
+		FROM purchase_trade_order a
+		WHERE a.purchase_trade_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="PurchaseTradeOrder">
+		SELECT 
+		<include refid="purchaseTradeOrderColumns"/>
+		FROM purchase_trade_order a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.purchase_trade_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="PurchaseTradeOrder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="purchaseTradeOrderColumns"/>
+		FROM purchase_trade_order a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.purchase_trade_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="PurchaseTradeOrder">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="purchaseTradeOrderColumns"/>
+		FROM purchase_trade_order a
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.purchase_trade_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.purchaseTradeId" keyColumn="purchase_trade_id" useGeneratedKeys="true">
+		INSERT INTO purchase_trade_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			purchase_trade_id,                                 <!-- 订单id bigint(20)-->
+			purchase_u_id,                                     <!-- 采购方 bigint(20)-->
+			offer_u_id,                                        <!-- 报价方 bigint(20)-->
+			purchase_id,                                       <!-- 采购单id bigint(20)-->
+			title,                                             <!-- 采购标题 varchar(64)-->
+			content,                                           <!-- 采购内容 varchar(2000)-->
+			bom_path,                                          <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			price,                                             <!-- 总价格 decimal(12,3)-->
+			type,                                              <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			status,                                            <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.purchaseTradeId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">purchase_trade_order_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.purchaseUId},                             <!-- 采购方 bigint(20)-->
+			#{entity.offerUId},                                <!-- 报价方 bigint(20)-->
+			#{entity.purchaseId},                              <!-- 采购单id bigint(20)-->
+			#{entity.title},                                   <!-- 采购标题 varchar(64)-->
+			#{entity.content},                                 <!-- 采购内容 varchar(2000)-->
+			#{entity.bomPath},                                 <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			#{entity.price},                                   <!-- 总价格 decimal(12,3)-->
+			#{entity.type},                                    <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			#{entity.status},                                  <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.purchaseTradeId" keyColumn="purchase_trade_id" useGeneratedKeys="true">
+		INSERT INTO purchase_trade_order
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.purchaseTradeId != null">purchase_trade_id,</if></if>
+			<if test="entity.pkMode==2">purchase_trade_id,</if>
+			<if test="entity.purchaseUId != null">purchase_u_id,</if>                          <!-- 采购方 bigint(20)-->
+			<if test="entity.offerUId != null">offer_u_id,</if>                                <!-- 报价方 bigint(20)-->
+			<if test="entity.purchaseId != null">purchase_id,</if>                             <!-- 采购单id bigint(20)-->
+			<if test="entity.title != null">title,</if>                                        <!-- 采购标题 varchar(64)-->
+			<if test="entity.content != null">content,</if>                                    <!-- 采购内容 varchar(2000)-->
+			<if test="entity.bomPath != null">bom_path,</if>                                   <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.price != null">price,</if>                                        <!-- 总价格 decimal(12,3)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.status != null">status,</if>                                      <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.purchaseTradeId != null">#{entity.purchaseTradeId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">purchase_trade_order_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.purchaseUId != null">#{entity.purchaseUId},</if>                            <!-- 采购方 bigint(20)-->
+			<if test="entity.offerUId != null">#{entity.offerUId},</if>                                  <!-- 报价方 bigint(20)-->
+			<if test="entity.purchaseId != null">#{entity.purchaseId},</if>                              <!-- 采购单id bigint(20)-->
+			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 采购标题 varchar(64)-->
+			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 采购内容 varchar(2000)-->
+			<if test="entity.bomPath != null">#{entity.bomPath},</if>                                    <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.price != null">#{entity.price},</if>                                        <!-- 总价格 decimal(12,3)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE purchase_trade_order 
+		<set>
+			purchase_trade_id = #{entity.purchaseTradeId},                  <!-- 订单id bigint(20)-->
+			purchase_u_id = #{entity.purchaseUId},                          <!-- 采购方 bigint(20)-->
+			offer_u_id = #{entity.offerUId},                                <!-- 报价方 bigint(20)-->
+			purchase_id = #{entity.purchaseId},                             <!-- 采购单id bigint(20)-->
+			title = #{entity.title},                                        <!-- 采购标题 varchar(64)-->
+			content = #{entity.content},                                    <!-- 采购内容 varchar(2000)-->
+			bom_path = #{entity.bomPath},                                   <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			price = #{entity.price},                                        <!-- 总价格 decimal(12,3)-->
+			type = #{entity.type},                                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			status = #{entity.status},                                      <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		WHERE purchase_trade_id = #{entity.purchaseTradeId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE purchase_trade_order a 
+		<set>
+			purchase_trade_id = #{entity.purchaseTradeId},                  <!-- 订单id bigint(20)-->
+			purchase_u_id = #{entity.purchaseUId},                          <!-- 采购方 bigint(20)-->
+			offer_u_id = #{entity.offerUId},                                <!-- 报价方 bigint(20)-->
+			purchase_id = #{entity.purchaseId},                             <!-- 采购单id bigint(20)-->
+			title = #{entity.title},                                        <!-- 采购标题 varchar(64)-->
+			content = #{entity.content},                                    <!-- 采购内容 varchar(2000)-->
+			bom_path = #{entity.bomPath},                                   <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			price = #{entity.price},                                        <!-- 总价格 decimal(12,3)-->
+			type = #{entity.type},                                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			status = #{entity.status},                                      <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE purchase_trade_order
+		<set>
+			<if test="entity.purchaseTradeId != null">purchase_trade_id = #{entity.purchaseTradeId},</if>                       <!-- 订单id bigint(20)-->
+			<if test="entity.purchaseUId != null">purchase_u_id = #{entity.purchaseUId},</if>                                   <!-- 采购方 bigint(20)-->
+			<if test="entity.offerUId != null">offer_u_id = #{entity.offerUId},</if>                                            <!-- 报价方 bigint(20)-->
+			<if test="entity.purchaseId != null">purchase_id = #{entity.purchaseId},</if>                                       <!-- 采购单id bigint(20)-->
+			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 采购标题 varchar(64)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 采购内容 varchar(2000)-->
+			<if test="entity.bomPath != null">bom_path = #{entity.bomPath},</if>                                                <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.price != null">price = #{entity.price},</if>                                                       <!-- 总价格 decimal(12,3)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		WHERE purchase_trade_id = #{entity.purchaseTradeId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE purchase_trade_order a
+		<set>
+			<if test="entity.purchaseTradeId != null">purchase_trade_id = #{entity.purchaseTradeId},</if>                       <!-- 订单id bigint(20)-->
+			<if test="entity.purchaseUId != null">purchase_u_id = #{entity.purchaseUId},</if>                                   <!-- 采购方 bigint(20)-->
+			<if test="entity.offerUId != null">offer_u_id = #{entity.offerUId},</if>                                            <!-- 报价方 bigint(20)-->
+			<if test="entity.purchaseId != null">purchase_id = #{entity.purchaseId},</if>                                       <!-- 采购单id bigint(20)-->
+			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 采购标题 varchar(64)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 采购内容 varchar(2000)-->
+			<if test="entity.bomPath != null">bom_path = #{entity.bomPath},</if>                                                <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+			<if test="entity.price != null">price = #{entity.price},</if>                                                       <!-- 总价格 decimal(12,3)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM purchase_trade_order
+		WHERE purchase_trade_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM purchase_trade_order
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					purchase_trade_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM purchase_trade_order a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM purchase_trade_order a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

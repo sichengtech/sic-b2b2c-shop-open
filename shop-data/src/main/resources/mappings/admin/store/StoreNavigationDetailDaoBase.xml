@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreNavigationDetailDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeNavigationDetailColumns">
+	<trim suffixOverrides=",">
+		a.store_navigation_id AS "storeNavigationId",                        <!-- 主键（和店铺导航id一样） number(19)-->
+		a.content AS "content",                                              <!-- 店铺导航内容 clob-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeNavigationDetailJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.storeNavigationId != null ">AND a.store_navigation_id = #{c.storeNavigationId}</if>
+		<if test="c.content != null and c.content != ''">AND a.content = #{c.content}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreNavigationDetail">
+		SELECT 
+		<include refid="storeNavigationDetailColumns"/>
+		FROM store_navigation_detail a
+		<include refid="storeNavigationDetailJoins"/>
+		WHERE a.store_navigation_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreNavigationDetail">
+		SELECT 
+		<include refid="storeNavigationDetailColumns"/>
+		FROM store_navigation_detail a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.store_navigation_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreNavigationDetail">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeNavigationDetailColumns"/>
+		FROM store_navigation_detail a
+		<include refid="storeNavigationDetailJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.store_navigation_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreNavigationDetail">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeNavigationDetailColumns"/>
+		FROM store_navigation_detail a
+		<include refid="storeNavigationDetailJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.store_navigation_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.storeNavigationId" keyColumn="store_navigation_id" useGeneratedKeys="true">
+		INSERT INTO store_navigation_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			store_navigation_id,                               <!-- 主键（和店铺导航id一样） number(19)-->
+			content,                                           <!-- 店铺导航内容 clob-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.storeNavigationId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_navigation_detail_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.content},                                 <!-- 店铺导航内容 clob-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.storeNavigationId" keyColumn="store_navigation_id" useGeneratedKeys="true">
+		INSERT INTO store_navigation_detail
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.storeNavigationId != null">store_navigation_id,</if></if>
+			<if test="entity.pkMode==2">store_navigation_id,</if>
+			<if test="entity.content != null">content,</if>                                    <!-- 店铺导航内容 clob-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.storeNavigationId != null">#{entity.storeNavigationId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">store_navigation_detail_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 店铺导航内容 clob-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_navigation_detail 
+		<set>
+			store_navigation_id = #{entity.storeNavigationId},              <!-- 主键（和店铺导航id一样） number(19)-->
+			content = #{entity.content},                                    <!-- 店铺导航内容 clob-->
+
+		</set>
+		WHERE store_navigation_id = #{entity.storeNavigationId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_navigation_detail a 
+		<set>
+			store_navigation_id = #{entity.storeNavigationId},              <!-- 主键（和店铺导航id一样） number(19)-->
+			content = #{entity.content},                                    <!-- 店铺导航内容 clob-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_navigation_detail
+		<set>
+			<if test="entity.storeNavigationId != null">store_navigation_id = #{entity.storeNavigationId},</if>                 <!-- 主键（和店铺导航id一样） number(19)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺导航内容 clob-->
+		</set>
+		WHERE store_navigation_id = #{entity.storeNavigationId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_navigation_detail a
+		<set>
+			<if test="entity.storeNavigationId != null">store_navigation_id = #{entity.storeNavigationId},</if>                 <!-- 主键（和店铺导航id一样） number(19)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺导航内容 clob-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_navigation_detail
+		WHERE store_navigation_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_navigation_detail
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					store_navigation_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_navigation_detail a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_navigation_detail a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

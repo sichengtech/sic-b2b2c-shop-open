@@ -1,0 +1,395 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.site.dao.SiteRegisterDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="siteRegisterColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.is_register AS "isRegister",                                       <!-- 是否开放注册 char(1)-->
+		a.username_max AS "usernameMax",                                     <!-- 用户名最大长度 number(10)-->
+		a.username_min AS "usernameMin",                                     <!-- 用户名最小长度 number(10)-->
+		a.pwd_max AS "pwdMax",                                               <!-- 密码最大长度 number(10)-->
+		a.pwd_min AS "pwdMin",                                               <!-- 密码最小长度 number(10)-->
+		a.disable_username AS "disableUsername",                             <!-- 禁用用户名 nvarchar2(1024)-->
+		a.agreement AS "agreement",                                          <!-- 注册协议 clob-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="siteRegisterJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.isRegister != null and c.isRegister != ''">AND a.is_register = #{c.isRegister}</if>
+		<if test="c.usernameMax != null ">AND a.username_max = #{c.usernameMax}</if>
+		<if test="c.usernameMin != null ">AND a.username_min = #{c.usernameMin}</if>
+		<if test="c.pwdMax != null ">AND a.pwd_max = #{c.pwdMax}</if>
+		<if test="c.pwdMin != null ">AND a.pwd_min = #{c.pwdMin}</if>
+		<if test="c.disableUsername != null and c.disableUsername != ''">AND a.disable_username = #{c.disableUsername}</if>
+		<if test="c.agreement != null and c.agreement != ''">AND a.agreement = #{c.agreement}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SiteRegister">
+		SELECT 
+		<include refid="siteRegisterColumns"/>
+		FROM site_register a
+		<include refid="siteRegisterJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SiteRegister">
+		SELECT 
+		<include refid="siteRegisterColumns"/>
+		FROM site_register a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SiteRegister">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteRegisterColumns"/>
+		FROM site_register a
+		<include refid="siteRegisterJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SiteRegister">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteRegisterColumns"/>
+		FROM site_register a
+		<include refid="siteRegisterJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO site_register
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- 主键 number(19)-->
+			is_register,                                       <!-- 是否开放注册 char(1)-->
+			username_max,                                      <!-- 用户名最大长度 number(10)-->
+			username_min,                                      <!-- 用户名最小长度 number(10)-->
+			pwd_max,                                           <!-- 密码最大长度 number(10)-->
+			pwd_min,                                           <!-- 密码最小长度 number(10)-->
+			disable_username,                                  <!-- 禁用用户名 nvarchar2(1024)-->
+			agreement,                                         <!-- 注册协议 clob-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_register_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.isRegister},                              <!-- 是否开放注册 char(1)-->
+			#{entity.usernameMax},                             <!-- 用户名最大长度 number(10)-->
+			#{entity.usernameMin},                             <!-- 用户名最小长度 number(10)-->
+			#{entity.pwdMax},                                  <!-- 密码最大长度 number(10)-->
+			#{entity.pwdMin},                                  <!-- 密码最小长度 number(10)-->
+			#{entity.disableUsername},                         <!-- 禁用用户名 nvarchar2(1024)-->
+			#{entity.agreement},                               <!-- 注册协议 clob-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO site_register
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.isRegister != null">is_register,</if>                             <!-- 是否开放注册 char(1)-->
+			<if test="entity.usernameMax != null">username_max,</if>                           <!-- 用户名最大长度 number(10)-->
+			<if test="entity.usernameMin != null">username_min,</if>                           <!-- 用户名最小长度 number(10)-->
+			<if test="entity.pwdMax != null">pwd_max,</if>                                     <!-- 密码最大长度 number(10)-->
+			<if test="entity.pwdMin != null">pwd_min,</if>                                     <!-- 密码最小长度 number(10)-->
+			<if test="entity.disableUsername != null">disable_username,</if>                   <!-- 禁用用户名 nvarchar2(1024)-->
+			<if test="entity.agreement != null">agreement,</if>                                <!-- 注册协议 clob-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_register_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.isRegister != null">#{entity.isRegister},</if>                              <!-- 是否开放注册 char(1)-->
+			<if test="entity.usernameMax != null">#{entity.usernameMax},</if>                            <!-- 用户名最大长度 number(10)-->
+			<if test="entity.usernameMin != null">#{entity.usernameMin},</if>                            <!-- 用户名最小长度 number(10)-->
+			<if test="entity.pwdMax != null">#{entity.pwdMax},</if>                                      <!-- 密码最大长度 number(10)-->
+			<if test="entity.pwdMin != null">#{entity.pwdMin},</if>                                      <!-- 密码最小长度 number(10)-->
+			<if test="entity.disableUsername != null">#{entity.disableUsername},</if>                    <!-- 禁用用户名 nvarchar2(1024)-->
+			<if test="entity.agreement != null">#{entity.agreement},</if>                                <!-- 注册协议 clob-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE site_register 
+		<set>
+			is_register = #{entity.isRegister},                             <!-- 是否开放注册 char(1)-->
+			username_max = #{entity.usernameMax},                           <!-- 用户名最大长度 number(10)-->
+			username_min = #{entity.usernameMin},                           <!-- 用户名最小长度 number(10)-->
+			pwd_max = #{entity.pwdMax},                                     <!-- 密码最大长度 number(10)-->
+			pwd_min = #{entity.pwdMin},                                     <!-- 密码最小长度 number(10)-->
+			disable_username = #{entity.disableUsername},                   <!-- 禁用用户名 nvarchar2(1024)-->
+			agreement = #{entity.agreement},                                <!-- 注册协议 clob-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE site_register a 
+		<set>
+			is_register = #{entity.isRegister},                             <!-- 是否开放注册 char(1)-->
+			username_max = #{entity.usernameMax},                           <!-- 用户名最大长度 number(10)-->
+			username_min = #{entity.usernameMin},                           <!-- 用户名最小长度 number(10)-->
+			pwd_max = #{entity.pwdMax},                                     <!-- 密码最大长度 number(10)-->
+			pwd_min = #{entity.pwdMin},                                     <!-- 密码最小长度 number(10)-->
+			disable_username = #{entity.disableUsername},                   <!-- 禁用用户名 nvarchar2(1024)-->
+			agreement = #{entity.agreement},                                <!-- 注册协议 clob-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE site_register
+		<set>
+			<if test="entity.isRegister != null">is_register = #{entity.isRegister},</if>                                       <!-- 是否开放注册 char(1)-->
+			<if test="entity.usernameMax != null">username_max = #{entity.usernameMax},</if>                                    <!-- 用户名最大长度 number(10)-->
+			<if test="entity.usernameMin != null">username_min = #{entity.usernameMin},</if>                                    <!-- 用户名最小长度 number(10)-->
+			<if test="entity.pwdMax != null">pwd_max = #{entity.pwdMax},</if>                                                   <!-- 密码最大长度 number(10)-->
+			<if test="entity.pwdMin != null">pwd_min = #{entity.pwdMin},</if>                                                   <!-- 密码最小长度 number(10)-->
+			<if test="entity.disableUsername != null">disable_username = #{entity.disableUsername},</if>                        <!-- 禁用用户名 nvarchar2(1024)-->
+			<if test="entity.agreement != null">agreement = #{entity.agreement},</if>                                           <!-- 注册协议 clob-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE site_register a
+		<set>
+			<if test="entity.isRegister != null">is_register = #{entity.isRegister},</if>                                       <!-- 是否开放注册 char(1)-->
+			<if test="entity.usernameMax != null">username_max = #{entity.usernameMax},</if>                                    <!-- 用户名最大长度 number(10)-->
+			<if test="entity.usernameMin != null">username_min = #{entity.usernameMin},</if>                                    <!-- 用户名最小长度 number(10)-->
+			<if test="entity.pwdMax != null">pwd_max = #{entity.pwdMax},</if>                                                   <!-- 密码最大长度 number(10)-->
+			<if test="entity.pwdMin != null">pwd_min = #{entity.pwdMin},</if>                                                   <!-- 密码最小长度 number(10)-->
+			<if test="entity.disableUsername != null">disable_username = #{entity.disableUsername},</if>                        <!-- 禁用用户名 nvarchar2(1024)-->
+			<if test="entity.agreement != null">agreement = #{entity.agreement},</if>                                           <!-- 注册协议 clob-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM site_register
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM site_register
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM site_register a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM site_register a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

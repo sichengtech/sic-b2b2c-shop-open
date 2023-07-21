@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeCommentDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	TradeCommentDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	TradeCommentDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	TradeCommentDao.xml文件与TradeCommentDaoBase.xml文件，在运行时会合并起来。
+	TradeCommentDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，TradeCommentDao.xml文件的内容你要自行做好备份。
+	-->
+	<!-- 根据多个replyId查询出一个回复评论列表
+		@author 范秀秀
+	 -->
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByReplyIdIn" resultType="TradeComment">
+		SELECT
+		<include refid="tradeCommentColumns"/>
+		FROM trade_comment a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.reply_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+</mapper>

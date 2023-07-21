@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.trade.dao.TradeReturnOrderDao">
+	<!-- 多表join查询禁止使用mybatis二级缓存,强行开启会导致脏数据 -->  
+	<!-- 关联了2张表 trade_return_order(a), account_balance_proreturnorder(b), 	-->
+	<!-- 关系映射1 -->	
+	<resultMap id="relation_mapping_a" type="TradeReturnOrder">	
+		<result column="a#return_order_id" property="returnOrderId" />	
+		<result column="a#order_id" property="orderId" />	
+		<result column="a#order_item_id" property="orderItemId" />	
+		<result column="a#type" property="type" />	
+		<result column="a#return_money" property="returnMoney" />	
+		<result column="a#return_commission" property="returnCommission" />	
+		<result column="a#return_freight" property="returnFreight" />	
+		<result column="a#return_count" property="returnCount" />	
+		<result column="a#return_reason" property="returnReason" />	
+		<result column="a#return_explain" property="returnExplain" />	
+		<result column="a#apply_date" property="applyDate" />	
+		<result column="a#u_id" property="uId" />	
+		<result column="a#business_handle" property="businessHandle" />	
+		<result column="a#business_handle_remarks" property="businessHandleRemarks" />	
+		<result column="a#business_handle_date" property="businessHandleDate" />	
+		<result column="a#system_handle" property="systemHandle" />	
+		<result column="a#system_agree_time" property="systemAgreeTime" />	
+		<result column="a#system_handle_remarks" property="systemHandleRemarks" />	
+		<result column="a#pay_way_id" property="payWayId" />	
+		<result column="a#admin_id" property="adminId" />	
+		<result column="a#status" property="status" />	
+		<result column="a#deliver_product_time" property="deliverProductTime" />	
+		<result column="a#logistics_template_id" property="logisticsTemplateId" />	
+		<result column="a#logistics_template_name" property="logisticsTemplateName" />	
+		<result column="a#tracking_no" property="trackingNo" />	
+		<result column="a#is_product_receipt" property="isProductReceipt" />	
+		<result column="a#product_receipt_time" property="productReceiptTime" />	
+		<result column="a#create_date" property="createDate" />	
+		<result column="a#update_date" property="updateDate" />	
+		<result column="a#bak1" property="bak1" />	
+		<result column="a#bak2" property="bak2" />	
+		<result column="a#bak3" property="bak3" />	
+		<result column="a#bak4" property="bak4" />	
+		<result column="a#bak5" property="bak5" />	
+		<result column="a#bak6" property="bak6" />	
+		<result column="a#bak7" property="bak7" />	
+		<result column="a#bak8" property="bak8" />	
+		<result column="a#bak9" property="bak9" />	
+		<result column="a#bak10" property="bak10" />	
+		<result column="a#online_return_money" property="onlineReturnMoney" />	
+		<result column="a#alipay_return_money" property="alipayReturnMoney" />	
+		<result column="a#pre_deposit_return_money" property="preDepositReturnMoney" />	
+		<result column="a#wx_return_moeny" property="wxReturnMoeny" />	
+		<result column="a#bak1_return_moeny" property="bak1ReturnMoeny" />	
+		<result column="a#bak2_return_moeny" property="bak2ReturnMoeny" />	
+		<result column="a#store_id" property="storeId" />	
+		<result column="a#is_jettison" property="isJettison" />	
+		<result column="a#is_return_money" property="isReturnMoney" />	
+		<!-- 指向子表（一对多） -->	
+		<collection property="accountBalanceProreturnorderList" ofType="AccountBalanceProreturnorder" javaType="ArrayList" resultMap="relation_mapping_b"/>	
+	</resultMap>	
+	<!-- 关系映射2 -->	
+	<resultMap id="relation_mapping_b" type="AccountBalanceProreturnorder">	
+		<result column="b#return_id" property="returnId" />	
+		<result column="b#status" property="status" />	
+		<result column="b#fail_times" property="failTimes" />	
+		<result column="b#begin_time" property="beginTime" />	
+		<result column="b#end_time" property="endTime" />	
+		<result column="b#create_date" property="createDate" />	
+		<result column="b#update_date" property="updateDate" />	
+	</resultMap>	
+
+    
+	<!-- 全部字段 -->
+	<sql id="tradeReturnOrderColumnsJoin">
+	<trim suffixOverrides=",">
+		a.return_order_id AS 'a#return_order_id',                                <!-- 主键 bigint(20)-->
+		a.order_id AS 'a#order_id',                                             <!-- 订单编号 bigint(20)-->
+		a.order_item_id AS 'a#order_item_id',                                    <!-- 订单详情编号(订单详情表id) bigint(20)-->
+		a.type AS 'a#type',                                                    <!-- 类型 char(1)-->
+		a.return_money AS 'a#return_money',                                     <!-- 退款总金额 decimal(12,3)-->
+		a.return_commission AS 'a#return_commission',                           <!-- 退还佣金 decimal(12,3)-->
+		a.return_freight AS 'a#return_freight',                                 <!-- 退还运费 decimal(12,3)-->
+		a.return_count AS 'a#return_count',                                     <!-- 退货数量 int(11)-->
+		a.return_reason AS 'a#return_reason',                                   <!-- 退货原因 char(1)-->
+		a.return_explain AS 'a#return_explain',                                 <!-- 退货说明 varchar(1024)-->
+		a.apply_date AS 'a#apply_date',                                         <!-- 申请时间 datetime-->
+		a.u_id AS 'a#u_id',                                                     <!-- 申请人 bigint(20)-->
+		a.business_handle AS 'a#business_handle',                               <!-- 商家处理 char(1)-->
+		a.business_handle_remarks AS 'a#business_handle_remarks',                <!-- 商家处理备注 varchar(1024)-->
+		a.business_handle_date AS 'a#business_handle_date',                      <!-- 商家处理时间 datetime-->
+		a.system_handle AS 'a#system_handle',                                   <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
+		a.system_agree_time AS 'a#system_agree_time',                            <!-- 平台同意退款时间（结算时以此时间为准） datetime-->
+		a.system_handle_remarks AS 'a#system_handle_remarks',                    <!-- 平台处理备注 varchar(1024)-->
+		a.pay_way_id AS 'a#pay_way_id',                                          <!-- 支付方式(支付方式表id) bigint(20)-->
+		a.admin_id AS 'a#admin_id',                                             <!-- 管理员id(管理员表id) bigint(20)-->
+		a.status AS 'a#status',                                                <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
+		a.deliver_product_time AS 'a#deliver_product_time',                      <!-- 买家发货时间 datetime-->
+		a.logistics_template_id AS 'a#logistics_template_id',                    <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
+		a.logistics_template_name AS 'a#logistics_template_name',                <!-- 物流公司名称 varchar(64)-->
+		a.tracking_no AS 'a#tracking_no',                                       <!-- 运单号 varchar(64)-->
+		a.is_product_receipt AS 'a#is_product_receipt',                          <!-- 商家是否收货，0否、1是 char(1)-->
+		a.product_receipt_time AS 'a#product_receipt_time',                      <!-- 商家收货时间 datetime-->
+		a.create_date AS 'a#create_date',                                       <!-- 创建时间 datetime-->
+		a.update_date AS 'a#update_date',                                       <!-- 更新时间 datetime-->
+		a.bak1 AS 'a#bak1',                                                    <!-- 备用字段1 varchar(64)-->
+		a.bak2 AS 'a#bak2',                                                    <!-- 备用字段2 varchar(64)-->
+		a.bak3 AS 'a#bak3',                                                    <!-- 备用字段3 varchar(64)-->
+		a.bak4 AS 'a#bak4',                                                    <!-- 备用字段4 varchar(64)-->
+		a.bak5 AS 'a#bak5',                                                    <!-- 备用字段5 varchar(64)-->
+		a.bak6 AS 'a#bak6',                                                    <!-- 备用字段6 varchar(64)-->
+		a.bak7 AS 'a#bak7',                                                    <!-- 备用字段7 varchar(64)-->
+		a.bak8 AS 'a#bak8',                                                    <!-- 备用字段8 varchar(64)-->
+		a.bak9 AS 'a#bak9',                                                    <!-- 备用字段9 varchar(64)-->
+		a.bak10 AS 'a#bak10',                                                  <!-- 备用字段10 varchar(64)-->
+		a.online_return_money AS 'a#online_return_money',                        <!-- 在线退款金额 decimal(12,3)-->
+		a.alipay_return_money AS 'a#alipay_return_money',                        <!-- 支付宝退款金额 decimal(12,3)-->
+		a.pre_deposit_return_money AS 'a#pre_deposit_return_money',               <!-- 预存款退款金额 decimal(12,3)-->
+		a.wx_return_moeny AS 'a#wx_return_moeny',                                <!-- 微信退款金额 decimal(12,3)-->
+		a.bak1_return_moeny AS 'a#bak1_return_moeny',                            <!-- 备用退款金额1 decimal(12,3)-->
+		a.bak2_return_moeny AS 'a#bak2_return_moeny',                            <!-- 备用退款金额2 decimal(12,3)-->
+		a.store_id AS 'a#store_id',                                             <!-- 关联(店铺表) bigint(20)-->
+		a.is_jettison AS 'a#is_jettison',                                       <!-- 是否弃货，0否、1是 char(1)-->
+		a.is_return_money AS 'a#is_return_money',                                <!-- 是否退款，0否、1是 char(1)-->
+		b.return_id AS 'b#return_id',                                           <!-- 商品退单id bigint(20)-->
+		b.status AS 'b#status',                                                <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+		b.fail_times AS 'b#fail_times',                                         <!-- 失败次数 int(10)-->
+		b.begin_time AS 'b#begin_time',                                         <!-- 开始对账时间 datetime-->
+		b.end_time AS 'b#end_time',                                             <!-- 结束对账时间 datetime-->
+		b.create_date AS 'b#create_date',                                       <!-- 创建时间 datetime-->
+		b.update_date AS 'b#update_date',                                       <!-- 更新时间 datetime-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="tradeReturnOrderJoins2">
+        	LEFT JOIN account_balance_proreturnorder b ON b.return_id = a.return_order_id
+	</sql>
+
+	<!--根据主键查询记录-->
+	<select id="joinSelectById" resultMap="relation_mapping_a">
+		SELECT 
+		<include refid="tradeReturnOrderColumnsJoin"/>
+		FROM trade_return_order a
+		<include refid="tradeReturnOrderJoins2"/>
+		WHERE a.return_order_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="joinSelectByIdIn" resultMap="relation_mapping_a">
+		SELECT 
+		<include refid="tradeReturnOrderColumnsJoin"/>
+		FROM trade_return_order a
+        <include refid="tradeReturnOrderJoins2"/>
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.return_order_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="joinSelectByWhere" resultMap="relation_mapping_a">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeReturnOrderColumnsJoin"/>
+		FROM trade_return_order a
+		<include refid="tradeReturnOrderJoins2"/>
+		<where>
+			<if test="w!=null">
+			<include refid="com.sicheng.admin.trade.dao.TradeReturnOrderDao.Where_Clause"/>
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.return_order_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="joinSelectAll" resultMap="relation_mapping_a">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="tradeReturnOrderColumnsJoin"/>
+		FROM trade_return_order a
+		<include refid="tradeReturnOrderJoins2"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.return_order_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="joinCountByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM trade_return_order a
+        <include refid="tradeReturnOrderJoins2"/>
+		<where>
+			<if test="w!=null">
+			<include refid="com.sicheng.admin.trade.dao.TradeReturnOrderDao.Where_Clause"/>
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+</mapper>

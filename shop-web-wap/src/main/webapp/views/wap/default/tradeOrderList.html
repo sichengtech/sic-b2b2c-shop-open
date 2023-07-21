@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var status=parameter.status ;%>
+	<script type="text/javascript">
+		var status='${status!}';
+	</script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/wap/default/tradeOrderList.js"></script>
+	<!-- 微信js -->
+	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<!-- 微信支付js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wxPay.js"></script>
+	<!-- 页面返回js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-back.js"></script>
+</head>
+<body class="trade_order_center">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id="order-list">
+			<% include("/include/foot-nav.html"){}%>
+			<div class="content">
+				<!-- 订单头部开始 -->
+				<div class="header-default-box weui-border-b" style="border-bottom: 1px solid #d9d9d9;">
+					<a href="javascript:;" class="icon icon-arrowleft l back click_back"></a>
+					<a href="${ctxw}/user/userMessage/list.htm" class="icon-more icon icon-xiaoxi4 r"><b></b></a>
+					<h1>订单中心</h1>
+				</div>
+				<!-- 订单尾部结束 -->
+				<!-- 订单状态导航开始 -->
+				<div class="weui_tab" id="tab2">
+					<div class="weui_navbar order_status_navbar">
+						<div class="weui_navbar_item ${isEmpty(status!)?'tab-red':''}" status="">全部</div>
+						<div class="weui_navbar_item ${(status!) =='10'?'tab-red':''}" status="10">待付款</div>
+						<div class="weui_navbar_item ${(status!) =='20'?'tab-red':''}" status="20">待发货</div>
+						<div class="weui_navbar_item ${(status!) =='30'?'tab-red':''}" status="30">待收货</div>
+						<div class="weui_navbar_item ${(status!) =='40'?'tab-red':''}" status="40">待评价</div>
+					</div>
+				</div>
+				<!-- 订单状态导航结束 -->
+				<!-- 订单内容开始 -->
+				<div class="weui_panel">
+				    <div class="trade-order-items"></div>
+				</div>
+				<!-- 订单内容结束 -->
+				<!-- 订单无数据开始 -->
+				<div class="noList"></div>
+				<!-- 订单无数据结束 -->
+			</div>
+		</div>
+	</div>
+	<!-- 取消订单弹出层开始 -->
+	<div id="delModal" style="display:none">
+		<div class="weui_cells weui_cells_radio">
+		</div>
+	</div>
+	<!-- 取消订单弹出层结束 -->
+	<script type="text/template" id="trade_order_tpl" info="订单模板">
+		<div class="weui-form-preview order-list" id="{{d.orderId}}">
+			<div class="weui-form-preview-hd">
+				<label class="weui-form-preview-label">订单号：{{d.orderId}}</label>
+				<em class="weui-form-preview-value"><font class="red status">{{d.status}}</font></em>
+			</div>
+			<a href="${ctxw}/trade/order/detail.htm?orderId={{d.orderId}}" class="use-router">
+				{{d.orderItems}}
+			</a>
+			<div class="weui_cells">
+				<div class="weui_cell">
+					<div class="weui_cell_bd weui_cell_primary">
+						<p>创建日期：</p><p>{{d.date}}</p>
+					</div>
+					<div class="weui_cell_ft">共<span class="count red">{{d.count}}</span>件商品  合计：<font class="red" price="{{d.orderPrice}}">¥{{d.orderPrice}}</font>（含运费：{{d.freight}}元）</div>
+				</div>
+			</div>
+
+			<div class="weui-form-preview-ft">
+				<a href="javascript:;" id="act" class="weui_btn more hide">更多操作...</a>
+				<a href="javascript:void(0);" class="weui_btn use-router payOrder {{d.payOrder}}" orderId="{{d.orderId}}">付款</a>
+				<a href="javascript:void(0);" class="weui_btn red delOrder {{d.delOrder}}" orderId="{{d.orderId}}" isDetail="0">取消订单</a>
+				<a href="${ctxw}/trade/logistics/info.htm?orderId={{d.orderId}}" class="weui_btn use-router logistics {{d.logistics}}" orderId="{{d.orderId}}">查看物流</a>
+				<a href="${ctxw}/trade/comment/form.htm?orderId={{d.orderId}}&isAddComment=0" class="weui_btn use-router commentOrder {{d.commentOrder}}" orderId="{{d.orderId}}">我要评价</a>
+				<a href="${ctxw}/trade/comment/form.htm?orderId={{d.orderId}}&isAddComment=1" class="weui_btn use-router addCommentOrder {{d.addCommentOrder}}" orderId="{{d.orderId}}">追加评价</a>
+				<a href="javascript:void(0);" class="weui_btn OKHarvest receiveOrder {{d.receiveOrder}}" orderId="{{d.orderId}}">确认收货</a>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="trade_order_item_tpl" info="订单详情模板">
+		<div class="weui-form-preview-bd weui-border-t clearfix">
+			<div class="d-picture weui-border">
+				<img data-src="{{d.productImg}}" src="/static/static/images/default_goods.png" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+			</div>
+			<div class="d-text">
+				<span class="weui-form-preview-value"><span class="d-price" price="{{d.productPrice}}">¥{{d.productPrice}}</span><span class="d-number"><span class="icon icon-close1"></span>{{d.count}}</span></span>
+				<label class="weui-form-preview-label"><span class="d-name">{{d.productName}}</span><span class="d-info">{{d.sku}}</span></label>
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="noList_Tpl" info="暂无订单模板">
+		<div class="noList-div" style="padding-top:28%;">
+			<div class="icon icon-xiaoxi1"></div>
+			<span>暂时还没有订单信息哦~</span>
+		</div>
+	</script>
+	<script type="text/template" id="cancle_order_reason_Tpl" info="取消订单理由模板">
+		<label class="weui_cell weui_check_label order_reason_label" for="{{d.value}}">
+			<div class="weui_cell_bd weui_cell_primary">
+				<p style="text-align: left;" class="reason">{{d.reason}}</p>
+			</div>
+	        <div class="weui_cell_ft">
+	            <input type="radio" name="radio1" class="weui_check" id="{{d.value}}"/>
+	            <span class="weui_icon_checked"></span>
+	        </div>
+	    </label>
+	</script>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

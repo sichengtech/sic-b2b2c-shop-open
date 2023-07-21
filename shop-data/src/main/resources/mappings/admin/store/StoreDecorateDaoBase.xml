@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreDecorateDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="storeDecorateColumns">
+	<trim suffixOverrides=",">
+		a.store_id AS "storeId",                                             <!-- 主键(店铺id) number(19)-->
+		a.solution AS "solution",                                            <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+		a.content AS "content",                                              <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="storeDecorateJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.storeId != null ">AND a.store_id = #{c.storeId}</if>
+		<if test="c.solution != null and c.solution != ''">AND a.solution = #{c.solution}</if>
+		<if test="c.content != null and c.content != ''">AND a.content = #{c.content}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="StoreDecorate">
+		SELECT 
+		<include refid="storeDecorateColumns"/>
+		FROM store_decorate a
+		<include refid="storeDecorateJoins"/>
+		WHERE a.store_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="StoreDecorate">
+		SELECT 
+		<include refid="storeDecorateColumns"/>
+		FROM store_decorate a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.store_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="StoreDecorate">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeDecorateColumns"/>
+		FROM store_decorate a
+		<include refid="storeDecorateJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="StoreDecorate">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="storeDecorateColumns"/>
+		FROM store_decorate a
+		<include refid="storeDecorateJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert">
+		INSERT INTO store_decorate
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			store_id,                                          <!-- 主键(店铺id) number(19)-->
+			solution,                                          <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			content,                                           <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			#{entity.storeId},                                 <!-- 主键(店铺id) number(19)-->
+			#{entity.solution},                                <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			#{entity.content},                                 <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective">
+		INSERT INTO store_decorate
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 主键(店铺id) number(19)-->
+			<if test="entity.solution != null">solution,</if>                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			<if test="entity.content != null">content,</if>                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 主键(店铺id) number(19)-->
+			<if test="entity.solution != null">#{entity.solution},</if>                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE store_decorate 
+		<set>
+			store_id = #{entity.storeId},                                   <!-- 主键(店铺id) number(19)-->
+			solution = #{entity.solution},                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			content = #{entity.content},                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+
+		</set>
+		WHERE store_id = #{entity.storeId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE store_decorate a 
+		<set>
+			store_id = #{entity.storeId},                                   <!-- 主键(店铺id) number(19)-->
+			solution = #{entity.solution},                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			content = #{entity.content},                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE store_decorate
+		<set>
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺id) number(19)-->
+			<if test="entity.solution != null">solution = #{entity.solution},</if>                                              <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+		</set>
+		WHERE store_id = #{entity.storeId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE store_decorate a
+		<set>
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺id) number(19)-->
+			<if test="entity.solution != null">solution = #{entity.solution},</if>                                              <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM store_decorate
+		WHERE store_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM store_decorate
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					store_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM store_decorate a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM store_decorate a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

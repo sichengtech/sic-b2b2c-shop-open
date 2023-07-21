@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.test.dao.TestDataDao">
+    
+    <!-- 全部字段 -->
+	<sql id="testDataColumns">
+		a.id AS "id",
+		a.user_id AS "user.id",
+		a.office_id AS "office.id",
+		a.area_id AS "area.id",
+		a.name AS "name",
+		a.sex AS "sex",
+		a.in_date AS "inDate",
+		a.create_by AS "createBy.id",
+		a.create_date AS "createDate",
+		a.update_by AS "updateBy.id",
+		a.update_date AS "updateDate",
+		a.remarks AS "remarks",
+		a.del_flag AS "delFlag",
+		u2.name AS "user.name",
+		o3.name AS "office.name",
+		a4.name AS "area.name",
+		u8.name AS "createBy.name",
+		u10.name AS "updateBy.name"
+	</sql>
+	
+	<!-- 关联表 -->
+	<sql id="testDataJoins">
+		LEFT JOIN sys_user u2 ON u2.id = a.user_id
+		LEFT JOIN sys_office o3 ON o3.id = a.office_id
+		LEFT JOIN sys_area a4 ON a4.id = a.area_id
+		LEFT JOIN sys_user u8 ON u8.id = a.create_by
+		LEFT JOIN sys_user u10 ON u10.id = a.update_by
+	</sql>
+
+	<!-- 拼接1号where条件(where 从句，通用) -->
+	<sql id="Where_Clause">
+		<where>
+			<if test="id != null and id != ''">AND a.id = #{id}</if>
+			<if test="user != null and user.id != null and user.id != ''">AND a.user_id = #{user.id}</if>
+			<if test="office != null and office.id != null and office.id != ''">AND a.office_id = #{office.id}</if>
+			<if test="area != null and area.id != null and area.id != ''">AND a.area_id = #{area.id}</if>
+			<if test="name != null and name != ''"> 
+				<bind name="pattern" value="'%' + name + '%'" />				
+				AND lower(a.name) LIKE lower(#{pattern})
+			</if>
+			<if test="sex != null and sex != ''">AND a.sex = #{sex}</if>
+			<if test="beginInDate != null and endInDate != null">AND a.in_date BETWEEN #{beginInDate} AND #{endInDate}</if>
+			<if test="createBy != null and createBy.id != null and createBy.id != ''">AND a.create_by = #{createBy.id}</if>
+			<if test="createDate != null">AND a.create_date = #{createDate}</if>
+			<if test="updateBy != null and updateBy.id != null and updateBy.id != ''">AND a.update_by = #{updateBy.id}</if>
+			<if test="updateDate != null">AND a.update_date = #{updateDate}</if>
+			<if test="remarks != null and remarks != ''">AND a.remarks = #{remarks}</if>
+			<if test="delFlag != null and delFlag != ''">AND a.del_flag = #{delFlag}</if>
+		</where>
+	</sql>
+
+	<!-- 拼接2号where条件(where 从句，updateByWhere、updateByWhereSelective专用) -->
+	<sql id="Where_Clause_For_Update">
+		<where>
+			<if test="condition.id != null and condition.id != ''">AND a.id = #{condition.id}</if>
+			<if test="condition.user != null and condition.user.id != null and condition.user.id != ''">AND a.user_id = #{condition.user.id}</if>
+			<if test="condition.office != null and condition.office.id != null and condition.office.id != ''">AND a.office_id = #{condition.office.id}</if>
+			<if test="condition.area != null and condition.area.id != null and condition.area.id != ''">AND a.area_id = #{condition.area.id}</if>
+			<if test="condition.name != null and condition.name != ''">
+				<bind name="pattern" value="'%' + condition.name + '%'" />				
+				AND lower(a.name) LIKE lower(#{pattern})
+			</if>
+			<if test="condition.sex != null and condition.sex != ''">AND a.sex = #{condition.sex}</if>
+			<if test="condition.beginInDate != null and condition.endInDate != null">AND a.in_date BETWEEN #{condition.beginInDate} AND #{condition.endInDate}</if>
+			<if test="condition.createBy != null and condition.createBy.id != null and condition.createBy.id != ''">AND a.create_by = #{condition.createBy.id}</if>
+			<if test="condition.createDate != null">AND a.create_date = #{condition.createDate}</if>
+			<if test="condition.updateBy != null and condition.updateBy.id != null and condition.updateBy.id != ''">AND a.update_by = #{condition.updateBy.id}</if>
+			<if test="condition.updateDate != null">AND a.update_date = #{condition.updateDate}</if>
+			<if test="condition.remarks != null and condition.remarks != ''">AND a.remarks = #{condition.remarks}</if>
+			<if test="condition.delFlag != null and condition.delFlag != ''">AND a.del_flag = #{condition.delFlag}</if>
+		</where>
+	</sql>	
+      
+    <!--根据主键查询记录-->
+	<select id="selectById" resultType="TestData">
+		SELECT 
+		<include refid="testDataColumns"/>
+		FROM test_data a
+		<include refid="testDataJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="TestData">
+		SELECT
+		<include refid="testDataColumns"/>
+		FROM test_data a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>	
+	
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="TestData">
+		SELECT <if test="distinct">DISTINCT</if>
+		<include refid="testDataColumns"/>
+		FROM test_data a
+		<include refid="testDataJoins"/>
+		<include refid="Where_Clause" />
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="TestData">
+		SELECT <if test="distinct">DISTINCT</if>
+		<include refid="testDataColumns"/>
+		FROM test_data a
+		<include refid="testDataJoins"/>
+		<where>
+			<if test="delFlag != null and delFlag != ''">
+				a.del_flag = #{delFlag}
+			</if>
+		</where>		
+		<choose>
+			<when test="page !=null and page.orderBy != null and page.orderBy != ''">
+				ORDER BY ${page.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入  如要返回自增长的主键请加入keyProperty="id" useGeneratedKeys="true"-->
+	<insert id="insert" keyProperty="id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO test_data(
+			id,
+			user_id,
+			office_id,
+			area_id,
+			name,
+			sex,
+			in_date,
+			create_by,
+			create_date,
+			update_by,
+			update_date,
+			remarks,
+			del_flag
+		) VALUES (
+			<if test="pkMode==1">#{id},</if>			
+			<if test="pkMode==2">
+				<if test="dbType$ == 'oracle'">test_data_seq.nextval,</if>
+				<if test="dbType$ == 'mssql'">null,</if>
+				<if test="dbType$ == 'mysql'">null,</if>
+			</if>
+			#{user.id},
+			#{office.id},
+			#{area.id},
+			#{name},
+			#{sex},
+			#{inDate},
+			#{createBy.id},
+			#{createDate},
+			#{updateBy.id},
+			#{updateDate},
+			#{remarks},
+			#{delFlag}
+		)
+	</insert>
+	
+	<!--插入,只把非空的值插入到对应的字段。如要返回自增长的主键请加入keyProperty="id" useGeneratedKeys="true"-->
+	<insert id="insertSelective" >
+		INSERT INTO test_data
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">id,</if>
+			<if test="user!= null and user.id!= null ">user_id,</if>
+			<if test="office!= null and office.id!= null ">office_id,</if>
+			<if test="area!= null and area.id!= null ">area_id,</if>
+			<if test="name != null">name,</if>
+			<if test="sex != null">sex,</if>
+			<if test="inDate != null">in_date,</if>
+			<if test="createBy!= null and createBy.id!= null ">create_by,</if>
+			<if test="createDate != null">create_date,</if>
+			<if test="updateBy!= null and updateBy.id!= null ">update_by,</if>
+			<if test="updateDate != null">update_date,</if>
+			<if test="remarks != null">remarks,</if>
+			<if test="delFlag != null">del_flag,</if>
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">#{id},</if>
+			<if test="user!= null and user.id!= null ">#{user.id},</if>
+			<if test="office!= null and office.id!= null ">#{office.id},</if>
+			<if test="area!= null and area.id!= null ">#{area.id},</if>
+			<if test="name != null">#{name},</if>
+			<if test="sex != null">#{sex},</if>
+			<if test="inDate != null">#{inDate},</if>
+			<if test="createBy!= null and createBy.id!= null ">#{createBy.id},</if>
+			<if test="createDate != null">#{createDate},</if>
+			<if test="updateBy!= null and updateBy.id!= null ">#{updateBy.id},</if>
+			<if test="updateDate != null">#{updateDate},</if>
+			<if test="remarks != null">#{remarks},</if>
+			<if test="delFlag != null">#{delFlag},</if>
+		</trim>
+	</insert>	
+	
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE test_data SET 	
+			user_id = #{user.id},
+			office_id = #{office.id},
+			area_id = #{area.id},
+			name = #{name},
+			sex = #{sex},
+			in_date = #{inDate},
+			create_by = #{createBy.id},
+			create_date = #{createDate},
+			update_by = #{updateBy.id},
+			update_date = #{updateDate},
+			remarks = #{remarks}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE test_data a SET 	
+			user_id = #{entity.user.id},
+			office_id = #{entity.office.id},
+			area_id = #{entity.area.id},
+			name = #{entity.name},
+			sex = #{entity.sex},
+			in_date = #{entity.inDate},
+			create_by = #{entity.createBy.id},
+			create_date = #{entity.createDate},
+			update_by = #{entity.updateBy.id},
+			update_date = #{entity.updateDate},
+			remarks = #{entity.remarks}
+		<include refid="Where_Clause_For_Update" />
+	</update>
+	
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE test_data 
+		<set>		
+			<if test="user!= null and user.id!= null ">user_id = #{user.id},</if>
+			<if test="office!= null and office.id!= null ">office_id = #{office.id},</if>
+			<if test="area!= null and area.id!= null ">area_id = #{area.id},</if>
+			<if test="name != null">name = #{name},</if>
+			<if test="sex != null">sex = #{sex},</if>
+			<if test="inDate != null">in_date = #{inDate},</if>
+			<if test="createBy!= null and createBy.id!= null ">create_by = #{createBy.id},</if>
+			<if test="createDate != null">create_date = #{createDate},</if>
+			<if test="updateBy!= null and updateBy.id!= null ">update_by = #{updateBy.id},</if>
+			<if test="updateDate != null">update_date = #{updateDate},</if>
+			<if test="remarks != null">remarks = #{remarks},</if>
+		</set>
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE test_data a
+		<set>		
+			<if test="entity.user != null and entity.user.id != null">user_id = #{entity.user.id},</if>
+			<if test="entity.office != null and entity.office.id != null">office_id = #{entity.office.id},</if>
+			<if test="entity.area != null and entity.area.id != null">area_id = #{entity.area.id},</if>
+			<if test="entity.name != null">name = #{entity.name},</if>
+			<if test="entity.sex != null">sex = #{entity.sex},</if>
+			<if test="entity.inDate != null">in_date = #{entity.inDate},</if>
+			<if test="entity.createBy != null and entity.createBy.id != null">create_by = #{entity.createBy.id},</if>
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>
+			<if test="entity.updateBy != null and entity.updateBy.id != null">update_by = #{entity.updateBy.id},</if>
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>
+			<if test="entity.remarks != null">remarks = #{entity.remarks},</if>
+		</set>
+		<include refid="Where_Clause_For_Update" />
+	</update>
+	
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		UPDATE test_data SET 
+		del_flag = ${@com.sicheng.common.persistence.BaseEntity@DEL_FLAG_DELETE}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE FROM test_data a
+		<include refid="Where_Clause" />
+	</update>	
+	
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="distinct">DISTINCT</if> COUNT(*) FROM test_data a
+		<include refid="Where_Clause" />
+	</select>	
+	
+</mapper>

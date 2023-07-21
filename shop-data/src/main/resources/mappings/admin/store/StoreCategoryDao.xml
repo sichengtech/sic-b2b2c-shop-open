@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.store.dao.StoreCategoryDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	StoreCategoryDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	StoreCategoryDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	StoreCategoryDao.xml文件与StoreCategoryDaoBase.xml文件，在运行时会合并起来。
+	StoreCategoryDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，StoreCategoryDao.xml文件的内容你要自行做好备份。
+	-->
+	
+	<sql id="storeCategoryColumnsChild">
+		a.store_category_id AS "storeCategoryId",
+		a.store_id AS "storeId",
+		a.parent_id AS "parent.id",
+		a.parent_ids AS "parentIds",
+		a.name AS "name",
+		a.cate_level AS "cateLevel",
+		a.sort AS "sort",
+		a.is_open AS "isOpen",
+		a.create_date AS "createDate",
+		a.update_date AS "updateDate",
+		a.bak1 AS "bak1",
+		a.bak2 AS "bak2",
+		a.bak3 AS "bak3",
+		a.bak4 AS "bak4",
+		a.bak5 AS "bak5"
+	</sql>
+	
+	<sql id="storeCategoryJoinsChild">
+	</sql>
+	
+	<select id="get" resultType="StoreCategory">
+		SELECT 
+			<include refid="storeCategoryColumnsChild"/>
+		FROM store_category a
+		<include refid="storeCategoryJoinsChild"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="StoreCategory">
+		SELECT 
+			<include refid="storeCategoryColumnsChild"/>
+		FROM store_category a
+		<include refid="storeCategoryJoinsChild"/>
+		<where>
+			
+			<if test="storeCategoryId != null and storeCategoryId != ''">
+				AND a.store_category_id = #{storeCategoryId}
+			</if>
+			<if test="storeId != null and storeId != ''">
+				AND a.store_id = #{storeId}
+			</if>
+			<if test="parent != null and parent.id != null and parent.id != ''">
+				AND a.parent_id = #{parent.id}
+			</if>
+			<if test="parentIds != null and parentIds != ''">
+				<bind name="pattern" value="'%' + parentIds + '%'" />				
+				AND lower(a.parent_ids) LIKE lower(#{pattern})
+			</if>
+			<if test="name != null and name != ''">
+				<bind name="pattern" value="'%' + name + '%'" />				
+				AND lower(a.name) LIKE lower(#{pattern})
+			</if>
+			<if test="cateLevel != null and cateLevel != ''">
+				AND a.cate_level = #{cateLevel}
+			</if>
+			<if test="sort != null and sort != ''">
+				AND a.sort = #{sort}
+			</if>
+			<if test="isOpen != null and isOpen != ''">
+				AND a.is_open = #{isOpen}
+			</if>
+			<if test="beginCreateDate != null and endCreateDate != null">
+				AND a.create_date BETWEEN #{beginCreateDate} AND #{endCreateDate}
+			</if>
+			<if test="beginUpdateDate != null and endUpdateDate != null">
+				AND a.update_date BETWEEN #{beginUpdateDate} AND #{endUpdateDate}
+			</if>
+			<if test="bak1 != null and bak1 != ''">
+				AND a.bak1 = #{bak1}
+			</if>
+			<if test="bak2 != null and bak2 != ''">
+				AND a.bak2 = #{bak2}
+			</if>
+			<if test="bak3 != null and bak3 != ''">
+				AND a.bak3 = #{bak3}
+			</if>
+			<if test="bak4 != null and bak4 != ''">
+				AND a.bak4 = #{bak4}
+			</if>
+			<if test="bak5 != null and bak5 != ''">
+				AND a.bak5 = #{bak5}
+			</if>
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findAllList" resultType="StoreCategory">
+		SELECT 
+			<include refid="storeCategoryColumnsChild"/>
+		FROM store_category a
+		<include refid="storeCategoryJoinsChild"/>
+		<where>
+			
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<select id="findByParentIdsLike" resultType="StoreCategory">
+		SELECT
+			a.id,
+			a.parent_id AS "parent.id",
+			a.parent_ids
+		FROM store_category a
+		<include refid="storeCategoryJoinsChild"/>
+		<where>
+			
+			AND lower(a.parent_ids) LIKE lower(#{parentIds})
+		</where>
+		ORDER BY a.sort ASC
+	</select>
+	
+	<!-- <insert id="insert">
+		INSERT INTO store_category(
+			store_category_id,
+			store_id,
+			parent_id,
+			parent_ids,
+			name,
+			cate_level,
+			sort,
+			is_open,
+			create_date,
+			update_date,
+			bak1,
+			bak2,
+			bak3,
+			bak4,
+			bak5
+		) VALUES (
+			#{storeCategoryId},
+			#{storeId},
+			#{parent.id},
+			#{parentIds},
+			#{name},
+			#{cateLevel},
+			#{sort},
+			#{isOpen},
+			#{createDate},
+			#{updateDate},
+			#{bak1},
+			#{bak2},
+			#{bak3},
+			#{bak4},
+			#{bak5}
+		)
+	</insert> -->
+	
+	<update id="update">
+		UPDATE store_category SET 	
+			store_id = #{storeId},
+			parent_id = #{parent.id},
+			parent_ids = #{parentIds},
+			name = #{name},
+			cate_level = #{cateLevel},
+			sort = #{sort},
+			is_open = #{isOpen},
+			create_date = #{createDate},
+			update_date = #{updateDate},
+			bak1 = #{bak1},
+			bak2 = #{bak2},
+			bak3 = #{bak3},
+			bak4 = #{bak4},
+			bak5 = #{bak5}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="updateParentIds">
+		UPDATE store_category SET 
+			parent_id = #{parent.id}, 
+			parent_ids = #{parentIds}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM store_category
+		WHERE id = #{id} 
+		<bind name="pattern" value="'%,' + id + ',%'" />				
+		OR lower(parent_ids) LIKE lower(#{pattern})
+	</update>
+
+</mapper>

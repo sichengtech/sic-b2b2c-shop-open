@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.cms.dao.ArticleDataDao">
+<!-- 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">-->
+<!--		<property name="expire" value="172800"/>&lt;!&ndash; 缓存有效期，单位：秒，默认值2天 &ndash;&gt;-->
+<!--	</cache>-->
+	<!-- 全部字段 -->
+	<sql id="articleDataColumns">
+		a.id AS "id",                                                        <!-- 编号 number(19)-->
+		a.content AS "content",                                              <!-- 文章内容 clob-->
+		a.copyfrom AS "copyfrom",                                            <!-- 文章来源 varchar2(255)-->
+		a.relation AS "relation",                                            <!-- 相关文章 varchar2(255)-->
+		a.allow_comment AS "allowComment"                                   <!-- 是否允许评论 char(1)-->
+		
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="articleDataJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.content != null and c.content != ''">AND a.content = #{c.content}</if>
+		<if test="c.copyfrom != null and c.copyfrom != ''">AND a.copyfrom = #{c.copyfrom}</if>
+		<if test="c.relation != null and c.relation != ''">AND a.relation = #{c.relation}</if>
+		<if test="c.allowComment != null and c.allowComment != ''">AND a.allow_comment = #{c.allowComment}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ArticleData">
+		SELECT 
+		<include refid="articleDataColumns"/>
+		FROM cms_article_data a
+		<include refid="articleDataJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ArticleData">
+		SELECT
+		<include refid="articleDataColumns"/>
+		FROM cms_article_data a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ArticleData">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="articleDataColumns"/>
+		FROM cms_article_data a
+		<include refid="articleDataJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ArticleData">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="articleDataColumns"/>
+		FROM cms_article_data a
+		<include refid="articleDataJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_article_data(
+			id,                                                <!-- 编号 number(19)-->
+			content,                                           <!-- 文章内容 clob-->
+			copyfrom,                                          <!-- 文章来源 varchar2(255)-->
+			relation,                                          <!-- 相关文章 varchar2(255)-->
+			allow_comment                                     <!-- 是否允许评论 char(1)-->
+
+		) VALUES (
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">cms_article_data_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.content},                                 <!-- 文章内容 clob-->
+			#{entity.copyfrom},                                <!-- 文章来源 varchar2(255)-->
+			#{entity.relation},                                <!-- 相关文章 varchar2(255)-->
+			#{entity.allowComment}                            <!-- 是否允许评论 char(1)-->
+
+		)
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO cms_article_data
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.content != null">content,</if>                                    <!-- 文章内容 clob-->
+			<if test="entity.copyfrom != null">copyfrom,</if>                                  <!-- 文章来源 varchar2(255)-->
+			<if test="entity.relation != null">relation,</if>                                  <!-- 相关文章 varchar2(255)-->
+			<if test="entity.allowComment != null">allow_comment,</if>                         <!-- 是否允许评论 char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">cms_article_data_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 文章内容 clob-->
+			<if test="entity.copyfrom != null">#{entity.copyfrom},</if>                                  <!-- 文章来源 varchar2(255)-->
+			<if test="entity.relation != null">#{entity.relation},</if>                                  <!-- 相关文章 varchar2(255)-->
+			<if test="entity.allowComment != null">#{entity.allowComment},</if>                          <!-- 是否允许评论 char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE cms_article_data SET
+			content = #{entity.content},                                    <!-- 文章内容 clob-->
+			copyfrom = #{entity.copyfrom},                                  <!-- 文章来源 varchar2(255)-->
+			relation = #{entity.relation},                                  <!-- 相关文章 varchar2(255)-->
+			allow_comment = #{entity.allowComment}                         <!-- 是否允许评论 char(1)-->
+
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE cms_article_data a SET
+			content = #{entity.content},                                    <!-- 文章内容 clob-->
+			copyfrom = #{entity.copyfrom},                                  <!-- 文章来源 varchar2(255)-->
+			relation = #{entity.relation},                                  <!-- 相关文章 varchar2(255)-->
+			allow_comment = #{entity.allowComment}                         <!-- 是否允许评论 char(1)-->
+
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE cms_article_data
+		<set>
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 文章内容 clob-->
+			<if test="entity.copyfrom != null">copyfrom = #{entity.copyfrom},</if>                                              <!-- 文章来源 varchar2(255)-->
+			<if test="entity.relation != null">relation = #{entity.relation},</if>                                              <!-- 相关文章 varchar2(255)-->
+			<if test="entity.allowComment != null">allow_comment = #{entity.allowComment},</if>                                 <!-- 是否允许评论 char(1)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE cms_article_data a
+		<set>
+			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 文章内容 clob-->
+			<if test="entity.copyfrom != null">copyfrom = #{entity.copyfrom},</if>                                              <!-- 文章来源 varchar2(255)-->
+			<if test="entity.relation != null">relation = #{entity.relation},</if>                                              <!-- 相关文章 varchar2(255)-->
+			<if test="entity.allowComment != null">allow_comment = #{entity.allowComment},</if>                                 <!-- 是否允许评论 char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM cms_article_data
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM cms_article_data
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM cms_article_data a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM cms_article_data a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

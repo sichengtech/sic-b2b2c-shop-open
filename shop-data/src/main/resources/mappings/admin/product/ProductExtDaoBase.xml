@@ -1,0 +1,489 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductExtDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productExtColumns">
+	<trim suffixOverrides=",">
+		a.p_id AS "pId",                                                     <!-- 商品ID number(19)-->
+		a.car_ids AS "carIds",                                               <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 nvarchar2(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 nvarchar2(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
+		a.bak11 AS "bak11",                                                  <!-- 备用字段11 nvarchar2(64)-->
+		a.bak12 AS "bak12",                                                  <!-- 备用字段12 nvarchar2(64)-->
+		a.bak13 AS "bak13",                                                  <!-- 备用字段13 nvarchar2(64)-->
+		a.bak14 AS "bak14",                                                  <!-- 备用字段14 nvarchar2(64)-->
+		a.bak15 AS "bak15",                                                  <!-- 备用字段15 nvarchar2(64)-->
+		a.n1 AS "n1",                                                        <!-- 备用字段n1 number(10)-->
+		a.n2 AS "n2",                                                        <!-- 备用字段n2 number(10)-->
+		a.n3 AS "n3",                                                        <!-- 备用字段n3 number(10)-->
+		a.f1 AS "f1",                                                        <!-- 备用字段f1 number(12,3)-->
+		a.f2 AS "f2",                                                        <!-- 备用字段f2 number(12,3)-->
+		a.f3 AS "f3",                                                        <!-- 备用字段f3 number(12,3)-->
+		a.d1 AS "d1",                                                        <!-- 备用字段d1 date(7)-->
+		a.d2 AS "d2",                                                        <!-- 备用字段d2 date(7)-->
+		a.d3 AS "d3",                                                        <!-- 备用字段d3 date(7)-->
+		a.all_car AS "allCar",                                               <!-- 是否全车系（0否，1是） char(1)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productExtJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.carIds != null and c.carIds != ''">AND a.car_ids = #{c.carIds}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.bak6 != null and c.bak6 != ''">AND a.bak6 = #{c.bak6}</if>
+		<if test="c.bak7 != null and c.bak7 != ''">AND a.bak7 = #{c.bak7}</if>
+		<if test="c.bak8 != null and c.bak8 != ''">AND a.bak8 = #{c.bak8}</if>
+		<if test="c.bak9 != null and c.bak9 != ''">AND a.bak9 = #{c.bak9}</if>
+		<if test="c.bak10 != null and c.bak10 != ''">AND a.bak10 = #{c.bak10}</if>
+		<if test="c.bak11 != null and c.bak11 != ''">AND a.bak11 = #{c.bak11}</if>
+		<if test="c.bak12 != null and c.bak12 != ''">AND a.bak12 = #{c.bak12}</if>
+		<if test="c.bak13 != null and c.bak13 != ''">AND a.bak13 = #{c.bak13}</if>
+		<if test="c.bak14 != null and c.bak14 != ''">AND a.bak14 = #{c.bak14}</if>
+		<if test="c.bak15 != null and c.bak15 != ''">AND a.bak15 = #{c.bak15}</if>
+		<if test="c.n1 != null ">AND a.n1 = #{c.n1}</if>
+		<if test="c.n2 != null ">AND a.n2 = #{c.n2}</if>
+		<if test="c.n3 != null ">AND a.n3 = #{c.n3}</if>
+		<if test="c.f1 != null ">AND a.f1 = #{c.f1}</if>
+		<if test="c.f2 != null ">AND a.f2 = #{c.f2}</if>
+		<if test="c.f3 != null ">AND a.f3 = #{c.f3}</if>
+		<if test="c.beginD1 != null and c.endD1 != null ">AND a.d1 BETWEEN #{c.beginD1} AND #{c.endD1}</if>
+		<if test="c.beginD2 != null and c.endD2 != null ">AND a.d2 BETWEEN #{c.beginD2} AND #{c.endD2}</if>
+		<if test="c.beginD3 != null and c.endD3 != null ">AND a.d3 BETWEEN #{c.beginD3} AND #{c.endD3}</if>
+		<if test="c.allCar != null and c.allCar != ''">AND a.all_car = #{c.allCar}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductExt">
+		SELECT 
+		<include refid="productExtColumns"/>
+		FROM product_ext a
+		<include refid="productExtJoins"/>
+		WHERE a.p_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductExt">
+		SELECT 
+		<include refid="productExtColumns"/>
+		FROM product_ext a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductExt">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productExtColumns"/>
+		FROM product_ext a
+		<include refid="productExtJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductExt">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productExtColumns"/>
+		FROM product_ext a
+		<include refid="productExtJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_ext
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			p_id,                                              <!-- 商品ID number(19)-->
+			car_ids,                                           <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			bak6,                                              <!-- 备用字段6 nvarchar2(64)-->
+			bak7,                                              <!-- 备用字段7 nvarchar2(64)-->
+			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
+			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
+			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
+			bak11,                                             <!-- 备用字段11 nvarchar2(64)-->
+			bak12,                                             <!-- 备用字段12 nvarchar2(64)-->
+			bak13,                                             <!-- 备用字段13 nvarchar2(64)-->
+			bak14,                                             <!-- 备用字段14 nvarchar2(64)-->
+			bak15,                                             <!-- 备用字段15 nvarchar2(64)-->
+			n1,                                                <!-- 备用字段n1 number(10)-->
+			n2,                                                <!-- 备用字段n2 number(10)-->
+			n3,                                                <!-- 备用字段n3 number(10)-->
+			f1,                                                <!-- 备用字段f1 number(12,3)-->
+			f2,                                                <!-- 备用字段f2 number(12,3)-->
+			f3,                                                <!-- 备用字段f3 number(12,3)-->
+			d1,                                                <!-- 备用字段d1 date(7)-->
+			d2,                                                <!-- 备用字段d2 date(7)-->
+			d3,                                                <!-- 备用字段d3 date(7)-->
+			all_car,                                           <!-- 是否全车系（0否，1是） char(1)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.pId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_ext_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.carIds},                                  <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.bak6},                                    <!-- 备用字段6 nvarchar2(64)-->
+			#{entity.bak7},                                    <!-- 备用字段7 nvarchar2(64)-->
+			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
+			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
+			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
+			#{entity.bak11},                                   <!-- 备用字段11 nvarchar2(64)-->
+			#{entity.bak12},                                   <!-- 备用字段12 nvarchar2(64)-->
+			#{entity.bak13},                                   <!-- 备用字段13 nvarchar2(64)-->
+			#{entity.bak14},                                   <!-- 备用字段14 nvarchar2(64)-->
+			#{entity.bak15},                                   <!-- 备用字段15 nvarchar2(64)-->
+			#{entity.n1},                                      <!-- 备用字段n1 number(10)-->
+			#{entity.n2},                                      <!-- 备用字段n2 number(10)-->
+			#{entity.n3},                                      <!-- 备用字段n3 number(10)-->
+			#{entity.f1},                                      <!-- 备用字段f1 number(12,3)-->
+			#{entity.f2},                                      <!-- 备用字段f2 number(12,3)-->
+			#{entity.f3},                                      <!-- 备用字段f3 number(12,3)-->
+			#{entity.d1},                                      <!-- 备用字段d1 date(7)-->
+			#{entity.d2},                                      <!-- 备用字段d2 date(7)-->
+			#{entity.d3},                                      <!-- 备用字段d3 date(7)-->
+			#{entity.allCar},                                  <!-- 是否全车系（0否，1是） char(1)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_ext
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.pId != null">p_id,</if></if>
+			<if test="entity.pkMode==2">p_id,</if>
+			<if test="entity.carIds != null">car_ids,</if>                                     <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6,</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7,</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.bak11 != null">bak11,</if>                                        <!-- 备用字段11 nvarchar2(64)-->
+			<if test="entity.bak12 != null">bak12,</if>                                        <!-- 备用字段12 nvarchar2(64)-->
+			<if test="entity.bak13 != null">bak13,</if>                                        <!-- 备用字段13 nvarchar2(64)-->
+			<if test="entity.bak14 != null">bak14,</if>                                        <!-- 备用字段14 nvarchar2(64)-->
+			<if test="entity.bak15 != null">bak15,</if>                                        <!-- 备用字段15 nvarchar2(64)-->
+			<if test="entity.n1 != null">n1,</if>                                              <!-- 备用字段n1 number(10)-->
+			<if test="entity.n2 != null">n2,</if>                                              <!-- 备用字段n2 number(10)-->
+			<if test="entity.n3 != null">n3,</if>                                              <!-- 备用字段n3 number(10)-->
+			<if test="entity.f1 != null">f1,</if>                                              <!-- 备用字段f1 number(12,3)-->
+			<if test="entity.f2 != null">f2,</if>                                              <!-- 备用字段f2 number(12,3)-->
+			<if test="entity.f3 != null">f3,</if>                                              <!-- 备用字段f3 number(12,3)-->
+			<if test="entity.d1 != null">d1,</if>                                              <!-- 备用字段d1 date(7)-->
+			<if test="entity.d2 != null">d2,</if>                                              <!-- 备用字段d2 date(7)-->
+			<if test="entity.d3 != null">d3,</if>                                              <!-- 备用字段d3 date(7)-->
+			<if test="entity.allCar != null">all_car,</if>                                     <!-- 是否全车系（0否，1是） char(1)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.pId != null">#{entity.pId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_ext_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.carIds != null">#{entity.carIds},</if>                                      <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">#{entity.bak6},</if>                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">#{entity.bak7},</if>                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.bak11 != null">#{entity.bak11},</if>                                        <!-- 备用字段11 nvarchar2(64)-->
+			<if test="entity.bak12 != null">#{entity.bak12},</if>                                        <!-- 备用字段12 nvarchar2(64)-->
+			<if test="entity.bak13 != null">#{entity.bak13},</if>                                        <!-- 备用字段13 nvarchar2(64)-->
+			<if test="entity.bak14 != null">#{entity.bak14},</if>                                        <!-- 备用字段14 nvarchar2(64)-->
+			<if test="entity.bak15 != null">#{entity.bak15},</if>                                        <!-- 备用字段15 nvarchar2(64)-->
+			<if test="entity.n1 != null">#{entity.n1},</if>                                              <!-- 备用字段n1 number(10)-->
+			<if test="entity.n2 != null">#{entity.n2},</if>                                              <!-- 备用字段n2 number(10)-->
+			<if test="entity.n3 != null">#{entity.n3},</if>                                              <!-- 备用字段n3 number(10)-->
+			<if test="entity.f1 != null">#{entity.f1},</if>                                              <!-- 备用字段f1 number(12,3)-->
+			<if test="entity.f2 != null">#{entity.f2},</if>                                              <!-- 备用字段f2 number(12,3)-->
+			<if test="entity.f3 != null">#{entity.f3},</if>                                              <!-- 备用字段f3 number(12,3)-->
+			<if test="entity.d1 != null">#{entity.d1},</if>                                              <!-- 备用字段d1 date(7)-->
+			<if test="entity.d2 != null">#{entity.d2},</if>                                              <!-- 备用字段d2 date(7)-->
+			<if test="entity.d3 != null">#{entity.d3},</if>                                              <!-- 备用字段d3 date(7)-->
+			<if test="entity.allCar != null">#{entity.allCar},</if>                                      <!-- 是否全车系（0否，1是） char(1)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_ext 
+		<set>
+			p_id = #{entity.pId},                                           <!-- 商品ID number(19)-->
+			car_ids = #{entity.carIds},                                     <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+			bak11 = #{entity.bak11},                                        <!-- 备用字段11 nvarchar2(64)-->
+			bak12 = #{entity.bak12},                                        <!-- 备用字段12 nvarchar2(64)-->
+			bak13 = #{entity.bak13},                                        <!-- 备用字段13 nvarchar2(64)-->
+			bak14 = #{entity.bak14},                                        <!-- 备用字段14 nvarchar2(64)-->
+			bak15 = #{entity.bak15},                                        <!-- 备用字段15 nvarchar2(64)-->
+			n1 = #{entity.n1},                                              <!-- 备用字段n1 number(10)-->
+			n2 = #{entity.n2},                                              <!-- 备用字段n2 number(10)-->
+			n3 = #{entity.n3},                                              <!-- 备用字段n3 number(10)-->
+			f1 = #{entity.f1},                                              <!-- 备用字段f1 number(12,3)-->
+			f2 = #{entity.f2},                                              <!-- 备用字段f2 number(12,3)-->
+			f3 = #{entity.f3},                                              <!-- 备用字段f3 number(12,3)-->
+			d1 = #{entity.d1},                                              <!-- 备用字段d1 date(7)-->
+			d2 = #{entity.d2},                                              <!-- 备用字段d2 date(7)-->
+			d3 = #{entity.d3},                                              <!-- 备用字段d3 date(7)-->
+			all_car = #{entity.allCar},                                     <!-- 是否全车系（0否，1是） char(1)-->
+
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_ext a 
+		<set>
+			p_id = #{entity.pId},                                           <!-- 商品ID number(19)-->
+			car_ids = #{entity.carIds},                                     <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			bak6 = #{entity.bak6},                                          <!-- 备用字段6 nvarchar2(64)-->
+			bak7 = #{entity.bak7},                                          <!-- 备用字段7 nvarchar2(64)-->
+			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
+			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
+			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
+			bak11 = #{entity.bak11},                                        <!-- 备用字段11 nvarchar2(64)-->
+			bak12 = #{entity.bak12},                                        <!-- 备用字段12 nvarchar2(64)-->
+			bak13 = #{entity.bak13},                                        <!-- 备用字段13 nvarchar2(64)-->
+			bak14 = #{entity.bak14},                                        <!-- 备用字段14 nvarchar2(64)-->
+			bak15 = #{entity.bak15},                                        <!-- 备用字段15 nvarchar2(64)-->
+			n1 = #{entity.n1},                                              <!-- 备用字段n1 number(10)-->
+			n2 = #{entity.n2},                                              <!-- 备用字段n2 number(10)-->
+			n3 = #{entity.n3},                                              <!-- 备用字段n3 number(10)-->
+			f1 = #{entity.f1},                                              <!-- 备用字段f1 number(12,3)-->
+			f2 = #{entity.f2},                                              <!-- 备用字段f2 number(12,3)-->
+			f3 = #{entity.f3},                                              <!-- 备用字段f3 number(12,3)-->
+			d1 = #{entity.d1},                                              <!-- 备用字段d1 date(7)-->
+			d2 = #{entity.d2},                                              <!-- 备用字段d2 date(7)-->
+			d3 = #{entity.d3},                                              <!-- 备用字段d3 date(7)-->
+			all_car = #{entity.allCar},                                     <!-- 是否全车系（0否，1是） char(1)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_ext
+		<set>
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID number(19)-->
+			<if test="entity.carIds != null">car_ids = #{entity.carIds},</if>                                                   <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.bak11 != null">bak11 = #{entity.bak11},</if>                                                       <!-- 备用字段11 nvarchar2(64)-->
+			<if test="entity.bak12 != null">bak12 = #{entity.bak12},</if>                                                       <!-- 备用字段12 nvarchar2(64)-->
+			<if test="entity.bak13 != null">bak13 = #{entity.bak13},</if>                                                       <!-- 备用字段13 nvarchar2(64)-->
+			<if test="entity.bak14 != null">bak14 = #{entity.bak14},</if>                                                       <!-- 备用字段14 nvarchar2(64)-->
+			<if test="entity.bak15 != null">bak15 = #{entity.bak15},</if>                                                       <!-- 备用字段15 nvarchar2(64)-->
+			<if test="entity.n1 != null">n1 = #{entity.n1},</if>                                                                <!-- 备用字段n1 number(10)-->
+			<if test="entity.n2 != null">n2 = #{entity.n2},</if>                                                                <!-- 备用字段n2 number(10)-->
+			<if test="entity.n3 != null">n3 = #{entity.n3},</if>                                                                <!-- 备用字段n3 number(10)-->
+			<if test="entity.f1 != null">f1 = #{entity.f1},</if>                                                                <!-- 备用字段f1 number(12,3)-->
+			<if test="entity.f2 != null">f2 = #{entity.f2},</if>                                                                <!-- 备用字段f2 number(12,3)-->
+			<if test="entity.f3 != null">f3 = #{entity.f3},</if>                                                                <!-- 备用字段f3 number(12,3)-->
+			<if test="entity.d1 != null">d1 = #{entity.d1},</if>                                                                <!-- 备用字段d1 date(7)-->
+			<if test="entity.d2 != null">d2 = #{entity.d2},</if>                                                                <!-- 备用字段d2 date(7)-->
+			<if test="entity.d3 != null">d3 = #{entity.d3},</if>                                                                <!-- 备用字段d3 date(7)-->
+			<if test="entity.allCar != null">all_car = #{entity.allCar},</if>                                                   <!-- 是否全车系（0否，1是） char(1)-->
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_ext a
+		<set>
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID number(19)-->
+			<if test="entity.carIds != null">car_ids = #{entity.carIds},</if>                                                   <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.bak6 != null">bak6 = #{entity.bak6},</if>                                                          <!-- 备用字段6 nvarchar2(64)-->
+			<if test="entity.bak7 != null">bak7 = #{entity.bak7},</if>                                                          <!-- 备用字段7 nvarchar2(64)-->
+			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
+			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
+			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
+			<if test="entity.bak11 != null">bak11 = #{entity.bak11},</if>                                                       <!-- 备用字段11 nvarchar2(64)-->
+			<if test="entity.bak12 != null">bak12 = #{entity.bak12},</if>                                                       <!-- 备用字段12 nvarchar2(64)-->
+			<if test="entity.bak13 != null">bak13 = #{entity.bak13},</if>                                                       <!-- 备用字段13 nvarchar2(64)-->
+			<if test="entity.bak14 != null">bak14 = #{entity.bak14},</if>                                                       <!-- 备用字段14 nvarchar2(64)-->
+			<if test="entity.bak15 != null">bak15 = #{entity.bak15},</if>                                                       <!-- 备用字段15 nvarchar2(64)-->
+			<if test="entity.n1 != null">n1 = #{entity.n1},</if>                                                                <!-- 备用字段n1 number(10)-->
+			<if test="entity.n2 != null">n2 = #{entity.n2},</if>                                                                <!-- 备用字段n2 number(10)-->
+			<if test="entity.n3 != null">n3 = #{entity.n3},</if>                                                                <!-- 备用字段n3 number(10)-->
+			<if test="entity.f1 != null">f1 = #{entity.f1},</if>                                                                <!-- 备用字段f1 number(12,3)-->
+			<if test="entity.f2 != null">f2 = #{entity.f2},</if>                                                                <!-- 备用字段f2 number(12,3)-->
+			<if test="entity.f3 != null">f3 = #{entity.f3},</if>                                                                <!-- 备用字段f3 number(12,3)-->
+			<if test="entity.d1 != null">d1 = #{entity.d1},</if>                                                                <!-- 备用字段d1 date(7)-->
+			<if test="entity.d2 != null">d2 = #{entity.d2},</if>                                                                <!-- 备用字段d2 date(7)-->
+			<if test="entity.d3 != null">d3 = #{entity.d3},</if>                                                                <!-- 备用字段d3 date(7)-->
+			<if test="entity.allCar != null">all_car = #{entity.allCar},</if>                                                   <!-- 是否全车系（0否，1是） char(1)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_ext
+		WHERE p_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_ext
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_ext a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_ext a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

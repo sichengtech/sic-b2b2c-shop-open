@@ -1,0 +1,575 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sso.dao.UserMemberDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="userMemberColumns">
+	<trim suffixOverrides=",">
+		a.u_id AS "uId",                                                     <!-- 主键 bigint(20)-->
+		a.point AS "point",                                                  <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+		a.is_buy AS "isBuy",                                                 <!-- 是否允许购买(0不允许、1允许) char(1)-->
+		a.not_buy_date_start AS "notBuyDateStart",                           <!-- 禁止购买日期（开始时间） datetime-->
+		a.not_buy_date_end AS "notBuyDateEnd",                               <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+		a.balance AS "balance",                                              <!-- 预存款，账户余额 decimal(12,3)-->
+		a.frozen_money AS "frozenMoney",                                     <!-- 冻结金额 decimal(12,3)-->
+		a.payment_password AS "paymentPassword",                             <!-- 支付密码 varchar(64)-->
+		a.member_tag_id AS "memberTagId",                                    <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+		a.real_name AS "realName",                                           <!-- 真实姓名 varchar(64)-->
+		a.head_pic_path AS "headPicPath",                                    <!-- 会员头像path varchar(64)-->
+		a.sex AS "sex",                                                      <!-- 性别(1男、2女、3保密) char(1)-->
+		a.birthday AS "birthday",                                            <!-- 生日 datetime-->
+		a.postcode AS "postcode",                                            <!-- 邮编 varchar(64)-->
+		a.country_id AS "countryId",                                         <!-- 国家(关联地区表) bigint(20)-->
+		a.country_name AS "countryName",                                     <!-- 国家名字 varchar(64)-->
+		a.province_id AS "provinceId",                                       <!-- 省(关联地区表) bigint(20)-->
+		a.province_name AS "provinceName",                                   <!-- 省名字 varchar(64)-->
+		a.city_id AS "cityId",                                               <!-- 市(关联地区表) bigint(20)-->
+		a.city_name AS "cityName",                                           <!-- 市名字 varchar(64)-->
+		a.district_id AS "districtId",                                       <!-- 县(关联地区表) bigint(20)-->
+		a.district_name AS "districtName",                                   <!-- 县名字 varchar(64)-->
+		a.detailed_address AS "detailedAddress",                             <!-- 详细地址 varchar(255)-->
+		a.qq AS "qq",                                                        <!-- qq号 varchar(64)-->
+		a.microblog AS "microblog",                                          <!-- 微博 varchar(64)-->
+		a.we_chat AS "weChat",                                               <!-- 微信 varchar(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 varchar(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 varchar(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 varchar(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 varchar(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 varchar(64)-->
+		a.identity_type AS "identityType",                                   <!-- 1.普通用户,2.车主用户 char(1)-->
+		a.apply_car_ids AS "applyCarIds",                                    <!-- 车主用户使用车型id,号分割 varchar(64)-->
+		a.open_id AS "openId",                                               <!-- 微信授权的openId varchar(128)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="userMemberJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.point != null and c.point != ''">AND a.point = #{c.point}</if>
+		<if test="c.isBuy != null and c.isBuy != ''">AND a.is_buy = #{c.isBuy}</if>
+		<if test="c.beginNotBuyDateStart != null and c.endNotBuyDateStart != null ">AND a.not_buy_date_start BETWEEN #{c.beginNotBuyDateStart} AND #{c.endNotBuyDateStart}</if>
+		<if test="c.beginNotBuyDateEnd != null and c.endNotBuyDateEnd != null ">AND a.not_buy_date_end BETWEEN #{c.beginNotBuyDateEnd} AND #{c.endNotBuyDateEnd}</if>
+		<if test="c.balance != null ">AND a.balance = #{c.balance}</if>
+		<if test="c.frozenMoney != null ">AND a.frozen_money = #{c.frozenMoney}</if>
+		<if test="c.paymentPassword != null and c.paymentPassword != ''">AND a.payment_password = #{c.paymentPassword}</if>
+		<if test="c.memberTagId != null ">AND a.member_tag_id = #{c.memberTagId}</if>
+		<if test="c.realName != null and c.realName != ''">AND a.real_name = #{c.realName}</if>
+		<if test="c.headPicPath != null and c.headPicPath != ''">AND a.head_pic_path = #{c.headPicPath}</if>
+		<if test="c.sex != null and c.sex != ''">AND a.sex = #{c.sex}</if>
+		<if test="c.beginBirthday != null and c.endBirthday != null ">AND a.birthday BETWEEN #{c.beginBirthday} AND #{c.endBirthday}</if>
+		<if test="c.postcode != null and c.postcode != ''">AND a.postcode = #{c.postcode}</if>
+		<if test="c.countryId != null ">AND a.country_id = #{c.countryId}</if>
+		<if test="c.countryName != null and c.countryName != ''">AND a.country_name = #{c.countryName}</if>
+		<if test="c.provinceId != null ">AND a.province_id = #{c.provinceId}</if>
+		<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+		<if test="c.cityId != null ">AND a.city_id = #{c.cityId}</if>
+		<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+		<if test="c.districtId != null ">AND a.district_id = #{c.districtId}</if>
+		<if test="c.districtName != null and c.districtName != ''">AND a.district_name = #{c.districtName}</if>
+		<if test="c.detailedAddress != null and c.detailedAddress != ''">AND a.detailed_address = #{c.detailedAddress}</if>
+		<if test="c.qq != null and c.qq != ''">AND a.qq = #{c.qq}</if>
+		<if test="c.microblog != null and c.microblog != ''">AND a.microblog = #{c.microblog}</if>
+		<if test="c.weChat != null and c.weChat != ''">AND a.we_chat = #{c.weChat}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.identityType != null and c.identityType != ''">AND a.identity_type = #{c.identityType}</if>
+		<if test="c.applyCarIds != null and c.applyCarIds != ''">AND a.apply_car_ids = #{c.applyCarIds}</if>
+		<if test="c.openId != null and c.openId != ''">AND a.open_id = #{c.openId}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="UserMember">
+		SELECT 
+		<include refid="userMemberColumns"/>
+		FROM user_member a
+		<include refid="userMemberJoins"/>
+		WHERE a.u_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="UserMember">
+		SELECT 
+		<include refid="userMemberColumns"/>
+		FROM user_member a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="UserMember">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userMemberColumns"/>
+		FROM user_member a
+		<include refid="userMemberJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="UserMember">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userMemberColumns"/>
+		FROM user_member a
+		<include refid="userMemberJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_member
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			u_id,                                              <!-- 主键 bigint(20)-->
+			point,                                             <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			is_buy,                                            <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			not_buy_date_start,                                <!-- 禁止购买日期（开始时间） datetime-->
+			not_buy_date_end,                                  <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			balance,                                           <!-- 预存款，账户余额 decimal(12,3)-->
+			frozen_money,                                      <!-- 冻结金额 decimal(12,3)-->
+			payment_password,                                  <!-- 支付密码 varchar(64)-->
+			member_tag_id,                                     <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			real_name,                                         <!-- 真实姓名 varchar(64)-->
+			head_pic_path,                                     <!-- 会员头像path varchar(64)-->
+			sex,                                               <!-- 性别(1男、2女、3保密) char(1)-->
+			birthday,                                          <!-- 生日 datetime-->
+			postcode,                                          <!-- 邮编 varchar(64)-->
+			country_id,                                        <!-- 国家(关联地区表) bigint(20)-->
+			country_name,                                      <!-- 国家名字 varchar(64)-->
+			province_id,                                       <!-- 省(关联地区表) bigint(20)-->
+			province_name,                                     <!-- 省名字 varchar(64)-->
+			city_id,                                           <!-- 市(关联地区表) bigint(20)-->
+			city_name,                                         <!-- 市名字 varchar(64)-->
+			district_id,                                       <!-- 县(关联地区表) bigint(20)-->
+			district_name,                                     <!-- 县名字 varchar(64)-->
+			detailed_address,                                  <!-- 详细地址 varchar(255)-->
+			qq,                                                <!-- qq号 varchar(64)-->
+			microblog,                                         <!-- 微博 varchar(64)-->
+			we_chat,                                           <!-- 微信 varchar(64)-->
+			create_date,                                       <!-- 创建时间 datetime-->
+			update_date,                                       <!-- 更新时间 datetime-->
+			bak1,                                              <!-- 备用字段1 varchar(64)-->
+			bak2,                                              <!-- 备用字段2 varchar(64)-->
+			bak3,                                              <!-- 备用字段3 varchar(64)-->
+			bak4,                                              <!-- 备用字段4 varchar(64)-->
+			bak5,                                              <!-- 备用字段5 varchar(64)-->
+			identity_type,                                     <!-- 1.普通用户,2.车主用户 char(1)-->
+			apply_car_ids,                                     <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			open_id,                                           <!-- 微信授权的openId varchar(128)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.uId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_member_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.point},                                   <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			#{entity.isBuy},                                   <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			#{entity.notBuyDateStart},                         <!-- 禁止购买日期（开始时间） datetime-->
+			#{entity.notBuyDateEnd},                           <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			#{entity.balance},                                 <!-- 预存款，账户余额 decimal(12,3)-->
+			#{entity.frozenMoney},                             <!-- 冻结金额 decimal(12,3)-->
+			#{entity.paymentPassword},                         <!-- 支付密码 varchar(64)-->
+			#{entity.memberTagId},                             <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			#{entity.realName},                                <!-- 真实姓名 varchar(64)-->
+			#{entity.headPicPath},                             <!-- 会员头像path varchar(64)-->
+			#{entity.sex},                                     <!-- 性别(1男、2女、3保密) char(1)-->
+			#{entity.birthday},                                <!-- 生日 datetime-->
+			#{entity.postcode},                                <!-- 邮编 varchar(64)-->
+			#{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
+			#{entity.countryName},                             <!-- 国家名字 varchar(64)-->
+			#{entity.provinceId},                              <!-- 省(关联地区表) bigint(20)-->
+			#{entity.provinceName},                            <!-- 省名字 varchar(64)-->
+			#{entity.cityId},                                  <!-- 市(关联地区表) bigint(20)-->
+			#{entity.cityName},                                <!-- 市名字 varchar(64)-->
+			#{entity.districtId},                              <!-- 县(关联地区表) bigint(20)-->
+			#{entity.districtName},                            <!-- 县名字 varchar(64)-->
+			#{entity.detailedAddress},                         <!-- 详细地址 varchar(255)-->
+			#{entity.qq},                                      <!-- qq号 varchar(64)-->
+			#{entity.microblog},                               <!-- 微博 varchar(64)-->
+			#{entity.weChat},                                  <!-- 微信 varchar(64)-->
+			#{entity.createDate},                              <!-- 创建时间 datetime-->
+			#{entity.updateDate},                              <!-- 更新时间 datetime-->
+			#{entity.bak1},                                    <!-- 备用字段1 varchar(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 varchar(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 varchar(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 varchar(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 varchar(64)-->
+			#{entity.identityType},                            <!-- 1.普通用户,2.车主用户 char(1)-->
+			#{entity.applyCarIds},                             <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			#{entity.openId},                                  <!-- 微信授权的openId varchar(128)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_member
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.uId != null">u_id,</if></if>
+			<if test="entity.pkMode==2">u_id,</if>
+			<if test="entity.point != null">point,</if>                                        <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			<if test="entity.isBuy != null">is_buy,</if>                                       <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			<if test="entity.notBuyDateStart != null">not_buy_date_start,</if>                 <!-- 禁止购买日期（开始时间） datetime-->
+			<if test="entity.notBuyDateEnd != null">not_buy_date_end,</if>                     <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			<if test="entity.balance != null">balance,</if>                                    <!-- 预存款，账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money,</if>                           <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.paymentPassword != null">payment_password,</if>                   <!-- 支付密码 varchar(64)-->
+			<if test="entity.memberTagId != null">member_tag_id,</if>                          <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			<if test="entity.realName != null">real_name,</if>                                 <!-- 真实姓名 varchar(64)-->
+			<if test="entity.headPicPath != null">head_pic_path,</if>                          <!-- 会员头像path varchar(64)-->
+			<if test="entity.sex != null">sex,</if>                                            <!-- 性别(1男、2女、3保密) char(1)-->
+			<if test="entity.birthday != null">birthday,</if>                                  <!-- 生日 datetime-->
+			<if test="entity.postcode != null">postcode,</if>                                  <!-- 邮编 varchar(64)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">country_name,</if>                           <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 详细地址 varchar(255)-->
+			<if test="entity.qq != null">qq,</if>                                              <!-- qq号 varchar(64)-->
+			<if test="entity.microblog != null">microblog,</if>                                <!-- 微博 varchar(64)-->
+			<if test="entity.weChat != null">we_chat,</if>                                     <!-- 微信 varchar(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.identityType != null">identity_type,</if>                         <!-- 1.普通用户,2.车主用户 char(1)-->
+			<if test="entity.applyCarIds != null">apply_car_ids,</if>                          <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			<if test="entity.openId != null">open_id,</if>                                     <!-- 微信授权的openId varchar(128)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.uId != null">#{entity.uId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_member_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.point != null">#{entity.point},</if>                                        <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			<if test="entity.isBuy != null">#{entity.isBuy},</if>                                        <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			<if test="entity.notBuyDateStart != null">#{entity.notBuyDateStart},</if>                    <!-- 禁止购买日期（开始时间） datetime-->
+			<if test="entity.notBuyDateEnd != null">#{entity.notBuyDateEnd},</if>                        <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			<if test="entity.balance != null">#{entity.balance},</if>                                    <!-- 预存款，账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">#{entity.frozenMoney},</if>                            <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.paymentPassword != null">#{entity.paymentPassword},</if>                    <!-- 支付密码 varchar(64)-->
+			<if test="entity.memberTagId != null">#{entity.memberTagId},</if>                            <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			<if test="entity.realName != null">#{entity.realName},</if>                                  <!-- 真实姓名 varchar(64)-->
+			<if test="entity.headPicPath != null">#{entity.headPicPath},</if>                            <!-- 会员头像path varchar(64)-->
+			<if test="entity.sex != null">#{entity.sex},</if>                                            <!-- 性别(1男、2女、3保密) char(1)-->
+			<if test="entity.birthday != null">#{entity.birthday},</if>                                  <!-- 生日 datetime-->
+			<if test="entity.postcode != null">#{entity.postcode},</if>                                  <!-- 邮编 varchar(64)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 详细地址 varchar(255)-->
+			<if test="entity.qq != null">#{entity.qq},</if>                                              <!-- qq号 varchar(64)-->
+			<if test="entity.microblog != null">#{entity.microblog},</if>                                <!-- 微博 varchar(64)-->
+			<if test="entity.weChat != null">#{entity.weChat},</if>                                      <!-- 微信 varchar(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.identityType != null">#{entity.identityType},</if>                          <!-- 1.普通用户,2.车主用户 char(1)-->
+			<if test="entity.applyCarIds != null">#{entity.applyCarIds},</if>                            <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			<if test="entity.openId != null">#{entity.openId},</if>                                      <!-- 微信授权的openId varchar(128)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE user_member 
+		<set>
+			point = #{entity.point},                                        <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			is_buy = #{entity.isBuy},                                       <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			not_buy_date_start = #{entity.notBuyDateStart},                 <!-- 禁止购买日期（开始时间） datetime-->
+			not_buy_date_end = #{entity.notBuyDateEnd},                     <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			balance = #{entity.balance},                                    <!-- 预存款，账户余额 decimal(12,3)-->
+			frozen_money = #{entity.frozenMoney},                           <!-- 冻结金额 decimal(12,3)-->
+			payment_password = #{entity.paymentPassword},                   <!-- 支付密码 varchar(64)-->
+			member_tag_id = #{entity.memberTagId},                          <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			real_name = #{entity.realName},                                 <!-- 真实姓名 varchar(64)-->
+			head_pic_path = #{entity.headPicPath},                          <!-- 会员头像path varchar(64)-->
+			sex = #{entity.sex},                                            <!-- 性别(1男、2女、3保密) char(1)-->
+			birthday = #{entity.birthday},                                  <!-- 生日 datetime-->
+			postcode = #{entity.postcode},                                  <!-- 邮编 varchar(64)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
+			country_name = #{entity.countryName},                           <!-- 国家名字 varchar(64)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
+			province_name = #{entity.provinceName},                         <!-- 省名字 varchar(64)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
+			city_name = #{entity.cityName},                                 <!-- 市名字 varchar(64)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 varchar(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 varchar(255)-->
+			qq = #{entity.qq},                                              <!-- qq号 varchar(64)-->
+			microblog = #{entity.microblog},                                <!-- 微博 varchar(64)-->
+			we_chat = #{entity.weChat},                                     <!-- 微信 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+			identity_type = #{entity.identityType},                         <!-- 1.普通用户,2.车主用户 char(1)-->
+			apply_car_ids = #{entity.applyCarIds},                          <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			open_id = #{entity.openId},                                     <!-- 微信授权的openId varchar(128)-->
+
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE user_member a 
+		<set>
+			point = #{entity.point},                                        <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			is_buy = #{entity.isBuy},                                       <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			not_buy_date_start = #{entity.notBuyDateStart},                 <!-- 禁止购买日期（开始时间） datetime-->
+			not_buy_date_end = #{entity.notBuyDateEnd},                     <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			balance = #{entity.balance},                                    <!-- 预存款，账户余额 decimal(12,3)-->
+			frozen_money = #{entity.frozenMoney},                           <!-- 冻结金额 decimal(12,3)-->
+			payment_password = #{entity.paymentPassword},                   <!-- 支付密码 varchar(64)-->
+			member_tag_id = #{entity.memberTagId},                          <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			real_name = #{entity.realName},                                 <!-- 真实姓名 varchar(64)-->
+			head_pic_path = #{entity.headPicPath},                          <!-- 会员头像path varchar(64)-->
+			sex = #{entity.sex},                                            <!-- 性别(1男、2女、3保密) char(1)-->
+			birthday = #{entity.birthday},                                  <!-- 生日 datetime-->
+			postcode = #{entity.postcode},                                  <!-- 邮编 varchar(64)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
+			country_name = #{entity.countryName},                           <!-- 国家名字 varchar(64)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
+			province_name = #{entity.provinceName},                         <!-- 省名字 varchar(64)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
+			city_name = #{entity.cityName},                                 <!-- 市名字 varchar(64)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
+			district_name = #{entity.districtName},                         <!-- 县名字 varchar(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 varchar(255)-->
+			qq = #{entity.qq},                                              <!-- qq号 varchar(64)-->
+			microblog = #{entity.microblog},                                <!-- 微博 varchar(64)-->
+			we_chat = #{entity.weChat},                                     <!-- 微信 varchar(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 datetime-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 datetime-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 varchar(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 varchar(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 varchar(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 varchar(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 varchar(64)-->
+			identity_type = #{entity.identityType},                         <!-- 1.普通用户,2.车主用户 char(1)-->
+			apply_car_ids = #{entity.applyCarIds},                          <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			open_id = #{entity.openId},                                     <!-- 微信授权的openId varchar(128)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE user_member
+		<set>
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			<if test="entity.isBuy != null">is_buy = #{entity.isBuy},</if>                                                      <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			<if test="entity.notBuyDateStart != null">not_buy_date_start = #{entity.notBuyDateStart},</if>                      <!-- 禁止购买日期（开始时间） datetime-->
+			<if test="entity.notBuyDateEnd != null">not_buy_date_end = #{entity.notBuyDateEnd},</if>                            <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			<if test="entity.balance != null">balance = #{entity.balance},</if>                                                 <!-- 预存款，账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money = #{entity.frozenMoney},</if>                                    <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.paymentPassword != null">payment_password = #{entity.paymentPassword},</if>                        <!-- 支付密码 varchar(64)-->
+			<if test="entity.memberTagId != null">member_tag_id = #{entity.memberTagId},</if>                                   <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			<if test="entity.realName != null">real_name = #{entity.realName},</if>                                             <!-- 真实姓名 varchar(64)-->
+			<if test="entity.headPicPath != null">head_pic_path = #{entity.headPicPath},</if>                                   <!-- 会员头像path varchar(64)-->
+			<if test="entity.sex != null">sex = #{entity.sex},</if>                                                             <!-- 性别(1男、2女、3保密) char(1)-->
+			<if test="entity.birthday != null">birthday = #{entity.birthday},</if>                                              <!-- 生日 datetime-->
+			<if test="entity.postcode != null">postcode = #{entity.postcode},</if>                                              <!-- 邮编 varchar(64)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 varchar(255)-->
+			<if test="entity.qq != null">qq = #{entity.qq},</if>                                                                <!-- qq号 varchar(64)-->
+			<if test="entity.microblog != null">microblog = #{entity.microblog},</if>                                           <!-- 微博 varchar(64)-->
+			<if test="entity.weChat != null">we_chat = #{entity.weChat},</if>                                                   <!-- 微信 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.identityType != null">identity_type = #{entity.identityType},</if>                                 <!-- 1.普通用户,2.车主用户 char(1)-->
+			<if test="entity.applyCarIds != null">apply_car_ids = #{entity.applyCarIds},</if>                                   <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			<if test="entity.openId != null">open_id = #{entity.openId},</if>                                                   <!-- 微信授权的openId varchar(128)-->
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE user_member a
+		<set>
+			<if test="entity.point != null">point = #{entity.point},</if>                                                       <!-- 积分（积分规则设置送的积分数） varchar(64)-->
+			<if test="entity.isBuy != null">is_buy = #{entity.isBuy},</if>                                                      <!-- 是否允许购买(0不允许、1允许) char(1)-->
+			<if test="entity.notBuyDateStart != null">not_buy_date_start = #{entity.notBuyDateStart},</if>                      <!-- 禁止购买日期（开始时间） datetime-->
+			<if test="entity.notBuyDateEnd != null">not_buy_date_end = #{entity.notBuyDateEnd},</if>                            <!-- 禁止购买日期（结束时间）(需要有定时程序来检查并解锁) datetime-->
+			<if test="entity.balance != null">balance = #{entity.balance},</if>                                                 <!-- 预存款，账户余额 decimal(12,3)-->
+			<if test="entity.frozenMoney != null">frozen_money = #{entity.frozenMoney},</if>                                    <!-- 冻结金额 decimal(12,3)-->
+			<if test="entity.paymentPassword != null">payment_password = #{entity.paymentPassword},</if>                        <!-- 支付密码 varchar(64)-->
+			<if test="entity.memberTagId != null">member_tag_id = #{entity.memberTagId},</if>                                   <!-- 会员标签（给会员打标）(关联member_tag表) bigint(20)-->
+			<if test="entity.realName != null">real_name = #{entity.realName},</if>                                             <!-- 真实姓名 varchar(64)-->
+			<if test="entity.headPicPath != null">head_pic_path = #{entity.headPicPath},</if>                                   <!-- 会员头像path varchar(64)-->
+			<if test="entity.sex != null">sex = #{entity.sex},</if>                                                             <!-- 性别(1男、2女、3保密) char(1)-->
+			<if test="entity.birthday != null">birthday = #{entity.birthday},</if>                                              <!-- 生日 datetime-->
+			<if test="entity.postcode != null">postcode = #{entity.postcode},</if>                                              <!-- 邮编 varchar(64)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 varchar(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 varchar(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 varchar(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 varchar(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 varchar(255)-->
+			<if test="entity.qq != null">qq = #{entity.qq},</if>                                                                <!-- qq号 varchar(64)-->
+			<if test="entity.microblog != null">microblog = #{entity.microblog},</if>                                           <!-- 微博 varchar(64)-->
+			<if test="entity.weChat != null">we_chat = #{entity.weChat},</if>                                                   <!-- 微信 varchar(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 datetime-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 datetime-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 varchar(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 varchar(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 varchar(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 varchar(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 varchar(64)-->
+			<if test="entity.identityType != null">identity_type = #{entity.identityType},</if>                                 <!-- 1.普通用户,2.车主用户 char(1)-->
+			<if test="entity.applyCarIds != null">apply_car_ids = #{entity.applyCarIds},</if>                                   <!-- 车主用户使用车型id,号分割 varchar(64)-->
+			<if test="entity.openId != null">open_id = #{entity.openId},</if>                                                   <!-- 微信授权的openId varchar(128)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM user_member
+		WHERE u_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM user_member
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM user_member a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM user_member a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

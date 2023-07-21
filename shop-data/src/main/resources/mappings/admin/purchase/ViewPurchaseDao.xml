@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.purchase.dao.ViewPurchaseDao">
+
+	<!-- 
+	请把你的扩展SQL写到 当前 文件中 
+	ViewPurchaseDaoBase.xml文件是父文件，是由系统提供的，内含有单表操作的常用SQL。
+	ViewPurchaseDao.xml文件是子文件，内容为空，供你写扩展SQL。
+	ViewPurchaseDao.xml文件与ViewPurchaseDaoBase.xml文件，在运行时会合并起来。
+	ViewPurchaseDaoBase.xml文件，因为不包含你写的SQL,可反复替换。
+	第二次替换时，ViewPurchaseDao.xml文件的内容你要自行做好备份。
+	-->
+		<!--根据条件查询记录集-->
+	<select id="selectByWhere1" resultType="ViewPurchase">
+		SELECT
+			pu.purchase_id AS purchase_id,
+			pu.title AS purchase_title,
+			pu.content AS purchase_content,
+			pu.bom_path AS purchase_bom_path,
+			pu.bom_new_path AS purchase_bom_new_path,
+			pu.u_id AS purchase_u_id,
+			pu.type AS purchase_type,
+			pu.status AS purchase_status,
+			pu.expiry_time AS purchase_expiry_time,
+			pu.cycle AS pu_cycle,
+			pu.purchase_explain AS purchase_explain,
+			pu.create_date AS purchase_create_date,
+			pu.update_date AS purchase_update_date,
+			(
+				SELECT
+					count(
+						pm.purchase_matchmaking_id
+					)
+				FROM
+					purchase_matchmaking pm
+				WHERE
+					(
+						pm.purchase_id = pu.purchase_id
+					)
+			) AS purchase_counts,
+			pi.purchase_item_id AS pi_id,
+			pi.name AS pi_name,
+			pi.model AS pi_model,
+			pi.brand AS pi_brand,
+			um.login_name AS um_login_name,
+			um.mobile AS um_mobile,
+			ps.space_id AS ps_id
+		FROM
+		(
+			(
+				(
+					purchase pu
+					LEFT JOIN purchase_item pi ON (
+						(
+							pu.purchase_id = pi.purchase_id
+						)
+					)
+				)
+				LEFT JOIN user_main um ON ((pu.u_id = um.u_id))
+			)
+			LEFT JOIN purchase_space ps ON ((pu.u_id = ps.u_id))
+		)
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				GROUP BY
+				pu.create_date DESC
+			</otherwise>
+		</choose>
+	</select>
+
+</mapper>

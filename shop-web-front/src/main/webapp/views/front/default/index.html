@@ -1,0 +1,816 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% var seo=seo.one({type:"大首页"});%>
+<title>${seo.title!} Powered by SiC</title>
+<meta name="Keywords" content="${seo.keywords!}"/>
+<meta name="description" content="${seo.description!}"/>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/default/index.js"></script>
+</head>
+<body class="index">
+	<% include("/include/header.html"){}%>
+	<% include("/include/nav.html"){}%>
+	<!-- banner开始 -->
+	<div class="banner">
+		<div class="wp">
+			<div class="index-main-right">
+				<img src="${ctx}/views/front/default/images/join_money.png" />
+				<div class="mlr10">
+					<a target="_blank" href="${ctxf}/custom/storeEnterIndex.htm" class="sui-btn btn-block btn-xlarge btn-danger mt15"><i class="sui-icon icon-tb-shop"></i> 供应商入驻</a>
+					<a target="_blank" href="${ctxf}/custom/customerPurchase.htm" class="sui-btn btn-block btn-xlarge btn-primary mt15"><i class="sui-icon icon-tb-form"></i> 求购商采购</a>
+				</div>
+			</div>
+			<div class="banner_bottom">
+				<%var ad1 = site.ad({number:'sy01'});%>${ad1!}
+				<%var ad2 = site.ad({number:'sy02'});%>${ad2!}
+			</div>
+		</div>
+		<div class="fullSlide">
+			<div class="bd">
+				<ul>
+					<% for(carousel in site.carouselList({type:1,limit:3})){
+						var color="#fff5b8";
+						if(carouselLP.index==2){
+							color="#263184";
+						}
+						if(carouselLP.index==3){
+							color="#e3ecef";
+						}
+					%>
+						<li style="background-color:${color};">
+							<% var target=dict.label({value:carousel.target!,type:'target'}); %>
+							<span class="wp"><a target="${target!}" href="${carousel.url!}" style="background-image:url(${ctxfs}${carousel.path})"></a>
+							</span>
+						</li>
+						<%}%>
+				</ul>
+			</div>
+			<div class="hd wp">
+			  <ul></ul>
+			</div>
+		</div>
+		<script type="text/javascript">
+			jQuery(".fullSlide").hover(function() {
+			    jQuery(this).find(".prev,.next").stop(true, true).fadeTo("show", 0.5)
+			},
+			function() {
+			    jQuery(this).find(".prev,.next").fadeOut()
+			});
+			jQuery(".fullSlide").slide({
+			    titCell: ".hd ul",
+			    mainCell: ".bd ul",
+			    effect: "fold",
+			    autoPlay: true,
+			    autoPage: true,
+			    trigger: "click",
+			    startFun: function(i) {
+			        var curLi = jQuery(".fullSlide .bd li").eq(i);
+			        if ( !! curLi.attr("_src")) {
+			            curLi.css("background-image", curLi.attr("_src")).removeAttr("_src")
+			        }
+			    }
+			});
+		</script>
+	</div>
+	<!-- banner结束 -->
+	<!-- 品牌橱窗开始 -->
+	<div id="nav1" class="section left-menunav">
+		<div class="wp brand-box clearfix">
+			<% var brandList=site.recommend({number:'index_brand_list'});%>
+			<h1><a href="javascript:" class="more">全部入驻品牌<font class="reg">>>></font></a><i></i>${brandList.name!}</h1>
+			<ul class="brand_pic_list clearfix">
+				<%var brandAd = site.ad({number:'index_brand_img'});%>${brandAd!}
+			</ul>
+			<ul class="brand_logo_list clearfix">
+				<% for(brand in brandList.siteRecommendItemList!){%>
+					<li><a target="_blank" href="${isNotEmpty(brand.url!)?brand.url!:'javascript:;'}"><img src="${ctxfs}${brand.path!}" onerror="fdp.defaultImage('${ctxfs}/shop_init/store_logo.png');"/></a></li>
+				<%}%>
+			</ul>
+		</div>
+	</div>
+	<!-- 品牌橱窗结束 -->
+	<!-- 优选推荐开始 -->
+	<div id="nav2" class="section mt30 left-menunav">
+		<div class="wp recommend-box clearfix">
+			<% var jdcpProductList=site.recommend({number:'index_recommend_jdcp'});%>
+			<h1>
+				<a href="javascript:" class="more">全部入驻品牌<font class="reg">>>></font></a><i></i>${jdcpProductList.name!}
+				<ul class="sui-nav nav-tabs nav-large">
+					<li class="active"><a href="#a5" data-toggle="tab">家电产品</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a2" data-toggle="tab">3C数码</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a3" data-toggle="tab">安防监控</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a4" data-toggle="tab">汽车汽配</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a1" data-toggle="tab">工程机械</a></li>
+				</ul>
+			</h1>
+			<div class="tab-content">
+				<ul id="a5" class="tab-pane active prodlist-recommend clearfix">
+					<% for(p in jdcpProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name" style="height:30px;"><a target="_blank" href="${p.url!}">${product.name!}</a></p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+				<ul id="a1" class="tab-pane prodlist-recommend clearfix">
+					<% var gcjxProductList=site.recommend({number:'index_recommend_gcjx'});%>
+					<% for(p in gcjxProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name" style="height:30px;"><a target="_blank" href="${p.url!}">${product.name!}</a></p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+				<ul id="a2" class="tab-pane prodlist-recommend clearfix">
+					<% var smProductList=site.recommend({number:'index_recommend_3csm'});%>
+					<% for(p in smProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name" style="height:30px;"><a target="_blank" href="${p.url!}">${product.name!}</a></p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+				<ul id="a3" class="tab-pane prodlist-recommend clearfix">
+					<% var afjkProductList=site.recommend({number:'index_recommend_afjk'});%>
+					<% for(p in afjkProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name" style="height:30px;"><a target="_blank" href="${p.url!}">${product.name!}</a></p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+				<ul id="a4" class="tab-pane prodlist-recommend clearfix">
+					<% var qcqpProductList=site.recommend({number:'index_recommend_qcqp'});%>
+					<% for(p in qcqpProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@!200x200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name" style="height:30px;"><a target="_blank" href="${p.url!}">${product.name!}</a></p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<!-- 优选推荐结束 -->
+	<!-- 口碑安防专题开始 -->
+	<div id="nav3" class="section mt30 bg-f4f5f8 left-menunav">
+		<div class="wp security-box clearfix">
+			<% var kbafzt=site.recommend({number:'index_kbafzt'});%>
+			<h1>
+				<a target="_blank" href="${ctxf}/category/3842.htm" class="more">安防监控专区<font class="reg">>>></font></a><i></i>${kbafzt.name!}
+				<ul class="typelink">
+					<li class="active"><a href="#a1">工程机械</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a2">3C数码</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a3">安防监控</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a3">汽车汽配</a></li>
+					<li><span>/</span></li>
+					<li><a href="#a3">家电产品</a></li>
+				</ul>
+			</h1>
+			<ul class="security_pic_list clearfix">
+				<% for(img in kbafzt.siteRecommendItemList!){%>
+					<li class="con-${imgLP.index} an-hover">
+						<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}"><img src="${ctxfs}${img.path!}" /></a>
+					</li>
+				<%}%>
+			</ul>
+		</div>
+	</div>
+	<!-- 口碑安防专题结束 -->
+	<div class="section mt30 wp">
+		<a href="javascript:"><img src="${ctx}/views/front/default/img/banner_index_hot.jpg" alt=""/></a>
+	</div>
+	<!-- 热销HOT开始 -->
+	<div id="nav4" class="section mt30 wp left-menunav">
+		<% var hotProductList=site.recommend({number:'index_hot_product'});%>
+		<dl class="wp indexhot-box clearfix">
+			<dt>
+				<p>${hotProductList.name!}</p>
+				<ul>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 实力超级汇</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 机床附件</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 阁楼式货架</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 激光焊接机</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 自动点焊机</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 扬诺锅炉</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 环保设备</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 旭派门业</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 新能源车</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 风机电机</a></li>
+					<li><a target="_blank" href="${ctxf}/product/list.htm?k=实力超级汇">● 环保设备</a></li>
+				</ul>
+			</dt>
+			<!-- 热销-轮播图片开始 -->
+			<dd class="hotad">
+				<div id="scroll" class="owl-carousel owl-carousel-index">
+					<% var hotScroll=site.recommend({number:'index_hot_scroll'});%>
+					<% for(img in hotScroll.siteRecommendItemList!){%>
+						<div class="item">
+							<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+							<img src="${ctxfs}${img.path!}@400x547" alt=""></a>
+						</div>
+					<%}%>
+				</div>
+				<script type="text/javascript">
+					$(function(){
+						$('#scroll').owlCarousel({
+							items: 1,
+							autoPlay: true,
+							navigation: true,
+							navigationText: ["",""],
+							paginationSpeed:500,
+							scrollPerPage: false,
+							navigation:false
+						});
+					});
+				</script>
+			</dd>
+			<!-- 热销-轮播图片结束 -->
+			<!-- 热销-商品开始 -->
+			<dd class="hot-prolist">
+				<ul>
+					<% for(p in hotProductList.siteRecommendItemList!){
+						if(pLP.first){%>
+							<li class="ad an-hover">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+								<img src="${ctxfs}${p.path!}@399x273" alt=""/></a>
+							</li>
+						<%}else{%>
+							<%var product=product.one({pid:p.pId!});%>
+							<li>
+								<div class="p-word">
+									<p class="p-name">
+										<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+											${product.name!}
+										</a>
+									</p>
+									<p class="p-price">
+										<% if((product.type!)=='1'){%>
+											¥${product.minPrice1!}<small class="p-type-2"></small>
+										<%}%>
+										<% if((product.type!)=='2'){%>
+											¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+										<%}%>
+									</p>
+								</div>
+								<div class="p-pic">
+									<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+										<img src="${ctxfs}${p.path!}@399x273"/>
+									</a>
+								</div>
+							</li>
+						<%}%>
+					<%}%>
+				</ul>
+			</dd>
+			<!-- 热销-商品结束  -->
+		</dl>
+	</div>
+	<!-- 热销HOT结束 -->
+	<!-- 新品推广开始 -->
+	<div id="nav5" class="section mt30 bg-f4f5f8 left-menunav">
+		<div class="wp article-box clearfix">
+			<% var newProductList=site.recommend({number:'index_new_product'});%>
+			<h1><div class="more"><a href="#">wifi摄像头</a>  /  <a href="#">门窗防盗</a>  /  <a href="#">网络监控</a></div><i></i>${newProductList.name!}<span>业界黑科技，都走这里哦。</span></h1>
+			<ul class="article_list-a clearfix">
+				<% for(p in newProductList.siteRecommendItemList!){
+					var product=product.one({pid:p.pId!});%>
+					<li>
+						<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}" class="a-pic">
+							<img src="${ctxfs}${p.path!}"/>
+						</a>
+						<div class="a-word">
+							<a style="height: 38px;overflow-y: hidden;display: block;" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}" class="a-name">
+								${product.name!}
+							</a>
+							<p style="display: block;height: 41px;" class="a-des">${product.nameSub!}</p>
+							<p class="a-date">${product.createDate!,dateFormat="yyyy-MM-dd"}</p>
+						</div>
+					</li>
+				<%}%>
+			</ul>
+		</div>
+	</div>
+	<!-- 新品推广结束 -->
+	<!-- 3C数码专区开始  -->
+	<div id="nav6" class="section mt30 wp left-menunav">
+		<dl class="wp floor-box clearfix">
+			<% var csmProductList=site.recommend({number:'index_3csm'});%>
+			<dt>
+				<a target="_blank" href="${ctxf}/category/3842.htm" class="more">3C数码专区<font class="reg">>>></font></a><i></i>${csmProductList.name!}
+				<span>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=笔记本">笔记本</a>  /  
+					<a target="_blank" href="${ctxf}/product/list.htm?k=笔记本">无人机</a>  /  
+					<a target="_blank" href="${ctxf}/product/list.htm?k=笔记本">穿戴设备</a>  /  
+					<a target="_blank" href="${ctxf}/product/list.htm?k=笔记本">影音娱乐</a>  /  
+					<a target="_blank" href="${ctxf}/product/list.htm?k=笔记本">外设产品</a>
+				</span>
+			</dt>
+			<dd class="index-main-left">
+				<a target="_blank" href="${ctxf}/detail/4508.htm"><img src="${ctx}/views/front/default/img/temp_f01.jpg" alt=""/></a>
+			</dd>
+			<dd class="floor-prolist clearfix">
+				<ul class="clearfix">
+					<% for(p in csmProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-word">
+								<p class="p-name">
+									<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">${product.name!}</a>
+								</p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+								<img src="${ctxfs}${p.path!}@170x170"/></a>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+			</dd>
+		</dl>
+	</div>
+	<!-- 3C数码专区结束  -->
+	<!-- 家用电器精品展区开始 -->
+	<div id="nav7" class="section mt30 bg-f4f5f8 left-menunav">
+		<div class="wp brandprod-box clearfix">
+			<% var jydqSxsmList=site.recommend({number:'index_jydq_sxsm'});%>
+			<h1><i></i>${jydqSxsmList.name!}<span><a href="#">wifi摄像头</a>  /  <a href="#">门窗防盗</a>  /  <a href="#">网络监控</a></span></h1>
+			<ul class="brandprod_list clearfix">
+				<li>
+					<a target="_blank" href="${ctxf}/store/1815.htm" class="p-pic">
+						<img src="${ctx}/views/front/default/img/temp_d01.jpg" />
+					</a>
+					<ul class="p-prodlist clearfix">
+						<% for(img in jydqSxsmList.siteRecommendItemList!){%>
+							<li>
+								<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+									<img src="${ctxfs}${img.path!}@84x84"/><p>${img.addInfo1!}</p>
+								</a>
+							</li>
+						<%}%>
+					</ul>
+				</li>
+				<li>
+					<a target="_blank" href="${ctxf}/store/1817.htm" class="p-pic">
+						<img src="${ctx}/views/front/default/img/temp_d02.jpg" />
+					</a>
+					<ul class="p-prodlist clearfix">
+						<% var jydqNjyList=site.recommend({number:'index_jydq_njy'});%>
+						<% for(img in jydqNjyList.siteRecommendItemList!){%>
+							<li>
+								<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+									<img src="${ctxfs}${img.path!}@84x84"/><p>${img.addInfo1!}</p>
+								</a>
+							</li>
+						<%}%>
+					</ul>
+				</li>
+				<li>
+					<a target="_blank" href="${ctxf}/store/1816.htm" class="p-pic">
+						<img src="${ctx}/views/front/default/img/temp_d03.jpg" />
+					</a>
+					<ul class="p-prodlist clearfix">
+						<% var jydqOppoList=site.recommend({number:'index_jydq_oppo'});%>
+						<% for(img in jydqOppoList.siteRecommendItemList!){%>
+							<li>
+								<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+									<img src="${ctxfs}${img.path!}@84x84"/><p>${img.addInfo1!}</p>
+								</a>
+							</li>
+						<%}%>
+					</ul>
+				</li>
+				<li>
+					<a target="_blank" href="${ctxf}/store/1814.htm" class="p-pic">
+						<img src="${ctx}/views/front/default/img/temp_d04.jpg" />
+					</a>
+					<ul class="p-prodlist clearfix">
+						<% var jydqHpdnList=site.recommend({number:'index_jydq_hpdn'});%>
+						<% for(img in jydqHpdnList.siteRecommendItemList!){%>
+							<li>
+								<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+									<img src="${ctxfs}${img.path!}@84x84"/><p>${img.addInfo1!}</p>
+								</a>
+							</li>
+						<%}%>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- 家用电器精品展区结束 -->
+	<!-- 1F开始 -->
+	<div id="nav8" class="section mt30 wp left-menunav">
+		<dl class="wp floorer-box red clearfix">
+			<% var oneFProductList=site.recommend({number:'index_1F_product'});%>
+			<dt>
+				<strong>1F</strong><h2>${oneFProductList.name!}</h2>
+				<span>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=动力系统">动力系统</a>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=行走装置">行走装置</a>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=起重机械">起重机械</a>
+				</span>
+				<a target="_blank" href="${ctxf}/category/3842.htm" class="more">进入专区<font class="red">>>></font></a>
+				<div class="ad">
+					<a target="_blank" href="${ctxf}/category/3842.htm">
+						<img src="${ctx}/views/front/default/img/floorer_ad.png" />
+					</a>
+				</div>
+			</dt>
+			<dd class="floorer-prolist clearfix">
+				<ul class="floorer-prolist-box">
+					<!-- 1F轮播图片开始 -->
+					<div class="prodad">
+						<div id="scroll-gc" class="owl-carousel owl-carousel-index">
+							<% var oneFScroll=site.recommend({number:'index_1F_scroll'});%>
+							<% for(img in oneFScroll.siteRecommendItemList!){%>
+								<div class="item">
+									<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+										<img src="${ctxfs}${img.path!}" alt="">
+									</a>
+								</div>
+							<%}%>
+						</div>
+						<script type="text/javascript">
+							$(function(){
+								$('#scroll-gc').owlCarousel({
+									items: 1,
+									autoPlay: true,
+									navigation: true,
+									navigationText: ["",""],
+									paginationSpeed:500,
+									scrollPerPage: false,
+									navigation:false
+								});
+							});
+						</script>
+					</div>
+					<!-- 1F轮播图片结束 -->
+					<!-- 1F商品开始 -->
+					<% for(p in oneFProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@175x175" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name">
+									<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">${product.name!}</a>
+								</p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+											¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+					<!-- 1F商品结束 -->
+				</ul>
+				<ul class="brand_list clearfix">
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/360.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/anyi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/fitbit.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/ketai.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/sanling.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/xiaomi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/yingshi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/360.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/anyi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/fitbit.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/ketai.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/sanling.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/xiaomi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/yingshi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/360.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/anyi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/fitbit.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/ketai.jpg"></a></li>
+				</ul>
+			</dd>
+		</dl>
+	</div>
+	<!-- 1F结束 -->
+	<!-- 2F开始 -->
+	<div id="nav9" class="section mt30 wp left-menunav">
+		<dl class="wp floorer-box blue clearfix">
+			<% var twoFProductList=site.recommend({number:'index_2F_product'});%>
+			<dt>
+				<strong>2F</strong><h2>${twoFProductList.name!}</h2>
+				<span>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=wifi摄像头">wifi摄像头</a>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=门窗防盗">门窗防盗</a>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=网络监控">网络监控</a>
+				</span>
+				<a target="_blank" href="${ctxf}/category/3842.htm" class="more">进入专区<font class="red">>>></font></a>
+				<div class="ad">
+					<a target="_blank" href="${ctxf}/category/3842.htm">
+						<img target="_blank" src="${ctx}/views/front/default/img/floorer_ad.png"/>
+					</a>
+				</div>
+			</dt>
+			<dd class="floorer-prolist clearfix">
+				<ul class="floorer-prolist-box">
+					<!-- 2F轮播图片开始 -->
+					<div class="prodad">
+						<div id="scroll-af" class="owl-carousel owl-carousel-index">
+							<% var twoFScroll=site.recommend({number:'index_2F_scroll'});%>
+							<% for(img in twoFScroll.siteRecommendItemList!){%>
+								<div class="item">
+									<a target="_blank" href="${isNotEmpty(img.url!)?img.url!:'javascript:;'}">
+										<img src="${ctxfs}${img.path!}" alt="">
+									</a>
+								</div>
+							<%}%>
+						</div>
+						<script type="text/javascript">
+						$(function(){
+							$('#scroll-af').owlCarousel({
+								items: 1,
+								autoPlay: true,
+								navigation: true,
+								navigationText: ["",""],
+								paginationSpeed:500,
+								scrollPerPage: false,
+								navigation:false
+							});
+						});
+						</script>
+					</div>
+					<!-- 2F轮播图片结束 -->
+					<% for(p in twoFProductList.siteRecommendItemList!){
+						var product=product.one({pid:p.pId!});%>
+						<li>
+							<div class="p-pic">
+								<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">
+									<img src="${ctxfs}${p.path!}@175x175" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="p-word">
+								<p class="p-name">
+									<a target="_blank" href="${isNotEmpty(p.url!)?p.url!:'javascript:;'}">${product.name!}</a>
+								</p>
+								<p class="p-price">
+									<% if((product.type!)=='1'){%>
+											¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				</ul>
+				<ul class="brand_list clearfix">
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/360.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/anyi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/fitbit.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/ketai.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/sanling.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/xiaomi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/yingshi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/360.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/anyi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/fitbit.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/ketai.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/sanling.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/xiaomi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/yingshi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/360.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/anyi.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/fitbit.jpg"></a></li>
+					<li><a target="_blank" href="${ctxf}/store/805.htm"><img src="${ctx}/views/front/default/img/logo/ketai.jpg"></a></li>
+				</ul>
+			</dd>
+		</dl>
+	</div>
+	<!-- 2F结束 -->
+	<!-- 还没逛够开始 -->
+	<div id="nav10" class="section mt30 bg-f4f5f8 left-menunav">
+		<div class="wp youlike">
+			<h2><span class="bg-f4f5f8">还没逛够？</span></h2>
+			<ul class="clearfix youlikegoods">
+				<% var productMap=product.list({limit:10});
+				for(p in productMap["search"].items){%>
+					<li>
+						<a target="_blank" href="${ctxf}/detail/${p.pId}.htm" class="p-pic">
+							<img src="${ctxfs}/${p.image!}@!222X222" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+						</a>
+						<div class="p-word">
+							<p class="p-name">
+								<a target="_blank" href="${ctxf}/detail/${p.pId}.htm">${p.name}</a>
+							</p>
+							<p class="p-price">
+								<% if((p.type!)=='1'){%>
+									¥${p.minPrice1!}<small class="p-type-2"></small>
+								<%}%>
+								<% if((p.type!)=='2'){%>
+									¥${p.minPrice2!}~¥${p.maxPrice2!}<small class="p-type-1"></small>
+								<%}%>
+							</p>
+						</div>
+					</li>
+				<%}%>
+			</ul>
+			<h2><span class="bg-f4f5f8">别扯了，我是有底线的！</span></h2>
+		</div>
+	</div>
+	<!-- 还没逛够结束 -->
+
+	<div class="section mt30 left-menunav">
+		<div class="wp ranking clearfix">
+			<dl class="l">
+				<dt>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=汽车电脑&sort=allSales&sortMode=DESC" class="more">more</a>
+					<strong>销售排行</strong>
+				</dt>
+				<dd>
+					<ul class="ranking-prodlist">
+						<% var productMap2=product.list({limit:4,sort:"allSales",sortMode:"desc"});
+						for(p in productMap2["search"].items){%>
+							<li>
+								<a target="_blank" href="${ctxf}/detail/${p.pId}.htm" class="p-pic">
+									<img src="${ctxfs}/${p.image!}@!88X88" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+								</a>
+								<div class="p-word">
+									<p class="p-name">
+										<a target="_blank" href="${ctxf}/detail/${p.pId}.htm">${p.name}</a>
+									</p>
+									<p class="p-price">
+										<% if((p.type!)=='1'){%>
+											¥${p.minPrice1!}<small class="p-type-2"></small>
+										<%}%>
+										<% if((p.type!)=='2'){%>
+											¥${p.minPrice2!}~¥${p.maxPrice2!}<small class="p-type-1"></small>
+										<%}%>
+									</p>
+									<p class="p-star"><span class="comment-star star5"></span></p>
+								</div>
+							</li>
+						<%}%>
+					</ul>
+				</dd>
+			</dl>
+	
+			<dl class="l">
+				<dt>
+					<a target="_blank" href="${ctxf}/product/list.htm?k=汽车电脑&sort=commentCount&sortMode=DESC" class="more">more</a>
+					<strong>评分排行</strong>
+				</dt>
+				<dd>
+					<ul class="ranking-prodlist">
+						<% var productMap3=product.list({limit:4,sort:"commentCount",sortMode:"desc"});
+						for(p in productMap3["search"].items){%>
+							<li>
+								<a target="_blank" href="${ctxf}/detail/${p.pId}.htm" class="p-pic">
+									<img src="${ctxfs}/${p.image!}@!88X88" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+								</a>
+								<div class="p-word">
+									<p class="p-name">
+										<a target="_blank" href="${ctxf}/detail/${p.pId}.htm">${p.name}</a>
+									</p>
+									<p class="p-price">
+										<% if((p.type!)=='1'){%>
+											¥${p.minPrice1!}<small class="p-type-2"></small>
+										<%}%>
+										<% if((p.type!)=='2'){%>
+											¥${p.minPrice2!}~¥${p.maxPrice2!}<small class="p-type-1"></small>
+										<%}%>
+									</p>
+									<p class="p-star"><span class="comment-star star5"></span></p>
+								</div>
+							</li>
+						<%}%>
+					</ul>
+				</dd>
+			</dl>
+	
+			<dl class="r">
+				<dt><strong>关注我们</strong></dt>
+				<dd class="mail-book">
+					<p>您可以留下您的e-mail地址，用来接受我们发布的最新供求信息，我们会保密您的个人信息并且不会向您推送广告。</p>
+					<form><input type="text" class="text"><input type="button" class="button" value="搜索"></form>
+				</dd>
+				<dt><strong>联系方式</strong></dt>
+				<dd class="adds">
+					<span class="con1"><i></i>公司地址：北京市昌平区回龙观西大街115号</span>
+					<span class="con2"><i></i>联系电话：010-00000000</span>
+					<span class="con3"><i></i>电子邮箱：tiananmen@beijing.cn</span>
+					<span class="con4"><i></i>工作时间：9:00—17:00 （周一 至 周五）</span>
+				</dd>
+				<dd class="foot-share">
+					<span class="con1"><a href="javascript:"></a></span>
+					<span class="con2"><a href="javascript:"></a></span>
+					<span class="con3"><a href="javascript:"></a></span>
+					<span class="con4"><a href="javascript:"></a></span>
+				</dd>
+			</dl>
+		</div>
+	</div>
+	<!--section end-->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-left.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+</body>
+</html>

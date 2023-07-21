@@ -1,0 +1,488 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.sso.dao.UserMerchantInfoDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="userMerchantInfoColumns">
+	<trim suffixOverrides=",">
+		a.u_id AS "uId",                                                     <!-- 主键,会员的ID number(19)-->
+		a.type AS "type",                                                    <!-- 企业类型（字典） char(2)-->
+		a.industry AS "industry",                                            <!-- 行业属性（字典） char(2)-->
+		a.name AS "name",                                                    <!-- 公司名称 nvarchar2(64)-->
+		a.introduce AS "introduce",                                          <!-- 公司介绍 nvarchar2(512)-->
+		a.country_id AS "countryId",                                         <!-- 公司所在地国家(关联地区表) number(19)-->
+		a.country_name AS "countryName",                                     <!-- 公司所在地国家名字 nvarchar2(64)-->
+		a.province_id AS "provinceId",                                       <!-- 公司所在地省(关联地区表) number(19)-->
+		a.province_name AS "provinceName",                                   <!-- 公司所在地省名字 nvarchar2(64)-->
+		a.city_id AS "cityId",                                               <!-- 公司所在地市(关联地区表) number(19)-->
+		a.city_name AS "cityName",                                           <!-- 公司所在地市名字 nvarchar2(64)-->
+		a.district_id AS "districtId",                                       <!-- 公司所在地县(关联地区表) number(19)-->
+		a.district_name AS "districtName",                                   <!-- 公司县名字 nvarchar2(64)-->
+		a.detailed_address AS "detailedAddress",                             <!-- 公司详细地址 nvarchar2(128)-->
+		a.custom_call AS "customCall",                                       <!-- 客服电话 nvarchar2(32)-->
+		a.company_website AS "companyWebsite",                               <!-- 公司网址 nvarchar2(32)-->
+		a.company_brand AS "companyBrand",                                   <!-- 公司品牌 nvarchar2(64)-->
+		a.department AS "department",                                        <!-- 所在部门 char(2)-->
+		a.contacts AS "contacts",                                            <!-- 联系人 nvarchar2(32)-->
+		a.contacts_telephone AS "contactsTelephone",                         <!-- 联系人电话 nvarchar2(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="userMerchantInfoJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.uId != null ">AND a.u_id = #{c.uId}</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.industry != null and c.industry != ''">AND a.industry = #{c.industry}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.introduce != null and c.introduce != ''">AND a.introduce = #{c.introduce}</if>
+		<if test="c.countryId != null ">AND a.country_id = #{c.countryId}</if>
+		<if test="c.countryName != null and c.countryName != ''">AND a.country_name = #{c.countryName}</if>
+		<if test="c.provinceId != null ">AND a.province_id = #{c.provinceId}</if>
+		<if test="c.provinceName != null and c.provinceName != ''">AND a.province_name = #{c.provinceName}</if>
+		<if test="c.cityId != null ">AND a.city_id = #{c.cityId}</if>
+		<if test="c.cityName != null and c.cityName != ''">AND a.city_name = #{c.cityName}</if>
+		<if test="c.districtId != null ">AND a.district_id = #{c.districtId}</if>
+		<if test="c.districtName != null and c.districtName != ''">AND a.district_name = #{c.districtName}</if>
+		<if test="c.detailedAddress != null and c.detailedAddress != ''">AND a.detailed_address = #{c.detailedAddress}</if>
+		<if test="c.customCall != null and c.customCall != ''">AND a.custom_call = #{c.customCall}</if>
+		<if test="c.companyWebsite != null and c.companyWebsite != ''">AND a.company_website = #{c.companyWebsite}</if>
+		<if test="c.companyBrand != null and c.companyBrand != ''">AND a.company_brand = #{c.companyBrand}</if>
+		<if test="c.department != null and c.department != ''">AND a.department = #{c.department}</if>
+		<if test="c.contacts != null and c.contacts != ''">AND a.contacts = #{c.contacts}</if>
+		<if test="c.contactsTelephone != null and c.contactsTelephone != ''">AND a.contacts_telephone = #{c.contactsTelephone}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="UserMerchantInfo">
+		SELECT 
+		<include refid="userMerchantInfoColumns"/>
+		FROM user_merchant_info a
+		<include refid="userMerchantInfoJoins"/>
+		WHERE a.u_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="UserMerchantInfo">
+		SELECT 
+		<include refid="userMerchantInfoColumns"/>
+		FROM user_merchant_info a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="UserMerchantInfo">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userMerchantInfoColumns"/>
+		FROM user_merchant_info a
+		<include refid="userMerchantInfoJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="UserMerchantInfo">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="userMerchantInfoColumns"/>
+		FROM user_merchant_info a
+		<include refid="userMerchantInfoJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.u_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_merchant_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			u_id,                                              <!-- 主键,会员的ID number(19)-->
+			type,                                              <!-- 企业类型（字典） char(2)-->
+			industry,                                          <!-- 行业属性（字典） char(2)-->
+			name,                                              <!-- 公司名称 nvarchar2(64)-->
+			introduce,                                         <!-- 公司介绍 nvarchar2(512)-->
+			country_id,                                        <!-- 公司所在地国家(关联地区表) number(19)-->
+			country_name,                                      <!-- 公司所在地国家名字 nvarchar2(64)-->
+			province_id,                                       <!-- 公司所在地省(关联地区表) number(19)-->
+			province_name,                                     <!-- 公司所在地省名字 nvarchar2(64)-->
+			city_id,                                           <!-- 公司所在地市(关联地区表) number(19)-->
+			city_name,                                         <!-- 公司所在地市名字 nvarchar2(64)-->
+			district_id,                                       <!-- 公司所在地县(关联地区表) number(19)-->
+			district_name,                                     <!-- 公司县名字 nvarchar2(64)-->
+			detailed_address,                                  <!-- 公司详细地址 nvarchar2(128)-->
+			custom_call,                                       <!-- 客服电话 nvarchar2(32)-->
+			company_website,                                   <!-- 公司网址 nvarchar2(32)-->
+			company_brand,                                     <!-- 公司品牌 nvarchar2(64)-->
+			department,                                        <!-- 所在部门 char(2)-->
+			contacts,                                          <!-- 联系人 nvarchar2(32)-->
+			contacts_telephone,                                <!-- 联系人电话 nvarchar2(64)-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.uId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_merchant_info_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.type},                                    <!-- 企业类型（字典） char(2)-->
+			#{entity.industry},                                <!-- 行业属性（字典） char(2)-->
+			#{entity.name},                                    <!-- 公司名称 nvarchar2(64)-->
+			#{entity.introduce},                               <!-- 公司介绍 nvarchar2(512)-->
+			#{entity.countryId},                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			#{entity.countryName},                             <!-- 公司所在地国家名字 nvarchar2(64)-->
+			#{entity.provinceId},                              <!-- 公司所在地省(关联地区表) number(19)-->
+			#{entity.provinceName},                            <!-- 公司所在地省名字 nvarchar2(64)-->
+			#{entity.cityId},                                  <!-- 公司所在地市(关联地区表) number(19)-->
+			#{entity.cityName},                                <!-- 公司所在地市名字 nvarchar2(64)-->
+			#{entity.districtId},                              <!-- 公司所在地县(关联地区表) number(19)-->
+			#{entity.districtName},                            <!-- 公司县名字 nvarchar2(64)-->
+			#{entity.detailedAddress},                         <!-- 公司详细地址 nvarchar2(128)-->
+			#{entity.customCall},                              <!-- 客服电话 nvarchar2(32)-->
+			#{entity.companyWebsite},                          <!-- 公司网址 nvarchar2(32)-->
+			#{entity.companyBrand},                            <!-- 公司品牌 nvarchar2(64)-->
+			#{entity.department},                              <!-- 所在部门 char(2)-->
+			#{entity.contacts},                                <!-- 联系人 nvarchar2(32)-->
+			#{entity.contactsTelephone},                       <!-- 联系人电话 nvarchar2(64)-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
+		INSERT INTO user_merchant_info
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.uId != null">u_id,</if></if>
+			<if test="entity.pkMode==2">u_id,</if>
+			<if test="entity.type != null">type,</if>                                          <!-- 企业类型（字典） char(2)-->
+			<if test="entity.industry != null">industry,</if>                                  <!-- 行业属性（字典） char(2)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">introduce,</if>                                <!-- 公司介绍 nvarchar2(512)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name,</if>                           <!-- 公司所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name,</if>                         <!-- 公司所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name,</if>                                 <!-- 公司所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name,</if>                         <!-- 公司县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 公司详细地址 nvarchar2(128)-->
+			<if test="entity.customCall != null">custom_call,</if>                             <!-- 客服电话 nvarchar2(32)-->
+			<if test="entity.companyWebsite != null">company_website,</if>                     <!-- 公司网址 nvarchar2(32)-->
+			<if test="entity.companyBrand != null">company_brand,</if>                         <!-- 公司品牌 nvarchar2(64)-->
+			<if test="entity.department != null">department,</if>                              <!-- 所在部门 char(2)-->
+			<if test="entity.contacts != null">contacts,</if>                                  <!-- 联系人 nvarchar2(32)-->
+			<if test="entity.contactsTelephone != null">contacts_telephone,</if>               <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.uId != null">#{entity.uId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">user_merchant_info_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 企业类型（字典） char(2)-->
+			<if test="entity.industry != null">#{entity.industry},</if>                                  <!-- 行业属性（字典） char(2)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">#{entity.introduce},</if>                                <!-- 公司介绍 nvarchar2(512)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 公司所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 公司所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 公司所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 公司县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 公司详细地址 nvarchar2(128)-->
+			<if test="entity.customCall != null">#{entity.customCall},</if>                              <!-- 客服电话 nvarchar2(32)-->
+			<if test="entity.companyWebsite != null">#{entity.companyWebsite},</if>                      <!-- 公司网址 nvarchar2(32)-->
+			<if test="entity.companyBrand != null">#{entity.companyBrand},</if>                          <!-- 公司品牌 nvarchar2(64)-->
+			<if test="entity.department != null">#{entity.department},</if>                              <!-- 所在部门 char(2)-->
+			<if test="entity.contacts != null">#{entity.contacts},</if>                                  <!-- 联系人 nvarchar2(32)-->
+			<if test="entity.contactsTelephone != null">#{entity.contactsTelephone},</if>                <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE user_merchant_info 
+		<set>
+			type = #{entity.type},                                          <!-- 企业类型（字典） char(2)-->
+			industry = #{entity.industry},                                  <!-- 行业属性（字典） char(2)-->
+			name = #{entity.name},                                          <!-- 公司名称 nvarchar2(64)-->
+			introduce = #{entity.introduce},                                <!-- 公司介绍 nvarchar2(512)-->
+			country_id = #{entity.countryId},                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			country_name = #{entity.countryName},                           <!-- 公司所在地国家名字 nvarchar2(64)-->
+			province_id = #{entity.provinceId},                             <!-- 公司所在地省(关联地区表) number(19)-->
+			province_name = #{entity.provinceName},                         <!-- 公司所在地省名字 nvarchar2(64)-->
+			city_id = #{entity.cityId},                                     <!-- 公司所在地市(关联地区表) number(19)-->
+			city_name = #{entity.cityName},                                 <!-- 公司所在地市名字 nvarchar2(64)-->
+			district_id = #{entity.districtId},                             <!-- 公司所在地县(关联地区表) number(19)-->
+			district_name = #{entity.districtName},                         <!-- 公司县名字 nvarchar2(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 公司详细地址 nvarchar2(128)-->
+			custom_call = #{entity.customCall},                             <!-- 客服电话 nvarchar2(32)-->
+			company_website = #{entity.companyWebsite},                     <!-- 公司网址 nvarchar2(32)-->
+			company_brand = #{entity.companyBrand},                         <!-- 公司品牌 nvarchar2(64)-->
+			department = #{entity.department},                              <!-- 所在部门 char(2)-->
+			contacts = #{entity.contacts},                                  <!-- 联系人 nvarchar2(32)-->
+			contacts_telephone = #{entity.contactsTelephone},               <!-- 联系人电话 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE user_merchant_info a 
+		<set>
+			type = #{entity.type},                                          <!-- 企业类型（字典） char(2)-->
+			industry = #{entity.industry},                                  <!-- 行业属性（字典） char(2)-->
+			name = #{entity.name},                                          <!-- 公司名称 nvarchar2(64)-->
+			introduce = #{entity.introduce},                                <!-- 公司介绍 nvarchar2(512)-->
+			country_id = #{entity.countryId},                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			country_name = #{entity.countryName},                           <!-- 公司所在地国家名字 nvarchar2(64)-->
+			province_id = #{entity.provinceId},                             <!-- 公司所在地省(关联地区表) number(19)-->
+			province_name = #{entity.provinceName},                         <!-- 公司所在地省名字 nvarchar2(64)-->
+			city_id = #{entity.cityId},                                     <!-- 公司所在地市(关联地区表) number(19)-->
+			city_name = #{entity.cityName},                                 <!-- 公司所在地市名字 nvarchar2(64)-->
+			district_id = #{entity.districtId},                             <!-- 公司所在地县(关联地区表) number(19)-->
+			district_name = #{entity.districtName},                         <!-- 公司县名字 nvarchar2(64)-->
+			detailed_address = #{entity.detailedAddress},                   <!-- 公司详细地址 nvarchar2(128)-->
+			custom_call = #{entity.customCall},                             <!-- 客服电话 nvarchar2(32)-->
+			company_website = #{entity.companyWebsite},                     <!-- 公司网址 nvarchar2(32)-->
+			company_brand = #{entity.companyBrand},                         <!-- 公司品牌 nvarchar2(64)-->
+			department = #{entity.department},                              <!-- 所在部门 char(2)-->
+			contacts = #{entity.contacts},                                  <!-- 联系人 nvarchar2(32)-->
+			contacts_telephone = #{entity.contactsTelephone},               <!-- 联系人电话 nvarchar2(64)-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE user_merchant_info
+		<set>
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 企业类型（字典） char(2)-->
+			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 行业属性（字典） char(2)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 公司介绍 nvarchar2(512)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 公司所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 公司所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 公司所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 公司县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司详细地址 nvarchar2(128)-->
+			<if test="entity.customCall != null">custom_call = #{entity.customCall},</if>                                       <!-- 客服电话 nvarchar2(32)-->
+			<if test="entity.companyWebsite != null">company_website = #{entity.companyWebsite},</if>                           <!-- 公司网址 nvarchar2(32)-->
+			<if test="entity.companyBrand != null">company_brand = #{entity.companyBrand},</if>                                 <!-- 公司品牌 nvarchar2(64)-->
+			<if test="entity.department != null">department = #{entity.department},</if>                                        <!-- 所在部门 char(2)-->
+			<if test="entity.contacts != null">contacts = #{entity.contacts},</if>                                              <!-- 联系人 nvarchar2(32)-->
+			<if test="entity.contactsTelephone != null">contacts_telephone = #{entity.contactsTelephone},</if>                  <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		WHERE u_id = #{entity.uId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE user_merchant_info a
+		<set>
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 企业类型（字典） char(2)-->
+			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 行业属性（字典） char(2)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 公司名称 nvarchar2(64)-->
+			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 公司介绍 nvarchar2(512)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 公司所在地国家名字 nvarchar2(64)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 公司所在地省名字 nvarchar2(64)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 公司所在地市名字 nvarchar2(64)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 公司县名字 nvarchar2(64)-->
+			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司详细地址 nvarchar2(128)-->
+			<if test="entity.customCall != null">custom_call = #{entity.customCall},</if>                                       <!-- 客服电话 nvarchar2(32)-->
+			<if test="entity.companyWebsite != null">company_website = #{entity.companyWebsite},</if>                           <!-- 公司网址 nvarchar2(32)-->
+			<if test="entity.companyBrand != null">company_brand = #{entity.companyBrand},</if>                                 <!-- 公司品牌 nvarchar2(64)-->
+			<if test="entity.department != null">department = #{entity.department},</if>                                        <!-- 所在部门 char(2)-->
+			<if test="entity.contacts != null">contacts = #{entity.contacts},</if>                                              <!-- 联系人 nvarchar2(32)-->
+			<if test="entity.contactsTelephone != null">contacts_telephone = #{entity.contactsTelephone},</if>                  <!-- 联系人电话 nvarchar2(64)-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM user_merchant_info
+		WHERE u_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM user_merchant_info
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					u_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM user_merchant_info a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM user_merchant_info a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,122 @@
+<!doctype html>
+<html>
+<head>
+<% var seo=seo.one({type:"商品分类页"});%>
+<title>${seo.title!} Powered by SiC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="Keywords" content="${seo.keywords!}"/>
+<meta name="description" content="${seo.description!}"/>
+<% include("/include/head.html"){}%>	
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/default/categoryIndex.js"></script>
+</head>
+<body class="class-index productCategoryBody">
+	<% include("/include/header.html"){}%>
+	<% include("/include/nav.html"){}%>
+	<% 
+		var category = product.category({cid:cid}); 
+	%>
+	<!-- banner开始 -->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx01.html",{'category':category}){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp01.html",{'category':category}){}%>
+	<%}%>
+	<!-- banner结束 -->
+	<!-- 活动开始 -->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx02.html"){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp02.html"){}%>
+	<%}%>
+	<!-- 活动结束 -->
+	<!-- 热门分类产品开始 -->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx03.html"){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp03.html"){}%>
+	<%}%>
+	<!-- 热门产品结束 -->
+	<!-- 品牌橱窗开始 -->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx04.html"){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp04.html"){}%>
+	<%}%>
+	<!-- 品牌橱窗结束-->
+	<!-- 导购开始-->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx05.html"){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp05.html"){}%>
+	<%}%>
+	<!-- 导购结束-->
+	<!-- 广告开始-->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx06.html"){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp06.html"){}%>
+	<%}%>
+	<!-- 广告结束-->
+	<!-- 楼层开始-->
+	<% if(isEmpty(category) || category.categoryId==1){%>
+		<% include("/include/category-gcjx07.html"){}%>
+	<%}%>
+	<% if(isNotEmpty(category) && category.categoryId==329){%>
+		<% include("/include/category-jdcp07.html"){}%>
+	<%}%>
+	<!-- 楼层结束-->
+	<!-- 还没逛够开始-->
+	<div class="section mt30 bg-f4f5f8">
+		<div class="wp youlike">
+			<h2><span class="bg-f4f5f8">还没逛够？</span></h2>
+			<ul class="clearfix youlikegoods">
+				<% if(category!=null){%>
+					<% var productMap2=product.list({limit:10,cid:cid});%>
+					<%for(product in productMap2["search"].items){%>
+						<li>
+							<a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="p-pic">
+								<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+									<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+								<%}else{%>
+									<img src="${ctxfs}${product.image}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+								<%}%>
+							</a>
+							<div class="go-color">
+								<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+									<% for(img in product.storeAlbumPictureList2!){%>
+										<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}"/>
+									<%}%>
+								<%}%>
+							</div>
+							<div class="p-word">
+								<p class="p-name">
+									<a target="_blank" href="${ctxf}/detail/${product.pId}.htm">${product.name}</a>
+								</p>
+								<p class="p-price">
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}<small class="p-type-1"></small>
+									<%}else{%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+								</p>
+							</div>
+						</li>
+					<%}%>
+				<%}%>
+			</ul>
+			<h2><span class="bg-f4f5f8">别扯了，我是有底线的！</span></h2>
+		</div>
+	</div>
+	<!-- 还没逛够结束-->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+</body>
+</html>

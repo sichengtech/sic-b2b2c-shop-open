@@ -1,0 +1,418 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.site.dao.SiteMessageTemplateDao">
+ 	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="siteMessageTemplateColumns">
+	<trim suffixOverrides=",">
+		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.num AS "num",                                                      <!-- 模板编号（手输入） nvarchar2(64)-->
+		a.name AS "name",                                                    <!-- 模板名称 nvarchar2(64)-->
+		a.type AS "type",                                                    <!-- 消息模板类型 nvarchar2(64)-->
+		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
+		a.is_open AS "isOpen",                                               <!-- 是否开启（0否、1是） char(1)-->
+		a.msg_content AS "msgContent",                                       <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+		a.sms_open AS "smsOpen",                                             <!-- 短信：是否发送短信（0否、1是） char(1)-->
+		a.sms_content AS "smsContent",                                       <!-- 短信：短信模板内容 nvarchar2(512)-->
+		a.email_open AS "emailOpen",                                         <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+		a.email_title AS "emailTitle",                                       <!-- 邮件：模板标题 nvarchar2(255)-->
+		a.email_content AS "emailContent",                                   <!-- 邮件：邮件模板内容 clob-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
+		a.thirdtemplatecode AS "thirdtemplatecode",                          <!-- 第三方短信模板id nvarchar2(128)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="siteMessageTemplateJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.id != null ">AND a.id = #{c.id}</if>
+		<if test="c.num != null and c.num != ''">AND a.num = #{c.num}</if>
+		<if test="c.name != null and c.name != ''">				
+			<bind name="pattern" value="'%' + c.name + '%'" />				
+			AND lower(a.name) LIKE lower(#{pattern})
+		</if>
+		<if test="c.type != null and c.type != ''">AND a.type = #{c.type}</if>
+		<if test="c.sort != null ">AND a.sort = #{c.sort}</if>
+		<if test="c.isOpen != null and c.isOpen != ''">AND a.is_open = #{c.isOpen}</if>
+		<if test="c.msgContent != null and c.msgContent != ''">AND a.msg_content = #{c.msgContent}</if>
+		<if test="c.smsOpen != null and c.smsOpen != ''">AND a.sms_open = #{c.smsOpen}</if>
+		<if test="c.smsContent != null and c.smsContent != ''">AND a.sms_content = #{c.smsContent}</if>
+		<if test="c.emailOpen != null and c.emailOpen != ''">AND a.email_open = #{c.emailOpen}</if>
+		<if test="c.emailTitle != null and c.emailTitle != ''">AND a.email_title = #{c.emailTitle}</if>
+		<if test="c.emailContent != null and c.emailContent != ''">AND a.email_content = #{c.emailContent}</if>
+		<if test="c.beginCreateDate != null and c.endCreateDate != null ">AND a.create_date BETWEEN #{c.beginCreateDate} AND #{c.endCreateDate}</if>
+		<if test="c.beginUpdateDate != null and c.endUpdateDate != null ">AND a.update_date BETWEEN #{c.beginUpdateDate} AND #{c.endUpdateDate}</if>
+		<if test="c.bak1 != null and c.bak1 != ''">AND a.bak1 = #{c.bak1}</if>
+		<if test="c.bak2 != null and c.bak2 != ''">AND a.bak2 = #{c.bak2}</if>
+		<if test="c.bak3 != null and c.bak3 != ''">AND a.bak3 = #{c.bak3}</if>
+		<if test="c.bak4 != null and c.bak4 != ''">AND a.bak4 = #{c.bak4}</if>
+		<if test="c.bak5 != null and c.bak5 != ''">AND a.bak5 = #{c.bak5}</if>
+		<if test="c.thirdtemplatecode != null and c.thirdtemplatecode != ''">AND a.thirdtemplatecode = #{c.thirdtemplatecode}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="SiteMessageTemplate">
+		SELECT 
+		<include refid="siteMessageTemplateColumns"/>
+		FROM site_message_template a
+		<include refid="siteMessageTemplateJoins"/>
+		WHERE a.id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="SiteMessageTemplate">
+		SELECT 
+		<include refid="siteMessageTemplateColumns"/>
+		FROM site_message_template a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="SiteMessageTemplate">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteMessageTemplateColumns"/>
+		FROM site_message_template a
+		<include refid="siteMessageTemplateJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="SiteMessageTemplate">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="siteMessageTemplateColumns"/>
+		FROM site_message_template a
+		<include refid="siteMessageTemplateJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO site_message_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			id,                                                <!-- 主键 number(19)-->
+			num,                                               <!-- 模板编号（手输入） nvarchar2(64)-->
+			name,                                              <!-- 模板名称 nvarchar2(64)-->
+			type,                                              <!-- 消息模板类型 nvarchar2(64)-->
+			sort,                                              <!-- 排序 number(10)-->
+			is_open,                                           <!-- 是否开启（0否、1是） char(1)-->
+			msg_content,                                       <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			sms_open,                                          <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			sms_content,                                       <!-- 短信：短信模板内容 nvarchar2(512)-->
+			email_open,                                        <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			email_title,                                       <!-- 邮件：模板标题 nvarchar2(255)-->
+			email_content,                                     <!-- 邮件：邮件模板内容 clob-->
+			create_date,                                       <!-- 创建时间 date(7)-->
+			update_date,                                       <!-- 更新时间 date(7)-->
+			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
+			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
+			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
+			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
+			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
+			thirdtemplatecode,                                 <!-- 第三方短信模板id nvarchar2(128)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.id},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_message_template_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.num},                                     <!-- 模板编号（手输入） nvarchar2(64)-->
+			#{entity.name},                                    <!-- 模板名称 nvarchar2(64)-->
+			#{entity.type},                                    <!-- 消息模板类型 nvarchar2(64)-->
+			#{entity.sort},                                    <!-- 排序 number(10)-->
+			#{entity.isOpen},                                  <!-- 是否开启（0否、1是） char(1)-->
+			#{entity.msgContent},                              <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			#{entity.smsOpen},                                 <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			#{entity.smsContent},                              <!-- 短信：短信模板内容 nvarchar2(512)-->
+			#{entity.emailOpen},                               <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			#{entity.emailTitle},                              <!-- 邮件：模板标题 nvarchar2(255)-->
+			#{entity.emailContent},                            <!-- 邮件：邮件模板内容 clob-->
+			#{entity.createDate},                              <!-- 创建时间 date(7)-->
+			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
+			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
+			#{entity.bak2},                                    <!-- 备用字段2 nvarchar2(64)-->
+			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
+			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
+			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
+			#{entity.thirdtemplatecode},                       <!-- 第三方短信模板id nvarchar2(128)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
+		INSERT INTO site_message_template
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
+			<if test="entity.pkMode==2">id,</if>
+			<if test="entity.num != null">num,</if>                                            <!-- 模板编号（手输入） nvarchar2(64)-->
+			<if test="entity.name != null">name,</if>                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.type != null">type,</if>                                          <!-- 消息模板类型 nvarchar2(64)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 是否开启（0否、1是） char(1)-->
+			<if test="entity.msgContent != null">msg_content,</if>                             <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			<if test="entity.smsOpen != null">sms_open,</if>                                   <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			<if test="entity.smsContent != null">sms_content,</if>                             <!-- 短信：短信模板内容 nvarchar2(512)-->
+			<if test="entity.emailOpen != null">email_open,</if>                               <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			<if test="entity.emailTitle != null">email_title,</if>                             <!-- 邮件：模板标题 nvarchar2(255)-->
+			<if test="entity.emailContent != null">email_content,</if>                         <!-- 邮件：邮件模板内容 clob-->
+			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2,</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.thirdtemplatecode != null">thirdtemplatecode,</if>                <!-- 第三方短信模板id nvarchar2(128)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.id != null">#{entity.id},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">site_message_template_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.num != null">#{entity.num},</if>                                            <!-- 模板编号（手输入） nvarchar2(64)-->
+			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 消息模板类型 nvarchar2(64)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 是否开启（0否、1是） char(1)-->
+			<if test="entity.msgContent != null">#{entity.msgContent},</if>                              <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			<if test="entity.smsOpen != null">#{entity.smsOpen},</if>                                    <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			<if test="entity.smsContent != null">#{entity.smsContent},</if>                              <!-- 短信：短信模板内容 nvarchar2(512)-->
+			<if test="entity.emailOpen != null">#{entity.emailOpen},</if>                                <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			<if test="entity.emailTitle != null">#{entity.emailTitle},</if>                              <!-- 邮件：模板标题 nvarchar2(255)-->
+			<if test="entity.emailContent != null">#{entity.emailContent},</if>                          <!-- 邮件：邮件模板内容 clob-->
+			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">#{entity.bak2},</if>                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.thirdtemplatecode != null">#{entity.thirdtemplatecode},</if>                <!-- 第三方短信模板id nvarchar2(128)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE site_message_template 
+		<set>
+			num = #{entity.num},                                            <!-- 模板编号（手输入） nvarchar2(64)-->
+			name = #{entity.name},                                          <!-- 模板名称 nvarchar2(64)-->
+			type = #{entity.type},                                          <!-- 消息模板类型 nvarchar2(64)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			is_open = #{entity.isOpen},                                     <!-- 是否开启（0否、1是） char(1)-->
+			msg_content = #{entity.msgContent},                             <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			sms_open = #{entity.smsOpen},                                   <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			sms_content = #{entity.smsContent},                             <!-- 短信：短信模板内容 nvarchar2(512)-->
+			email_open = #{entity.emailOpen},                               <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			email_title = #{entity.emailTitle},                             <!-- 邮件：模板标题 nvarchar2(255)-->
+			email_content = #{entity.emailContent},                         <!-- 邮件：邮件模板内容 clob-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			thirdtemplatecode = #{entity.thirdtemplatecode},                <!-- 第三方短信模板id nvarchar2(128)-->
+
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE site_message_template a 
+		<set>
+			num = #{entity.num},                                            <!-- 模板编号（手输入） nvarchar2(64)-->
+			name = #{entity.name},                                          <!-- 模板名称 nvarchar2(64)-->
+			type = #{entity.type},                                          <!-- 消息模板类型 nvarchar2(64)-->
+			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
+			is_open = #{entity.isOpen},                                     <!-- 是否开启（0否、1是） char(1)-->
+			msg_content = #{entity.msgContent},                             <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			sms_open = #{entity.smsOpen},                                   <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			sms_content = #{entity.smsContent},                             <!-- 短信：短信模板内容 nvarchar2(512)-->
+			email_open = #{entity.emailOpen},                               <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			email_title = #{entity.emailTitle},                             <!-- 邮件：模板标题 nvarchar2(255)-->
+			email_content = #{entity.emailContent},                         <!-- 邮件：邮件模板内容 clob-->
+			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
+			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
+			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
+			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
+			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
+			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
+			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
+			thirdtemplatecode = #{entity.thirdtemplatecode},                <!-- 第三方短信模板id nvarchar2(128)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE site_message_template
+		<set>
+			<if test="entity.num != null">num = #{entity.num},</if>                                                             <!-- 模板编号（手输入） nvarchar2(64)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 消息模板类型 nvarchar2(64)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启（0否、1是） char(1)-->
+			<if test="entity.msgContent != null">msg_content = #{entity.msgContent},</if>                                       <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			<if test="entity.smsOpen != null">sms_open = #{entity.smsOpen},</if>                                                <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			<if test="entity.smsContent != null">sms_content = #{entity.smsContent},</if>                                       <!-- 短信：短信模板内容 nvarchar2(512)-->
+			<if test="entity.emailOpen != null">email_open = #{entity.emailOpen},</if>                                          <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			<if test="entity.emailTitle != null">email_title = #{entity.emailTitle},</if>                                       <!-- 邮件：模板标题 nvarchar2(255)-->
+			<if test="entity.emailContent != null">email_content = #{entity.emailContent},</if>                                 <!-- 邮件：邮件模板内容 clob-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.thirdtemplatecode != null">thirdtemplatecode = #{entity.thirdtemplatecode},</if>                   <!-- 第三方短信模板id nvarchar2(128)-->
+		</set>
+		WHERE id = #{entity.id}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE site_message_template a
+		<set>
+			<if test="entity.num != null">num = #{entity.num},</if>                                                             <!-- 模板编号（手输入） nvarchar2(64)-->
+			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 模板名称 nvarchar2(64)-->
+			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 消息模板类型 nvarchar2(64)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
+			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启（0否、1是） char(1)-->
+			<if test="entity.msgContent != null">msg_content = #{entity.msgContent},</if>                                       <!-- 站内信：站内信模板内容 nvarchar2(512)-->
+			<if test="entity.smsOpen != null">sms_open = #{entity.smsOpen},</if>                                                <!-- 短信：是否发送短信（0否、1是） char(1)-->
+			<if test="entity.smsContent != null">sms_content = #{entity.smsContent},</if>                                       <!-- 短信：短信模板内容 nvarchar2(512)-->
+			<if test="entity.emailOpen != null">email_open = #{entity.emailOpen},</if>                                          <!-- 邮件：是否发送邮件（0否、1是） char(1)-->
+			<if test="entity.emailTitle != null">email_title = #{entity.emailTitle},</if>                                       <!-- 邮件：模板标题 nvarchar2(255)-->
+			<if test="entity.emailContent != null">email_content = #{entity.emailContent},</if>                                 <!-- 邮件：邮件模板内容 clob-->
+			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
+			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
+			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
+			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
+			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
+			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
+			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
+			<if test="entity.thirdtemplatecode != null">thirdtemplatecode = #{entity.thirdtemplatecode},</if>                   <!-- 第三方短信模板id nvarchar2(128)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM site_message_template
+		WHERE id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM site_message_template
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM site_message_template a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM site_message_template a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<% var channel=cms.channel({id:channelId});%>
+	<%var newsList =fy.getMsg({key:'新闻列表'});%>
+	<title>${isEmpty(channel)?newsList:channel.name!} Powered by SiC</title>
+	<% include("/include/head.html"){}%>
+</head>
+<body>
+<% include("/include/header.html"){}%>
+<% include("/include/nav.html"){}%>
+<!-- 顶部图片开始 -->
+<div class="wp list-topnews clearfix">
+	<div id="scroll-news" class="l owl-carousel owl-carousel-index">
+		<% for(c_picture in site.carouselList({type:10})){
+			var target=dict.label({type:'target',value:c_picture.target!});
+		%>
+		<div class="item">
+			<a target="${target.label!}" href="${c_picture.url!}"><img src="${ctxfs}${c_picture.path!}" alt=""></a>
+		</div>
+		<%}%>
+	</div>
+	<script type="text/javascript">
+	$(function(){
+		$('#scroll-news').owlCarousel({
+			items: 1,
+			autoPlay: true,
+			navigation: true,
+			navigationText: ["",""],
+			paginationSpeed:500,
+			scrollPerPage: false,
+			responsive:false
+		});
+	});
+	</script>
+	<!--scroll-gc end-->	
+	<ul class="list-topnews2">
+	<% var r=site.recommend({number:'news_list_right'});
+	for(ri in r.siteRecommendItemList!){%>
+		<li>
+			<a target="_blank" href="${ri.url!}">
+				<div class="bg" style="background-image: none;"></div>
+				<div class="info"><h3>${ri.addInfo1!}</h3></div>
+				<img src="${ctxfs}${ri.path!}"/>
+			</a>
+		</li>
+	<%}%>
+	</ul>
+</div>
+<!-- 顶部图片结束 -->
+<% include("/include/newsNavigation.html"){}%>
+<div class="wp clearfix mt20">
+	<% var page=cms.articlePage({channelId:channelId,limit:9});%>
+	<% if(isEmpty(channel)){ %>
+	<div class="article_error_div" style="float: left;">
+		<div class="article_error_msg">
+			<p>
+				<%	var newSection=fy.getMsg({key:'新闻栏目2'});
+				var noDate =fy.getMsg({key:'数据不存在提示',params:newSection});%>${noDate!}
+			</p><br>
+			<p><a href="${ctxf}/index.htm">(1) <%var returnHomePage =fy.getMsg({key:'返回首页'});%> ${returnHomePage!}</a></p><br>
+			<p><a href="javascript:" onclick="history.go(-1);">(2) <%var returnPreviousPage =fy.getMsg({key:'返回上一页'});%> ${returnPreviousPage!}</a></p><br>
+		</div>
+	</div>
+	<%}else{%>
+	<dl class="l art-new w850">
+		<dt>${channel.name!}</dt>
+		<dd>
+			<ul class="a-list">
+			<% for(article in page.list){
+				var title=article.title!;
+				var keywords=article.keywords!;
+				var link=article.link!;
+				if(strutil.length(title)>30){
+					title=strutil.subStringTo(title,0,30)+"...";
+				}
+			%>
+				<li>
+					<div class="a-pic">
+						<a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm">
+							<img src="${ctxfs}${article.image!}"/>
+						</a>
+					</div>
+					<div class="a-word">
+						<a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm" class="title">${title}</a>
+						<div class="a-info">
+							<span class="a-typename" style="border: #b8e1c7 solid 1px;">
+								<a target="_blank" href="${ctxf}/newsList/${article.category.id!}.htm" style="color: #159b46;">${article.category.name!}</a>
+							</span>
+							<span class="tag">
+							<% if(isNotEmpty(keywords)){
+								for(key in strutil.split(keywords,",")){%>
+									<% if(isEmpty(link)){%>
+										<a target="_blank" href="${ctxf}/newsDetail/${article.id!}.htm">${key}</a>
+									<%}else{%>
+										<a target="_blank" href="${link}">${key}</a>
+									<%}%>
+							<%}}%>
+							</span>
+							<span class="date">${article.updateDate!,dateFormat="yyyy-MM-dd"}</span>
+						</div>
+					</div>
+				</li>
+			<%}%>
+			</ul>
+		</dd>
+		<dd>
+		<!--分页开始-->
+		<% if(isNotEmpty(page.list)){
+			include("/page.html",{'page':page}){}
+		}%>
+		<!--分页结束-->
+		</dd>
+	</dl>
+	<%}%>
+	<dl class="r news-right w300">
+		<% include("/include/newsRight1.html"){}%>
+		<% include("/include/newsRight2.html"){}%>
+	</dl>
+</div>
+<% include("/include/footer.html"){}%>
+<% include("/include/foot.html"){}%>
+</body>
+</html>

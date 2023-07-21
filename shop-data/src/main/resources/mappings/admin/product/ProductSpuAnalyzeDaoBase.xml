@@ -1,0 +1,385 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sicheng.admin.product.dao.ProductSpuAnalyzeDao">
+	<cache type="com.sicheng.common.persistence.cache.DelegateCache">
+		<property name="expire" value="172800"/><!-- 缓存有效期，单位：秒，默认值2天 -->
+	</cache>
+	<!-- 全部字段 -->
+	<sql id="productSpuAnalyzeColumns">
+	<trim suffixOverrides=",">
+		a.p_id AS "pId",                                                     <!-- 商品spu的id number(19)-->
+		a.all_browse AS "allBrowse",                                         <!-- 总浏览量 number(19)-->
+		a.all_browse_date AS "allBrowseDate",                                <!-- 总浏览量更新日期 date(7)-->
+		a.week_browse AS "weekBrowse",                                       <!-- 周浏览量 number(19)-->
+		a.week_browse_date AS "weekBrowseDate",                              <!-- 周浏览量更新日期 date(7)-->
+		a.month_browse AS "monthBrowse",                                     <!-- 月浏览量 number(19)-->
+		a.month_browse_date AS "monthBrowseDate",                            <!-- 月浏览量更新日期 date(7)-->
+		a.month3_browse AS "month3Browse",                                   <!-- 三个月浏览量 number(19)-->
+		a.month3_browse_date AS "month3BrowseDate",                          <!-- 三个月浏览量更新日期 date(7)-->
+		a.all_sales AS "allSales",                                           <!-- 总销量 number(19)-->
+		a.all_sales_date AS "allSalesDate",                                  <!-- 总销量更新日期 date(7)-->
+		a.week_sales AS "weekSales",                                         <!-- 周销量 number(19)-->
+		a.week_sales_date AS "weekSalesDate",                                <!-- 周销量更新日期 date(7)-->
+		a.month_sales AS "monthSales",                                       <!-- 月销量 number(19)-->
+		a.month_sales_date AS "monthSalesDate",                              <!-- 月销量更新日期 date(7)-->
+		a.month3_sales AS "month3Sales",                                     <!-- 三个月销量 number(19)-->
+		a.month3_sales_date AS "month3SalesDate",                            <!-- 三个月销量更新日期 date(7)-->
+
+	</trim>
+	</sql>
+
+	<!-- 关联表 -->
+	<sql id="productSpuAnalyzeJoins">
+	</sql>
+
+	<!-- 复用的sql片段，where条件部分，使用者：deleteByWhere、countByWhere、selectByWhere、updateByWhere、updateByWhereSelective -->
+	<sql id="Where_Clause">
+	<if test="w!=null and w.e!=null">
+		<bind name="c" value="w.e"/>
+		<if test="c.pId != null ">AND a.p_id = #{c.pId}</if>
+		<if test="c.allBrowse != null ">AND a.all_browse = #{c.allBrowse}</if>
+		<if test="c.beginAllBrowseDate != null and c.endAllBrowseDate != null ">AND a.all_browse_date BETWEEN #{c.beginAllBrowseDate} AND #{c.endAllBrowseDate}</if>
+		<if test="c.weekBrowse != null ">AND a.week_browse = #{c.weekBrowse}</if>
+		<if test="c.beginWeekBrowseDate != null and c.endWeekBrowseDate != null ">AND a.week_browse_date BETWEEN #{c.beginWeekBrowseDate} AND #{c.endWeekBrowseDate}</if>
+		<if test="c.monthBrowse != null ">AND a.month_browse = #{c.monthBrowse}</if>
+		<if test="c.beginMonthBrowseDate != null and c.endMonthBrowseDate != null ">AND a.month_browse_date BETWEEN #{c.beginMonthBrowseDate} AND #{c.endMonthBrowseDate}</if>
+		<if test="c.month3Browse != null ">AND a.month3_browse = #{c.month3Browse}</if>
+		<if test="c.beginMonth3BrowseDate != null and c.endMonth3BrowseDate != null ">AND a.month3_browse_date BETWEEN #{c.beginMonth3BrowseDate} AND #{c.endMonth3BrowseDate}</if>
+		<if test="c.allSales != null ">AND a.all_sales = #{c.allSales}</if>
+		<if test="c.beginAllSalesDate != null and c.endAllSalesDate != null ">AND a.all_sales_date BETWEEN #{c.beginAllSalesDate} AND #{c.endAllSalesDate}</if>
+		<if test="c.weekSales != null ">AND a.week_sales = #{c.weekSales}</if>
+		<if test="c.beginWeekSalesDate != null and c.endWeekSalesDate != null ">AND a.week_sales_date BETWEEN #{c.beginWeekSalesDate} AND #{c.endWeekSalesDate}</if>
+		<if test="c.monthSales != null ">AND a.month_sales = #{c.monthSales}</if>
+		<if test="c.beginMonthSalesDate != null and c.endMonthSalesDate != null ">AND a.month_sales_date BETWEEN #{c.beginMonthSalesDate} AND #{c.endMonthSalesDate}</if>
+		<if test="c.month3Sales != null ">AND a.month3_sales = #{c.month3Sales}</if>
+		<if test="c.beginMonth3SalesDate != null and c.endMonth3SalesDate != null ">AND a.month3_sales_date BETWEEN #{c.beginMonth3SalesDate} AND #{c.endMonth3SalesDate}</if>
+	</if>
+	</sql>	
+
+	<!--根据主键查询记录-->
+	<select id="selectById" resultType="ProductSpuAnalyze">
+		SELECT 
+		<include refid="productSpuAnalyzeColumns"/>
+		FROM product_spu_analyze a
+		<include refid="productSpuAnalyzeJoins"/>
+		WHERE a.p_id = #{id}
+	</select>
+
+	<!-- 根据多个id查询出一个列表 -->
+	<select id="selectByIdIn" resultType="ProductSpuAnalyze">
+		SELECT 
+		<include refid="productSpuAnalyzeColumns"/>
+		FROM product_spu_analyze a
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					a.p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</select>
+
+	<!--根据条件查询记录集-->
+	<select id="selectByWhere" resultType="ProductSpuAnalyze">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSpuAnalyzeColumns"/>
+		FROM product_spu_analyze a
+		<include refid="productSpuAnalyzeJoins"/>
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<when test="p!=null and p.orderBy != null">
+				ORDER BY ${p.orderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+
+	<!--查询所有记录集，无条件-->
+	<select id="selectAll" resultType="ProductSpuAnalyze">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if>
+		<include refid="productSpuAnalyzeColumns"/>
+		FROM product_spu_analyze a
+		<include refid="productSpuAnalyzeJoins"/>
+		<choose>
+			<when test="w!=null and w.outputSqlOrderBy !=null">
+				${w.outputSqlOrderBy}
+			</when>
+			<otherwise>
+				ORDER BY a.p_id DESC
+			</otherwise>
+		</choose>
+	</select>
+	
+	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_spu_analyze
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			p_id,                                              <!-- 商品spu的id number(19)-->
+			all_browse,                                        <!-- 总浏览量 number(19)-->
+			all_browse_date,                                   <!-- 总浏览量更新日期 date(7)-->
+			week_browse,                                       <!-- 周浏览量 number(19)-->
+			week_browse_date,                                  <!-- 周浏览量更新日期 date(7)-->
+			month_browse,                                      <!-- 月浏览量 number(19)-->
+			month_browse_date,                                 <!-- 月浏览量更新日期 date(7)-->
+			month3_browse,                                     <!-- 三个月浏览量 number(19)-->
+			month3_browse_date,                                <!-- 三个月浏览量更新日期 date(7)-->
+			all_sales,                                         <!-- 总销量 number(19)-->
+			all_sales_date,                                    <!-- 总销量更新日期 date(7)-->
+			week_sales,                                        <!-- 周销量 number(19)-->
+			week_sales_date,                                   <!-- 周销量更新日期 date(7)-->
+			month_sales,                                       <!-- 月销量 number(19)-->
+			month_sales_date,                                  <!-- 月销量更新日期 date(7)-->
+			month3_sales,                                      <!-- 三个月销量 number(19)-->
+			month3_sales_date,                                 <!-- 三个月销量更新日期 date(7)-->
+
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">#{entity.pId},</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_spu_analyze_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			#{entity.allBrowse},                               <!-- 总浏览量 number(19)-->
+			#{entity.allBrowseDate},                           <!-- 总浏览量更新日期 date(7)-->
+			#{entity.weekBrowse},                              <!-- 周浏览量 number(19)-->
+			#{entity.weekBrowseDate},                          <!-- 周浏览量更新日期 date(7)-->
+			#{entity.monthBrowse},                             <!-- 月浏览量 number(19)-->
+			#{entity.monthBrowseDate},                         <!-- 月浏览量更新日期 date(7)-->
+			#{entity.month3Browse},                            <!-- 三个月浏览量 number(19)-->
+			#{entity.month3BrowseDate},                        <!-- 三个月浏览量更新日期 date(7)-->
+			#{entity.allSales},                                <!-- 总销量 number(19)-->
+			#{entity.allSalesDate},                            <!-- 总销量更新日期 date(7)-->
+			#{entity.weekSales},                               <!-- 周销量 number(19)-->
+			#{entity.weekSalesDate},                           <!-- 周销量更新日期 date(7)-->
+			#{entity.monthSales},                              <!-- 月销量 number(19)-->
+			#{entity.monthSalesDate},                          <!-- 月销量更新日期 date(7)-->
+			#{entity.month3Sales},                             <!-- 三个月销量 number(19)-->
+			#{entity.month3SalesDate},                         <!-- 三个月销量更新日期 date(7)-->
+
+	</trim>
+	</insert>
+
+	<!--插入,只把非空的值插入到对应的字段。并返回自增长的主键值，mysql、oracle都可以-->
+	<insert id="insertSelective" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
+		INSERT INTO product_spu_analyze
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1"><if test="entity.pId != null">p_id,</if></if>
+			<if test="entity.pkMode==2">p_id,</if>
+			<if test="entity.allBrowse != null">all_browse,</if>                               <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowseDate != null">all_browse_date,</if>                      <!-- 总浏览量更新日期 date(7)-->
+			<if test="entity.weekBrowse != null">week_browse,</if>                             <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowseDate != null">week_browse_date,</if>                    <!-- 周浏览量更新日期 date(7)-->
+			<if test="entity.monthBrowse != null">month_browse,</if>                           <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowseDate != null">month_browse_date,</if>                  <!-- 月浏览量更新日期 date(7)-->
+			<if test="entity.month3Browse != null">month3_browse,</if>                         <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3BrowseDate != null">month3_browse_date,</if>                <!-- 三个月浏览量更新日期 date(7)-->
+			<if test="entity.allSales != null">all_sales,</if>                                 <!-- 总销量 number(19)-->
+			<if test="entity.allSalesDate != null">all_sales_date,</if>                        <!-- 总销量更新日期 date(7)-->
+			<if test="entity.weekSales != null">week_sales,</if>                               <!-- 周销量 number(19)-->
+			<if test="entity.weekSalesDate != null">week_sales_date,</if>                      <!-- 周销量更新日期 date(7)-->
+			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销量 number(19)-->
+			<if test="entity.monthSalesDate != null">month_sales_date,</if>                    <!-- 月销量更新日期 date(7)-->
+			<if test="entity.month3Sales != null">month3_sales,</if>                           <!-- 三个月销量 number(19)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date,</if>                  <!-- 三个月销量更新日期 date(7)-->
+		</trim>
+		 VALUES 
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="entity.pkMode==1">
+				<if test="entity.pId != null">#{entity.pId},</if>
+			</if>
+			<if test="entity.pkMode==2">
+				<if test="entity.dbType$ == 'oracle'">product_spu_analyze_seq.nextval,</if>
+				<if test="entity.dbType$ == 'mssql'">null,</if>
+				<if test="entity.dbType$ == 'mysql'">null,</if>
+			</if>
+			<if test="entity.allBrowse != null">#{entity.allBrowse},</if>                                <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowseDate != null">#{entity.allBrowseDate},</if>                        <!-- 总浏览量更新日期 date(7)-->
+			<if test="entity.weekBrowse != null">#{entity.weekBrowse},</if>                              <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowseDate != null">#{entity.weekBrowseDate},</if>                      <!-- 周浏览量更新日期 date(7)-->
+			<if test="entity.monthBrowse != null">#{entity.monthBrowse},</if>                            <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowseDate != null">#{entity.monthBrowseDate},</if>                    <!-- 月浏览量更新日期 date(7)-->
+			<if test="entity.month3Browse != null">#{entity.month3Browse},</if>                          <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3BrowseDate != null">#{entity.month3BrowseDate},</if>                  <!-- 三个月浏览量更新日期 date(7)-->
+			<if test="entity.allSales != null">#{entity.allSales},</if>                                  <!-- 总销量 number(19)-->
+			<if test="entity.allSalesDate != null">#{entity.allSalesDate},</if>                          <!-- 总销量更新日期 date(7)-->
+			<if test="entity.weekSales != null">#{entity.weekSales},</if>                                <!-- 周销量 number(19)-->
+			<if test="entity.weekSalesDate != null">#{entity.weekSalesDate},</if>                        <!-- 周销量更新日期 date(7)-->
+			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销量 number(19)-->
+			<if test="entity.monthSalesDate != null">#{entity.monthSalesDate},</if>                      <!-- 月销量更新日期 date(7)-->
+			<if test="entity.month3Sales != null">#{entity.month3Sales},</if>                            <!-- 三个月销量 number(19)-->
+			<if test="entity.month3SalesDate != null">#{entity.month3SalesDate},</if>                    <!-- 三个月销量更新日期 date(7)-->
+		</trim>
+	</insert>
+
+	<!-- 根据主键更新记录-->
+	<update id="updateById">
+		UPDATE product_spu_analyze 
+		<set>
+			all_browse = #{entity.allBrowse},                               <!-- 总浏览量 number(19)-->
+			all_browse_date = #{entity.allBrowseDate},                      <!-- 总浏览量更新日期 date(7)-->
+			week_browse = #{entity.weekBrowse},                             <!-- 周浏览量 number(19)-->
+			week_browse_date = #{entity.weekBrowseDate},                    <!-- 周浏览量更新日期 date(7)-->
+			month_browse = #{entity.monthBrowse},                           <!-- 月浏览量 number(19)-->
+			month_browse_date = #{entity.monthBrowseDate},                  <!-- 月浏览量更新日期 date(7)-->
+			month3_browse = #{entity.month3Browse},                         <!-- 三个月浏览量 number(19)-->
+			month3_browse_date = #{entity.month3BrowseDate},                <!-- 三个月浏览量更新日期 date(7)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 number(19)-->
+			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 date(7)-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 number(19)-->
+			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 date(7)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 number(19)-->
+			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 date(7)-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 number(19)-->
+			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 date(7)-->
+
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录-->
+	<update id="updateByWhere">
+		UPDATE product_spu_analyze a 
+		<set>
+			all_browse = #{entity.allBrowse},                               <!-- 总浏览量 number(19)-->
+			all_browse_date = #{entity.allBrowseDate},                      <!-- 总浏览量更新日期 date(7)-->
+			week_browse = #{entity.weekBrowse},                             <!-- 周浏览量 number(19)-->
+			week_browse_date = #{entity.weekBrowseDate},                    <!-- 周浏览量更新日期 date(7)-->
+			month_browse = #{entity.monthBrowse},                           <!-- 月浏览量 number(19)-->
+			month_browse_date = #{entity.monthBrowseDate},                  <!-- 月浏览量更新日期 date(7)-->
+			month3_browse = #{entity.month3Browse},                         <!-- 三个月浏览量 number(19)-->
+			month3_browse_date = #{entity.month3BrowseDate},                <!-- 三个月浏览量更新日期 date(7)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 number(19)-->
+			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 date(7)-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 number(19)-->
+			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 date(7)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 number(19)-->
+			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 date(7)-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 number(19)-->
+			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 date(7)-->
+
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByIdSelective">
+		UPDATE product_spu_analyze
+		<set>
+			<if test="entity.allBrowse != null">all_browse = #{entity.allBrowse},</if>                                          <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowseDate != null">all_browse_date = #{entity.allBrowseDate},</if>                             <!-- 总浏览量更新日期 date(7)-->
+			<if test="entity.weekBrowse != null">week_browse = #{entity.weekBrowse},</if>                                       <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowseDate != null">week_browse_date = #{entity.weekBrowseDate},</if>                          <!-- 周浏览量更新日期 date(7)-->
+			<if test="entity.monthBrowse != null">month_browse = #{entity.monthBrowse},</if>                                    <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowseDate != null">month_browse_date = #{entity.monthBrowseDate},</if>                       <!-- 月浏览量更新日期 date(7)-->
+			<if test="entity.month3Browse != null">month3_browse = #{entity.month3Browse},</if>                                 <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3BrowseDate != null">month3_browse_date = #{entity.month3BrowseDate},</if>                    <!-- 三个月浏览量更新日期 date(7)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 number(19)-->
+			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 date(7)-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 number(19)-->
+			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 date(7)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 number(19)-->
+			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 date(7)-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 number(19)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 date(7)-->
+		</set>
+		WHERE p_id = #{entity.pId}
+	</update>
+
+	<!-- 根据条件更新记录,只把非空的值更到对应的字段-->
+	<update id="updateByWhereSelective">
+		UPDATE product_spu_analyze a
+		<set>
+			<if test="entity.allBrowse != null">all_browse = #{entity.allBrowse},</if>                                          <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowseDate != null">all_browse_date = #{entity.allBrowseDate},</if>                             <!-- 总浏览量更新日期 date(7)-->
+			<if test="entity.weekBrowse != null">week_browse = #{entity.weekBrowse},</if>                                       <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowseDate != null">week_browse_date = #{entity.weekBrowseDate},</if>                          <!-- 周浏览量更新日期 date(7)-->
+			<if test="entity.monthBrowse != null">month_browse = #{entity.monthBrowse},</if>                                    <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowseDate != null">month_browse_date = #{entity.monthBrowseDate},</if>                       <!-- 月浏览量更新日期 date(7)-->
+			<if test="entity.month3Browse != null">month3_browse = #{entity.month3Browse},</if>                                 <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3BrowseDate != null">month3_browse_date = #{entity.month3BrowseDate},</if>                    <!-- 三个月浏览量更新日期 date(7)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 number(19)-->
+			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 date(7)-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 number(19)-->
+			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 date(7)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 number(19)-->
+			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 date(7)-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 number(19)-->
+			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 date(7)-->
+		</set>
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据主键删除记录 -->
+	<update id="deleteById">
+		DELETE FROM product_spu_analyze
+		WHERE p_id = #{id}
+	</update>
+
+	<!-- 根据多个id删除记录 -->
+	<update id="deleteByIdIn">
+		DELETE FROM product_spu_analyze
+		<where>
+			<choose>
+				<when test="list != null and list.size >0">
+					p_id in
+					<foreach close=")" collection="list" item="item" open="(" separator=",">
+						#{item}
+					</foreach>
+				</when>
+				<otherwise> 1=2 </otherwise>
+			</choose>
+		</where>
+	</update>
+	
+	<!-- 根据条件删除记录 -->
+	<update id="deleteByWhere">
+		DELETE <if test="w!=null and w.mysql">a </if>FROM product_spu_analyze a
+		where  <!-- 防止无where条件时，删除全表、更新全表 -->
+		<trim prefixOverrides="AND |OR ">
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</trim>
+	</update>
+
+	<!-- 根据条件查询记录总数 -->
+	<select id="countByWhere" resultType="java.lang.Integer">
+		SELECT <if test="w!=null and w.distinct">DISTINCT</if> COUNT(*) FROM product_spu_analyze a
+		<where>
+			<if test="w!=null">
+			<include refid="Where_Clause" />
+			${w.outputSqlWhere}
+			</if>
+		</where>
+	</select>
+
+</mapper>

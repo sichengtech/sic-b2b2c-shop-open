@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<!-- 下拉选  -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/select.js"></script>
+	<!-- 地区控件 -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/weui/picker.js"></script>
+	<!-- 页面返回js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-back.js"></script>
+	<!-- 业务js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/userInfo.js"></script>
+	<!-- 选择地区js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wx-area.js"></script>
+	<!-- 选择地区css -->
+	<link rel="stylesheet" href="${ctx}/views/wap/default/css/wx-area.css">
+	<!-- 微信js -->
+	<script type="text/javascript" src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+	<!-- 微信上传图片js -->
+	<script type='text/javascript' src="${ctx}/views/wap/default/js/wxUploadImg.js"></script>
+</head>
+<body ontouchstart class="member-info-form-body">
+	<div class="header-default-box weui-border-b">
+		<a href="javascript:;" class="icon icon-arrowleft l back click_back"></a>
+		<a href="${ctxw}/index.htm" class="icon icon-wxbzhuye r"></a>
+		<h1>账号信息</h1>
+	</div>
+    <form id="form">
+    	<input type="hidden" id="sex" name="sex" value="">
+    	<input type="hidden" id="headPicPath" name="headPicPath" value="">
+    	<input type="hidden" id="uploadHeadPic" value="">
+    	<input type="hidden" name="serverIds" value="" class="serverIds"/>
+        <div class="weui_cells weui_cells_form">
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label class="weui_label text_size">头像</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <img id="headPicture" src="" class="weui-avatar" onerror="fdp.defaultImage('${ctxfs}/shop_init/user_face_01.png');"/>
+                </div>
+             	<div class="weui_cell_ft">
+                	<i class="weui_icon_warn"></i>
+            	</div>
+            </div>
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label class="weui_label text_size">用户名</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                	<input id="loginName" name="loginName" class="weui_input text_size" type="text" value="" placeholder="请输入用户名"/>
+                </div>
+             	<div class="weui_cell_ft">
+                	<i class="weui_icon_warn"></i>
+            	</div>
+            </div>
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label class="weui_label text_size">性别</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input id="sexName" class="weui_input text_size" type="text" value="" placeholder="请选择性别" required emptyTips="请选择性别"/>
+                </div>
+             	<div class="weui_cell_ft">
+                	<i class="weui_icon_warn"></i>
+            	</div>
+            </div>
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label class="weui_label text_size">出生日期</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input id="birthday" name="birthday" class="weui_input text_size" type="text" value="" placeholder="请选择出生日期"/>
+                </div>
+             	<div class="weui_cell_ft">
+                	<i class="weui_icon_warn"></i>
+            	</div>
+            </div>
+            <div class="weui_cell">
+                <div class="weui_cell_hd"><label class="weui_label text_size">地址</label></div>
+                <div class="weui_cell_bd weui_cell_primary">
+                    <input id="areaId" class="weui_input text_size" type="text" placeholder="请选择所在城市" readonly="readonly"/>
+                    <input id="provinceId" name="provinceId" type="hidden"/>
+                    <input id="provinceName" name="provinceName" type="hidden"/>
+                    <input id="cityId" name="cityId" type="hidden"/>
+                    <input id="cityName" name="cityName" type="hidden"/>
+                    <input id="districtId" name="districtId" type="hidden"/>
+                    <input id="districtName" name="districtName" type="hidden"/>
+                </div>
+                <div class="weui_cell_ft">
+                	<i class="weui_icon_warn"></i>
+            	</div>
+            </div>
+        </div>
+        <div class="weui_btn_area">
+            <a id="formSubmitBtn" href="javascript:" class="weui_btn weui_btn_warn">保存</a>
+        </div>
+    </form>
+    <!-- 选择地区model -->
+	<% include("/include/areaModel.html"){}%>
+    
+	<% include("/include/foot-nav.html"){}%>
+</body>
+</html>

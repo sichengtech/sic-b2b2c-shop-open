@@ -1,0 +1,168 @@
+<!-- 业务js -->
+<div class="l w190">
+	<% 	
+		var k = parameter.k;
+		var price = parameter.price;
+		var mixPrice ="";
+		var maxPrice ="";
+		if(price!= null){
+			var prices = reg.split(price,"-");
+			if(prices.~size==1){
+				if("-" == strutil.subStringTo(price,0,1)){
+					maxPrice = prices[0];
+				}
+				if("-" == strutil.subStringTo(price,strutil.length(price)-1,strutil.length(price))){
+					mixPrice = prices[0];
+				}
+			}
+			if(prices.~size>1){
+				mixPrice = prices[0];
+				maxPrice = prices[1];
+			}
+		}
+		var toDay = strutil.formatDate(date(),'yyyy');
+		var createDate = strutil.formatDate(storeOne.createDate,'yyyy');
+		%>
+	<%var siteInfo = site.info();%>
+	<dl class="panel">
+		<dt class="align-center store-name">${storeOne.name!}</dt>
+		<dd class="p10">
+			<div class="align-center store-year">${siteInfo.name!} <font>${parseInt(toDay)-parseInt(createDate)<=0?'1':parseInt(toDay)-parseInt(createDate)}</font> 年店</div>
+			<div class="align-center p10"><span class="comment-star-1 ${storeOne.storeAnalyze.starLevel!}"></span></div>
+			<ul class="score">
+				<li>商 述<p class="${storeOne.storeAnalyze.productScoreUpOrDown == '1' ? 'red' : 'green'}">${storeOne.storeAnalyze.productScore!}${storeOne.storeAnalyze.productScoreUpOrDown == "1" ? "↑" : "↓"}</p></li>
+				<li>服 务<p class="${storeOne.storeAnalyze.serviceAttitudeScoreUpOrDown == '1' ? 'red' : 'green'}">${storeOne.storeAnalyze.serviceAttitudeScore!}${storeOne.storeAnalyze.serviceAttitudeScoreUpOrDown == "1" ? "↑" : "↓"}</p></li>
+				<li>物 流<p class="${storeOne.storeAnalyze.logisticsScoreUpOrDown == '1' ? 'red' : 'green'}">${storeOne.storeAnalyze.logisticsScore!}${storeOne.storeAnalyze.logisticsScoreUpOrDown == "1" ? "↑" : "↓"}</p></li>
+				<div class="clear"></div>
+			</ul>
+			<div class="text-align">
+				<a target="_blank" href="${ctxf}/store/${storeOne.storeId!}.htm" class="sui-btn btn-gray">进店逛逛</a>   
+				<a href="javascript:void(0);" storeId="${storeOne.storeId!}" class="sui-btn btn-lgrey ml8 collectionStore">收藏店铺</a>
+			</div>
+			<p class="pt10">店铺客服电话：${isNotEmpty(storeOne.storeTel!)?storeOne.storeTel!:'无'}</p>
+			<p>店铺QQ：${isNotEmpty(storeOne.storeQq!)?storeOne.storeQq!:'无'}</p>
+			<p>店铺微信：${isNotEmpty(storeOne.storeWechat!)?storeOne.storeWechat!:'无'}</p>
+			<%
+				if(storeOne.markingImgPath == "1"){
+					%><p><span style="color: #fff;background-color: #f19430;padding: 3px 10px;border-radius: 15px;display: inline-block;">保证金</span></p><%
+				}
+			%>
+		</dd>
+	</dl>
+	<dl class="panel">
+		<dt>店内搜索</dt>
+		<dd class="search">
+			<form id="inputForm2" class="sui-form form-horizontal" action="#" method="get">
+	    		<input type="hidden" id="ssid" value="${storeOne.storeId!}">
+     			<div class="control-group">
+					<label for="inputEmail" class="control-label">关键字：</label>
+					<div class="controls">
+						<input id="k" type="text" placeholder="" class="input-xfat input-medium" value="${k}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="inputEmail" class="control-label">价　格：</label>
+					<div class="controls">
+						<input id="mixPrice" type="text" placeholder="" class="input-xfat w34" value="${mixPrice}"> -
+						<input id="maxPrice" type="text" placeholder="" class="input-xfat w34" value="${maxPrice}">
+					</div>
+				</div>
+				<div class="control-group">
+					<label for="inputEmail" class="control-label">　</label>
+					<button type="button" class="sui-btn btn-bordered btn-xlarge" id="search">搜索</button>
+				</div>
+            </form>
+		</dd>
+	</dl>
+	<dl class="panel">
+		<dt>在线客服</dt>
+		<dd class="service">
+			<h2>售前客服</h2>
+			<%var storeCustomerList = store.customerList({sid:sid});%>
+			<% if(isEmpty(storeCustomerList)){%>
+				<div>无</div>
+			<%}else{%>
+				<%for (storeCustomer1 in storeCustomerList){%>
+					<% if(storeCustomer1.type == '1'){%>
+						<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=${storeCustomer1.account!}&site=qq&menu=yes">
+							<img border="0" src="http://wpa.qq.com/pa?p=2:599686:52" alt="点击这里给我发消息" title="点击这里给我发消息"/>${storeCustomer1.name!}
+						</a>
+					<%}%>
+				<%}%>
+			<%}%>
+			<h2>售后客服</h2>
+			<% if(isEmpty(storeCustomerList)){%>
+				<div>无</div>
+			<%}else{%>
+				<%for (storeCustomer2 in storeCustomerList){%>
+					<% if(storeCustomer2.type == '2'){%>
+						<a target="_blank" href="http://wpa.qq.com/msgrd?v=3&uin=${storeCustomer2.account!}&site=qq&menu=yes">
+							<img border="0" src="http://wpa.qq.com/pa?p=2:599686:52" alt="点击这里给我发消息" title="点击这里给我发消息"/>${storeCustomer2.name!}
+						</a>
+					<%}%>
+				<%}%>
+			<%}%>
+			<div class="service-con">
+				工作时间：
+				<% if(isEmpty(storeCustomerList)){%>
+					无
+				<%}else{%>
+					${storeCustomerList[0].remarks}
+				<%}%>
+			</div>
+		</dd>
+	</dl>
+	<dl class="panel">
+		<dt>商品分类</dt>
+		<dd>
+			<ul class="goods-category">
+				<%var storeCategoryList = store.categoryList({sid:sid});%>
+				<%for (storeCategoryP in storeCategoryList){%>
+					<% if(storeCategoryP.parentId == 0){%>
+						<li><b>+</b><a href="${ctx}/store/${sid}/pList.htm?scid=${storeCategoryP.storeCategoryId}&sid=${sid}">${storeCategoryP.name}</a>
+						<%for (storeCategory in storeCategoryList){%>
+							<% if(storeCategory.parentId == storeCategoryP.storeCategoryId){%>
+								<ul>
+								   <li><a href="${ctx}/store/${sid}/pList.htm?scid=${storeCategory.storeCategoryId}&sid=${sid}">${storeCategory.name}</a></li>
+							   </ul>
+							<%}%>
+						<%}%>
+					<%}%>
+				<%}%>
+			</ul>
+		</dd>
+	</dl>
+	<dl class="panel hot-goods">
+		<dt>店铺热销</dt>
+		<dd>
+			<ul class="goods-pic-list">
+				<% var productMap=product.list({limit:5,sort:'allSales',sortMode:'desc',sid:sid});%>
+				<% if(isEmpty(productMap["search"].items)){%>
+					<div class="noProduct">
+						<i class="sui-icon icon-touch-face"></i> 很遗憾，暂无商品！
+					</div>
+				<%}else{%>
+					<%for(product in productMap["search"].items){%>
+						<li>
+							<div class="p-picture">
+								<a target="_blank" href="${ctx}/detail/${product.pId!}.htm"><img src="${ctxfs}${product.image!}@!168X168" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/></a>
+							</div>
+							<div class="text">
+								<p class="p-price">
+									<% if((product.type!)=='2'){%>
+										¥${product.minPrice2!}~¥${product.maxPrice2!}<small class="p-type-1"></small>
+									<%}else{%>
+										¥${product.minPrice1!}<small class="p-type-2"></small>
+									<%}%>
+								</p>	
+								<a href="${ctx}/detail/${product.pId}.htm">
+									<p class="p-name">${product.name!}</p>
+								</a>
+							</div>
+						</li>
+					<%}%>
+				<%}%>
+			</ul>
+		</dd>
+	</dl>
+</div>

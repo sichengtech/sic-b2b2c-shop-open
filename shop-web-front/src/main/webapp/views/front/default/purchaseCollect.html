@@ -1,0 +1,71 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<title>采购信息汇总页 Powered by SiC</title>
+<% include("/include/head.html"){}%>
+</head>
+<body class="caigou-huizong">
+	<% include("/include/header.html"){}%>
+	<div class="banner-page wp-1920">
+		<div class="fullSlide">
+			<div class="bd">
+				<ul>
+					<% for(carousel in site.carouselList({type:14})){%>
+						<li _src="url(${ctxfs}${carousel.path!})" style="background:#FFF center 0 no-repeat;"><a href="${carousel.url!}"></a></li>
+					<%}%>
+				</ul>
+			</div>
+			<div class="hd">
+				<ul class="wp">
+				</ul>
+			</div>
+			<span class="prev"></span><span class="next"></span>
+		</div>
+	</div>
+	<div class="bg-f7f7f7 pb30">
+		<div class="wp pt30">
+			<div class="brand-list border-lt">
+				<div class="zhe-200">
+					<strong>200<span>+</span></strong>
+					<p>知名企业</p>
+					<p>已经入住采购平台</p>
+				</div>
+				<ul>
+					<% for(logo in siteRecommendItemList!){%>
+						<li class="border-rb"><a href="${logo.url!}"><div>${logo.addInfo1!}</div><img src="${ctxfs}${logo.path!}"></a></li>
+					<%}%>
+				</ul>
+			</div>
+		</div>
+		<div class="wp mt30">
+			<div class="huizong-50">
+				<ul class="clear">
+					<li class="fl youzhi-50">
+						<a href="#">
+							<img src="${ctx}/views/front/english/images/caigou-huizong_1.png" alt="">
+						</a>
+						<div>
+							<span></span>
+							<p class="p1">50万优质供应商大规模采购</p>
+							<p>我们拥有50万精选会员·严格的资质·更放心·</p>
+							<p>海量优质供应商·全方位采购服务·更贴心·</p>
+						</div>
+					</li>
+					<% var imgList=site.recommend({number:'purchase_collect_img'});%>
+					<% for(img in imgList.siteRecommendItemList!){%>
+						<li class="fl">
+							<a href="${img.url!}">
+								<img src="${ctxfs}${img.path!}@!195x332" alt="">
+							</a>
+						</li>
+					<%}%>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

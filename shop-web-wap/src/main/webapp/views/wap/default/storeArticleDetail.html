@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>思程商城</title>
+	<% include("/include/head.html"){}%>
+	<% var 
+		storeId=parameter.storeId;
+		saId=parameter.saId;
+	%>
+	<!-- 业务js -->
+	<script type="text/javascript">
+		var saId='${saId!}';
+	</script>
+	<script type="text/javascript" src="${ctx}/views/wap/default/include/storeNav.js"></script>
+	<script type="text/javascript" src="${ctx}/views/wap/default/storeArticleDetail.js"></script>
+	<style type="text/css">
+		.sui-page, .sui-page-group{position: absolute;}
+	</style>
+</head>
+<body class="store storeDatail-body">
+	<div class="sui-page-group">
+		<div class="sui-page sui-page-current" id='storeArticleDetail-page'>
+			<div class="content" style="overflow-x: hidden;">
+				<% include("/include/store-footer-nav.html",{'storeId':(storeId!)}){}%>
+				<% include("/include/header-store.html",{'storeId':(storeId!)}){}%>
+				<% include("/include/store-nav.html",{'storeId':(storeId!)}){}%>
+				<div class="weui-weixin-page weui-border-t">
+					<h2 class="weui-weixin-title"></h2>
+					<div class="weui-weixin-info">
+						<span class="weui-weixin-em">店铺动态</span>
+						<em class="weui-weixin-em"></em>
+					</div>
+					<div class="weui-weixin-content"></div>
+				</div>
+			</div>
+			<% include("/include/foot.html"){}%>
+		</div>
+		<div class="sui-page" id="page-search">	
+			<% include("productSearch.html"){}%>
+		</div>
+	</div>
+</body>
+</html>
