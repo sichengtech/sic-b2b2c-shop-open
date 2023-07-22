@@ -1,20 +1,11 @@
 <p align="center">
-    <a href="https://github.com/oceanbase/oceanbase">
+    <a href="https://www.sicheng.net">
         <img alt="SiC B2B2c Shop Logo" src="./docs/images/logo-400x120@x2.png" width="40%" />
     </a>
 </p>
 <p align="center">
     <a href="https://github.com/oceanbase/oceanbase/blob/master/LICENSE">
         <img alt="license" src="https://img.shields.io/badge/license-MulanPubL--2.0-blue" />
-    </a>
-    <a href="https://github.com/oceanbase/oceanbase/releases/latest">
-        <img alt="license" src="https://img.shields.io/badge/dynamic/json?color=blue&label=release&query=tag_name&url=https%3A%2F%2Fapi.github.com%2Frepos%2Foceanbase%2Foceanbase%2Freleases%2Flatest" />
-    </a>
-    <a href="https://github.com/oceanbase/oceanbase">
-        <img alt="stars" src="https://img.shields.io/badge/dynamic/json?color=blue&label=stars&query=stargazers_count&url=https%3A%2F%2Fapi.github.com%2Frepos%2Foceanbase%2Foceanbase" />
-    </a>
-    <a href="https://github.com/oceanbase/oceanbase">
-        <img alt="forks" src="https://img.shields.io/badge/dynamic/json?color=blue&label=forks&query=forks&url=https%3A%2F%2Fapi.github.com%2Frepos%2Foceanbase%2Foceanbase" />
     </a>
     <a href="https://en.oceanbase.com/docs/community-observer-en-10000000000829617">
         <img alt="English doc" src="https://img.shields.io/badge/docs-English-blue" />
@@ -25,32 +16,21 @@
     <a href="https://github.com/oceanbase/oceanbase/actions/workflows/compile.yml">
         <img alt="building status" src="https://img.shields.io/github/actions/workflow/status/oceanbase/oceanbase/compile.yml?branch=master" />
     </a>
-    <a href="https://github.com/oceanbase/oceanbase/commits/master">
-        <img alt="last commit" src="https://img.shields.io/github/last-commit/oceanbase/oceanbase/master" />
-    </a>
-    <a href="https://join.slack.com/t/oceanbase/shared_invite/zt-1e25oz3ol-lJ6YNqPHaKwY_mhhioyEuw">
-        <img alt="Join Slack" src="https://img.shields.io/badge/slack-Join%20Oceanbase-brightgreen?logo=slack" />
-    </a>
 </p>
 
-**OceanBase Database** is a distributed relational database. It is developed entirely by Ant Group. OceanBase Database is built on a common server cluster. Based on the [Paxos](https://lamport.azurewebsites.net/pubs/lamport-paxos.pdf) protocol and its distributed structure, OceanBase Database provides high availability and linear scalability. OceanBase Database is not dependent on specific hardware architectures.
-
+**SiC B2B2C Shop** 是一个B2B2C平台型电商系统，专注于通用电商解决方案。可帮助企业搭建自己的交易平台。交易模式：零售、批发、采购。
 # Key features 关键特性
 
-* **Transparent Scalability** : An OceanBase cluster can be scaled out to 1,500 nodes transparently, handling petabytes of data and a trillion rows of records.
-* **Ultra-fast Performance** : The only distributed database that has refreshed both TPC-C record, at 707 million tmpC, and TPC-H record, at 15.26 million QphH @30000GB.
-* **Real-time Operational Analytics** : A unified system for both transactional and real-time operational analytics workloads.
-* **Continuous Availability** : OceanBase Database adopts Paxos Consensus algorithm to achieve Zero RPO and less than 8 seconds of RTO.
-* **MySQL Compatible** : OceanBase Database is highly compatible with MySQL, which ensures that zero or few modification is needed for migration.
-* **Cost Effeciency** : The cutting-edge compression technology saves 70%-90% of storage costs without compromising performance. The multi-tenancy architecture achieves higher resource utilization.
+* **AAA** : 待补充。
+* **AAA** : 待补充。
+* **AAA** : 待补充。
 
-See also [key features](https://en.oceanbase.com/product/opensource) for more details.
 
 # System architecture 系统架构
 
-![image.png](https://cdn.nlark.com/yuque/0/2022/png/25820454/1667369873624-c1707034-471a-4f79-980f-6d1760dac8eb.png)
+![image.png](./docs/images/sys_arch.jpg)
 
-[Learn More](https://en.oceanbase.com/docs/community-observer-en-10000000000829641)
+[Learn More](https://www.sicheng.net)
 
 # Quick start 快速开始
 
@@ -58,77 +38,48 @@ See also [key features](https://en.oceanbase.com/product/opensource) for more de
 
 ### 🔥 Deploy by all-in-one
 
-You can quickly deploy a standalone OceanBase Database to experience with the following commands.
-
-**Note**: Linux Only
-
-```shell
-# download and install all-in-one package (internet connection is required)
-bash -c "$(curl -s https://obbusiness-private.oss-cn-shanghai.aliyuncs.com/download-center/opensource/oceanbase-all-in-one/installer.sh)"
-source ~/.oceanbase-all-in-one/bin/env.sh
-
-# quickly deploy OceanBase database
-obd demo
-```
+你可以使用Docker容器快速部署一套B2B2C电商系统。
 
 ### 🐳 Deploy by docker
 
-1. Pull OceanBase image (optional):
+1. Pull SiC B2B2C Shop image (optional):
 
     ```shell
-    docker pull oceanbase/oceanbase-ce
+    docker pull 镜像名称  （即将发布镜像）
     ```
 
-2. Start an OceanBase Database instance:
+2. Start an SiC B2B2C Shop instance:
 
     ```shell
     # Deploy an instance with the maximum specifications supported by the container.
-    docker run -p 2881:2881 --name obstandalone -e MINI_MODE=0 -d oceanbase/oceanbase-ce
+    docker run -p xxxxxxxxxxxx (待补充)
     # Or deploy a mini standalone instance.
-    docker run -p 2881:2881 --name obstandalone -e MINI_MODE=1 -d oceanbase/oceanbase-ce
+    docker run -p xxxxxxxxxxxx (待补充)
     ```
 
-3. Connect to the OceanBase Database instance:
+3. 访问并登录:
 
-    ```shell
-    docker exec -it obstandalone ob-mysql sys # Connect to the root user of the sys tenant.
-    docker exec -it obstandalone ob-mysql root # Connect to the root user of the test tenant.
-    docker exec -it obstandalone ob-mysql test # Connect to the test user of the test tenant.
-    ```
+待补充
 
-See also [Quick experience](https://en.oceanbase.com/docs/community-observer-en-10000000000829647) or [Quick Start (Simplified Chinese)](https://www.oceanbase.com/docs/common-oceanbase-database-cn-10000000001692850) for more details.
+## How to build 如何编译
 
-## How to build
-
-See [OceanBase Developer Document](https://github.com/oceanbase/oceanbase/wiki/Compile) to learn how to compile and deploy a munually compiled observer.
+待补充
 
 # Roadmap 路线图
 
-For future plans, see [Roadmap 2023](https://github.com/oceanbase/oceanbase/issues/1364). See also [OceanBase Roadmap](https://github.com/orgs/oceanbase/projects) for more details.
+待补充
 
-# Case study 案例分析
-
-OceanBase makes data management and use easier with technology innovation. It has been serving more than 400 customers upgrade their database from different industries, including Financial Services, Telecom, Retail, Internet and more.
-
-See also [success stories](https://en.oceanbase.com/customer/home) and [Who is using OceanBase](https://github.com/oceanbase/oceanbase/issues/1301) for more details.
-
-# Contributing 捐献
-
-Contributions are highly appreciated. Read the [development guide](docs/README.md) to getting started.
 
 # License 许可证
 
-OceanBase Database is licensed under the Mulan Public License, Version 2. See the [LICENSE](LICENSE) file for more info.
+SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
 
 # Community 社区
 
-Join the OceanBase community via:
+社区正在建设中...
 
-* [Slack Workspace](https://join.slack.com/t/oceanbase/shared_invite/zt-1e25oz3ol-lJ6YNqPHaKwY_mhhioyEuw)
-* [Chinese User Forum](https://ask.oceanbase.com/)
-* DingTalk Group: 33254054 ([QR code](images/dingtalk.svg))
-* WeChat Group (Add the assistant with WeChat ID: OBCE666)
+# Jenkins流水线流程说明
 
-# shop商城的流水线泳道图
-介绍5介绍5介绍555777888
+项目根目录的Jenkinsfile文件是Jenkins流水线配置文件，工作流程如下图
+
 ![Alt text](docs/images/Jenkins流水线泳道图.png)
