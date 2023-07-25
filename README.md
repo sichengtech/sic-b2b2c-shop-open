@@ -78,8 +78,3 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 
 社区正在建设中...
 
-# Jenkins流水线流程说明
-
-项目根目录的Jenkinsfile文件是Jenkins流水线配置文件，工作流程如下图
-
-![Alt text](docs/images/Jenkins流水线泳道图.png)
