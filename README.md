@@ -38,30 +38,48 @@
 
 ### 🔥 Deploy by all-in-one
 
-你可以使用Docker容器快速部署一套B2B2C电商系统。
+你可以使用Docker容器快速部署一套B2B2C电商系统。  
+https://hub.docker.com/repositories/sichengtech  DcokerHub镜像仓库列表  
+https://hub.docker.com/repository/docker/sichengtech/b2b2c-shop-open/general  shop主程序镜像  
+https://hub.docker.com/repository/docker/sichengtech/mysql56/general  MySQL镜像  
+https://hub.docker.com/repository/docker/sichengtech/shop-minio/general  Minio对像存储镜像  
+https://hub.docker.com/repository/docker/sichengtech/solr-alone/general  solr搜索引擎镜像  
 
 ### 🐳 Deploy by docker
 
-1. Pull SiC B2B2C Shop image (optional):
+1、拉取镜像：
+```shell
+docker pull sichengtech/mysql56  
+docker pull sichengtech/shop-minio  
+docker pull sichengtech/solr-alone  
+docker pull sichengtech/b2b2c-shop-open  
+```
 
-    ```shell
-    docker pull 镜像名称  （即将发布镜像）
-    ```
+2、创建网络
+Docker容器分配静态ip，并使用自定义网络的示例。下面使用一个叫my-net 的自定义网络，使用172.28.0.0/16网段  
+创建一个网络172.28.0.0/16  
+```shell
+docker network create --subnet=172.28.0.0/16 my-net  
+```
 
-2. Start an SiC B2B2C Shop instance:
+3、启动镜像
+```shell
+docker run -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 --ip 172.28.0.105 --network my-net --name shop-mysql sichengtech/mysql56  
+docker run -d -p 9000:9000 -p 9090:9090 --name shop-minio --ip 172.28.0.102 --network my-net sichengtech/shop-minio server /data2 --console-address ":9090"  
+docker run -d -p 8983:8983 -t --name shop-solr-alone8 --ip 172.28.0.101 --network my-net sichengtech/solr-alone  
+docker run -d -p 8080:8080 --name shop --ip 172.28.0.10 --network my-net sichengtech/b2b2c-shop-open  
+```
 
-    ```shell
-    # Deploy an instance with the maximum specifications supported by the container.
-    docker run -p xxxxxxxxxxxx (待补充)
-    # Or deploy a mini standalone instance.
-    docker run -p xxxxxxxxxxxx (待补充)
-    ```
+4、访问
+前台：http://localhost:8080/  
+会员中心：http://localhost:8080/member/index.htm  
+商家后台：http://localhost:8080/seller/index.htm  
+管理后台：http://localhost:8080/admin/index.do  
+solr搜索引擎后台：http://localhost:8983/solr/#/  
+Minio后台：http://localhost:9090/login  
 
-3. 访问并登录:
 
-待补充
-
-## How to build 如何编译
+# How to build 如何编译
 
 待补充
 
