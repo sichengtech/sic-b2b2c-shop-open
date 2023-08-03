@@ -93,14 +93,6 @@
 
     <!-- 设定主仓库，按设定顺序进行查找。 -->
     <repositories>
-        <!--定位标记3-start-->
-        <!-- 我公司的Nexus代理仓库 -->
-        <repository>
-            <id>sicheng-repos</id>
-            <name>Sicheng公司的代理仓库，它代理多个重要的仓库。只可从公司内网访问。</name>
-            <url>https://nexus.sicheng.net:8443/repository/maven-public/</url>
-        </repository>
-        <!--定位标记3-end-->
         <!-- 阿里云公共仓库 , http://maven.aliyun.com/mvn/view 这里可浏览仓库的内容 -->
         <repository>
             <id>aliyunmaven</id>
@@ -123,19 +115,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-    <!--定位标记4-start-->
-    <!--指定Maven分发构件Deploy上传jar包时的nexus仓库地址-->
-    <distributionManagement>
-        <repository>
-            <id>sicheng-repos</id>
-            <url>https://nexus.sicheng.net:8443/repository/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>sicheng-repos</id>
-            <url>https://nexus.sicheng.net:8443/repository/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-    <!--定位标记4-end-->
 
     <!-- 依赖项定义 -->
     <dependencies>
