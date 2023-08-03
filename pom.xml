@@ -92,14 +92,15 @@
     </properties>
 
     <!-- 设定主仓库，按设定顺序进行查找。 -->
-
     <repositories>
+        <!--定位标记3-start-->
         <!-- 我公司的Nexus代理仓库 -->
         <repository>
             <id>sicheng-repos</id>
             <name>Sicheng公司的代理仓库，它代理多个重要的仓库。只可从公司内网访问。</name>
             <url>https://nexus.sicheng.net:8443/repository/maven-public/</url>
         </repository>
+        <!--定位标记3-end-->
         <!-- 阿里云公共仓库 , http://maven.aliyun.com/mvn/view 这里可浏览仓库的内容 -->
         <repository>
             <id>aliyunmaven</id>
@@ -113,15 +114,16 @@
         </repository>
     </repositories>
 
-    <!-- 我公司的插件仓库 -->
+    <!-- 插件仓库也使用阿云的maven仓库 -->
     <pluginRepositories>
         <pluginRepository>
-            <id>sicheng-repos-plugin</id>
-            <name>Sicheng Public PluginRepository</name>
-            <url>https://nexus.sicheng.net:8443/repository/maven-public/</url>
+            <id>aliyunmaven</id>
+            <name>阿里云公共仓库</name>
+            <url>https://maven.aliyun.com/nexus/content/groups/public/</url>
         </pluginRepository>
     </pluginRepositories>
 
+    <!--定位标记4-start-->
     <!--指定Maven分发构件Deploy上传jar包时的nexus仓库地址-->
     <distributionManagement>
         <repository>
@@ -133,17 +135,16 @@
             <url>https://nexus.sicheng.net:8443/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
+    <!--定位标记4-end-->
 
     <!-- 依赖项定义 -->
     <dependencies>
-
-        <!-- fdp-core基础工具库 start -->
+        <!-- fdp-core基础工具库  -->
         <dependency>
-            <groupId>com.sicheng</groupId>
+		<groupId>io.github.sichengtech</groupId>
     <artifactId>fdp-core-open</artifactId>
-            <version>3.6.1-SNAPSHOT</version>
+            <version>3.6.1</version>
         </dependency>
-        <!-- fdp-core基础工具库 end -->
 
         <!-- SPRING begin -->
         <dependency>
@@ -695,29 +696,36 @@
             <version>2.6.1</version>
         </dependency>
 
+        <!-- RSF远程服务调用框架(正在推进删除这个jar包，使用更常见的组件来替代它) -->
         <!-- RSF远程服务调用框架 -->
         <dependency>
-            <groupId>com.hc360</groupId>
-            <artifactId>rsf-client</artifactId>
-            <version>1.3.6</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.mina</groupId>
-            <artifactId>mina-core</artifactId>
-            <version>2.0.16</version>
+            <groupId>io.github.sichengtech</groupId>
+            <artifactId>rsf-core</artifactId>
+            <version>1.3.7</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.hc360</groupId>
+                    <artifactId>hasclient</artifactId>
+                </exclusion>
+                <exclusion>
+                    <groupId>com.hc360</groupId>
+                    <artifactId>configure-client</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
+        <!-- 微信支付-wxpay-sdk jar包 -->
         <dependency>
-            <groupId>com.hc360</groupId>
-            <artifactId>weixin-pay-sdk</artifactId>
+            <groupId>com.github.wxpay</groupId>
+            <artifactId>wxpay-sdk</artifactId>
             <version>0.0.3</version>
         </dependency>
 
         <!-- 支付宝-alipay-sdk jar包 -->
         <dependency>
-            <groupId>com.alipay</groupId>
+            <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>2.3.0</version>
+            <version>3.0.52.ALL</version>
         </dependency>
 
         <!-- 微信支付退款通知解密  -->
