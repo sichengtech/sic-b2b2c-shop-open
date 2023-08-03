@@ -141,7 +141,7 @@
     <dependencies>
         <!-- fdp-core基础工具库  -->
         <dependency>
-            <groupId>com.sicheng</groupId><!--定位标记5-->
+		<groupId>io.github.sichengtech</groupId>
 		<artifactId>fdp-core-open</artifactId>
             <version>3.6.1</version>
         </dependency>
