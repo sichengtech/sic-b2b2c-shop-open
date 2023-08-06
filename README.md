@@ -93,6 +93,8 @@ Minio后台：http://localhost:9090/login
 SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
 
 # Community 社区
-
-社区正在建设中...
+中文商城演示站（每天还原数据）：http://demo1.sicheng.net/  
+国际商城演示站（每天还原数据）：http://demo2.sicheng.net/
+社区官网（文档、论坛）： http://www.sicheng.net
+社区正在建设中...  
 
