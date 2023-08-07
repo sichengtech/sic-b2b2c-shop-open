@@ -93,9 +93,35 @@ Minio后台：http://localhost:9090/login
 SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
 
 # Community 社区
+【社区正在建设中... 】  
+
 中文商城演示站（每天还原数据）：http://demo1.sicheng.net/  
 国际商城演示站（每天还原数据）：http://demo2.sicheng.net/  
 社区官网（文档、论坛）： http://www.sicheng.net  
 商城使用手册： http://www.sicheng.net/shopdoc/  
-【社区正在建设中... 】   
+
+## 演示账号
+### PC商城前台地址与账号
+商城首页：http://demo.sicheng.net
+
+### PC商家后台地址与账号
+地址：http://demo.sicheng.net/seller/index.htm  
+用户名：jianeng，密码：135886，佳能官方旗舰店  
+用户名：meidishop，密码：135886， 美的官方旗舰店  
+用户名：zongtian，密码：135886，纵天汽配店  
+用户名：qiaopai，密码：135886，壳牌思程自营店  
+用户名：guoyang，密码：135886，张加力专卖店  
+用户名：fanxiuxiu3，密码：135886，北京汇鑫科技有限公司  
+用户名：xiaoyi，密码：135886， 小蚁（YI）官方旗舰店
+
+### PC会员中心地址与账号  
+地址：http://demo.sicheng.net/member/index.htm  
+cailong17，密码：135886，个人买家  
+zhang123，密码：135886，个人买家  
+admin123，密码：135886，个人买家  
+
+### PC管理后台地址与账号
+地址：http://demo.sicheng.net/admin/index.do  
+thinkgem，密码：135996，超级管理员  
+admin，密码：135996，系统管理员买  
 
