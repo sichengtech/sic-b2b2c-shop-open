@@ -690,6 +690,10 @@
                     <groupId>com.hc360</groupId>
                     <artifactId>configure-client</artifactId>
                 </exclusion>
+                <exclusion>
+                    <groupId>org.springframework</groupId>
+                    <artifactId>spring</artifactId>
+                </exclusion>
             </exclusions>
         </dependency>
 
