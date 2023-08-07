@@ -102,10 +102,10 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 
 ## 演示账号
 ### PC商城前台地址与账号
-商城首页：http://demo.sicheng.net
+商城首页：http://demo1.sicheng.net
 
 ### PC商家后台地址与账号
-地址：http://demo.sicheng.net/seller/index.htm  
+地址：http://demo1.sicheng.net/seller/index.htm  
 用户名：jianeng，密码：135886，佳能官方旗舰店  
 用户名：meidishop，密码：135886， 美的官方旗舰店  
 用户名：zongtian，密码：135886，纵天汽配店  
@@ -114,14 +114,14 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 用户名：fanxiuxiu3，密码：135886，北京汇鑫科技有限公司  
 用户名：xiaoyi，密码：135886， 小蚁（YI）官方旗舰店
 
-### PC会员中心地址与账号  
-地址：http://demo.sicheng.net/member/index.htm  
+### PC会员中心地址与账号
+地址：http://demo1.sicheng.net/member/index.htm  
 cailong17，密码：135886，个人买家  
 zhang123，密码：135886，个人买家  
-admin123，密码：135886，个人买家  
+admin123，密码：135886，个人买家
 
 ### PC管理后台地址与账号
-地址：http://demo.sicheng.net/admin/index.do  
+地址：http://demo1.sicheng.net/admin/index.do  
 thinkgem，密码：135996，超级管理员  
 admin，密码：135996，系统管理员买  
 
