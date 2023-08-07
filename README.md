@@ -94,10 +94,8 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 
 # Community 社区
 中文商城演示站（每天还原数据）：http://demo1.sicheng.net/  
-
 国际商城演示站（每天还原数据）：http://demo2.sicheng.net/  
-
 社区官网（文档、论坛）： http://www.sicheng.net  
-
-社区正在建设中...  
+商城使用手册： http://www.sicheng.net/shopdoc/  
+【社区正在建设中... 】   
 
