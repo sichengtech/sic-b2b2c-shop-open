@@ -42,7 +42,7 @@ public class SsoLogoutFilter extends LogoutFilter {
         CookieUtils.setCookie(request, response, "usm.isloginInvalid", null, "/", 0);
 
         //调用父类中原始的方法，执行原始的退出业务
-        super.preHandle(servletRequest,servletResponse);
+        return super.preHandle(servletRequest,servletResponse);
 
 //        //以下是手动调用 退出业务，不需要手动用调，如上super.preHandle()更优雅。
 //        Subject subject = getSubject(request, response);
@@ -56,6 +56,6 @@ public class SsoLogoutFilter extends LogoutFilter {
 
         //返回false表示不执行后续的过滤器，直接返回跳转到登录页面
         //返回true表示执行后续的过滤器，继续执行过滤器链条上的后续过滤器。
-        return true;
+//        return true;
     }
 }

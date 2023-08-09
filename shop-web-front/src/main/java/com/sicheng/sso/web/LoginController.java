@@ -84,19 +84,6 @@ public class LoginController extends BaseController {
      */
     @RequestMapping(value = "/login", method = RequestMethod.GET)
     public String login(HttpServletRequest request, HttpServletResponse response, Model model) {
-
-        // 2023-8-8 修改，原因如下：
-        // 经过分析，一操作进入登录页面，以下代码就清空了关键cookie，这是不对的。
-        // 我只是进入了登录页面，还未输入用户名点击登录按钮呢，我也有可能放弃登录呢！也许只是来看看登录页呢。
-        // 所以此时就清空了关键cookie，是不对的，不应该清空cookie。所以于2023-8-8把以下代码注释了。
-        // 分析：最早的作者为什么会写这段代码来清cookie？可能他本意是想在“退出”成功后，执行清理cookie，但没找到点位。就这在这里了。因为退出后会进入登录页面。
-        // 解决：我写了com.sicheng.sso.shiro.SsoLogoutFilter，在执行退出动作时，会进入此过滤器，执行清理动作。以下代码可以注释了，它被替代了。
-//        //清除cookie
-//        CookieUtils.setCookie(request, response, "usm.loginName", null, "/", 0);
-//        CookieUtils.setCookie(request, response, "usm.headPicPath", null, "/", 0);
-//        CookieUtils.setCookie(request, response, "usm.isTypeUserPurchaser", null, "/", 0);
-//        CookieUtils.setCookie(request, response, "usm.isloginInvalid", null, "/", 0);
-
         if (logger.isDebugEnabled()) {
             logger.debug("login, active session size: {}", sessionDAO.getActiveSessions(false).size());
         }
