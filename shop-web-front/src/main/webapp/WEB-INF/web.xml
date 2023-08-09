@@ -287,9 +287,9 @@
 	</servlet-mapping>
 	
 
-	<!-- Session过期时间配置，对未使用shiro的子系统有效(如前台、买家中心、商家后台),
-	时间单位是分钟，并且只能是整数，如果是零或负数，那么会话就永远不会超时-->
-	<!-- 管理后台，因为使用shiro来管理权限、用户、登录，Session过期时间也由shiro管理
+	<!-- Session过期时间配置，对未使用shiro的子系统有效(如wap\upload\static),在本web.xml文件中配置，
+	时间单位是分钟，并且只能是整数，如果是零或负数会话就永远不会超时-->
+	<!-- 管理后台、前台、买家中心、商家后台，因为使用shiro来管理权限、用户、登录，Session过期时间也由shiro管理
 	请修改"fdp.properties" 文件 "session.sessionTimeout" 参数.-->
 	<session-config>
 		<session-timeout>30</session-timeout>

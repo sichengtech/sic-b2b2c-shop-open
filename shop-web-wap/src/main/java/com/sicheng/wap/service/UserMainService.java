@@ -47,7 +47,7 @@ public class UserMainService extends CrudService<UserMainDao, UserMain> {
 
     /**
       * 保存注册信息 
-      * @param 用户信息
+      * @param userMain 主用户对像，userMain表映射的对像
       * @param openId 微信openId
      */
     @Transactional(rollbackFor = Exception.class)
@@ -77,14 +77,14 @@ public class UserMainService extends CrudService<UserMainDao, UserMain> {
         //将登录的用户信息存入Cookie中
         CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.uid", userMain.getUId().toString(), "/", -1);//用户id(临时存储)
         CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isTypeUserPurchaser", userMain.isTypeUserPurchaser() ? "true" : "false", "/", -1); //是否为采购商(临时存储)
-        CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", "true", 1800); //是否登录失效(持久性存储30分钟)
+        CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", "true", 1800); //是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）
 
         return appToken;
     }
 
     /**
       * 处理登录业务(wap)
-      * @param 用户信息
+      * @param userMain 主用户对像，userMain表映射的对像
       * @param openId 微信openId
      */
     @Transactional(rollbackFor = Exception.class)
@@ -118,12 +118,12 @@ public class UserMainService extends CrudService<UserMainDao, UserMain> {
         //将登录的用户信息存入Cookie中
         CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.uid", userMain.getUId().toString(), "/", -1);//用户id(临时存储)
         CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isTypeUserPurchaser", userMain.isTypeUserPurchaser() ? "true" : "false", "/", -1); //是否为采购商(临时存储)
-        CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", "true", 1800); //是否登录失效(持久性存储30分钟)
+        CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", "true", 1800); //是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）
     }
 
     /**
       * 处理登录业务（app） 
-      * @param 用户信息
+      * @param userMain 主用户对像，userMain表映射的对像
       * @param openId 微信openId
      */
     @Transactional(rollbackFor = Exception.class)
@@ -180,8 +180,8 @@ public class UserMainService extends CrudService<UserMainDao, UserMain> {
 
     /**
       * 编辑账号信息 
-      * @param userMain
-      * @param userMember
+      * @param userMain 主用户对像，userMain表映射的对像
+      * @param userMember  UserMember表映射的对像
      */
     @Transactional(rollbackFor = Exception.class)
     public void editUserInfo(UserMain userMain, UserMember userMember) {

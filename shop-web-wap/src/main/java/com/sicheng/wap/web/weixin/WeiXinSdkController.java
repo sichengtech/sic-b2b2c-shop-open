@@ -130,7 +130,7 @@ public class WeiXinSdkController extends BaseController {
             //将登录的用户信息存入Cookie中
             CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.uid", userMain.getUId().toString(), "/", -1);//用户id(临时存储)
             CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isTypeUserPurchaser", userMain.isTypeUserPurchaser() ? "true" : "false", "/", -1); //是否为采购商(临时存储)
-            CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", "true", 1800); //是否登录失效(持久性存储30分钟)
+            CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", "true", 1800); //是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）
             //更新会员信息
             userMainService.upUserIpDate(userMain.getUId());//登录成功后更新登录ip和登录日期
             //登录成功后，跳转到要进入的页面

@@ -106,19 +106,19 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 
 ### PC商家后台地址与账号
 地址：http://demo1.sicheng.net/seller/index.htm  
+用户名：fanxiuxiu3，密码：135886，北京汇鑫科技有限公司   
 用户名：jianeng，密码：135886，佳能官方旗舰店  
 用户名：meidishop，密码：135886， 美的官方旗舰店  
 用户名：zongtian，密码：135886，纵天汽配店  
 用户名：qiaopai，密码：135886，壳牌思程自营店  
 用户名：guoyang，密码：135886，张加力专卖店  
-用户名：fanxiuxiu3，密码：135886，北京汇鑫科技有限公司  
 用户名：xiaoyi，密码：135886， 小蚁（YI）官方旗舰店
 
 ### PC会员中心地址与账号
 地址：http://demo1.sicheng.net/member/index.htm  
-cailong17，密码：135886，个人买家  
 zhang123，密码：135886，个人买家  
-admin123，密码：135886，个人买家
+admin123，密码：135886，个人买家  
+cailong17，密码：135886，个人买家
 
 ### PC管理后台地址与账号
 地址：http://demo1.sicheng.net/admin/index.do  

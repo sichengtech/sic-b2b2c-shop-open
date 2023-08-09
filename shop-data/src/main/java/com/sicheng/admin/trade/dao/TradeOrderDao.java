@@ -71,6 +71,6 @@ public interface TradeOrderDao extends CrudDao<TradeOrder> {
      * @param wrapper
      * @return
      */
-    public List<TradeOrder> joinSelectByWhere(Page<TradeOrder> page, Wrapper wrapper);
+    public List<TradeOrder> joinSelectByWhere(@Param(value = "p")Page<TradeOrder> page, @Param(value = "w") Wrapper wrapper);
 
 }

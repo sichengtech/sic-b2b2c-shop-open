@@ -16,7 +16,7 @@
             <map>
                 <entry key="cas" value-ref="casFilter"/>
                 <entry key="authc" value-ref="ssoFormAuthenticationFilter"/>
-                <entry key="logout" value-ref="logoutFilter" /><!-- 将LogoutFilter加入shiro过滤器 -->
+                <entry key="logout" value-ref="logoutFilter" /><!-- 将退出过滤器LogoutFilter加入shiro过滤器 -->
             </map>
         </property>
         
@@ -57,8 +57,11 @@
 	<!-- 表单验证（包含验证码）过滤类 -->
 	<bean id="ssoFormAuthenticationFilter" class="com.sicheng.sso.shiro.SsoFormAuthenticationFilter"/>
 	
-	<!--LogoutFilter管理注销跳转到的url-->
-	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
+	<!--退出过滤器LogoutFilter管理注销后将跳转到的url-->
+	<!--当调用的路径匹配到/logout，表示想执行退出动作，会进入到SsoLogoutFilter过滤器。
+	SsoLogoutFilter继承了Shiro官方的LogoutFilter，并重写了preHandle方法，在preHandle方法执行清空数据清空cookie动作。-->
+	<bean id="logoutFilter" class="com.sicheng.sso.shiro.SsoLogoutFilter">
+<!--	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">--><!--LogoutFilter是官方退出过滤器，下岗了-->
 	     <property name="redirectUrl" value="${ssoPath}/login/login.htm" />
 	</bean>
 	

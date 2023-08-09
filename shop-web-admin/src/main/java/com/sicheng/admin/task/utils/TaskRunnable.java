@@ -1,3 +1,15 @@
+/**
+ * SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
+ * Copyright (c) 2016 SiCheng.Net
+ * SiC B2B2C Shop is licensed under Mulan PubL v2.
+ * You can use this software according to the terms and conditions of the Mulan PubL v2.
+ * You may obtain a copy of Mulan PubL v2 at:
+ *          http://license.coscl.org.cn/MulanPubL-2.0
+ * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
+ * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
+ * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
+ * See the Mulan PubL v2 for more details.
+ */
 package com.sicheng.admin.task.utils;
 
 import com.sicheng.admin.sys.entity.SysTimedTask;
@@ -16,11 +28,11 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 定时任务的增强启动器
+ * 定时任务的增强启动器， 做一个Runnable线程执行，表示一个任务。
  * 采用了模板模式，简化定时任务的开发，并增强了功能
  * <p>
  * 增强了以下功能：
- * 1、根据后台定时任务的开头设置，决定是否执行定时任务
+ * 1、根据：管理后台-系统-定时任务 列表页中的开关设置，决定是否执行定时任务。
  * 2、记录任务的执行日志到日志表
  * 3、根据配置决定是否使用分布式锁，适用集群环境下的单点运行定时任务
  *
@@ -113,7 +125,7 @@ public class TaskRunnable {
             result = "1";
         } catch (Exception e) {
             result = "0";
-            logger.error("结算定时任务失败", e);
+            logger.error("执行具体的"+taskId+"号定时任务失败", e);
         } finally {
             //不释放锁，600秒(lockSeconds参数)后会自行过期，考虑到多个节点的操作系统时间可能有误差，这里最多可解决600秒的误差。
             //定时任务可能3秒就执行完成了，但也要锁住600秒。一般的定时任务是每天一次、每小时一次，可满足。

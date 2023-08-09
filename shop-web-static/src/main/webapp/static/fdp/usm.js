@@ -1,5 +1,5 @@
 /**
- * 用户登录状态管理器
+是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）* 用户登录状态管理器
  * @author 蔡龙
  * @version 2017-06-26
  */
@@ -8,13 +8,13 @@
 	 * usm命名空间,起隔离作用，防止同名变量冲突
 	 * usm 代表 user status manager(用户状态管理器)
 	 */
-	if(!window.usm) {window.usm={};};
+	if(!window.usm) {window.usm={};}
 	
 	/**
 	 * 写入cookie
 	 * name  	cookie的键
 	 * value	cookie的值
-	 * expires 	cookie有效时间，不写代表关闭浏览器失效
+	 * expires 	cookie有效时间（单位：天），不写代表关闭浏览器失效
 	 */
 	usm.putCookie = function(name, value, expires){
 		fdp.cookie(name, value, {path:'/',expires:expires});
@@ -42,7 +42,7 @@
 					usm.putCookie('usm.loginName', data.loginName);//用户名(临时存储)
 					usm.putCookie('usm.headPicPath', data.headPicPath);//头像(临时存储)
 					usm.putCookie('usm.isTypeUserPurchaser', data.isTypeUserPurchaser);//是否为采购商(临时存储)
-					usm.putCookie('usm.isloginInvalid', "true", 0.02);//是否登录失效(持久性存储30分钟)
+					usm.putCookie('usm.isloginInvalid', "true", 0.0208333);//是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）  单位：天，0.0208333天=30分钟
 					if($.isFunction(callback)){
 						callback();
 					}

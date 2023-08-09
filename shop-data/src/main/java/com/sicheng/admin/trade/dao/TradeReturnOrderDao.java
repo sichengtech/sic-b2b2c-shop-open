@@ -12,12 +12,12 @@
  */
 package com.sicheng.admin.trade.dao;
 
-import com.sicheng.admin.trade.entity.TradeOrder;
 import com.sicheng.admin.trade.entity.TradeReturnOrder;
 import com.sicheng.common.persistence.CrudDao;
 import com.sicheng.common.persistence.Page;
 import com.sicheng.common.persistence.annotation.MyBatisDao;
 import com.sicheng.common.persistence.wrapper.Wrapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -38,5 +38,5 @@ public interface TradeReturnOrderDao extends CrudDao<TradeReturnOrder> {
      * @param wrapper
      * @return
      */
-    public List<TradeReturnOrder> joinSelectByWhere(Page<TradeReturnOrder> page, Wrapper wrapper);
+    public List<TradeReturnOrder> joinSelectByWhere(@Param(value = "p")Page<TradeReturnOrder> page, @Param(value = "w") Wrapper wrapper);
 }

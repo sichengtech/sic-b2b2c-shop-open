@@ -16,7 +16,7 @@
             <map>
                 <entry key="cas" value-ref="casFilter"/>
                 <entry key="authc" value-ref="formAuthenticationFilter"/>
-                <entry key="logout" value-ref="logoutFilter" /><!-- 将LogoutFilter加入shiro过滤器 -->
+                <entry key="logout" value-ref="logoutFilter" /><!-- 将退出过滤器LogoutFilter加入shiro过滤器 -->
             </map>
         </property>
         <!-- Shiro权限过滤过滤器定义 -->
@@ -40,9 +40,9 @@
 	</bean>
 
 	<!-- 表单验证（包含验证码）过滤类 -->
-	<bean id="formAuthenticationFilter" class="com.sicheng.admin.sys.shiro.FormAuthenticationFilter"/>	
-	
-	<!--LogoutFilter管理注销跳转到的url-->
+	<bean id="formAuthenticationFilter" class="com.sicheng.admin.sys.shiro.FormAuthenticationFilter"/>
+
+	<!--退出过滤器LogoutFilter管理注销后将跳转到的url-->
 	<bean id="logoutFilter" class="org.apache.shiro.web.filter.authc.LogoutFilter">
 	     <property name="redirectUrl" value="${adminPath}/login.do" />
 	</bean>
