@@ -19,12 +19,16 @@
 </p>
 
 **SiC B2B2C Shop** 是一个B2B2C平台型电商系统，专注于通用电商解决方案。可帮助企业搭建自己的交易平台。交易模式：零售、批发、采购。
-# Key features 关键特性
+# 本交易平台的主要角色
+* **平台方** : 管理员、运营者、客服。
+* **买方(个人)** : 个人买家通过交易平台以零售价购买商品。
+* **卖方(品牌)** : 企业商户有自己的商标品牌，入驻本交易平台，开品牌旗舰店，把产品卖出去（2B）。
+* **卖方(小)** : 一般企业商户入驻本交易平台，开店普通店，把产品卖出去(2C)。
 
-* **AAA** : 待补充。111222
-* **AAA** : 待补充。
-* **AAA** : 待补充。
-
+# 开源地址
+本项目代码同时托管在Gitee\Github。  
+https://gitee.com/sichengtech_admin/sic-b2b2c-shop-open  
+https://github.com/sichengtech/sic-b2b2c-shop-open  
 
 # System architecture 系统架构
 
