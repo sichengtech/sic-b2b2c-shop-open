@@ -4,17 +4,17 @@
     </a>
 </p>
 <p align="center">
-    <a href="https://github.com/oceanbase/oceanbase/blob/master/LICENSE">
+    <a href="https://gitee.com/sichengtech_admin/sic-b2b2c-shop-open/blob/main/LICENSE">
         <img alt="license" src="https://img.shields.io/badge/license-MulanPubL--2.0-blue" />
     </a>
-    <a href="https://en.oceanbase.com/docs/community-observer-en-10000000000829617">
+    <a href="http://www.sicheng.net/shopdoc/">
         <img alt="English doc" src="https://img.shields.io/badge/docs-English-blue" />
     </a>
-    <a href="https://www.oceanbase.com/docs/oceanbase-database-cn">
+    <a href="http://www.sicheng.net/shopdoc/">
         <img alt="Chinese doc" src="https://img.shields.io/badge/文档-简体中文-blue" />
     </a>
-    <a href="https://github.com/oceanbase/oceanbase/actions/workflows/compile.yml">
-        <img alt="building status" src="https://img.shields.io/github/actions/workflow/status/oceanbase/oceanbase/compile.yml?branch=master" />
+    <a href="#">
+        <img alt="building status" src="https://img.shields.io/badge/build-成功-blue" />
     </a>
 </p>
 
