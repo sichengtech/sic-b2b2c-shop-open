@@ -20,7 +20,7 @@
 <body>
 <script>
     var salt_d = "${salt_d}";
-    var salt_e = "${salt_e}";
+    <%--var salt_e = "${salt_e}";--%>
 </script>
 
 <!-- panel开始 -->

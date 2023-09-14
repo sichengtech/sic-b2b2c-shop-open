@@ -55,7 +55,7 @@ public class SignFilter implements Filter {
      */
     protected Logger logger = LoggerFactory.getLogger(getClass());
     //base url盐(e)
-    private String salt_baseUrl = Global.getConfig("wap.api.baseUrl");
+//    private String salt_baseUrl = Global.getConfig("wap.api.baseUrl");
     //固化在代码中的盐(d)
     private String salt_d = Global.getConfig("wap.api.sign");
 
@@ -109,7 +109,8 @@ public class SignFilter implements Filter {
 
             //验证签名
             //签名规则 md5(sha3_256( base64(业务数据json串) + 时间戳 + md5(d + md5(e))))
-            String salt = MD5.encrypt(salt_d + MD5.encrypt(salt_baseUrl));
+//            String salt = MD5.encrypt(salt_d + MD5.encrypt(salt_baseUrl));
+            String salt = MD5.encrypt(salt_d );
             String allStr = dataBase64 + timestamp + salt;
             String mySign1 = FIPS202.hexFromBytes(FIPS202.HashFunction.SHA3_256.apply(allStr.getBytes(StandardCharsets.UTF_8)));
             String mySign2 = MD5.encrypt(mySign1.toLowerCase());

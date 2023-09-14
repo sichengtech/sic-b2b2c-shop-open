@@ -54,7 +54,7 @@ public class SysApiController extends BaseController {
 
 
     //base url盐(e)
-    private String salt_baseUrl = Global.getConfig("wap.api.baseUrl");
+//    private String salt_baseUrl = Global.getConfig("wap.api.baseUrl");
     //固化在代码中的盐(d)
     private String salt_d = Global.getConfig("wap.api.sign");
 
@@ -258,7 +258,7 @@ public class SysApiController extends BaseController {
         }
         model.addAttribute("sysApi", entity);
         model.addAttribute("apiParamList", JsonMapper.getInstance().toJson(entity.getSysApiParamList()));
-        model.addAttribute("salt_e", salt_baseUrl);
+//        model.addAttribute("salt_e", salt_baseUrl);
         model.addAttribute("salt_d", salt_d);
         return "admin/sys/sysApiTest";
     }

@@ -89,7 +89,8 @@ $(function () {
 
         //签名
         var date1 = new Date();
-        var newSalt = hex_md5(salt_d + hex_md5(salt_e));
+        // var newSalt = hex_md5(salt_d + hex_md5(salt_e));
+        var newSalt = hex_md5(salt_d );
         var base64 = Base.encode(JSON.stringify(data)) + Date.parse(date1) + newSalt;
         var random = hex_md5(sha3_256(base64));
 
