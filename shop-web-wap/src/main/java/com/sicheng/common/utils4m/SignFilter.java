@@ -75,6 +75,9 @@ public class SignFilter implements Filter {
             return;
         }
 
+        //验证签名失败-1：无sign、无timestamp、无dataBase64
+        //验证签名失败-2: 验证时间戳未通过(允许正负偏差各一个小时)
+        //验证签名失败-3：验证签名未通过
         try {
             //取由前端传来的参数，前端永远只传这3个参数来
             String dataBase64 = r.getParameter("data");
