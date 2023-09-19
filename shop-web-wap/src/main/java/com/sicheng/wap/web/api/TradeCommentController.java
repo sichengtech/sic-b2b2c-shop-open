@@ -96,7 +96,7 @@ public class TradeCommentController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, tradeCommentPage.getList(), tradeCommentPage);
         } catch (Exception e) {
             logger.error("查询评价异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -128,7 +128,7 @@ public class TradeCommentController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询成功"), tradeCommentImageList, null);
         } catch (Exception e) {
             logger.error("查询评价图片异常：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -244,7 +244,7 @@ public class TradeCommentController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("查询评价图片异常：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -281,7 +281,7 @@ public class TradeCommentController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("隐藏评价异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }

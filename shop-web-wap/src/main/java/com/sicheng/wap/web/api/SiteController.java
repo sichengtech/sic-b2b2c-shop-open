@@ -119,7 +119,7 @@ public class SiteController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("轮播图数据获取成功"), siCarouselPicturePage.getList(), null);
         } catch (Exception e) {
             logger.error("轮播图数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -143,7 +143,7 @@ public class SiteController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("推荐数据获取成功"), siteRecommend, null);
         } catch (Exception e) {
             logger.error("推荐数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -184,7 +184,7 @@ public class SiteController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("广告位数据获取成功"), content, null);
         } catch (Exception e) {
             logger.error("广告位数据出现错误：" + e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_NOT_FOUND, FYUtils.fy("服务器出现错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_NOT_FOUND, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -203,7 +203,7 @@ public class SiteController extends BaseController {
 //			return ApiUtils.getMap(ApiUtils.STATUS_OK, "网站信息数据获取成功", siteInfo, null);
 //		} catch (Exception e) {
 //			logger.error("网站信息数据出现错误："+e);
-//			return ApiUtils.getMap(ApiUtils.STATUS_NOT_FOUND, "服务器出现错误", null, null);
+//			return ApiUtils.getMap(ApiUtils.STATUS_NOT_FOUND, "服务发生错误", null, null);
 //		}
     }
 

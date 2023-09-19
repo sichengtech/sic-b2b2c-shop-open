@@ -81,7 +81,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("商品收藏数据获取成功"), page.getList(), page);
         } catch (Exception e) {
             logger.error("商品收藏数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -164,7 +164,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("商品收藏成功"), memberCollectionProduct, null);
         } catch (Exception e) {
             logger.error("商品收藏参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -201,7 +201,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("取消收藏商品成功"), null, null);
         } catch (Exception e) {
             logger.error("商品取消收藏错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -224,7 +224,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("获取失效商品数量成功"), count, null);
         } catch (Exception e) {
             logger.error("获取失效商品数量错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -245,7 +245,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺收藏数据获取成功"), page.getList(), page);
         } catch (Exception e) {
             logger.error("店铺收藏数据参数错误：" + e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -281,7 +281,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺收藏成功"), memberCollectionStore, null);
         } catch (Exception e) {
             logger.error("店铺收藏参数错误：" + e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -310,7 +310,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("取消收藏店铺成功"), null, null);
         } catch (Exception e) {
             logger.error("店铺删除参数错误：" + e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -349,7 +349,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("查询商品是否收藏错误:" + e.toString());
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -389,7 +389,7 @@ public class UserCollectionController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("查询店铺是否收藏错误:" + e.toString());
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }

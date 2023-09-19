@@ -69,7 +69,7 @@ public class TradeCart extends TradeCartBase<TradeCart> {
     }
 
     //一对一映射
-    @JsonIgnore
+    //@JsonIgnore //2023-09-18 注释了它因为App端需要这个属性
     private ProductSpu productSpu;
 
     public ProductSpu getProductSpu() {
@@ -94,7 +94,7 @@ public class TradeCart extends TradeCartBase<TradeCart> {
     }
 
     //一对一映射
-    @JsonIgnore
+    //@JsonIgnore  //2023-09-18 注释了它因为App端需要这个属性
     private ProductSku productSku;
 
     public ProductSku getProductSku() {

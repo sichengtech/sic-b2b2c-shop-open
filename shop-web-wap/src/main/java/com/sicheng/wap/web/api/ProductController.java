@@ -211,7 +211,7 @@ public class ProductController extends BaseController {
     }
 
     /**
-     * 查询商品
+     * 查询商品 （依赖搜索引擎）
      *
      * @return
      */
@@ -398,12 +398,12 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, productListMap, null);
         } catch (Exception e) {
             logger.error("获取商品数据参数出现错误：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
     /**
-     * 查询商品(带分页)
+     * 查询商品(带分页) （依赖搜索引擎）
      * 如果要查询不属于任何店铺分类的，scid请传入-1
      *
      * @return
@@ -607,7 +607,7 @@ public class ProductController extends BaseController {
             }
         } catch (Exception e) {
             logger.error("获取商品数据参数出现错误：" + e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -636,7 +636,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, paramMappingPage.getList(), null);
         } catch (Exception e) {
             logger.error("查询商品参数错误:", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -666,7 +666,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, productSectonPricePage.getList(), null);
         } catch (Exception e) {
             logger.error("查询商品批发价错误:", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -711,7 +711,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, storeAlbumPictureList, null);
         } catch (Exception e) {
             logger.error("查询商品图片发生错误:", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -745,7 +745,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, productDetail, null);
         } catch (Exception e) {
             logger.error("查询商品详情发生错误:", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -779,7 +779,7 @@ public class ProductController extends BaseController {
 			return ApiUtils.getMap(ApiUtils.STATUS_OK,message,productSku,null);
 		} catch (Exception e) {
 			logger.error("查询商品sku发生错误:",e);
-			message="服务器发生错误";
+			message="服务发生错误";
 			return ApiUtils.getMap(ApiUtils.STATUS_SERVER_ERROR, message,null,null);
 		}*/
     }
@@ -822,7 +822,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, productSkuList, null);
         } catch (Exception e) {
             logger.error("查询商品skuList发生错误:", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -854,7 +854,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, price, null);
         } catch (Exception e) {
             logger.error("查询商品批发价发生错误:", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -912,7 +912,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, tradeCommentPage.getList(), tradeCommentPage);
         } catch (Exception e) {
             logger.error("查询商品评价异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -965,7 +965,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, tradeCommentPage.getList(), null);
         } catch (Exception e) {
             logger.error("查询商品评价异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -989,7 +989,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询成功"), tradeCommentImageList, null);
         } catch (Exception e) {
             logger.error("查询评价图片异常：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -1060,7 +1060,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询咨询或回复成功"), tradeConsultationPage.getList(), null);
         } catch (Exception e) {
             logger.error("查询咨询异常：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -1130,7 +1130,7 @@ public class ProductController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询咨询或回复成功"), tradeConsultationPage.getList(), tradeConsultationPage);
         } catch (Exception e) {
             logger.error("查询咨询异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }

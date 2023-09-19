@@ -198,7 +198,7 @@ public class WeiXinApiController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, "获取成功", data, null);
         } catch (Exception e) {
             logger.error("获取微信信息的错误", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, "服务器发生错误", null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, "服务发生错误", null, null);
         }
     }
 }

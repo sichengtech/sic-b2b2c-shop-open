@@ -160,7 +160,7 @@ public class ProductSpu extends ProductSpuBase<ProductSpu> {
         this.productParamList = productParamList;
     }
 
-    //多对商品图片中间表数据
+    //多对多商品图片中间表数据
     @JsonIgnore
     private List<ProductPictureMapping> productPictureMappingList;
 

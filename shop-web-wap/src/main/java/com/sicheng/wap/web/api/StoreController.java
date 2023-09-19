@@ -95,7 +95,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("获取店铺总信息成功"), data, null);
         } catch (Exception e) {
             logger.error("获取店铺总信息失败，异常内容：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), e, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), e, null);
         }
     }
 
@@ -189,7 +189,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺信息数据获取成功"), map, null);
         } catch (Exception e) {
             logger.error("店铺信息数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -236,7 +236,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("多个店铺信息数据获取成功"), storeList, null);
         } catch (Exception e) {
             logger.error("多个店铺信息数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -265,7 +265,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺轮播图列表数据获取成功"), storeCarouselPicturePage.getList(), storeCarouselPicturePage);
         } catch (Exception e) {
             logger.error("店铺轮播图数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -299,7 +299,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺文章列表数据获取成功"), storeArticleList, page);
         } catch (Exception e) {
             logger.error("店铺文章列表数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -332,7 +332,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺文章数据获取成功"), storeArticle, null);
         } catch (Exception e) {
             logger.error("店铺文章数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -381,7 +381,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺商品分类获取成功"), scList, null);
         } catch (Exception e) {
             logger.error("店铺商品分类数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -444,7 +444,7 @@ public class StoreController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺头部数据数据获取成功"), map, null);
         } catch (Exception e) {
             logger.error("店铺文章头部数据参数错误:" + e.toString());
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 

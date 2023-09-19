@@ -540,7 +540,7 @@ public class WeixinPay implements ShopPay {
             return resultMap;
         } catch (Exception e) {
             resultMap.put("return_code", "FAIL");
-            resultMap.put("return_msg", "服务器发生错误");
+            resultMap.put("return_msg", "服务发生错误");
             logger.error("微信查询订单发生错误：", e);
             return resultMap;
         }
@@ -593,7 +593,7 @@ public class WeixinPay implements ShopPay {
             return resultMap;
         } catch (Exception e) {
             logger.error("微信下载对账单发生错误：", e);
-            throw new PayException("服务器发生错误");
+            throw new PayException("服务发生错误");
         }
     }
 

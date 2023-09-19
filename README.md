@@ -104,7 +104,7 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 # Dome 演示站点
 
 中文商城H5演示站: https://demo1.sicheng.net/h5-yl/  
-中文商城App安装包下载：https://demo1.sicheng.net/app/Dome.apk  
+中文商城App安装包下载：https://demo1.sicheng.net/app/Demo.apk  
 中文商城PC演示站（每天还原数据）：http://demo1.sicheng.net/  
 国际商城PC演示站（每天还原数据）：http://demo2.sicheng.net/
 

@@ -50,8 +50,6 @@ import java.util.*;
   * <p>公司: 思程科技 www.sicheng.net</p>
   * @author zhangjiali
   * @version 2019年10月12日 下午2:06:39
-  *
-  
  */
 @Controller
 @RequestMapping(value = "${wapPath}/api")
@@ -67,10 +65,8 @@ public class ShopPayController extends BaseController {
     /**
      * 获取支付方式数据
       * @param payWayNum 支付方式编号
-      * @param status 支付方式状态，0关闭、1开启
       * @param useTerminal 支付方式使用终端,0pc、1移动端
       * @return
-      
      */
     @ResponseBody
     @RequestMapping(value = "/{version}/shop/pay/payWayList")
@@ -104,16 +100,16 @@ public class ShopPayController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("获取支付方式成功"), payWayDatas, null);
         } catch (Exception e) {
             logger.error("获取支付方式出现错误：", e);
-            message = FYUtils.fy("服务器出现错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
 
     /**
-     * 统一下单
+     * 统一下单接口
      * @param orderIds    多个订单编号
      * @param payWayId    支付方式id
-     * @param code            获取微信小程序openid的code
+     * @param code        获取微信小程序openid的code
      * @return
      * @throws PayException
      */
@@ -205,8 +201,9 @@ public class ShopPayController extends BaseController {
                 String openid = WeiXinUtils.getOpenId(code);
                 paramMap.put(PayConstants.OPEN_ID, openid);//openid 微信小程序支付使用
             }
-            ShopPay shopPay = ShopPayFactory.get(settlementPayWayNew.getPayWayNum());
+            ShopPay shopPay = ShopPayFactory.get(settlementPayWayNew.getPayWayNum());//重点：这里拿到支付接口的某个实现类了
             if (shopPay != null) {
+                //重点：这里调用支付接口的某个实现类了
                 Map<String, Object> resultMap = (Map<String, Object>) shopPay.pay(paramMap);
                 if (!resultMap.isEmpty() && resultMap.get("wxResult") != null) {
                     return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("统一下单成功"), JSON.toJSON(resultMap.get("wxResult")), null);
@@ -218,8 +215,11 @@ public class ShopPayController extends BaseController {
             return null;
         } catch (PayException e) {
             logger.error("统一下单接口异常：", e);
-            message = FYUtils.fy("服务器出现错误");
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
+            String errmsg=e.getMessage();
+            if(StringUtils.isBlank(errmsg)){
+                errmsg=FYUtils.fy("服务发生错误");
+            }
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, errmsg, null, null);
         }
     }
 
@@ -233,7 +233,6 @@ public class ShopPayController extends BaseController {
             ShopPay shopPay = ShopPayFactory.get(payWay);
             String xml = (String) shopPay.payCallBack();
             R.writeHtml(xml, "UTF-8");
-            return;
         } catch (Exception e) {
             logger.error("支付回调发生错误：", e);
         }

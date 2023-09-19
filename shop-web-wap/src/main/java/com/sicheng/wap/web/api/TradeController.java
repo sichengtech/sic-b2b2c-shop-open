@@ -101,7 +101,7 @@ public class TradeController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, tradeOrder, null);
         } catch (Exception e) {
             logger.error("根据订单编号查询订单出现错误：", e);
-            message = FYUtils.fy("服务器出现错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_NOT_FOUND, message, null, null);
         }
     }
@@ -129,7 +129,7 @@ public class TradeController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询订单成功"), page.getList(), page);
         } catch (Exception e) {
             logger.error("查询订单数据出现错误：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器出现错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -172,7 +172,7 @@ public class TradeController extends BaseController {
             }
         } catch (Exception e) {
             logger.error("查询订单详情数据出现错误：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器出现错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -388,7 +388,7 @@ public class TradeController extends BaseController {
         String stat = R.get("stat");
         try {
             String invoice = "0";
-            //stat=1:从购物车页直接下单
+            //stat=1 从购物车页直接下单
             if ("1".equals(stat)) {
                 //ids：购物车的多个id
                 String ids = R.get("ids");
@@ -431,7 +431,7 @@ public class TradeController extends BaseController {
                 dataMap.put("cartMap", cartMap);
                 return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("下单成功1"), dataMap, null);
             } else {
-                //从单详情页下单
+                //stat==2 从单详情页下单
                 String pid = R.get("pid");
                 //skuMsg:skuid-数量
                 String skuMsg = R.get("skuMsg");
@@ -458,7 +458,7 @@ public class TradeController extends BaseController {
             }
         } catch (Exception e) {
             logger.error("获取确认订单页面数据错误：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -544,7 +544,7 @@ public class TradeController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, dataMap, null);
         } catch (Exception e) {
             logger.error("下单失败：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -634,7 +634,7 @@ public class TradeController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, freightList, null);
         } catch (Exception e) {
             logger.error("计算运费发生错误：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -677,7 +677,7 @@ public class TradeController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("取消订单发生错误：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
 
@@ -716,7 +716,7 @@ public class TradeController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("确认收货发生错误：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }

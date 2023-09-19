@@ -146,14 +146,14 @@ public class TradeCartController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("加入购物车异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
 
     }
 
     /**
-     * 获取购物车数据
+     * 购物动接口，获取购物车的数据
      *
      * @return
      */
@@ -175,22 +175,26 @@ public class TradeCartController extends BaseController {
                 if (cart == null) {
                     continue;
                 }
-                if (cart.getStore() == null) {
-                    cart.setIsOffShelf(true);
+                //处理是否下架状态
+                cart.setIsOffShelf(false); //是否下架，先初始化一个false
+                if (cart.getStore() == null) { //店铺
+                    cart.setIsOffShelf(true); //是否下架
                 }
                 ProductSpu productSpu = cart.getProductSpu();
                 if (productSpu == null || !"50".equals(productSpu.getStatus()) || StringUtils.isBlank(productSpu.getType())) {
-                    cart.setIsOffShelf(true);
+                    cart.setIsOffShelf(true); //是否下架
                 }
                 ProductSku productSku = cart.getProductSku();
                 if (productSku == null) {
-                    cart.setIsOffShelf(true);
+                    cart.setIsOffShelf(true);//是否下架
                 }
-                if (productSpu != null && !"1".equals(productSpu.getType())) {
-                    BigDecimal price = productSpuService.calculatePrice(productSpu.getPId(), cart.getCount());
+                //处理价格
+                if (productSpu != null && !"1".equals(productSpu.getType())) { //getType() 1零售型、2批发型
+                    // TODO 禁在for循环内执行SQL，等待优化它
+                    BigDecimal price = productSpuService.calculatePrice(productSpu.getPId(), cart.getCount());//批发模式下,根据商品数量计算价格
                     cart.setPrice(price);
                 }
-                if (productSku != null && productSpu != null && "1".equals(productSpu.getType())) {
+                if (productSku != null && productSpu != null && "1".equals(productSpu.getType())) {  //getType() 1零售型、2批发型
                     cart.setPrice(productSku.getPrice());
                 }
                 String storeName = "";
@@ -209,7 +213,7 @@ public class TradeCartController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询购物车数据成功"), cartMap, null);
         } catch (Exception e) {
             logger.error("查询购物车数据异常：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -254,7 +258,7 @@ public class TradeCartController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("查询购物车数据异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -298,7 +302,7 @@ public class TradeCartController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("更新购物车的商品数量异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }

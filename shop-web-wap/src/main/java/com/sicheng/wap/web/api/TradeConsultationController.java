@@ -110,7 +110,7 @@ public class TradeConsultationController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询咨询或回复成功"), tradeConsultationPage.getList(), null);
         } catch (Exception e) {
             logger.error("查询咨询异常：", e);
-            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器发生错误"), null, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
 
@@ -173,7 +173,7 @@ public class TradeConsultationController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询咨询或回复成功"), tradeConsultationPage.getList(), tradeConsultationPage);
         } catch (Exception e) {
             logger.error("查询咨询异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
@@ -225,7 +225,7 @@ public class TradeConsultationController extends BaseController {
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, message, null, null);
         } catch (Exception e) {
             logger.error("提交咨询异常：", e);
-            message = FYUtils.fy("服务器发生错误");
+            message = FYUtils.fy("服务发生错误");
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, message, null, null);
         }
     }
