@@ -27,7 +27,7 @@
 
 # 开源地址
 本项目代码同时托管在Gitee\Github。  
-https://gitee.com/sichengtech_admin/sic-b2b2c-shop-open  
+https://gitee.com/sichengtech_admin/sic-b2b2c-shop-open (国内客户请优先合急使用Gitee)     
 https://github.com/sichengtech/sic-b2b2c-shop-open  
 
 # System architecture 系统架构
@@ -42,14 +42,14 @@ https://github.com/sichengtech/sic-b2b2c-shop-open
 
 ### 🔥 Deploy by all-in-one
 
-你可以使用Docker容器快速部署一套B2B2C电商系统。  
+你可以使用Docker容器快速部署一套B2B2C电商系统。以下镜像都是经过测试的，可以直接使用。
 https://hub.docker.com/repositories/sichengtech  DcokerHub镜像仓库列表  
 https://hub.docker.com/repository/docker/sichengtech/b2b2c-shop-open/general  shop主程序镜像  
 https://hub.docker.com/repository/docker/sichengtech/mysql56/general  MySQL镜像  
 https://hub.docker.com/repository/docker/sichengtech/shop-minio/general  Minio对像存储镜像  
 https://hub.docker.com/repository/docker/sichengtech/solr-alone/general  solr搜索引擎镜像  
 
-### 🐳 Deploy by docker
+### 🐳 Deploy by docker 使用Docker部署
 
 1、拉取镜像：
 ```shell
@@ -105,12 +105,13 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 
 中文商城H5演示站: https://demo1.sicheng.net/h5-yl/  
 中文商城App安装包下载：https://demo1.sicheng.net/app/Demo.apk  
-中文商城PC演示站（每天还原数据）：http://demo1.sicheng.net/  
-国际商城PC演示站（每天还原数据）：http://demo2.sicheng.net/
-
+中文商城PC演示站：http://demo1.sicheng.net/  （每天还原数据）  
+国际商城PC演示站：http://demo2.sicheng.net/  （每天还原数据）
+小程序演示站，请扫描以下二维码：
+![image.jpg](./docs/images/思程Shop小程序二维码.jpg)
 
 ## 演示账号
-### PC商城前台地址与账号
+### PC商城前台地址
 商城首页：http://demo1.sicheng.net
 
 ### PC商家后台地址与账号
@@ -123,7 +124,7 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 用户名：guoyang，密码：135886，张加力专卖店  
 用户名：xiaoyi，密码：135886， 小蚁（YI）官方旗舰店
 
-### PC会员中心地址与账号
+### PC会员中心地址与账号（移动账号）
 地址：http://demo1.sicheng.net/member/index.htm  
 zhang123，密码：135886，个人买家  
 admin123，密码：135886，个人买家  
