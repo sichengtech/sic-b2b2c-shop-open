@@ -27,7 +27,7 @@
 
 # 开源地址
 本项目代码同时托管在Gitee\Github。  
-https://gitee.com/sichengtech_admin/sic-b2b2c-shop-open (国内客户请优先合急使用Gitee)     
+https://gitee.com/sichengtech_admin/sic-b2b2c-shop-open (国内客户请优先使用Gitee)     
 https://github.com/sichengtech/sic-b2b2c-shop-open  
 
 # System architecture 系统架构
@@ -68,7 +68,7 @@ docker network create --subnet=172.28.0.0/16 my-net
 
 3、启动镜像
 ```shell
-docker run -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 --ip 172.28.0.105 --network my-net --name shop-mysql sichengtech/mysql56  
+docker run -d -p 3307:3306 -e MYSQL_ROOT_PASSWORD=123456 --ip 172.28.0.105 --network my-net --name shop-mysql sichengtech/mysql56-cn  
 docker run -d -p 9000:9000 -p 9090:9090 --name shop-minio --ip 172.28.0.102 --network my-net sichengtech/shop-minio server /data2 --console-address ":9090"  
 docker run -d -p 8983:8983 -t --name shop-solr-alone8 --ip 172.28.0.101 --network my-net sichengtech/solr-alone  
 docker run -d -p 8080:8080 --name shop --ip 172.28.0.10 --network my-net sichengtech/b2b2c-shop-open  
@@ -106,8 +106,8 @@ SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协
 中文商城H5演示站: https://demo1.sicheng.net/h5-yl/  
 中文商城App安装包下载：https://demo1.sicheng.net/app/Demo.apk  
 中文商城PC演示站：http://demo1.sicheng.net/  （每天还原数据）  
-国际商城PC演示站：http://demo2.sicheng.net/  （每天还原数据）
-小程序演示站，请扫描以下二维码：
+国际商城PC演示站：http://demo2.sicheng.net/  （每天还原数据）  
+小程序演示站，请扫描以下二维码：  
 ![image.jpg](./docs/images/思程Shop小程序二维码.jpg)
 
 ## 演示账号
