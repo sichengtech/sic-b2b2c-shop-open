@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 记录发送短信情况 Service
+ * 发送短信的日志 Service
  *
  * @author 张加利
  * @version 2017-04-06

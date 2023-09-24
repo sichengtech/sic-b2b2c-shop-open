@@ -13,14 +13,18 @@
 package com.sicheng.admin.task.utils;
 
 import com.google.common.collect.Lists;
+import com.sicheng.admin.product.entity.SolrProduct;
+import com.sicheng.admin.site.service.SiteCreateSolrIndexService;
 import com.sicheng.admin.sso.service.UserAppTokenService;
 import com.sicheng.admin.store.service.StoreAnalyzeService;
 import com.sicheng.admin.task.service.TaskListService;
 import com.sicheng.common.cache.ShopCache;
 import com.sicheng.common.config.Global;
 import com.sicheng.common.filter.PageCachingFilter;
+import com.sicheng.common.persistence.Page;
 import com.sicheng.common.utils.DateUtils;
 import com.sicheng.common.utils.HttpPost;
+import com.sicheng.search.ProductSearchInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +33,8 @@ import java.text.ParseException;
 import java.util.*;
 
 /**
- * 定时任务类，每一个方法是一个定时任务
+ * 定时任务入口类，每一个方法是一个定时任务
+ * 配置文件spring-context-task.xml是spring框架下，配置定时任务的地方，是入口。
  *
  * @author zhangjiali
  */
@@ -40,6 +45,8 @@ public class TaskJob {
     private UserAppTokenService UserAppTokenService;
     @Autowired
     private StoreAnalyzeService storeAnalyzeService;
+    @Autowired
+    private SiteCreateSolrIndexService siteCreateSolrIndexService;
 
     /**
      * 缓存接口
@@ -49,42 +56,30 @@ public class TaskJob {
 
     protected Logger logger = LoggerFactory.getLogger(getClass());
 
-    //定时任务编号
-    private final Integer TASK_0_NUM = 0;//测试定时任务（不在表中）
-    private final Integer TASK_1_NUM = 1;//对商家结算
-    private final Integer TASK_2_NUM = 2;//清理过期sysToken
-    private final Integer TASK_3_NUM = 3;//计算每个店铺的商品总数
-    private final Integer TASK_4_NUM = 4;//清理定时任务日志表
-    private final Integer TASK_5_NUM = 5;//修改会员收藏商品的状态
-    private final Integer TASK_6_NUM = 6;//一件商品30天所卖的数量
-    private final Integer TASK_7_NUM = 7;//管理后台首页的数据
-    private final Integer TASK_8_NUM = 8;//查询并修改超过最晚收货时间的订单
-    private final Integer TASK_9_NUM = 9;//取消过期的订单
-    private final Integer TASK_10_NUM = 10;//对账
-    private final Integer TASK_11_NUM = 11;//查询并修改超过最晚收货时间的退款退货订单
-    private final Integer TASK_12_NUM = 12;//查询并修改超过最晚到期时间的供采模块的采购单与采购单详情
-    private final Integer TASK_13_NUM = 13;//查询并修改超过接单截止时间的服务单
-    private final Integer TASK_14_NUM = 14;//定时清理页面缓存，并重新加载新的首页缓存
-    private final Integer TASK_15_NUM = 15;//服务结算定时任务(5大服务)
-    private final Integer TASK_16_NUM = 16;//服务结算定时任务(5大服务)
-    private final Integer TASK_30_NUM = 30;//清理过期的AppToken
-    private final Integer TASK_31_NUM = 31;//计算店铺评分和销售量
+    //定时任务编号（本编号用于与数据表sys_timed_task(定时任务表)中的任务timed_task_num字段对应）
+    private final Integer TASK_0_NUM = 0;//0、测试定时任务（不在表中）
+    private final Integer TASK_1_NUM = 1;//1、对商家结算
+    private final Integer TASK_2_NUM = 2;//2、清理过期的sysToken
+    private final Integer TASK_3_NUM = 3;//3、计算每个店铺的商品总数
+    private final Integer TASK_4_NUM = 4;//4、清理超过30天的日志（删除日志表中的记录）
+    private final Integer TASK_5_NUM = 5;//5、维护会员收藏商品的状态（0下架，1上架）
+    private final Integer TASK_6_NUM = 6;//6、更新商品30天销量
+    private final Integer TASK_7_NUM = 7;//7、定时更新管理后台首页的统计数据
+    private final Integer TASK_8_NUM = 8;//8、查询并修改超过最晚收货时间的订单
+    private final Integer TASK_9_NUM = 9;//9、处理超时订单
+    private final Integer TASK_10_NUM = 10;//10、定时插入对账任务，执行对账任务
+    private final Integer TASK_11_NUM = 11;//11、定时处理超时的退款退货订单
+    private final Integer TASK_12_NUM = 12;//12、处理超时的采购单
+    private final Integer TASK_13_NUM = 13;//13、处理超时的服务单。【目前无用】  //TODO 还未从adq同步过来
+    private final Integer TASK_14_NUM = 14;//14、定时清理页面缓存，并重新加载新的首页缓存 【目前无用】
+    private final Integer TASK_15_NUM = 15;//服务结算定时任务(5大服务) 【目前无用】 //TODO 还未从adq同步过来
+    private final Integer TASK_16_NUM = 16;//16、回收过期的优惠券 【目前无用】 //TODO 还未从adq同步过来
+    private final Integer TASK_30_NUM = 30;//30、清理过期的AppToken
+    private final Integer TASK_31_NUM = 31;//31、计算店铺评分和销售量
+    private final Integer TASK_32_NUM = 32;//32、定时生成Solr索引（重建）
 
     /**
-     * 计算店铺评分和销售量
-     */
-    public void computeScore() {
-        //定时任务的增强启动器
-        TaskRunnable tr = new TaskRunnable(TASK_31_NUM, new Runnable() {
-            @Override
-            public void run() {
-                storeAnalyzeService.score();
-            }
-        });
-        tr.start();//启动
-    }
-
-    /**
+     * 0、测试定时任务（不在表中）
      * 测试定时任务,每20秒触发一次
      */
     public void testTask() {
@@ -111,7 +106,7 @@ public class TaskJob {
     }
 
     /**
-     * 商品结算定时任务
+     * 1、对商家结算定时任务
      */
     public void settlementProductTask() {
         //定时任务的增强启动器
@@ -125,7 +120,7 @@ public class TaskJob {
     }
 
     /**
-     * 清理sysToken 过期token
+     * 2、清理过期的sysToken
      */
     public void sysTokenTask() {
         //定时任务的增强启动器
@@ -139,7 +134,7 @@ public class TaskJob {
     }
 
     /**
-     * 计算每个店铺的商品总数
+     * 3、计算每个店铺的商品总数
      */
     public void storeProductSum() {
         //定时任务的增强启动器
@@ -153,7 +148,7 @@ public class TaskJob {
     }
 
     /**
-     * 清理30天前工程所有的日志
+     * 4、清理超过30天的日志（删除日志表中的记录）
      */
     public void cleanLog() {
         //定时任务的增强启动器
@@ -167,7 +162,7 @@ public class TaskJob {
     }
 
     /**
-     * 修改会员收藏商品的状态
+     * 5、维护会员收藏商品的状态（0下架，1上架）
      */
     public void updateCollectionProduct() {
         //定时任务的增强启动器
@@ -181,7 +176,7 @@ public class TaskJob {
     }
 
     /**
-     * 商品 30天销量
+     * 6、更新商品30天销量
      */
     public void monthSales() {
         //定时任务的增强启动器
@@ -195,7 +190,7 @@ public class TaskJob {
     }
 
     /**
-     * 管理后台首页的数据
+     * 7、定时更新管理后台首页的统计数据
      */
     public void adminIndexInfo() {
         //定时任务的增强启动器
@@ -209,7 +204,8 @@ public class TaskJob {
     }
 
     /**
-     * 查询并修改超过最晚收货时间的订单
+     * 8、查询并修改超过最晚收货时间的订单
+     * 超过了最晚收货时间,将订单状态修改为已收货待评价
      */
     public void updateTradeOrder() {
         //定时任务的增强启动器
@@ -223,7 +219,8 @@ public class TaskJob {
     }
 
     /**
-     * 取消过期的订单(超过24小时未支付的订单)
+     * 9、处理超时订单。
+     * 判断订单是否超过24小时未支付，若是则取消订单，释放库存。
      */
     public void cancleExpiredTradeOrder() {
         //定时任务的增强启动器
@@ -237,7 +234,7 @@ public class TaskJob {
     }
 
     /**
-     * 插入对账任务
+     * 10、定时插入对账任务
      */
     public void insertBalanceTask() {
         //taskListService.balanceAccount();
@@ -252,7 +249,7 @@ public class TaskJob {
     }
     
     /**
-     * 执行对账对账任务
+     * 10、定时执行对账任务
      */
     public void balanceAccount() {
         //taskListService.balanceAccount();
@@ -267,7 +264,8 @@ public class TaskJob {
     }
 
     /**
-     * 查询并修改超过最晚收货时间的退款退货订单
+     * 11、定时处理超时的退款退货订单。
+     * 查询超过15天的退款退货订单，但状态还是40待卖家收货的单子，将状态修改为待平台审核
      */
     public void updateTradeReturnOrder() {
         //定时任务的增强启动器
@@ -281,7 +279,8 @@ public class TaskJob {
     }
 
     /**
-     * 修改超过最晚到期时间的供采模块的采购单与采购单详情
+     * 12、处理超时的采购单。
+     * 查询超时的供采模块的采购单（20.审核未通过，30.待拆分，35.报价中，40.交易中），修改状态为50完成交易
      */
     public void updatePurchase() {
         //定时任务的增强启动器
@@ -295,6 +294,7 @@ public class TaskJob {
     }
 
     /**
+     * 13、处理超时的服务单。【目前无用】
      * 查询并修改超过接单截止时间的服务单
      */
     public void updateAppServiceInfoMeta() {
@@ -310,12 +310,12 @@ public class TaskJob {
     }
 
     /**
-     * 定时清理页面缓存，并重新加载新的首页缓存
+     * 14、定时清理页面缓存，并重新加载新的首页缓存【目前无用】
      */
     public void clearPageCache() {
         //定时任务的增强启动器
 
-        // 参数0 taskId 任务ID，要与数据库中的ID对应
+        // 参数0 taskId任务编号，要与数据库sys_timed_task(定时任务表)中的timed_task_num字段对应
         // 参数1 lockSeconds 锁的过期时间，单位：秒，传入null默认值是600秒
         // 注意：参数1这里传180秒，表示3分钟，当两次任务运行间隔小于10分钟时，都需要手动指定锁的过期时间，锁的过期时间默认是600秒
         TaskRunnable tr = new TaskRunnable(TASK_14_NUM, 180, new Runnable() {
@@ -338,7 +338,11 @@ public class TaskJob {
     }
 
     /**
-     * 回收过期的优惠券
+     * 15、服务结算定时任务(5大服务)【目前无用】
+     */
+    // TODO 补充
+    /**
+     * 16、回收过期的优惠券   【目前无用】
      */
     public void updateCouponTask() {
         //定时任务的增强启动器
@@ -353,7 +357,7 @@ public class TaskJob {
     }
 
     /**
-     * 清理过期的AppToken
+     * 30、清理过期的AppToken
      */
     public void clearAppToken() {
         //定时任务的增强启动器
@@ -361,6 +365,34 @@ public class TaskJob {
             public void run() {
                 //这是具体的任务内容
                 UserAppTokenService.clearAppToken();
+            }
+        });
+        tr.start();//启动
+    }
+
+    /**
+     * 31、计算店铺评分和销售量
+     */
+    public void computeScore() {
+        //定时任务的增强启动器
+        TaskRunnable tr = new TaskRunnable(TASK_31_NUM, new Runnable() {
+            @Override
+            public void run() {
+                storeAnalyzeService.score();
+            }
+        });
+        tr.start();//启动
+    }
+
+    /**
+     * 32、定时生成Solr索引（重建）
+     */
+    public void creatSolrIndex() {
+        //定时任务的增强启动器
+        TaskRunnable tr = new TaskRunnable(TASK_32_NUM, new Runnable() {
+            @Override
+            public void run() {
+                siteCreateSolrIndexService.createProductIndex();
             }
         });
         tr.start();//启动

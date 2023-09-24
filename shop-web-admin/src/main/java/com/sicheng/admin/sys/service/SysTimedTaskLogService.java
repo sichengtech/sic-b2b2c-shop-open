@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 查看定时任务的日志 Service
+ * 定时任务的日志 Service
  *
  * @author 张加利
  * @version 2017-01-10

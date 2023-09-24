@@ -42,6 +42,7 @@ public class UserAppTokenService extends CrudService<UserAppTokenDao, UserAppTok
 
     /**
      * 批量删除所有过期的AppToken
+     * 30、清理过期的AppToken （定时任务会来调用本方法）
      * clearAppToken1()
      *
      * @return 成功清理apptoken的数量

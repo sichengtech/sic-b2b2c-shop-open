@@ -11,38 +11,60 @@
 		http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util-4.0.xsd
 		http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task-4.0.xsd"
 	default-lazy-init="true">
-	<description>定时任务 Configuration</description>
-	
+	<description>全局的总定时任务配置</description>
 
+	<!--定时任务入口类，每一个方法是一个定时任务-->
  	<bean id="taskJob" class="com.sicheng.admin.task.utils.TaskJob"></bean> 
 	
-	<!-- 配置定时任务规则 -->
+	<!-- 配置每一个具体的任务 -->
    	<task:scheduled-tasks>
-		<!--每天0点执行-->
-		<task:scheduled ref="taskJob" method="computeScore" cron="0 0 0 * * ? "/>
-		<!-- 
-		<task:scheduled ref="voiceFileClearJob" method="execute" initial-delay="5000" fixed-delay="3600000"/> -->
-		<task:scheduled ref="taskJob" method="settlementProductTask" cron="0 0 2 ? * *"/>
-		<task:scheduled ref="taskJob" method="sysTokenTask" cron="0 15 10 ? * *"/> 
-		<task:scheduled ref="taskJob" method="storeProductSum" cron="0 0 1 ? * *"/>
-		<task:scheduled ref="taskJob" method="cleanLog" cron="0 0 8 ? * *"/> 
-		<task:scheduled ref="taskJob" method="updateCollectionProduct" cron="0 0 23 ? * *"/>
-		<task:scheduled ref="taskJob" method="monthSales" cron="0 0 5 ? * *"/>
-		<task:scheduled ref="taskJob" method="adminIndexInfo" cron="0 0 0/1 * * ?"/>
-		<task:scheduled ref="taskJob" method="updateTradeOrder" cron="0 0 4 ? * *"/>
-		<task:scheduled ref="taskJob" method="updateTradeReturnOrder" cron="0 0 4 ? * *"/>
-		<task:scheduled ref="taskJob" method="cancleExpiredTradeOrder" cron="0 0 5 ? * *"/>
-		<task:scheduled ref="taskJob" method="clearAppToken" cron="0 0/1 * * * ? "/> <!-- 每天2点执行 0 0 2 * * ? -->
-		<task:scheduled ref="taskJob" method="updatePurchase" cron="0 0 0/1 * * ?"/>
-		<task:scheduled ref="taskJob" method="balanceAccount" cron="0 0/10 * * * ?"/>
-		<task:scheduled ref="taskJob" method="insertBalanceTask" cron="0 0/10 * * * ?"/>
+		<!--<task:scheduled ref="voiceFileClearJob" method="execute" initial-delay="5000" fixed-delay="3600000"/>-->
 		<!-- <task:scheduled ref="taskJob" method="reconciliation" cron="0 0 1 ? * *"/> -->
-		<!-- 用于测试定时任务，每20秒触发一次  -->
-		<!-- <task:scheduled ref="taskJob" method="reconciliation" cron="1/10 * * * * ?"/> -->
+		<!-- 用于测试定时任务，每10秒触发一次  -->
+		<!-- <task:scheduled ref="taskJob" method="reconciliation" cron="0/10 * * * * ?"/> -->
+
+		<!-- 1、对商家结算，每天凌晨0点10分触发-->
+		<task:scheduled ref="taskJob" method="settlementProductTask" cron="0 10 0 ? * *"/>
+		<!-- 2、清理过期的sysToken，每天凌晨1:15触发 -->
+		<task:scheduled ref="taskJob" method="sysTokenTask" cron="0 15 1 ? * *"/>
+		<!-- 3、计算每个店铺的商品总数，每天凌晨1点触发 -->
+		<task:scheduled ref="taskJob" method="storeProductSum" cron="0 0 1 ? * *"/>
+		<!-- 4、清理超过30天的日志（删除日志表中的记录），每天凌晨5点触发 -->
+		<task:scheduled ref="taskJob" method="cleanLog" cron="0 0 5 ? * *"/>
+		<!-- 5、维护会员收藏商品的状态（0下架，1上架），每天凌晨3点触发 -->
+		<task:scheduled ref="taskJob" method="updateCollectionProduct" cron="0 0 3 ? * *"/>
+		<!-- 6、更新商品30天销量，每天凌晨5点触发 -->
+		<task:scheduled ref="taskJob" method="monthSales" cron="0 0 5 ? * *"/>
+		<!-- 7、定时更新管理后台首页的统计数据，每一小时触发一次 -->
+		<task:scheduled ref="taskJob" method="adminIndexInfo" cron="0 0 0/1 * * ?"/>
+		<!-- 8、查询并修改超过最晚收货时间的订单。每天凌晨4点触发 -->
+		<task:scheduled ref="taskJob" method="updateTradeOrder" cron="0 0 4 ? * *"/>
+		<!-- 9、处理超时订单。判断订单是否超过24小时未支付，若是则取消订单，释放库存。 每10分钟触发一次 -->
+		<task:scheduled ref="taskJob" method="cancleExpiredTradeOrder" cron="0 0/10 * * * ?"/>
+		<!-- 10、定时插入对账任务，每十分钟执行一次 -->
+		<task:scheduled ref="taskJob" method="insertBalanceTask" cron="0 0/10 * * * ?"/>
+		<!-- 10、定时执行对账任务，每十分钟执行一次 -->
+		<task:scheduled ref="taskJob" method="balanceAccount" cron="0 0/10 * * * ?"/>
+		<!-- 11、定时处理超时的退款退货订单。每天凌晨4点触发 -->
+		<task:scheduled ref="taskJob" method="updateTradeReturnOrder" cron="0 0 4 ? * *"/>
+		<!-- 12、处理超时的采购单。每10分钟触发一次 -->
+		<task:scheduled ref="taskJob" method="updatePurchase" cron="0 0/10 * * * ?"/>
+		<!-- 13、处理超时的服务单。查询并修改超过接单截止时间的服务单 -->
+		<!-- 14、定时清理页面缓存，并重新加载新的首页缓存 -->
+		<!-- 15、服务结算定时任务(5大服务) -->
+		<!-- 16、回收过期的优惠券 -->
+		<!-- 30、清理过期的AppToken。每天凌晨2点执行-->
+		<task:scheduled ref="taskJob" method="clearAppToken" cron="0 0 2 * * ?"/>
+		<!-- 31、计算店铺评分和销售量，每天3点执行一次-->
+		<task:scheduled ref="taskJob" method="computeScore" cron="0 0 3 * * ? "/>
+		<!-- 32、定时生成Solr索引（重建），每天6点执行一次-->
+		<task:scheduled ref="taskJob" method="creatSolrIndex" cron="0 0 6 * * ? "/>
+
 	</task:scheduled-tasks> 
 
 	<!-- 计划任务配置，用 @Service @Lazy(false)标注类，用@Scheduled(cron = "0 0 2 * * ?")标注方法 -->
-    <task:executor id="executor" pool-size="10"/> <task:scheduler id="scheduler" pool-size="10"/>
+    <task:executor id="executor" pool-size="10"/>
+	<task:scheduler id="scheduler" pool-size="10"/>
     <task:annotation-driven scheduler="scheduler" executor="executor" proxy-target-class="true"/>
 	
 </beans>

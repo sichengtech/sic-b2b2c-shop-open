@@ -23,7 +23,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 日志Service
+ * admin系统日志，日志Service
  *
  * @author zhaolei
  * @version 2014-05-16

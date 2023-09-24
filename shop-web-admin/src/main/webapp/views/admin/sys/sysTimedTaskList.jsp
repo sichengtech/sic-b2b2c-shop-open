@@ -77,7 +77,7 @@
 			<table class="table table-hover table-condensed table-bordered">
 				<thead>
 					<tr>
-						<th>${fns:fy("编号")}</th>
+						<th>${fns:fy("定时任务编号")}</th>
 						<th>${fns:fy("任务名称")}</th>
 						<th>${fns:fy("任务说明")}</th>
 						<th>${fns:fy("执行时间")}</th>

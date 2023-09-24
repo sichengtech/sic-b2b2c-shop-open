@@ -53,7 +53,6 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Iterator;
 
-
 /**
  * <p>标题: TaskListService</p>
  * <p>描述: </p>
@@ -101,7 +100,7 @@ public class TaskListService {
     @Autowired
     private SysSmsLogService smsLogService;//短信日志
     @Autowired
-    private StoreAdminLogService storeAdminLogService;//seller系统日志
+    private StoreAdminLogService storeAdminLogService;//店铺管理员操作日志，seller系统日志
     @Autowired
     private TradeErrorPoolService tradeErrorPoolService;
     @Autowired
@@ -117,21 +116,21 @@ public class TaskListService {
     ShopPay aliPay;*/
 
     /**
-     * 结算定时任务
+     * 1、对商家结算定时任务
      */
     public void settlementProductTask() {
         settlementTaskMainService.settlementTask("1");
     }
 
     /**
-     * 清理sysToken 过期token
+     * 2、清理过期的sysToken
      */
     public void clearToken() {
         sysTokenService.clearToken();
     }
 
     /**
-     * 计算店铺商品数
+     * 3、计算每个店铺的商品总数
      */
     public void storeProductSum() {
         String sqlId = "selectByWhere";
@@ -151,17 +150,25 @@ public class TaskListService {
     }
 
     /**
-     * 清理30天前工程所有的日志
+     * 4、清理超过30天的日志（删除日志表中的记录）
+     * timedTaskLog  定时任务的日志
+     * logService  admin系统日志
+     * smsLogService 发送短信的日志
+     * storeAdminLogService  店铺管理员操作日志
      */
     public void cleanLog() {
+        //定时任务的日志
         timedTaskLog.deleteByWhere(new Wrapper().and("a.end_time<", new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000L))));//清理30天前的定时任务日志
+        //admin系统日志
         logService.deleteByWhere(new Wrapper().and("a.create_date<", new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000L))));//清理30天前的admin系统日志
+        //送短信的日志
         smsLogService.deleteByWhere(new Wrapper().and("a.send_date<", new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000L))));//清理30天前的短信日志
+        //店铺管理员操作日志
         storeAdminLogService.deleteByWhere(new Wrapper().and("a.create_date<", new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000L))));//清理30天前的seller系统日志
     }
 
     /**
-     * 查询并修改会员收藏的商品的状态
+     * 5、维护会员收藏商品的状态（0下架，1上架）
      */
     public void updateCollectionProduct() {
         String sqlId = "selectByWhere";
@@ -185,7 +192,7 @@ public class TaskListService {
     }
 
     /**
-     * 商品 最近30天销量
+     * 6、更新商品30天销量
      */
     public void monthSales() {
         String sqlId = "selectByWhere";
@@ -239,7 +246,8 @@ public class TaskListService {
     }
 
     /**
-     * 定时计算出管理后台首页的统计数据
+     * 7、定时更新管理后台首页的统计数据
+     * 提前加工好统计数据，这时进入管理后台首页，打开的速度会快速
      */
     public void adminIndexInfo() {
         //初始化开始时间与结束时间
@@ -339,7 +347,8 @@ public class TaskListService {
     }
 
     /**
-     * 查询并修改超过最晚收货时间的订单
+     * 8、查询并修改超过最晚收货时间的订单。超过了最晚收货时间,将订单状态修改为已收货待评价
+     * deliveryDay = 15L;//默认值，15代表最晚收货时间为15天
      */
     public void updateTradeOrder() {
         //获取后台最晚收货时间
@@ -373,7 +382,9 @@ public class TaskListService {
     }
 
     /**
-     * 查询并修改超过最晚收货时间的退款退货订单
+     * 11、定时处理超时的退款退货订单。
+     * 查询超过15天的退款退货订单，但状态还是40待卖家收货的单子，将状态修改为待平台审核
+     * 最晚收货时间deliveryDay = 15L;//默认值，15代表最晚收货时间为15天
      */
     public void updateTradeReturnOrder() {
         //获取后台最晚收货时间
@@ -414,7 +425,8 @@ public class TaskListService {
     }
 
     /**
-     * 取消过期订单
+     * 9、处理超时订单。
+     * 判断订单是否超过24小时未支付，若是则取消订单，释放库存。
      */
     public void cancleExpiredTradeOrder() {
         //查询订单
@@ -424,11 +436,11 @@ public class TaskListService {
         while (iter.hasNext()) {
             TradeOrder tradeOrder = iter.next();
             long dayTimes = System.currentTimeMillis() - tradeOrder.getCreateDate().getTime();//当前时间-下单时间
-            //判断是否过期(是否超过24小时)
+            //判断订单是否超时(是否超过24小时)
             if (dayTimes < 1000 * 60 * 60 * 24L) {
                 continue;
             }
-            //取消过期订单
+            //取消超时订单
             if (tradeOrder.getPaymentMethodId() == null) {
                 tradeOrder.setOrderStatus("60");//订单状态，10待付款、20待发货、30待收货、40已收货待评价、50已评价(已完成)、60已取消
                 tradeOrderService.cancelOrder(tradeOrder);
@@ -438,7 +450,7 @@ public class TaskListService {
         }
     }
 
-    /**
+    /*
      * admin首页数据 实体添加属性值
      */
     private TaskAdminIndex getAdminIndex(TaskAdminIndex adminIndex, BigDecimal moneycountday, int ordercountpending, int ordercountday,
@@ -448,44 +460,41 @@ public class TaskListService {
         adminIndex.setOrdercountday(ordercountday);//今日订单量
         adminIndex.setOrdermoneycount(moneycounts);//总交易额
         adminIndex.setOrdercount(ordercounts);//总订单量
-
         adminIndex.setStorecount(storecount);//商铺总数(统计的是 店铺表)
         adminIndex.setStorecountday(storecountday);//今日新增店铺(统计的是 店铺表)
         adminIndex.setMembercount(membercount);//会员总数(买家)
         adminIndex.setMembercountday(membercountday);//今日新增会员数(买家)
         adminIndex.setActivemembercount(activemembercount);//买家活跃
         adminIndex.setActivesellercount(activesellercount);//卖家活跃
-
         adminIndex.setProductspucount(productSpu);//商品spu总量
         adminIndex.setProductskucount(productSku);//商品sku总量
-
-
         adminIndex.setOrdercountpending(ordercountpending);//待处理订单
         return adminIndex;
     }
 
     /**
-     * 插入对账任务
+     * 10、定时插入对账任务
      */
     public void insertBalanceTask() {
     	tradeErrorPoolService.insertBalanceTask();
     }
     
     /**
-     * 执行对账任务
+     * 10、定时执行对账任务
      */
     public void balanceAccount() {
         tradeErrorPoolService.balanceAccount();
     }
 
     /**
-     * 修改超过最晚到期时间的供采模块的采购单
+     * 12、处理超时的采购单。
+     * 查询超时的供采模块的采购单（20.审核未通过，30.待拆分，35.报价中，40.交易中），修改状态为50完成交易
      */
     public void updatePurchase() {
         //查询采购单(供采模块)
         String sqlId = "selectByWhere";
-        //采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消
-        Cursor<Purchase> cursor = purchaseService.selectCursor(sqlId, new Wrapper().and("a.status<", "50"));
+        //采购状态:10.审核中，20.审核未通过，30.待拆分，35.报价中，40.交易中，50.完成交易，60.交易取消
+        Cursor<Purchase> cursor = purchaseService.selectCursor(sqlId, new Wrapper().and("a.status < ", "50"));
         Iterator<Purchase> iter = cursor.iterator();
         while (iter.hasNext()) {
             Purchase purchase = iter.next();//状态为审核中、审核未通过、待拆分、交易中的采购单
@@ -497,7 +506,7 @@ public class TaskListService {
             if (expiryTime > dayTimes) {
                 continue;
             }
-            //修改超过最晚到期时间的供采模块的采购单
+            //修改超过最晚到期时间的供采模块的采购单为50完成交易
             purchase.setStatus("50");
             purchaseService.updateByIdSelective(purchase);
         }

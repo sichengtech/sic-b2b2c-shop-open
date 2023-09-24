@@ -43,13 +43,13 @@
 						<input type="hidden" name="sttId" value="${sysTimedTask.sttId}">
 						<input id="oldNum" type="hidden" value="${sysTimedTask.timedTaskNum}">
 						<div class="form-group">
-							<label class="control-label col-sm-2" for="inputSuccess"><font color="red">*</font> ${fns:fy("编号")}&nbsp;:</label>
+							<label class="control-label col-sm-2" for="inputSuccess"><font color="red">*</font> ${fns:fy("定时任务编号")}&nbsp;:</label>
 							<div class="col-sm-5">
 								<input type="text" name="timedTaskNum"  maxlength="10" class="form-control input-sm" value="${sysTimedTask.timedTaskNum}"/>
 
 							</div>
 							<div class="col-sm-5">
-								<p class="help-block">${fns:fy("必填项，请填写编号")}<p>
+								<p class="help-block">${fns:fy("必填项，请填写定时任务编号")}<p>
 							</div>
 						</div>
 						<div class="form-group">

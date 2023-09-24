@@ -57,7 +57,7 @@ public class StoreAnalyzeService extends CrudService<StoreAnalyzeDao, StoreAnaly
     private Calendar calendar = Calendar.getInstance();
 
     /**
-     * 评分计算
+     * 31、计算店铺评分和销售量  （定时任务会来调用本方法）
      */
     public void score() {
         //计算日期

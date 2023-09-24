@@ -20,7 +20,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * 店铺管理员操作日志 Service
+ * 店铺管理员操作日志，seller系统日志 Service
  *
  * @author 蔡龙
  * @version 2017-02-07

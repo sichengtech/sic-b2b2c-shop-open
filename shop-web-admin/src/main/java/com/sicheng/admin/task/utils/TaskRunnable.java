@@ -34,12 +34,12 @@ import java.util.List;
  * 增强了以下功能：
  * 1、根据：管理后台-系统-定时任务 列表页中的开关设置，决定是否执行定时任务。
  * 2、记录任务的执行日志到日志表
- * 3、根据配置决定是否使用分布式锁，适用集群环境下的单点运行定时任务
+ * 3、根据配置决定是否使用分布式锁，分布式锁适用集群环境下的单点运行定时任务
  *
  * @author zhaolei
  */
 public class TaskRunnable {
-    private Integer taskId;
+    private Integer timed_task_num;//定时任务编号，要与数据库sys_timed_task(定时任务表)中的timed_task_num字段对应
     private Runnable runnable;
     private SysTimedTaskService sysTimedTaskService;
     private SysTimedTaskLogService sysTimedTaskLogService;
@@ -51,11 +51,11 @@ public class TaskRunnable {
     /**
      * 构造方法
      *
-     * @param taskId   任务ID，要与数据库中的ID对应
+     * @param timed_task_num 定时任务编号，要与数据库中的timed_task_num字段对应
      * @param runnable 具体任务的实现
      */
-    public TaskRunnable(Integer taskId, Runnable runnable) {
-        this.taskId = taskId;
+    public TaskRunnable(Integer timed_task_num, Runnable runnable) {
+        this.timed_task_num = timed_task_num;//定时任务编号
         this.runnable = runnable;
         this.sysTimedTaskService = SpringContextHolder.getBean(SysTimedTaskService.class);
         this.sysTimedTaskLogService = SpringContextHolder.getBean(SysTimedTaskLogService.class);
@@ -65,12 +65,12 @@ public class TaskRunnable {
     /**
      * 构造方法
      *
-     * @param taskId      任务ID，要与数据库中的ID对应
+     * @param timed_task_num 定时任务编号，要与数据库中的timed_task_num字段对应
      * @param lockSeconds 锁的过期时间，单位：秒
      * @param runnable    具体任务的实现
      */
-    public TaskRunnable(Integer taskId, Integer lockSeconds, Runnable runnable) {
-        this.taskId = taskId;
+    public TaskRunnable(Integer timed_task_num, Integer lockSeconds, Runnable runnable) {
+        this.timed_task_num = timed_task_num;//定时任务编号
         this.lockSeconds = lockSeconds;
         this.runnable = runnable;
         this.sysTimedTaskService = SpringContextHolder.getBean(SysTimedTaskService.class);
@@ -83,7 +83,7 @@ public class TaskRunnable {
      */
     public void start() {
         SysTimedTask sysTimedTask = new SysTimedTask();
-        sysTimedTask.setTimedTaskNum(taskId);//按编号查询定时任务
+        sysTimedTask.setTimedTaskNum(timed_task_num);//按定时任务编号，查询定时任务记录
         List<SysTimedTask> list = sysTimedTaskService.selectByWhere(new Wrapper(sysTimedTask));
 
         boolean run = false;
@@ -104,7 +104,7 @@ public class TaskRunnable {
         if (config != null && config.isDistributed()) {
             // 参数0 taskId 任务ID，要与数据库中的ID对应
             // 参数2 lockSeconds 锁的过期时间，单位：秒，传入null默认值是600秒
-            lock = LockManagerFactory.getLockManager().getLock(taskId.toString(), 0, lockSeconds);//需要一个唯一标识
+            lock = LockManagerFactory.getLockManager().getLock(timed_task_num.toString(), 0, lockSeconds);//需要一个唯一标识
             if (lock == null) {
                 return; //未能获得锁，退出。集群环境下有可能其它节点获得了锁。
             }
@@ -125,7 +125,7 @@ public class TaskRunnable {
             result = "1";
         } catch (Exception e) {
             result = "0";
-            logger.error("执行具体的"+taskId+"号定时任务失败", e);
+            logger.error("执行具体的"+ timed_task_num +"号定时任务失败", e);
         } finally {
             //不释放锁，600秒(lockSeconds参数)后会自行过期，考虑到多个节点的操作系统时间可能有误差，这里最多可解决600秒的误差。
             //定时任务可能3秒就执行完成了，但也要锁住600秒。一般的定时任务是每天一次、每小时一次，可满足。

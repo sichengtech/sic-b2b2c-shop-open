@@ -72,13 +72,13 @@ public class SiteCreateSolrIndexService {
     private Date startTime;
     //已完成任务数量
     private AtomicInteger count;
-    //当前处理任务的类型
+    //当前处理任务的类型 ，为谁生成Solr索引，可选值：store、product
     private String subType;
     //查询一页的大小
     private Integer pageSize = 2000;
 
-    private static final String STORE = "store";
-    private static final String PRODUCT = "product";
+    public static final String STORE = "store"; //为店铺生成索引
+    public static final String PRODUCT = "product";//为商品生成索引
 
     @Autowired
     private SysVariableService sysVariableService;
@@ -162,6 +162,28 @@ public class SiteCreateSolrIndexService {
                 }
             });
             masterThread.start();
+        }
+    }
+    /**
+     * 定时生成Solr索引（重建商品索引），每天6点执行一次
+     * 定时任务会来调用本方法，本方法是一个简化的同步方法，定时任务需要这样的同步方法。
+     * 本方法不同于上的start()方法，start()方法是在多线程中执行生成Solr索引，每个线程负责2000条记录。start()方法是一个较复杂的实现。
+     */
+    public void createProductIndex(){
+        Integer pageNo = 1;
+        Long countPage = null;
+        Wrapper wrapper = new Wrapper();
+        Page<SolrProduct> buffer = new Page<>(pageNo, pageSize);
+        //先删除再添加
+        productSearch.deleteDocAll();
+        Page<SolrProduct> solrProductPage = solrProductService.selectByWhere(buffer, wrapper);
+        long count = solrProductPage.getCount();
+        countPage = getCountPage(solrProductPage.getCount(), pageSize);
+        while (pageNo <= countPage) {
+            productSearch.addDocList(solrProductPage.getList());  //同步
+            pageNo++;
+            buffer = new Page<>(pageNo, pageSize,count);
+            solrProductPage = solrProductService.selectByWhere(buffer, wrapper);
         }
     }
 
