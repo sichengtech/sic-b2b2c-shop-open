@@ -25,11 +25,14 @@ import java.util.*;
  * @version 2019年11月03日
  */
 public class SignHttpServletRequestWrapper extends HttpServletRequestWrapper {
-    private Map<String, Object> data;//业务数据
+    /**
+     * 业务数据的容器
+     */
+    private Map<String, Object> data;
 
     public SignHttpServletRequestWrapper(HttpServletRequest request, Map<String, Object> data) {
         super(request);
-        this.data = data;
+        this.data = data; //业务数据
         if (this.data == null) {
             this.data = new HashMap<>();
         }
@@ -153,8 +156,6 @@ public class SignHttpServletRequestWrapper extends HttpServletRequestWrapper {
             }
             return a;
         }
-
         return new String[]{list.toString()};
     }
-
 }

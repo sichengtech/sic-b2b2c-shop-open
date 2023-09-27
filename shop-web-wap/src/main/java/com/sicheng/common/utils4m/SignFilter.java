@@ -54,9 +54,10 @@ public class SignFilter implements Filter {
      * 日志对象
      */
     protected Logger logger = LoggerFactory.getLogger(getClass());
-    //base url盐(e)
-//    private String salt_baseUrl = Global.getConfig("wap.api.baseUrl");
-    //固化在代码中的盐(d)
+
+    /**
+     * 签名与验签时使用的“盐”
+     */
     private String salt_d = Global.getConfig("wap.api.sign");
 
     @Override
@@ -78,10 +79,11 @@ public class SignFilter implements Filter {
         //验证签名失败-1：无sign、无timestamp、无dataBase64
         //验证签名失败-2: 验证时间戳未通过(允许正负偏差各一个小时)
         //验证签名失败-3：验证签名未通过
+        //验证签名失败-4,业务数据格式不正确
         try {
             //取由前端传来的参数，前端永远只传这3个参数来
-            String dataBase64 = r.getParameter("data");
-            String timestamp = r.getParameter("make");//make : 时间戳,    （取这个名字是为了迷惑）
+            String dataBase64 = r.getParameter("data");//业务数据，是Base64格式
+            String timestamp = r.getParameter("make");//make : 时间戳   （取这个名字是为了迷惑）
             String sign = r.getParameter("random");//random : 签名    （取这个名字是为了迷惑）
             if (StringUtils.isBlank(dataBase64) || StringUtils.isBlank(timestamp) || StringUtils.isBlank(sign)) {
                 String message = "验证签名失败-1";
@@ -96,7 +98,7 @@ public class SignFilter implements Filter {
             } else {
                 mapData = JsonMapper.getInstance().fromJson(jsonStr, Map.class);
                 if (mapData == null) {
-                    String message = "验证签名失败,业务数据格式不正确";
+                    String message = "验证签名失败-4,业务数据格式不正确";
                     result(response, message, AppDataUtils.STATUS_SIGN_ERROR);
                     return;
                 }
@@ -111,12 +113,11 @@ public class SignFilter implements Filter {
             }
 
             //验证签名
-            //签名规则 md5(sha3_256( base64(业务数据json串) + 时间戳 + md5(d + md5(e))))
-//            String salt = MD5.encrypt(salt_d + MD5.encrypt(salt_baseUrl));
-            String salt = MD5.encrypt(salt_d );
-            String allStr = dataBase64 + timestamp + salt;
-            String mySign1 = FIPS202.hexFromBytes(FIPS202.HashFunction.SHA3_256.apply(allStr.getBytes(StandardCharsets.UTF_8)));
-            String mySign2 = MD5.encrypt(mySign1.toLowerCase());
+            //签名规则 签名=md5(sha3_256( base64业务数据json串+ 时间戳 + md5(盐)))
+            String salt = MD5.encrypt(salt_d );//把“盐”先md5一下
+            String allData = dataBase64 + timestamp + salt; //拼接
+            String mySign1 = FIPS202.hexFromBytes(FIPS202.HashFunction.SHA3_256.apply(allData.getBytes(StandardCharsets.UTF_8)));//sha3_256算法
+            String mySign2 = MD5.encrypt(mySign1.toLowerCase());//再MD5一下
             if (sign == null || !sign.equals(mySign2)) {
                 //验证签名失败
                 String message = "验证签名失败-3";
