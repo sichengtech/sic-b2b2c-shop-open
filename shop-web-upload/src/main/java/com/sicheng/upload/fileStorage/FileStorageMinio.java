@@ -119,7 +119,7 @@ public class FileStorageMinio extends FileStorageAbstract {
             throw new IOException(e);
         }
         // 打印ETag
-        System.out.println(response.etag());
+//        System.out.println(response.etag());
         return "/" + fileName;
     }
 
@@ -156,7 +156,7 @@ public class FileStorageMinio extends FileStorageAbstract {
             throw new IOException(e);
         }
         // 打印ETag
-        System.out.println(response.etag());
+//        System.out.println(response.etag());
         return "/" + fileName;
     }
 
@@ -205,7 +205,7 @@ public class FileStorageMinio extends FileStorageAbstract {
             throw new IOException(e);
         }
         // 打印ETag
-        System.out.println(response.etag());
+//        System.out.println(response.etag());
         return "/" + fileName;
     }
 

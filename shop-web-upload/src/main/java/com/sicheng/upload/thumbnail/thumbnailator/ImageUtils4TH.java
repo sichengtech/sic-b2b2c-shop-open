@@ -201,7 +201,7 @@ public class ImageUtils4TH {
                 throw new RuntimeException("No readers found!");
             }
             final ImageReader reader = iter.next();
-            System.out.println("Net imageType: " + reader.getFormatName());
+//            System.out.println("Net imageType: " + reader.getFormatName());
             String suffix = reader.getFormatName();
             long t2 = System.currentTimeMillis();
             logger.info("getFormat 方法执行耗时：" + (t2 - t1) + "ms");
