@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.sicheng.admin.settlement.entity.SettlementPayWay;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -73,10 +74,15 @@ public class TradeOrderService extends CrudService<TradeOrderDao, TradeOrder> {
         Map<String, Object> paramMap = new HashMap<>();
         paramMap.put(PayConstants.OUT_TRADE_NO, tradeOrder.getOutTradeNo());
         try {
-            String payWayNum = tradeOrder.getSettlementPayWay().getPayWayNum();//支付方式编号
+            SettlementPayWay way=tradeOrder.getSettlementPayWay();
+            if(way==null){
+                logger.warn("订单"+tradeOrder.getId()+"的支付方式为空，可能未正确配置支付方式，请管理员处理！");
+                return map;
+            }
+            String payWayNum = way.getPayWayNum();//支付方式编号
             ShopPay shopPay = ShopPayFactory.get(payWayNum);
             Map<String, Object> mapResult = new HashMap<>();
-            mapResult = (Map<String, Object>) shopPay.query(paramMap);
+            mapResult = (Map<String, Object>) shopPay.query(paramMap); //交易查询接口
             //第三方支付支付成功，修改订单状态为已支付
             if ("SUCCESS".equals(mapResult.get("tradeState"))) {
                 tradeOrder.setOrderStatus("20");//订单状态，10待付款、20待发货、30待收货、40已收货待评价、50已评价(已完成)、60已取消
@@ -90,7 +96,7 @@ public class TradeOrderService extends CrudService<TradeOrderDao, TradeOrder> {
                 map.put("message", FYUtils.fyParams("取消订单成功"));
             }
         } catch (PayException e) {
-            map.put("message", FYUtils.fyParams("查询第三方订单发生错误：") + e.getMessage());
+            map.put("message", FYUtils.fyParams("查询第三方订单发生错误") + e.getMessage());
             logger.error("查询第三方订单发生异常", e);
             return map;
         } catch (RuntimeException e) {

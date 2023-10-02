@@ -46,7 +46,7 @@ public class FYUtils {
 	        message = requestContext.getMessage(key,params);
 		} catch (Exception e) {
 			message=key;
-			logger.error("获取国际化值发生错误",e);
+			logger.error("获取国际化值发生错误,key="+key,e);
 		}
 		return message;
 	}
@@ -83,8 +83,7 @@ public class FYUtils {
 			in = FYUtils.class.getClassLoader().getResourceAsStream(name);
 			p.load(new InputStreamReader(in, StandardCharsets.UTF_8));//properties文件，不用unicode编码的实现方法
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			logger.error("获取resources文件夹下的porperties文件中的内容发生错误，name="+name,e);
 		}
 		Set<Map.Entry<Object, Object>> entrySet = p.entrySet();
 		for (Map.Entry<Object, Object> entry : entrySet) {
