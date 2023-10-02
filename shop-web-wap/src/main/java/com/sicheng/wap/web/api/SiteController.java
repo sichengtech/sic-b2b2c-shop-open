@@ -118,7 +118,7 @@ public class SiteController extends BaseController {
             Page<SiteCarouselPicture> siCarouselPicturePage = siteCarouselPictureService.selectByWhere(new Page<SiteCarouselPicture>(1, limit, limit), new Wrapper(siteCarouselPicture).orderBy("a.sort asc"));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("轮播图数据获取成功"), siCarouselPicturePage.getList(), null);
         } catch (Exception e) {
-            logger.error("轮播图数据参数错误:" + e.toString());
+            logger.error("轮播图数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -139,10 +139,12 @@ public class SiteController extends BaseController {
         sr.setRecommendNumber(number);
         sr.setIsOpen("1");//是否开启(0否、1是)
         try {
+            logger.info("根据推荐位编号获取推荐位1，siteRecommendService="+siteRecommendService );
             SiteRecommend siteRecommend = siteRecommendService.selectOne(new Wrapper(sr));
+            logger.info("根据推荐位编号获取推荐位2，siteRecommend="+siteRecommend );
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("推荐数据获取成功"), siteRecommend, null);
         } catch (Exception e) {
-            logger.error("推荐数据参数错误:" + e.toString());
+            logger.error("根据推荐位编号获取推荐位时异常" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -219,7 +221,7 @@ public class SiteController extends BaseController {
             SiteRegister siteRegister = siteRegisterService.selectOne(new Wrapper(new SiteRegister()));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("网站注册设置信息获取成功"), siteRegister, null);
         } catch (Exception e) {
-            logger.error("获取网站注册设置信息:" + e.toString());
+            logger.error("获取网站注册设置信息:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取网站注册设置信息错误"), null, null);
         }
     }

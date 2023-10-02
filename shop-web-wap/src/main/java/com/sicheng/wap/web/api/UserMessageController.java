@@ -61,7 +61,7 @@ public class UserMessageController extends BaseController {
             page = sysMessageService.selectByWhere(page, new Wrapper(message));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询成功"), page.getList(), page);
         } catch (Exception e) {
-            logger.error("获取消息错误:" + e.toString());
+            logger.error("获取消息错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取消息错误"), null, null);
         }
     }
@@ -85,7 +85,7 @@ public class UserMessageController extends BaseController {
             Integer messageCount = sysMessageService.countByWhere(new Wrapper(message));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询成功"), messageCount, null);
         } catch (Exception e) {
-            logger.error("获取消息数量错误:" + e.toString());
+            logger.error("获取消息数量错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取消息错误"), 0, null);
         }
     }
@@ -112,7 +112,7 @@ public class UserMessageController extends BaseController {
             sysMessageService.deleteByWhere(wrapper);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("删除消息成功"), null, null);
         } catch (Exception e) {
-            logger.error("获取消息错误:" + e.toString());
+            logger.error("获取消息错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("删除消息失败"), null, null);
         }
     }

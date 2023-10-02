@@ -188,7 +188,7 @@ public class StoreController extends BaseController {
             map.put("storeWechat", store.getStoreWechat());//店铺微信
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺信息数据获取成功"), map, null);
         } catch (Exception e) {
-            logger.error("店铺信息数据参数错误:" + e.toString());
+            logger.error("店铺信息数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -235,7 +235,7 @@ public class StoreController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("多个店铺信息数据获取成功"), storeList, null);
         } catch (Exception e) {
-            logger.error("多个店铺信息数据参数错误:" + e.toString());
+            logger.error("多个店铺信息数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -264,7 +264,7 @@ public class StoreController extends BaseController {
             Page<StoreCarouselPicture> storeCarouselPicturePage = storeCarouselPictureService.selectByWhere(new Page<StoreCarouselPicture>(1, defaultLimit, defaultLimit), new Wrapper(storeCarouselPicture));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺轮播图列表数据获取成功"), storeCarouselPicturePage.getList(), storeCarouselPicturePage);
         } catch (Exception e) {
-            logger.error("店铺轮播图数据参数错误:" + e.toString());
+            logger.error("店铺轮播图数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -298,7 +298,7 @@ public class StoreController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺文章列表数据获取成功"), storeArticleList, page);
         } catch (Exception e) {
-            logger.error("店铺文章列表数据参数错误:" + e.toString());
+            logger.error("店铺文章列表数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -331,7 +331,7 @@ public class StoreController extends BaseController {
 
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺文章数据获取成功"), storeArticle, null);
         } catch (Exception e) {
-            logger.error("店铺文章数据参数错误:" + e.toString());
+            logger.error("店铺文章数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -380,7 +380,7 @@ public class StoreController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺商品分类获取成功"), scList, null);
         } catch (Exception e) {
-            logger.error("店铺商品分类数据参数错误:" + e.toString());
+            logger.error("店铺商品分类数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -443,7 +443,7 @@ public class StoreController extends BaseController {
 
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("店铺头部数据数据获取成功"), map, null);
         } catch (Exception e) {
-            logger.error("店铺文章头部数据参数错误:" + e.toString());
+            logger.error("店铺文章头部数据参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }

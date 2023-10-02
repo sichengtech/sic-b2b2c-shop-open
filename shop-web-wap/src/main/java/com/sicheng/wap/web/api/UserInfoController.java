@@ -135,7 +135,7 @@ public class UserInfoController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询用户成功"), userMainList, null);
         } catch (Exception e) {
-            logger.error("获取用户错误:" + e.toString());
+            logger.error("获取用户错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -167,7 +167,7 @@ public class UserInfoController extends BaseController {
             map.put("realName", StringUtils.isBlank(userMember.getRealName()) ? "'" : userMember.getRealName());//真实姓名
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("获取用户成功"), map, null);
         } catch (Exception e) {
-            logger.error("获取用户错误:" + e.toString());
+            logger.error("获取用户错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取用户错误"), null, null);
         }
     }
@@ -240,7 +240,7 @@ public class UserInfoController extends BaseController {
             map.put("tradeConsultations", tradeConsultations);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("获取用户各模块的数量成功"), map, null);
         } catch (Exception e) {
-            logger.error("获取用户各模块的数量错误:" + e.toString());
+            logger.error("获取用户各模块的数量错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取用户各模块的数量错误"), null, null);
         }
     }
@@ -375,7 +375,7 @@ public class UserInfoController extends BaseController {
             userMainService.editUserInfo(user, userMember);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("修改账号信息成功"), "/user/userCentral.htm", null);
         } catch (Exception e) {
-            logger.error("退出登录失败:" + e.toString());
+            logger.error("退出登录失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("修改账号信息失败"), null, null);
         }
     }

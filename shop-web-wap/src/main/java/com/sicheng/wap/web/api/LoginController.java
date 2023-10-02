@@ -227,7 +227,7 @@ public class LoginController extends BaseController {
             CookieUtils.setCookie(R.getRequest(), R.getResponse(), "wxusm.isloginInvalid", null, "/", 0);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("退出登录成功"), "/user/login/form.htm", null);
         } catch (Exception e) {
-            logger.error("退出登录失败:" + e.toString());
+            logger.error("退出登录失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("退出登录失败"), null, null);
         }
     }

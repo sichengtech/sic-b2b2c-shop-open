@@ -79,7 +79,7 @@ public class SysController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("字典列表数据获取成功"), dList, null);
         } catch (Exception e) {
-            logger.error("根据字典类型获取字典值列表参数错误:" + e.toString());
+            logger.error("根据字典类型获取字典值列表参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -111,7 +111,7 @@ public class SysController extends BaseController {
             map.put("label", FYUtils.fy("字典_"+dict.getLabel()));//键
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("字典键获取成功"), map, null);
         } catch (Exception e) {
-            logger.error("获取字典键参数错误:" + e.toString());
+            logger.error("获取字典键参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -152,7 +152,7 @@ public class SysController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("字典数据获取成功"), dictListData, null);
         } catch (Exception e) {
-            logger.error("获取多个字典键参数错误:" + e.toString());
+            logger.error("获取多个字典键参数错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
         }
     }
@@ -183,7 +183,7 @@ public class SysController extends BaseController {
 //			}
 //			return ApiUtils.getMap(ApiUtils.STATUS_OK, "字典数据获取成功", dict, null);
 //		}catch(Exception e){
-//			logger.error("获取字典值参数错误:"+e.toString());
+//			logger.error("获取字典值参数错误:",e);
 //			return ApiUtils.getMap(ApiUtils.STATUS_SERVER_ERROR, "服务发生错误",null,null);
 //		}
     }

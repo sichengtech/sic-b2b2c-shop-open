@@ -71,7 +71,7 @@ public class TradeDeliverController extends BaseController {
             Page<TradeDeliver> tradeDeliverPage = tradeDeliverService.selectByWhere(new Page<TradeDeliver>(1, defaultLimit, defaultLimit), new Wrapper(tradeDeliver));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("发票信息列表数据获取成功"), tradeDeliverPage.getList(), tradeDeliverPage);
         } catch (Exception e) {
-            logger.error("发票信息列表数据获取失败:" + e.toString());
+            logger.error("发票信息列表数据获取失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器错误"), null, null);
         }
     }
@@ -98,7 +98,7 @@ public class TradeDeliverController extends BaseController {
             TradeDeliver tradeDeliver = tradeDeliverService.selectOne(new Wrapper(entity));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("发票信息获取成功"), tradeDeliver, null);
         } catch (Exception e) {
-            logger.error("发票信息获取失败:" + e.toString());
+            logger.error("发票信息获取失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器错误"), null, null);
         }
     }
@@ -144,7 +144,7 @@ public class TradeDeliverController extends BaseController {
             tradeDeliverService.saveTradeDeliver(tradeDeliver);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("发票信息保存成功"), null, null);
         } catch (Exception e) {
-            logger.error("发票信息保存失败:" + e.toString());
+            logger.error("发票信息保存失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器错误"), null, null);
         }
     }
@@ -198,7 +198,7 @@ public class TradeDeliverController extends BaseController {
             tradeDeliverService.editTradeDeliver(tradeDeliver);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("发票信息编辑成功"), null, null);
         } catch (Exception e) {
-            logger.error("发票信息编辑失败:" + e.toString());
+            logger.error("发票信息编辑失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器错误"), null, null);
         }
     }
@@ -226,7 +226,7 @@ public class TradeDeliverController extends BaseController {
             tradeDeliverService.deleteByWhere(new Wrapper(tradeDeliver));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("发票信息删除成功"), null, null);
         } catch (Exception e) {
-            logger.error("发票信息删除失败:" + e.toString());
+            logger.error("发票信息删除失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器错误"), null, null);
         }
     }
@@ -260,7 +260,7 @@ public class TradeDeliverController extends BaseController {
                 return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("发票信息设置默认成功"), null, null);
             }
         } catch (Exception e) {
-            logger.error("发票信息设置默认失败:" + e.toString());
+            logger.error("发票信息设置默认失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务器错误"), null, null);
         }
     }

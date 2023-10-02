@@ -90,7 +90,7 @@ public class UserAddressController extends BaseController {
             memberAddress = memberAddressService.selectOne(w);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("收货地址信息获取成功"), memberAddress, null);
         } catch (Exception e) {
-            logger.error("获取网站注册设置信息:" + e.toString());
+            logger.error("获取网站注册设置信息:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取收货地址信息错误"), null, null);
         }
     }
@@ -112,7 +112,7 @@ public class UserAddressController extends BaseController {
             List<MemberAddress> list = memberAddressService.selectByWhere(w);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("收货地址信息获取成功"), list, null);
         } catch (Exception e) {
-            logger.error("获取网站注册设置信息:" + e.toString());
+            logger.error("获取网站注册设置信息:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("获取收货地址信息错误"), null, null);
         }
     }
@@ -158,7 +158,7 @@ public class UserAddressController extends BaseController {
             memberAddressService.insertAddress(isDefault, memberAddress);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("收货地址信息添加成功"), "/user/address/list.htm", null);
         } catch (Exception e) {
-            logger.error("获取网站注册设置信息:" + e.toString());
+            logger.error("获取网站注册设置信息:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("添加收货地址信息错误"), null, null);
         }
     }
@@ -209,7 +209,7 @@ public class UserAddressController extends BaseController {
             memberAddressService.updateAddress(isDefault, memberAddress);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("收货地址信息编辑成功"), "/user/address/list.htm", null);
         } catch (Exception e) {
-            logger.error("获取网站注册设置信息:" + e.toString());
+            logger.error("获取网站注册设置信息:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("编辑收货地址信息错误"), null, null);
         }
     }
@@ -240,7 +240,7 @@ public class UserAddressController extends BaseController {
             memberAddressService.deleteByWhere(new Wrapper(entity));
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("收货地址删除成功"), null, null);
         } catch (Exception e) {
-            logger.error("收货地址删除失败:" + e.toString());
+            logger.error("收货地址删除失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("收货地址删除失败"), null, null);
         }
     }
@@ -279,7 +279,7 @@ public class UserAddressController extends BaseController {
             }
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, messages, null, null);
         } catch (Exception e) {
-            logger.error("收货地址删除失败:" + e.toString());
+            logger.error("收货地址删除失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("默认地址设置失败"), null, null);
         }
     }
@@ -351,7 +351,7 @@ public class UserAddressController extends BaseController {
             List<Area> list = areaService.selectByWhere(wrapper);
             return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("地区数据获取成功"), list, null);
         } catch (Exception e) {
-            logger.error("地区数据获取失败:" + e.toString());
+            logger.error("地区数据获取失败:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("地区数据获取失败"), null, null);
         }
     }
@@ -414,7 +414,7 @@ public class UserAddressController extends BaseController {
       		}
     		return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("地区数据获取成功"), listData, null);
     	} catch (Exception e) {
-    		logger.error("地区数据获取失败:" + e.toString());
+    		logger.error("地区数据获取失败:" , e );
     		return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("地区数据获取失败"), null, null);
     	}
     }
