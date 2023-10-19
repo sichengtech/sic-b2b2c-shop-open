@@ -42,9 +42,12 @@
 正在开发中...    
 
 # 社区官网
-社区官网： http://www.sicheng.net   （点击可获取更多信息）    
-社区论坛： http://club.sicheng.net/   
-相关文档： http://www.sicheng.net/shopdoc/
+社区官网： http://www.sicheng.net   (点击可获取更多信息)    
+社区论坛： http://club.sicheng.net/   (技术问题可到论坛来提问)     
+相关文档： http://www.sicheng.net/shopdoc/    
+### 思程Shop微信客服
+使用微信扫码可联系客服（免验证）  
+![思程Shop微信客服](./docs/images/sic微信客服.jpg "思程Shop微信客服")
 
 # 路线图
 第1步：开源PC端源码。【完成】    
