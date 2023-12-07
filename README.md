@@ -62,4 +62,4 @@
 第N步：功能升级。  
 
 # 效果图
-![思程 Shop App效果图](./docs/images/pc.png "思程 Shop App效果图")  
+![思程 Shop PC效果图](./docs/images/pc.png "思程 Shop PC效果图")  
