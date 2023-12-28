@@ -120,7 +120,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的用户信息表单页面 
-     *  @param model
      *  @return
      */
     @RequestMapping(value = "/user/userInfo/form")
@@ -141,7 +140,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的收货地址列表页面
-     *  @param model
      *  @return
      */
     @RequestMapping(value = "/user/address/list")
@@ -151,7 +149,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的收货地址表单页面
-     *  @param model
      *  @return
      */
     @RequestMapping(value = "/user/address/form")
@@ -161,7 +158,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的我的消息页面
-     *  @param model
      *  @return
      */
     @RequestMapping(value = "/user/userMessage/list")

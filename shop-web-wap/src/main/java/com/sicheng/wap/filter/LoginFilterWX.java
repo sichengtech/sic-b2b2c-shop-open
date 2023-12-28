@@ -37,6 +37,8 @@ import java.util.List;
  */
 public class LoginFilterWX implements Filter {
 
+    volatile List<String> anonymousUrl=null;
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
 
@@ -58,7 +60,7 @@ public class LoginFilterWX implements Filter {
 
         // 获得用户请求的URI
         String path = servletRequest.getRequestURI();//获取访问地址(不带参数，用于过滤匿名地址)
-        //具有匿名权限的Url--不做拦截
+        //可匿名访问的接口，不做拦截，要放过，允许匿名访问
         List<String> list = getAnonymousUrl();
         for (String url : list) {
             if (path.contains(url)) {
@@ -106,12 +108,104 @@ public class LoginFilterWX implements Filter {
     }
 
     /**
-     * 获取匿名权限的地址
+     * 获取可匿名访问的接口(双重检查锁)
      */
     private List<String> getAnonymousUrl() {
-        // 是否包含以下链接--有以下链接不能拦截
+        if (anonymousUrl == null) {
+            synchronized (LoginFilterWX.class) {
+                if (anonymousUrl == null) {
+                    anonymousUrl=getAnonymousUrlInner();
+                }
+            }
+        }
+        return anonymousUrl;
+    }
+    /**
+     * 获取可匿名访问的接口
+     */
+    private List<String> getAnonymousUrlInner() {
         List<String> list = new ArrayList<>();
-        // 路由
+
+        //App检查版本接口
+        list.add("/app/version/check.htm");// 检查当前版本是否为最新版本，如果不为最新版本则按照指定的type返回最新版本的安装包
+        list.add("/app/ad/list.htm");// 获取App引导页(app初次打开时展示的3个页面)
+
+        //登录、注册
+        list.add("/siteRegister/info.htm");// 获取网站注册设置信息
+        list.add("/user/register/save.htm");// 保存注册信息
+        list.add("/user/login/authentication.htm");// wap登录认证(基于cookie和session)
+        list.add("/user/login/app.htm");// APP登录认证(基于token,专为APP开发)
+        list.add("/user/forgetPwd/edit.htm");// 提交忘记密码的信息,保存新密码
+        list.add("/sms/register/getCode.htm");// 手机号注册发送短信验证码
+        list.add("/sms/login/getCode.htm");// 手机号登录发送短信验证码
+        list.add("/sms/forgetPwd/getCode.htm");// 手机号找回密码发送短信验证码
+        list.add("/email/register/getCode.htm");// 账号注册发送邮件验证码
+        list.add("/eamil/forgetPwd/getCode.htm");// 邮箱找回密码发送邮件验证码
+
+        //用户
+        list.add("/user/list.htm");// 根据多个用户id获取用户名（只返回了uid、loginName两个字段）
+
+        //店铺
+        list.add("/store/page.htm");// 分页查询店铺列表
+        list.add("/store/one/all.htm");// 获取店铺总信息
+        list.add("/store/article/page.htm");// 获取店铺文章列表
+        list.add("/store/article/one.htm");// 获取店铺文章
+        list.add("/store/one.htm");// 获取店铺信息
+        list.add("/store/list.htm");// 获取多个店铺信息
+        list.add("/store/category/list.htm");// 获取店铺分类
+        list.add("/store/nav/count.htm");// 获取店铺头部数据
+        list.add("/store/carouselPicture/list.htm");// 获取店铺轮播图
+
+        //商品
+        list.add("/product/productCategory/list.htm");// 商品分类列表
+        list.add("/product/all.htm");// 获取商品信息，总接口
+        list.add("/product/page.htm");// 根据条件来获取商品
+        list.add("/product/list.htm");// 根据条件来获取商品
+        list.add("/product/one.htm");// 根据商品id查询商品
+        list.add("/product/sectionPrice/list.htm");// 获取商品批发价
+        list.add("/product/getSectionPrice.htm");// 获取商品批发价
+        list.add("/product/sku/list.htm");// 根据商品id查询商品
+        list.add("/product/sku/one.htm");// 根据商品id查询商品
+        list.add("/product/image/list.htm");// 根据商品id获取商品图片
+        list.add("/product/detail.htm");// 获取商品描述详情
+        list.add("/product/comment/list.htm");// 获取商品评价list
+        list.add("/product/comment/page.htm");// 获取商品评价page
+        list.add("/product/consultation/list.htm");// 获取商品咨询list
+        list.add("/product/consultation/page.htm");// 获取商品咨询page
+        list.add("/product/comment/image/list.htm");// 获取商品评价图片list
+
+        //咨询
+        list.add("/trade/consultation/list.htm");// 获取商品咨询list信息
+        list.add("/trade/consultation/page.htm");// 获取商品咨询page信息
+
+        //站点
+        list.add("/site/carouselPicture/list.htm");// 获取轮播图
+        list.add("/site/recommend/one.htm");// 获取推荐位
+        list.add("/site/ad/one.htm");// 获取广告位
+        list.add("/site/carouselPicture/list.htm");// 根据类型获取轮播图列表
+        list.add("/site/HotSearchWord/list.htm");// 获取热搜词
+        list.add("/site/info.htm");// 获取网站信息
+
+        //系统
+        list.add("/sys/area/selectArea.htm");// 查询地区数据
+        list.add("/sys/dict/list.htm");// 根据字典类型获取字典列表
+        list.add("/sys/dict/labelOne.htm");// 获取字典键
+        list.add("/sys/dict/labelList.htm");// 获取多个字典键
+        list.add("/sys/dict/valueOne.htm");// 获取字典值
+
+        //微信的回调我的地址
+        list.add("/oauth2/wxlogin.htm");// 微信回调，获取微信openId
+        list.add("/weixin/payNotify.htm");// 微信支付通知
+
+        //国际化
+        list.add("/fy/poperties.htm");// 获取国际化配置文件内容
+
+        // 用于测试
+        list.add("/errorTest.htm");// 异常测试接口，用于产生一个服务端异常
+        list.add("/restTest.htm");// rest测试接口，用于测试RESTful
+
+
+        // ----以下是wap的路由（已淘汰，将会清理）----
         list.add("/user/register/form.htm"); // 进入微商城的注册页面
         list.add("/user/login/form.htm"); // 进入微商城的登录页面
         list.add("/user/forgetPwd/form.htm"); // 进入微商城的忘记密码页面
@@ -130,62 +224,7 @@ public class LoginFilterWX implements Filter {
         list.add("/product/param/list.htm");// 根据商品id查询商品参数
         list.add("/product/error.htm");// 进入商品不存在页
         list.add("/webRequest/error.htm");// 网络请求发生异常，返回错误页面
-        // 接口
-        list.add("/errorTest.htm");// 异常测试接口，用于产生一个服务端异常
-        list.add("/restTest.htm");// 异常测试接口，用于产生一个服务端异常
-        list.add("/app/ad/list.htm");// 开屏广告列表
-        list.add("/app/version/check.htm");// 开屏广告列表
-        list.add("/product/productCategory/list.htm");// 商品分类列表
-        list.add("/site/carouselPicture/list.htm");// 商品分类列表
-        list.add("/site/HotSearchWord/list.htm");// 商品分类列表
-        list.add("/store/page.htm");// 商品分类列表
-        list.add("/product/all.htm");// 商品分类列表
-        list.add("/store/one/all.htm");// 商品分类列表
 
-        list.add("/sys/area/selectArea.htm");// 查询地区数据
-        list.add("/user/register/save.htm");// 保存注册信息
-        list.add("/user/login/authentication.htm");// wap登录认证(基于cookie和session)
-        list.add("/user/login/app.htm");// APP登录认证(基于token,专为APP开发)
-        list.add("/user/forgetPwd/edit.htm");// 提交忘记密码的信息,保存新密码
-        list.add("/user/list.htm");// 根据用户list
-        list.add("/getCode.htm");// 获取验证码（手机号注册、账号注册、手机号登录、手机号找回密码、邮箱地址找回密码）
-        list.add("/site/carouselPicture/list.htm");// 获取轮播图
-        list.add("/site/recommend/one.htm");// 获取推荐位
-        list.add("/site/ad/one.htm");// 获取广告位
-        list.add("/site/info.htm");// 获取网站信息
-        list.add("/store/article/page.htm");// 获取店铺文章列表
-        list.add("/store/article/one.htm");// 获取店铺文章
-        list.add("/sys/dict/list.htm");// 根据字典类型获取字典列表
-        list.add("/sys/dict/labelOne.htm");// 获取字典键
-        list.add("/sys/dict/labelList.htm");// 获取多个字典键
-        list.add("/sys/dict/valueOne.htm");// 获取字典值
-        list.add("/store/one.htm");// 获取店铺信息
-        list.add("/store/list.htm");// 获取多个店铺信息
-        list.add("/store/category/list.htm");// 获取店铺分类
-        list.add("/store/nav/count.htm");// 获取店铺头部数据
-        list.add("/store/carouselPicture/list.htm");// 获取店铺轮播图
-        list.add("/product/page.htm");// 根据条件来获取商品
-        list.add("/product/list.htm");// 根据条件来获取商品
-        list.add("/product/one.htm");// 根据商品id查询商品
-        list.add("/product/sectionPrice/list.htm");// 获取商品批发价
-        list.add("/product/getSectionPrice.htm");// 获取商品批发价
-        list.add("/product/sku/list.htm");// 根据商品id查询商品
-        list.add("/product/sku/one.htm");// 根据商品id查询商品
-        list.add("/product/image/list.htm");// 根据商品id获取商品图片
-        list.add("/product/detail.htm");// 获取商品描述详情
-        list.add("/product/comment/list.htm");// 获取商品评价list
-        list.add("/product/comment/page.htm");// 获取商品评价page
-        list.add("/product/consultation/list.htm");// 获取商品咨询list
-        list.add("/product/consultation/page.htm");// 获取商品咨询page
-        list.add("/product/comment/image/list.htm");// 获取商品评价图片list
-        list.add("/trade/consultation/list.htm");// 获取商品咨询list信息
-        list.add("/trade/consultation/page.htm");// 获取商品咨询page信息
-        list.add("/siteRegister/info.htm");// 获取网站注册设置信息
-        //地址
-        list.add("/oauth2/wxlogin.htm");// 微信回调，获取微信openId
-        list.add("/weixin/payNotify.htm");// 微信支付通知
-        //获取国际化配置文件内容
-        list.add("/fy/poperties.htm");// 获取国际化配置
         return list;
     }
 }

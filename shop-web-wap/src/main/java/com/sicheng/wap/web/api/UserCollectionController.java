@@ -39,7 +39,7 @@ import java.util.Map;
 
 /**
  * <p>标题: UserCollectionController</p>
- * <p>描述: </p>
+ * <p>描述: 收藏 </p>
  * <p>公司: 思程科技 www.sicheng.net</p>
  *
  * @author cailong

@@ -234,7 +234,8 @@ public class LoginController extends BaseController {
 
     /**
       * 表单验证(账号登录) 
-      * @param model
+      * @param userMain
+      * @param openId
       * @return
      */
     private List<String> validate1(UserMain userMain, String openId) {
@@ -271,7 +272,8 @@ public class LoginController extends BaseController {
 
     /**
       * 表单验证(手机号登录) 
-      * @param model
+      * @param userMain
+     * @param openId
       * @return
      */
     private List<String> validate2(UserMain userMain, String openId) {

@@ -108,9 +108,10 @@ public class UserInfoController extends BaseController {
     }
 
     /**
-     * 根据多个用户id获取用户信息列表
+     * 根据多个用户id获取用户名
+     * 只返回了uid、loginName两个字段
      *
-     * @param uids
+     * @param uids 多个用户id
      * @return
      */
     @ResponseBody
@@ -133,7 +134,7 @@ public class UserInfoController extends BaseController {
                 map.put("loginName", userMainList.get(i).getLoginName());
                 userList.add(map);
             }
-            return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询用户成功"), userMainList, null);
+            return AppDataUtils.getMap(AppDataUtils.STATUS_OK, FYUtils.fy("查询用户成功"), userList, null);
         } catch (Exception e) {
             logger.error("获取用户错误:" , e );
             return AppDataUtils.getMap(AppDataUtils.STATUS_SERVER_ERROR, FYUtils.fy("服务发生错误"), null, null);
