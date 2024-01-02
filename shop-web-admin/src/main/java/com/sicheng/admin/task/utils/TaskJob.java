@@ -13,7 +13,6 @@
 package com.sicheng.admin.task.utils;
 
 import com.google.common.collect.Lists;
-import com.sicheng.admin.product.entity.SolrProduct;
 import com.sicheng.admin.site.service.SiteCreateSolrIndexService;
 import com.sicheng.admin.sso.service.UserAppTokenService;
 import com.sicheng.admin.store.service.StoreAnalyzeService;
@@ -21,10 +20,8 @@ import com.sicheng.admin.task.service.TaskListService;
 import com.sicheng.common.cache.ShopCache;
 import com.sicheng.common.config.Global;
 import com.sicheng.common.filter.PageCachingFilter;
-import com.sicheng.common.persistence.Page;
 import com.sicheng.common.utils.DateUtils;
-import com.sicheng.common.utils.HttpPost;
-import com.sicheng.search.ProductSearchInterface;
+import com.sicheng.common.utils.HttpClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -331,7 +328,7 @@ public class TaskJob {
                 Map<String, String> map1 = new HashMap<String, String>();
                 map1.put("k", "clearPageCache");//无用
                 String url = Global.getConfig("adq.index.url");//首页URL
-                HttpPost.post(url, map1);//请求首页会重新加载缓存
+                HttpClient.post(url, map1);//请求首页会重新加载缓存
             }
         });
         tr.start();//启动
