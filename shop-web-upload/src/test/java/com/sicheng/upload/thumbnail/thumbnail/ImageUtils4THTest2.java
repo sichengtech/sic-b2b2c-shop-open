@@ -23,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
 /**
  * 单元测试类
@@ -49,6 +50,23 @@ public class ImageUtils4THTest2 {
     String name = "f1.jpg";//被处理的图片名称
     String path = MaterialLibrary.getImagePath(name);//被处理的图片的路径
     String outFolder = System.getProperty("java.io.tmpdir");//文件输出路径
+
+    /**
+     * 一个循环把MaterialLibrary中的所有图片全测试了
+     * @throws IOException
+     */
+    @Test
+    public void test_All() throws IOException {
+        Set<String> set=MaterialLibrary.getkeys();
+        for(String key:set){
+            String path = MaterialLibrary.getImagePath(key);//被处理的图片的路径
+            FileInputStream inputStream = new FileInputStream(path);
+            System.out.println("处理："+path);
+            InputStream data = ImageUtils4TH.resize(inputStream, 50, 50, 95, "jpg");
+            File file_out = new File(outFolder + "/th_resize." + format);
+            FileUtils.copyInputStreamToFile(data, file_out);
+        }
+    }
 
     @Test
     public void test_resize() throws IOException {

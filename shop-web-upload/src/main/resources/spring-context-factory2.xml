@@ -39,8 +39,10 @@
 
 	<!-- 图片处理接口,GM版图片处理(依赖GraphicsMagick,需要在操作系统是单独安装GM程序,并通过命令行调用GM)	-->
 <!--	<bean id="imageProcess" class="com.sicheng.upload.thumbnail.impl.ImageProcessGMImpl"></bean>-->
+
 	<!-- 图片处理接口,Thumbnails版图片处理 (Thumbnailator 是一个优秀的图片处理的Google开源Java类库，可运行于OpenJdk8\11\17) -->
 	<bean id="imageProcess" class="com.sicheng.upload.thumbnail.impl.ImageProcessTHImpl"></bean>
+
 	<!-- 图片处理接口,SimpleImage版图片处理  (阿里巴巴 simpleimage 图片处理工具类，必须使用Oracle JDK8,不能使用OpenJDK8否则报某类找不到) -->
 <!--	<bean id="imageProcess" class="com.sicheng.upload.thumbnail.impl.ImageProcessSIImpl"></bean>-->
 	 

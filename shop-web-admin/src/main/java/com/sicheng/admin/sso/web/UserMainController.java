@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServletResponse;
 import com.sicheng.admin.site.entity.SiteRegister;
 import com.sicheng.admin.site.service.SiteRegisterService;
 import com.sicheng.admin.store.service.StoreEnterAuthService;
-import com.sicheng.common.utils.IdGen;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -245,7 +244,25 @@ public class UserMainController extends BaseController {
     }
 
     /**
-     * 会员买家删除
+     * 会员买家删除（注意删除的是买家）
+     *
+     * 买家将被删除以下信息：
+     * 删除会员总表记录
+     * 删除会员卖家表记录
+     * 删除会员扩展表记录
+     * 删除会员扩展表_采购商记录
+     * 删除会员扩展表_汽车服务门店记录
+     * 删除会员会员扩展表_商家注册信息表记录
+     * 删除入驻申请审核表记录
+     * 删除入驻申请查看表记录
+     * 删除收货地址表记录
+     * 删除收藏商品表记录
+     * 删除收藏店铺表记录
+     * 删除充值表记录
+     * 删除提现表记录
+     * 删除预存款明细表记录
+     * 删除系统消息表记录
+     * 删除购物车记录
      *
      * @param userMain           实体对象
      * @param redirectAttributes
@@ -254,13 +271,74 @@ public class UserMainController extends BaseController {
     @RequiresPermissions("sso:member:drop")
     @RequestMapping(value = "memberDelete")
     public String memberDelete(UserMain userMain, RedirectAttributes redirectAttributes) {
-        userMainService.userDelete(userMain.getUId());
+        userMainService.cleanupMyWorld_DeleteUserEverything(userMain.getUId());
         addMessage(redirectAttributes, FYUtils.fyParams("删除买家会员成功"));
         return "redirect:" + adminPath + "/sso/userMain/memberList.do?repage";
     }
 
     /**
-     * 会员卖家删除
+     * 卖家会员删除 （注意删除的是卖家）
+     *
+     * 对应的商家账号、店铺等全部信息将被彻底删除。
+     *
+     *
+     * 商家将被删除以下信息：
+     *
+     * 删除会员总表(子账号)记录
+     * 删除（角色和资源的中间表）记录
+     * 删除卖家角色记录
+     * 删除(卖家和角色的中间表)记录
+     * 删除店铺表记录
+     * 删除二级域名记录
+     * 删除店铺商品分类记录
+     * 删除店铺导航表内容记录
+     * 删除店铺导航表记录
+     * 删除店铺轮播图片记录
+     * 删除店铺相册空间表记录
+     * 删除相册夹表记录
+     * 删除相册空间表记录
+     * 删除店铺管理员操作日志记录
+     * 删除商品SKU 删除商品区间价表 删除商品详情表 删除商品图片多对多中间表记录
+     * 删除商品SPU记录
+     * 删除店铺绑定品牌记录
+     * 删除店铺装修表记录
+     * 删除店铺物流公司中间表记录
+     * 删除店铺客服表记录
+     * 删除店铺文章表记录
+     * 删除购物车表记录
+     * 删除评论表记录
+     * 删除咨询表记录
+     * 删除投诉表记录
+     * 删除运费模板、运费模板详情表记录
+     * 删除结算账单表记录
+     * 删除结算定时任务表记录
+     * 删除采购空间表记录
+     * 删除采购表记录
+     * 删除交易凭证表记录
+     * 删除采购咨询表记录
+     * 删除账户表记录
+     * 删除绑卡表记录
+     * 删除提现表记录
+     *
+     * ------------------------------
+     * 买家将被删除以下信息： （商家也是一个买家）
+     *
+     * 删除会员总表记录
+     * 删除会员卖家表记录
+     * 删除会员扩展表记录
+     * 删除会员扩展表_采购商记录
+     * 删除会员扩展表_汽车服务门店记录
+     * 删除会员会员扩展表_商家注册信息表记录
+     * 删除入驻申请审核表记录
+     * 删除入驻申请查看表记录
+     * 删除收货地址表记录
+     * 删除收藏商品表记录
+     * 删除收藏店铺表记录
+     * 删除充值表记录
+     * 删除提现表记录
+     * 删除预存款明细表记录
+     * 删除系统消息表记录
+     * 删除购物车记录
      *
      * @param userMain           实体对象
      * @param redirectAttributes
@@ -269,7 +347,7 @@ public class UserMainController extends BaseController {
     @RequiresPermissions("sso:seller:drop")
     @RequestMapping(value = "sellerDelete")
     public String sellerDelete(UserMain userMain, RedirectAttributes redirectAttributes) {
-        userMainService.userDelete(userMain.getUId());
+        userMainService.cleanupMyWorld_DeleteUserEverything(userMain.getUId());
         addMessage(redirectAttributes, FYUtils.fyParams("删除卖家会员成功"));
         return "redirect:" + adminPath + "/sso/userMain/sellerList.do?repage";
     }

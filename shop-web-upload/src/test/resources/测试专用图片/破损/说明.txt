@@ -1,0 +1,22 @@
+本目录中的111.jpg是一张破损的图片。
+
+很可能这张111.jpg图片的ICC_PROFILE文件中的段包含重复的序列号，ICC配置文件段被打破。这意味着编写它的软件在某种程度上被破坏了。
+然而，图像数据仍然应该是可读的，即使颜色看起来可能与它们不完全一样。
+
+由于JFIF ( JPEG文件交换格式)的段大小有限，因此必须将大型ICC配置文件拆分为多个段。
+该规范规定，ICC配置文件应该存储在多个APP2段中，每个段必须以以空结尾的字符串ICC_PROFILE开始，然后是单个无符号字节序列号和总计数。
+
+Java自带的ImageIO类无法正确读取111.jpg，会报错。
+111.jpg放在这里做为一个测试用例，用于证明，我的程序可以很好地处理这种图片，已解决了这个问题。
+
+异常信息如下：
+Caused by: javax.imageio.IIOException: Invalid icc profile: duplicate sequence numbers
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.readImageHeader(Native Method)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.readNativeHeader(JPEGImageReader.java:628)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.checkTablesOnly(JPEGImageReader.java:347)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.gotoImage(JPEGImageReader.java:495)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.readHeader(JPEGImageReader.java:621)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.readInternal(JPEGImageReader.java:1078)
+	at com.sun.imageio.plugins.jpeg.JPEGImageReader.readRaster(JPEGImageReader.java:1486)
+
+

@@ -15,7 +15,6 @@ package com.sicheng.upload.thumbnail.thumbnailator;
 import com.sicheng.common.utils.IOUtils;
 
 import javax.imageio.*;
-import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 import java.awt.*;
@@ -44,7 +43,6 @@ public class ImageCMYK {
      * @return 图片对象
      */
     public static BufferedImage read(InputStream img) {
-
         // 创造一个可以反复读取的流
         InputStream input = img;
         if ((!(input instanceof ByteArrayInputStream)) && (!(input instanceof java.io.ByteArrayInputStream))) {
@@ -66,9 +64,8 @@ public class ImageCMYK {
                 input.reset();// 重置，第二次读流
                 return readJpeg(input);
             } catch (IOException e1) {
-                e1.printStackTrace();
+                throw new RuntimeException("ImageIO.read()读取图片时异常，虽然我已努力兼容各种图片，但今天还是遇到了另类图片，请人工介入解决！",e1);
             }
-            return null;
         }
     }
 

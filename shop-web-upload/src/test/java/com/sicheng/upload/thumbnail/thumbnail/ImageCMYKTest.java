@@ -102,4 +102,21 @@ public class ImageCMYKTest {
         TestCase.assertEquals("图片高度对比发现错误", 2304, imageHeitht);
         System.out.println(name + ",宽:" + imageWidth + ",高:" + imageHeitht);
     }
+    /**
+     * ImageCMYK类测试
+     * ps1.jpg是破损图片,ICC配置文件段被打破，测试ImageCMYK工具类是否能正常读取这种类型的文件
+     */
+    @Test
+    public void test5() throws FileNotFoundException {
+        String name = "ps1.jpg";
+        String path = MaterialLibrary.getImagePath(name);
+        FileInputStream in = new FileInputStream(path);
+        BufferedImage image = ImageCMYK.read(in);
+        // 图片的宽与高
+        int imageWidth = image.getWidth();
+        int imageHeitht = image.getHeight();
+        TestCase.assertEquals("图片宽度对比发现错误", 500, imageWidth);
+        TestCase.assertEquals("图片高度对比发现错误", 500, imageHeitht);
+        System.out.println(name + ",宽:" + imageWidth + ",高:" + imageHeitht);
+    }
 }

@@ -16,6 +16,7 @@ import com.sicheng.common.utils.FileUtils;
 import com.sicheng.upload.thumbnail.ImageInfo;
 import com.sicheng.upload.thumbnail.MaterialLibrary;
 import com.sicheng.upload.thumbnail.impl.ImageProcessGMImpl;
+import com.sicheng.upload.thumbnail.thumbnailator.ImageUtils4TH;
 import junit.framework.TestCase;
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,6 +25,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Set;
 
 /**
  * CommonImageOperateGM 测试类
@@ -41,6 +43,22 @@ public class ImageUtils4GMTest2 {
     String path = MaterialLibrary.getImagePath(name);//被处理的图片的路径
     String outFolder = System.getProperty("java.io.tmpdir");//文件输出路径
 
+    /**
+     * 一个循环把MaterialLibrary中的所有图片全测试了
+     * @throws IOException
+     */
+    @Test
+    public void test_All() throws IOException {
+        Set<String> set=MaterialLibrary.getkeys();
+        for(String key:set){
+            String path = MaterialLibrary.getImagePath(key);//被处理的图片的路径
+            System.out.println("处理："+path);
+            FileInputStream inputStream = new FileInputStream(path);
+            InputStream data = new ImageProcessGMImpl().resize(inputStream, 185, 185, 95, "jpg");
+            File file_out = new File(outFolder + "/gm_resize." + format);
+            FileUtils.copyInputStreamToFile(data, file_out);
+        }
+    }
     @Test
     public void test_resize() throws IOException {
         FileInputStream inputStream = new FileInputStream(path);

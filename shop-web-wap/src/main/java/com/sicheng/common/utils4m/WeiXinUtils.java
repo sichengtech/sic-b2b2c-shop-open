@@ -49,7 +49,6 @@ public class WeiXinUtils {
 
     /**
      * 用户授权，获取code
-     * @param request
      * @param response
      * @param flag 入口类型（1,2,3）
      * 1表示被拦截器拦到微信授权获取openId后，自动登录
@@ -66,7 +65,6 @@ public class WeiXinUtils {
 
     /**
      * 用户授权，获取code
-     * @param request
      * @param response
      * @param param 可存放多个参数
      * flag 入口类型（1,2,3,4）
