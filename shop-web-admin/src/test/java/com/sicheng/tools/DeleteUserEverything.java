@@ -17,6 +17,7 @@ import com.sicheng.admin.sso.service.UserMainService;
 import com.sicheng.admin.sso.service.UserSellerService;
 import com.sicheng.common.persistence.wrapper.Wrapper;
 import org.apache.ibatis.cursor.Cursor;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -64,7 +65,7 @@ public class DeleteUserEverything {
         Wrapper w = new Wrapper()
                 .and("u_id >", 2517)
                 .and("u_id !=", 5148)
-                .and("u_id % 19!= ", 0)
+                .and("u_id % 3!= ", 0)
                 .and("u_id < ", 40020);
 
         List<UserSeller> list = userSellerService.selectByWhere(w);
