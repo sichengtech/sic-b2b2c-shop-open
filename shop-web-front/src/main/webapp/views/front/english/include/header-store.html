@@ -1,0 +1,62 @@
+<!-- 业务js -->
+<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/english/storeLeft.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/english/collection.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/english/js/jquery.waterfall.js"></script>
+<script>
+	$(".store-nav-map .sui-container").waterfall({
+	    itemClass: ".box",
+	    minColCount: 2,
+	    spacingHeight: 10,
+	    resizeable: true,
+	});
+</script>
+<style>
+	.store_search {    position: relative;height: 40px;display: flex;align-items: center;float: right;}
+	.store_search input { height: 24px;border-radius: 15px;width: 240px;float: right;border: none;outline: none;padding: 0 10px; color: #333;}
+	.store_search input:-webkit-input-placeholder { color: #ccc; }
+	.store_search .search_icon { width: 26px;height: 26px;overflow: hidden;position: absolute;right: 10px;top: 1px;}
+	.store_search .search_icon i { position: relative;left: -20px; top: 0;border-right: 18px solid transparent;filter: drop-shadow(30px 0 #999); }
+</style>
+<div class="store-banner clearfix" style="text-align: center;height: auto;line-height: 0;">
+	<img src="${ctxfs}${storeOne.banner!}">
+</div>
+<div class="store-nav clearfix">
+	<ul id="store-nav" class="wp">
+		<li>
+			<%var allCategories=fy.getMsg({key:'全部分类'});%>
+			<a href="javascript:void(0);" class=""><i class="sui-icon icon-tb-unfold"></i>${allCategories!}</a>
+			<ul class="store-nav-map" style="display: none;">
+				<div class="sui-container" style="width: 1200px;background-color: #e8e8e8;">
+					<%for (storeCategoryP in store.categoryList({parentId:0,sid:sid,limit:'50'})){%>
+						<dl class="box">
+							<dt><a href="${ctxf}/store/${sid!}/pList.htm?scid=${storeCategoryP.storeCategoryId}&sid=${sid}">${storeCategoryP.name} &gt;</a></dt>
+							<dd>
+								<%for (storeCategory in store.categoryList({parentId:storeCategoryP.storeCategoryId,sid:sid})){%>
+									<a href="${ctxf}/store/${sid!}/pList.htm?scid=${storeCategory.storeCategoryId}&sid=${sid}">${storeCategory.name}</a>
+								<%}%>
+							</dd>
+						</dl>
+					<%}%>
+				</div>
+			</ul>
+		</li>
+		<%var storeHome=fy.getMsg({key:'店铺首页'});%>
+		<li class="store-home"><a href="${ctx}/store/${storeOne.storeId!}.htm" class="">${storeHome!}</a></li>
+		<%var purchaseSpace=fy.getMsg({key:'采购空间'});%>
+		<% if(isNotEmpty(storeOne.purchaseSpace)){%>
+		<li class="store-home"><a href="${ctx}/purchase/space.htm?spaceId=${storeOne.purchaseSpace.spaceId!}" class="">${purchaseSpace!}</a></li>
+		<%}%>
+		<% for(storeNav in store.navList({sid:sid!,limit:5})){ %>
+			<li><a target="${storeNav.target=='2'?'_blank':''}" href="${ctxf}${storeNav.url!}">${storeNav.name!}</a></li>
+		<%}%>
+		<div class="store_search">
+			<input type="hidden" class="storeId" value="${storeOne.storeId!}"/>
+			<input type="text" class="input-xfat input-medium keywords" placeholder="Search In This Store">
+			<div class="search_icon">
+				<i class="ui-searchbar-button-icon"></i>
+			</div>
+		</div>
+	</ul>
+	
+</div>

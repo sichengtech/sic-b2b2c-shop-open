@@ -1,0 +1,239 @@
+<!doctype html>
+<html>
+<head>
+<% var storeOne = store.one({sid:sid});%>
+<title>${isEmpty(storeOne.seoTitle!)?(storeOne.name!):(storeOne.seoTitle!)} Powered by SiC</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="Keywords" content="${storeOne.seoKeyword!}"/>
+<meta name="description" content="${storeOne.seoDescribe!}"/>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/english/storeIndex.js"></script>
+<style>
+	#store-nav li { z-index: 99; }
+	.store-index-main { margin-left: 290px; }
+	.store-goods-list ul.goods-pic-list li { height: 320px; width: 200px; }
+	.storeListBody .store-goods-list .goods-pic-list .p-picture { width: 200px; height: 200px;}
+	.store-left-wrap { width: 260px; float: left; }
+	
+</style>
+</head>
+<body class="storeListBody owl">
+	<%var storeNotProduct=fy.getMsg({key:'暂无商品'});%>
+	<% include("/include/header.html"){}%>
+	<% if(isEmpty(storeOne)){ %>
+		<div class="error_div">
+			<div class="error_msg">
+				<p>
+					<%var storeVal =fy.getMsg({key:'店铺'});%>
+					<%var storeNot =fy.getMsg({key:'数据不存在提示',params:storeVal});%>${storeNot!}
+				</p><br>
+				<p><a href="${ctxf}/index.htm">(1) <%var storeReturnIndex=fy.getMsg({key:'返回首页'});%>${storeReturnIndex!}</a></p><br>
+				<p><a href="javascript:" onclick="history.go(-1);">(2) <%var storeReturnPrevious=fy.getMsg({key:'返回上一页'});%>${storeReturnPrevious!}</a></p><br>
+			</div>
+		</div>
+	<%}else{%>
+		<% include("/include/header-store.html",{'storeOne':storeOne}){}%>
+		<div class="scroll-outer">
+			<div id="scroll-stone" class="owl-carousel">
+				<% for(carousel in store.carouselList({sid:sid})){ %>
+					<div class="item">
+						<a target="_blank" href="${isNotEmpty(carousel.url)?carousel.url!:'javaScript:;'}"><img src="${ctxfs}/${carousel.picturePath}"></a>
+					</div>
+				<%}%>
+			</div>
+			<script type="text/javascript">
+				$(function(){
+					$('#scroll-stone').owlCarousel({
+						items: 1,
+						autoPlay: false,
+						navigation: true,
+						navigationText: ["",""],
+						slideSpeed:1000,
+						autoHeight:true,
+						scrollPerPage: true,
+						responsive:false
+			
+					});
+				});
+			</script>
+		</div>
+		<% if(storeOne.storeDecorate.solution=='2' || storeOne.storeDecorate.solution=='3'){%>
+			<div class="wp clearfix store-index-diy">
+				${storeOne.storeDecorate.content}
+			</div>
+		<%}%>
+		<% if(storeOne.storeDecorate.solution=='1' || storeOne.storeDecorate.solution=='3'){%>
+		<%var yuan=fy.getMsg({key:'元'});%>
+			<div class="wp clearfix mt20">
+				<div class="clearfix store-left-wrap">
+					<% include("/include/store_left.html",{'storeOne':storeOne}){}%>
+					<% include("/include/store_left2.html",{'storeOne':storeOne}){}%>
+				</div>
+				<div class="store-index-main">
+					<dl>
+						<dt><strong><b></b><%var storeSellWell=fy.getMsg({key:'店铺热销'});%>${storeSellWell!}</strong></dt>
+						<dd class="store-goods-list">
+							<ul class="goods-pic-list">
+								<% var productMap1=product.list({sid:sid,sort:'allSales',sortMode:'desc',limit:8});
+									var productList1=productMap1["search"].items;
+								%>						
+								<% if(isEmpty(productList1)){%>
+									<div class="noProduct">
+										<i class="sui-icon icon-touch-face"></i> ${storeNotProduct!}
+									</div>
+								<%}else{%>
+									<% for(product in productList1){%>
+										<li>
+											<div class="p-picture">
+												<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+													<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+														<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}@!220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+													<%}else{%>
+														<img src="${ctxfs}${product.image}@!220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+													<%}%>
+												</a>
+											</div>
+											<% if((product.type!)=='1' || (product.type!)=='2'){%>
+												<div class="go-color">
+													<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+														<% for(img in product.storeAlbumPictureList2!){%>
+															<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}@!220X220"/>
+														<%}%>
+													<%}%>
+												</div>
+											<%}%>
+											<div class="text">
+												<p class="p-price">
+													<% if((product.type!)=='2'){%>
+														${yuan!}${product.minPrice2!}~¥${product.maxPrice2!}
+													<%}else{%>
+														${yuan!}${product.minPrice1!}
+													<%}%>
+												</p>
+												<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+													<p class="p-name">${product.name!}</p>
+												</a>
+											</div>
+											<!-- <div class="button"><a href="javaScript:" class="fav" pId="${product.pId}"><i class="sui-icon icon-tb-favor"></i> 加入收藏</a><a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="buy"><i class="sui-icon icon-tb-goods"></i> 立即购买</a></div> -->
+										</li>
+									<%}%>
+								<%}%>
+								<div class="clear"></div>
+							</ul>
+						</dd>
+					</dl>
+					<dl class="mt20">
+						<dt><strong><b></b><%var shopkeeper=fy.getMsg({key:'掌柜推荐'});%>${shopkeeper!}</strong></dt>
+						<dd class="store-goods-list">
+							<ul class="goods-pic-list">
+								<%  var productMap2 = product.list({sid:sid,isRecommend:1,limit:8});
+									var productList2 = productMap2["search"].items;
+								%>						
+								<% if(isEmpty(productList2)){%>
+									<div class="noProduct">
+										<i class="sui-icon icon-touch-face"></i> ${storeNotProduct!}
+									</div>
+								<%}else{%>
+									<% for(product in productList2){%>
+										<li>
+											<div class="p-picture">
+												<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+													<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+														<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}@!220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+													<%}else{%>
+														<img src="${ctxfs}${product.image}@!220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+													<%}%>
+												</a>
+											</div>
+											<% if((product.type!)=='1' || (product.type!)=='2'){%>
+												<div class="go-color">
+													<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+														<% for(img in product.storeAlbumPictureList2!){%>
+															<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}@!220X220"/>
+														<%}%>
+													<%}%>
+												</div>
+											<%}%>
+											<div class="text">
+												<p class="p-price">
+													<% if((product.type!)=='2'){%>
+														${yuan!}${product.minPrice2!}~¥${product.maxPrice2!}
+													<%}else{%>
+														${yuan!}${product.minPrice1!}
+													<%}%>
+												</p>
+												<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+													<p class="p-name">${product.name!}</p>
+												</a>
+											</div>
+											<!-- <div class="button"><a href="javaScript:" class="fav" pId="${product.pId}"><i class="sui-icon icon-tb-favor"></i> 加入收藏</a><a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="buy"><i class="sui-icon icon-tb-goods"></i> 立即购买</a></div> -->
+										</li>
+									<%}%>
+								<%}%>
+								<div class="clear"></div>
+							</ul>
+						</dd>
+					</dl>
+					<dl class="mt20">
+						<dt><strong><b></b><%var newArrival=fy.getMsg({key:'新品上市'});%>${newArrival!}</strong></dt>
+						<dd class="store-goods-list">
+							<ul class="goods-pic-list">
+								<% var productMap3=product.list({sid:sid,limit:8});
+									var productList3=productMap3["search"].items;
+								%>						
+								<% if(isEmpty(productList3)){%>
+									<div class="noProduct">
+										<i class="sui-icon icon-touch-face"></i> ${storeNotProduct!}
+									</div>
+								<%}else{%>
+									<% for(product in productList3){%>
+										<li>
+											<div class="p-picture">
+												<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+													<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+														<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}@!220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+													<%}else{%>
+														<img src="${ctxfs}${product.image}@!220X220" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+													<%}%>
+												</a>
+											</div>
+											<% if((product.type!)=='1' || (product.type!)=='2'){%>
+												<div class="go-color">
+													<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+														<% for(img in product.storeAlbumPictureList2!){%>
+															<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}@!220X220"/>
+														<%}%>
+													<%}%>
+												</div>
+											<%}%>
+											<div class="text">
+												<p class="p-price">
+													<% if((product.type!)=='2'){%>
+														${yuan!}${product.minPrice2!}~¥${product.maxPrice2!}
+													<%}else{%>
+														${yuan!}${product.minPrice1!}
+													<%}%>
+												</p>
+												<a target="_blank" href="${ctx}/detail/${product.pId}.htm">
+													<p class="p-name">${product.name!}</p>
+												</a>
+											</div>
+											<!-- <div class="button"><a href="javaScript:" class="fav" pId="${product.pId}"><i class="sui-icon icon-tb-favor"></i> 加入收藏</a><a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="buy"><i class="sui-icon icon-tb-goods"></i> 立即购买</a></div> -->
+										</li>
+									<%}%>
+								<%}%>
+								<div class="clear"></div>
+							</ul>
+						</dd>
+					</dl>
+				</div>
+			</div>
+			<div class="store-by">${storeOne.name!} BY SiC B2B2C Shop</div>
+		<%}%>
+	<%}%>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+</body>
+</html>

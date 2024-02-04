@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<% include("../include/head.html"){}%>
+<script type="text/javascript">
+	$(function(){
+		$(".upgradePurchaser").click(function(){
+			var index = parent.layer.getFrameIndex(window.name);
+			parent.layer.close(index);
+			var status = usm.isLogin();
+			if(status == false){
+				//未登录
+				parent.layer.open({
+					type: 2,
+					title: '',
+					shadeClose: true,
+					shade: 0.8,
+					area: ['500px', '390px'],
+					content:ctxf+"/custom/login.htm"
+				});
+			}else{
+				//已登录
+				window.open(ctxm + "/upgrade/upgradePurchaser/save1.htm");
+			}
+		});
+	});
+</script>
+<style>
+	body{ overflow:hidden}
+	.sectionPrice .head-ranking{ height:42px; line-height:40px; background-color:#f6f6f6;border: none;}
+	.sectionPrice .head-ranking h2{ height:40px; line-height:40px; font-size:14px; font-weight:normal; margin:0;padding-left: 10px;}
+	.sectionPrice .message{margin: 30px 20px 15px 20px;}
+	.sectionPrice .upgradeBtn{text-align: center;margin-top: 25px;}
+	.sectionPrice .upgradeBtn a{width: 90%;height: 35px;line-height: 30px;}
+	.sectionPrice .btnGroupDiv{margin-top: 25px;text-align: center;}
+	.sectionPrice .btnGroupDiv .btns{width: 90%; margin: 0 auto;}
+</style>
+</head>
+<body class="sectionPrice bg-ffffff" style="width:400px; min-width:400px;">
+	<div class="head-ranking">
+		<h2> <i class="sui-icon icon-pc-light"></i> 查看批发价</h2>
+	</div>
+	<div class="sui-msg msg-info message">
+ 		<div class="msg-con"> 很遗憾，只有采购商才能看批发价，请登录或升级为采购商查看批发价！</div>
+  		<s class="msg-icon"></s>
+	</div>
+	<div class="upgradeBtn">
+		<a href="javascript:void(0);" class="sui-btn btn-bordered btn-large btn-info upgradePurchaser">升级采购商</a>
+	</div>
+	<div class="btnGroupDiv">
+		<div class="btns">
+			<a href="javascript;" class="sui-btn btn-bordered btn-large btn-primary pull-left upgradePurchaser">会员登录</a>
+			<a target="_blank" href="${ctxsso}/register/save1.htm" class="sui-btn btn-bordered btn-large btn-danger pull-right">立即注册</a>
+		</div>
+	</div>
+</body>
+</body>
+</html>

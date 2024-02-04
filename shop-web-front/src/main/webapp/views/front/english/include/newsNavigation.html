@@ -1,0 +1,10 @@
+<!-- 新闻中部导航 -->
+<div class="typename-list">
+	<ul class="wp">
+		<%var newsHome =fy.getMsg({key:'新闻首页'});%>
+		<li><a target="_blank" href="${ctxf}/newsIndex.htm">${newsHome!}</a></li>
+		<% for(channel in cms.channelList({parentId:843})){%>
+			<li><a target="_blank" href="${ctxf}/newsList/${channel.id!}.htm">${channel.name!}</a></li>
+		<%}%>
+	</ul>
+</div>

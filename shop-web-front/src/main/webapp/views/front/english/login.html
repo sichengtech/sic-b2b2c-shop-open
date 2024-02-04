@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="zh-CN" class="rwd">
+<head>
+	<meta charset="utf-8">
+	<%var login =fy.getMsg({key:'登录'});%>
+	<title>${login!} Powered by SiC</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="renderer" content="webkit">
+	<!-- 图标 -->
+	<link type="image/x-icon" rel="shortcut icon" href="${ctxStatic}/images/shop-ico.ico"/>
+	<!--sui-->
+	<link rel="stylesheet" type="text/css" href="${ctxStatic}/sui/1.5.1/sui.min.css"/>
+	<!--common-->
+	<link rel="stylesheet" type="text/css" href="${ctxStatic}/sicheng-sso/css/style.css"/>
+	<!-- 页脚样式 -->
+	<link rel="stylesheet" type="text/css" href="${ctx}/views/front/english/css/footer.css">
+	<!-- jquery -->
+	<script type="text/javascript" src="${ctxStatic}/jquery/jquery-1.10.2.min.js"></script>
+	<!--<script type="text/javascript" src="${ctxStatic}/jquery/jquery-browser.js"></script>-->
+	<!-- layer -->
+	<script type="text/javascript" src="${ctxStatic}/layer/layer.js"></script>
+	<!-- fdp.js组件库 -->
+	<script type="text/javascript" src="${ctxStatic}/fdp/fdp.js"></script>
+	<!-- 翻译js -->
+	<script type="text/javascript" src="${ctx}/views/sso/include/fy.js"></script>
+	<!-- 业务js -->
+	<script type="text/javascript" src="${ctx}/views/front/default/login.js"></script>
+	<!-- 全局变量 -->
+	<script type="text/javascript">
+		var jsValidate = true,ctx = '${ctx}',ctxf='${ctxf}', ctxs='${ctxs}',
+				ctxStatic='${ctxStatic}',ctxfs='${ctxfs}',
+				ctxm='${ctxm}',ctxu='${ctxu}',ctxsso='${ctxsso}';
+	</script>
+	<style type="text/css">
+		.sso-main{border-top:0px;margin-bottom: 30px;}
+		.login-header{border-bottom: 1px solid #ebebeb;margin-bottom: 30px;}
+		.footer-main{margin-top: 30px;}
+		.footer-main .shopcopy{border-top: 1px solid #ebebeb;}
+		.sso-main .sso-login-box .nav-tabs li.active a{text-align: left;padding-left: 20px;}
+		.sui-container .logo span{float: right;color: #28A3EF!important;font-size: 22px!important;}
+	</style>
+</head>
+<body>
+	<!-- 头部 start -->
+	<div class="header-simple sui-container login-header">
+		<div class="sui-container">
+			<%var siteInfo = site.info();%>
+			<div class="logo">
+				<a href="${ctxf}/index.htm" target="_blank">
+					<img src="${siteInfo.siteLogo != null ? ctxfs : ctx}${siteInfo.siteLogo != null ? siteInfo.siteLogo : '/views/front/english/images/logo_02.png'}"
+						 class="logo"  style="height: 60px;margin-top: 17px;">
+				</a>
+				<a href="${ctxf}/index.htm" target="_blank">
+					<span class="page-title" style="height: 80px;line-height: 80px;"><%var frontPage =fy.getMsg({key:'返回首页'});%> ${frontPage!}</span>
+				</a>
+			</div>
+		</div>
+	</div>
+	<!-- 头部 end -->
+	<!-- 中间内容 start -->
+	<div class="sso-main" style="background-image:url(${ctx}/views/front/english/images/login_bg.png); background-position:center; background-repeat:no-repeat; width:100%;">
+		<div class="sui-container">
+			<div class="order-tabs sso-login-box">
+				<ul class="sui-nav nav-tabs">
+					<li class="active"><a href="javascript:void(0);" data-toggle="tab"><%var accountLogin =fy.getMsg({key:'登录'});%> ${accountLogin!}</a></li>
+				</ul>
+				<div class="tab-content pl20 pr20">
+					<!-- 使用账号登录 start -->
+					<ul id="all" class="tab-pane active table-css">
+						<form id="inputForm1" class="form-signin" action="${ctxsso}/login/login.htm" method="post">
+						<input type="hidden" name="ssoReg" value="1">
+						<label class="control-label label-name"><i class="icon"></i>
+							<%var endMemberAccount =fy.getMsg({key:'请输入会员帐号'});%>
+							<input type="text" name="loginName" value="${loginName!}" class="input-username" placeholder="${endMemberAccount!}" value="">
+						</label>
+						<label class="control-label label-password"><i class="icon"></i>
+							<%var enterPassword =fy.getMsg({key:'请输入密码'});%>
+							<input type="password" name="password" class="input-password" placeholder="${enterPassword!}">
+						</label>
+						<% if(isNotEmpty(isValidateCodeLogin) && isValidateCodeLogin!){%>
+							<!--验证码开始-->
+							<label class="control-label label-code"><i class="icon"></i>
+								<%var enterCode =fy.getMsg({key:'请输入验证码'});%>
+								<input type="text" id="validateCode1" name="validateCode" class="input-Code" placeholder="${enterCode!}" value="">
+								<a id="refresh" href="javascript:" onclick="$('.input-Code-img').attr('src','${ctx}/servlet/validateCodeServlet?'+new Date().getTime());"
+								class="mid validateCodeRefresh">
+								<%var code =fy.getMsg({key:'验证码'});%>
+								<img src="${ctx}/servlet/validateCodeServlet" id="validate_map" title="${code!}" class="input-Code-img"></a>
+							</label>
+							<!--验证码结束-->
+						<%}%>
+						<label class="control-label"><input type="submit" class="input-ok" value="${login!}"/></label>
+						<div class="block-h20">
+							<%var forgetPassword =fy.getMsg({key:'忘记密码？'});%>
+							<div class="forgetpassword pull-right"><a href="${ctxsso}/forgetPassWord/save1.htm">${forgetPassword!}</a></div>
+							<%var remeberMe =fy.getMsg({key:'记住我（公共场所慎用）'});%>
+							<div class="textl"><input type="checkbox" class="checkbox" value="1" name="rememberMe"> ${remeberMe!}</div>
+						</div>
+						</form>
+					</ul>
+				</div>
+				<div class="api-login">
+					<div class="reg">
+						<%var register =fy.getMsg({key:'立即注册'});%>
+						<a href="${ctxsso}/register/save1.htm"><i class="regicon"></i>${register!}</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="footer-simple"></div>
+	<!-- 中间内容 end -->
+	<!-- 底部 start -->
+	<% include("/include/footer.html"){}%>
+	<!-- 底部 end -->
+	<!-- sui -->
+	<script type="text/javascript" src="${ctxStatic}/sui/1.5.1/sui.min.js"></script>
+	<!-- jquery.validate -->
+	<script type="text/javascript" src="${ctxStatic}/jquery-validation/1.11.0/jquery.validate.min.js"></script>
+	<!-- common -->
+	<script type="text/javascript" src="${ctx}/views/front/english/js/foot_common.js"></script>
+	<script type="text/javascript">
+		var content='${message!}';
+		var type='${type!}';
+		sysMessage(content,type);
+	</script>
+</body>
+</html>

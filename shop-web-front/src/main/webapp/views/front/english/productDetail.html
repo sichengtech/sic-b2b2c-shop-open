@@ -1,0 +1,1140 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% var seo=seo.one({type:"商品详情"});%>
+<title>${seo.title!} Powered by SiC</title>
+<meta name="Keywords" content="${seo.keywords!}"/>
+<meta name="description" content="${seo.description!}"/>
+<% include("/include/head.html"){}%>
+<!-- 业务js -->
+<script type="text/javascript" src="${ctx}/views/front/english/productDetail.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/english/index.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/english/collection.js"></script>
+<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+<!--图片放大控件-->
+<script type="text/javascript" src="${ctxStatic}/sicheng-seller/js/jquery.magnific-popup.min.js"></script>
+<link rel="stylesheet" type="text/css" href="${ctxStatic}/sicheng-seller/css/magnific-popup.css">
+<link rel="stylesheet" type="text/css" href="${ctx}/views/front/english/css/form.css">
+<style>
+	/* 商品图片 */
+	.goods-intro { width: 350px; }
+	.productDetailBody .spec-preview .jqzoom img, .spec-preview { width: 350px; height: 350px; }
+	.spec-scroll { width: 350px; }
+	.spec-scroll .items { width: 300px; }
+
+	/* 店铺信息 */
+	.store-left-wrap { width: 260px; float: left; }
+	/* .store-msg { width: 260px; } */
+	/* 商品信息 */
+	.goods-info-1 { width: 530px;margin-left: 380px; }
+	.goods-info-1 .summary .summary-number .dd .input-number .btn { padding: 0; border-radius: 0; }
+	.goods-info-1 .summary .summary-attrs .specdd { width: 435px; }
+	.goods-info-1 .summary span.dd { width: 440px; }
+	.goods-info-1 .summary .summary-attrs-1 .dd ul li:last-child { width: auto; min-width: 110px; }
+	.goods-info-1 .summary .summary-attrs-1 .dd ul li .btn { padding: 0 10px; }
+	.goods-info-1 .summary .summary-attrs-1 .dd ul li.con9 .input { margin-top: 0!important; }
+	.goods-info-1 .summary .summary-attrs-1 .dd ul li .btn:focus, .goods-info-1 .summary .summary-attrs-1 .dd ul li .btn:active { outline: none; border: none; box-shadow: none; }
+
+	/* 商品详情 */
+	.sui-nav.nav-tabs, .tab-content.w980 { width: 910px;  }
+	.tab-content.w980 { min-height: 1700px; }
+	.productDetailBody .askAnswer .ask-wrap .btn-ask { margin-right: 30px; }
+	.productDetailBody .askAnswer .goods-ask dl dt { height: 40px; }
+
+	p.p-name { height: 30px; }
+
+	/* 推荐 */
+	#product_detail, .goods-view { position: relative; }
+	.tuijian-you, .store-msg { position: absolute; top: 0; right: 0; width: 260px; }
+	.productDetailBody .askAnswer .goods-ask dl dt ul li a{padding: 0 7px;}
+	.goods-info-1 .summary-price li{width: 146px;}
+	.productDetailBody .spec-scroll .items{height: 83px;}
+</style>
+</head>
+<body class="productDetailBody owl">
+	<% 
+		var product=product.one({pid:pid!});
+		var category=product.category({cid:product.categoryId!});
+		var cateList=[];
+		if(category!=null){
+			var cids=strutil.split(category.parentIds!,",");
+			for(cid in cids){
+				var cate=product.category({cid:cid});
+				if(cate!=null){
+					array.add(cateList,cate);
+				}
+			}
+			array.add(cateList,category);
+		}
+		var user=user.current();
+		var skuList=product.productSkuList!;
+		var sid=product.storeId!;
+		var storeOne = store.one({sid:sid});
+		var pid = pid!;
+		var hours=fy.getMsg({key:'小时'});
+		var deliverGoodsDate=fy.getMsg({key:'卖家承诺发货时间',params:'48'+hours});
+		if(isNotEmpty(product.deliverGoodsDate!)){
+			deliverGoodsDate=dict.label({value:product.deliverGoodsDate!, type:'product_deliver_goods_date'});
+			if((product.deliverGoodsDate!) !="11"){
+				deliverGoodsDate=fy.getMsg({key:'卖家承诺发货时间',params:deliverGoodsDate});
+			}
+		}
+		var maoHao=fy.getMsg({key:'：'});
+		var yuan=fy.getMsg({key:'元'});
+	%>
+	<script type="text/javascript">
+		//var user='${user}';
+		var skuList=[];
+		skuList=${product.productSkuJsonList!};
+		var pid=${pid!};
+		var storeId=${sid};
+	</script>
+	<% include("/include/header.html"){}%>
+	<% if(isEmpty(pid!) || isEmpty(product)){ %>
+		<div class="error_div">
+			<div class="error_msg">
+				<%	var pro=fy.getMsg({key:'商品'});
+				var noData =fy.getMsg({key:'数据不存在提示',params:pro});%>
+				<p>${noData!}</p>
+				<p><a href="${ctxf}/index.htm">(1) <%var returnHomePage =fy.getMsg({key:'返回首页'});%> ${returnHomePage!}</a></p>
+				<p><a href="javascript:" onclick="history.go(-1);">(2) <%var returnPreviousPage =fy.getMsg({key:'返回上一页'});%> ${returnPreviousPage!}</a></p>
+			</div>
+		</div>
+	<%}else{%>
+		<% include("/include/header-store.html",{'storeOne':storeOne,'sid':sid}){}%>
+		<div class="crumbs bg-f2f3f7">
+			<div class="wp" style="font-size: 15px;">
+				<div class="store-info">
+					<span>${storeOne.name!}</span>
+					<span>
+						<a href="#"><% var contactSupplier=fy.getMsg({key:'联系供应商'});%> ${contactSupplier!}</a>
+					</span>
+					<span>
+					<a href="javascript:void(0);" class="collectionStore" storeId=${sid!}>
+						<% var favoriteShop=fy.getMsg({key:'收藏店铺'});%> ${favoriteShop!}
+					</a>
+					</span>
+					<% var shopStore=fy.getMsg({key:'店铺评分'});%>
+					<span>${shopStore!}${maoHao}</span><span class="comment-star-1 ${storeOne.storeAnalyze.starLevel!}"></span>
+				</div>
+				<span>
+					<% for(cate in cateList){%>
+						${cate.name!} &gt;
+					<%}%>
+				</span>
+				<!-- ${product.name!} -->
+			</div>
+		</div>
+		<!-- 商品详细信息开始 -->
+		<form action="${ctxf}/trade/order/confirmOrder.htm" id="productFrom" method="post">
+			<input type="hidden" name="pId" value="${pid!}" id="pId"/>
+			<input type="hidden" name="skuMsg" class="skuMsg" value=""/>
+			<input type="hidden" name="userSellerId" class="" value="${product.uId!}"/>
+			<input type="hidden" name="userMemberId" class="" value="${user.uId!}"/>
+			<input type="hidden" name="totalNum" class="" value=""/>
+			<input type="hidden" name="purchasingAmount" value="${product.purchasingAmount!}"/>
+			<div class="wp goods-view mt30">
+				<!-- 商品图片开始 -->
+				<div class="goods-intro">
+					<div class="preview-wrap">
+						<div>
+							<div id="preview" class="spec-preview"> 
+								<span class="jqzoom">
+									<% for(imgMapping in product.productPictureMappingList!){%>
+										<%if(imgMappingLP.first){%>
+											<img jqimg="${ctxfs}/${imgMapping.storeAlbumPicture.path!}@!480x480" src="${ctxfs}/${imgMapping.storeAlbumPicture.path!}@!438x438"
+											onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+										<%}%>
+									<%}%>
+								</span> 
+							</div>
+							<!--缩图开始-->
+							<div class="spec-scroll"> 
+								<a class="prev"><img src="${ctx}/views/front/english/images/disabled-prev.png"></a>
+								<a class="next"><img src="${ctx}/views/front/english/images/disabled-next.png"></a>
+								<div class="items">
+									<ul>
+										<% for(imgMapping in product.productPictureMappingList!){%>
+											<li class="${imgMappingLP.first?'cur':''}">
+												<img alt="" bimg="${ctxfs}${imgMapping.storeAlbumPicture.path!}" color="${imgMapping.color}" picId="${imgMapping.storeAlbumPicture.pictureId!}" 
+												src="${ctxfs}${imgMapping.storeAlbumPicture.path!}@!72x72" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+											</li>
+										<%}%>
+									</ul>
+								</div>
+							</div>
+							<!--缩图结束-->
+						</div>
+					</div>
+					<div class="goods-share" style="padding-top:0;">
+						<div class="bdsharebuttonbox bdshare-button-style0-24" style="padding-left:0;margin-top:40px;" data-bd-bind="1506317168436">
+							<a href="javaScript:void(0);" class="fav collectionProduct" pid="${pid!}" style="background-image:none; padding-left:0"><i class="sui-icon icon-tb-likefill"></i> 收藏</a>
+							<!--<a href="javaScript:void(0);" class="bds_more" data-cmd="more" style="background-image:none; padding-left:0"><i class="sui-icon icon-tb-share"></i> 分享</a>-->
+						</div>
+<!--						<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];-->
+<!--						</script>-->
+					</div>
+				</div>
+				<!-- 商品图片结束 -->
+				<!--商品信息开始-->
+				<% if((isNotEmpty(user) && user.isTypeUserPurchaser! && product.type!="1")|| (product.type!) =="2"){%>
+					<!-- 批发商品开始 -->
+					<div class="goods-info-1">
+						<input type="hidden" name="type" value="2">
+						<div class="sku-name">${product.name!}</div>
+						<div class="sub-name">${product.nameSub!}</div>
+						<div class="summary-price">
+							<ul>
+								<% var wholesalePrice=fy.getMsg({key:'批发价'});
+									var purchaseAmount=fy.getMsg({key:'起购量'});
+								%>
+								<li class="dt"><strong style="margin-bottom: 10px;">${wholesalePrice!}</strong><span>${purchaseAmount!}</span></li>
+								<% for(section in product.productSectionPriceList!){
+									if(!sectionLP.last){%>
+										<li class="con${sectionLP.index}">
+											<strong><small>${yuan!}</small>${section.price!}</strong>
+											<span>${section.section!} ~ ${parseLong(product.productSectionPriceList[sectionLP.index].section!)-1} ${product.unit!}</span>
+										</li>
+									<%}else{%>
+										<li class="con${product.productSectionPriceList.~size}">
+											<strong><small>${yuan!}</small>${section.price!}</strong>
+											<span>≥ ${section.section!} ${product.unit!}</span>
+										</li>
+									<%}
+								}%>
+							</ul>
+						</div>
+						<div class="summary">
+							<% if((product.type!) =="3"){%>
+								<div class="summary-def summary-total">
+									<% var retailPrice=fy.getMsg({key:'零售价'});%>
+									<span class="dt">${retailPrice!} ${maoHao!}</span><span class="dd"><small>${yuan!}</small>${product.minPrice1!}</span>
+								</div>
+							<%}%>
+							<div class="summary-def summary-total">
+								<% var offer=fy.getMsg({key:'优惠'});
+									var none=fy.getMsg({key:'无'});
+								%>
+								<span class="dt">${offer!} ${maoHao!}</span><span class="dd" id="benefit">${isNotEmpty(product.benefit!)?product.benefit!:none!}</span>
+							</div>
+							<div class="summary-def summary-deliver">
+								<% var deliveryPeriod=fy.getMsg({key:'发货期限'});%>
+								<span class="dt">${deliveryPeriod!} ${maoHao!}</span><span class="dd">${deliverGoodsDate!}</span>
+							</div>
+							<div class="summary-def summary-freight" id="summary-freight" style="display: inline-block;">
+								<% var salesArea=fy.getMsg({key:'销售区域'});%>
+								<span class="dt logistics">${salesArea!}${maoHao!}</span>
+								<span class="dd">
+									<div class="wl">
+										<dl class="goods-wl">
+											<dt class="box-header noborder areaTabs">
+												<% var address;
+												if(isNotEmpty(user)){
+													var addressList=user.addressList({uid:user.uId}); 
+													if(isNotEmpty(addressList)){
+														address=addressList[0];
+													}
+												}%>
+												<ul class="sui-nav nav-tabs">
+													<% var pleaseSelect1=fy.getMsg({key:'省'});%>
+													<% var pleaseSelect2=fy.getMsg({key:'市'});%>
+													<% var pleaseSelect3=fy.getMsg({key:'县'});%>
+													<li class="active provinceTab">
+														<input type="hidden" name="provinceId" value="${(address.provinceId!)!=null?address.provinceId:''}"/>
+														<a href="#wl-1-1" data-toggle="tab">${(address.provinceName!)!=null?address.provinceName:pleaseSelect1}</a>
+													</li>
+													<li class="cityTab" style="display: none;" >
+														<input type="hidden" name="cityId" value="${(address.cityId!)!=null?address.cityId:''}"/>
+														<a href="#wl-1-2" data-toggle="tab">${(address.cityName!)!=null?address.cityName:pleaseSelect2}</a>
+													</li>
+													<li class="districtTab" style="display: none;">
+														<input type="hidden" name="districeId" value="${(address.districtId!)!=null?address.districtId:''}"/>
+														<a href="#wl-1-3" data-toggle="tab">${(address.districtName!)!=null?address.districtName:pleaseSelect3}</a>
+													</li>
+												</ul>
+											</dt>
+											<dd>
+												<div class="tab-content areaMsg">
+													<div id="wl-1-1" class="tab-pane active provincePane">
+														<ul class="wl-list">
+															<% for(province in area.list({parentId:1,limit:35})){ %>
+																<li id="${province.id}"><a href="javascript:">${province.name!}</a></li>
+															<%}%>
+														</ul>
+													</div>
+													<div id="wl-1-2" class="tab-pane cityPane">
+														<ul class="wl-list">
+														</ul>
+													</div>
+													<div id="wl-1-3" class="tab-pane districtPane">
+														<ul class="wl-list">
+														</ul>
+													</div>
+												</div>
+											</dd>
+										</dl>
+									</div>
+									<% var shippingTo=fy.getMsg({key:'配送至'});%>
+									<p class="adds">${shippingTo!}
+										<span class="sendAddress" pid="${pid}">
+											<span>${address.provinceName!} ${address.cityName!} ${address.districtName!} </span> 
+											<i class="sui-icon icon-tb-unfold"></i>
+										</span>
+										<input type="hidden" name="provinceId" class="provinceId" value="${(address.cityId!)!=null?address.cityId:''}"/>
+										<input type="hidden" name="cityId" class="cityId" value="${(address.cityId!)!=null?address.cityId:''}"/>
+										<input type="hidden" name="districeId" class="districtId" value="${(address.districtId!)!=null?address.districtId:''}"/>
+									</p>
+									<strong class="sendProduct"><% var inStock=fy.getMsg({key:'有货'});%> ${inStock!}</strong>
+								</span>
+							</div>
+							<div class="summary-sales">
+								<% var sales=fy.getMsg({key:'销售情况'});
+									var cumulativeEvaluation=fy.getMsg({key:'累计评价'});
+									var cumulativeSales=fy.getMsg({key:'累计销量'});
+									var cumulativeFavorites=fy.getMsg({key:'累计收藏'});
+								%>
+								<span class="dt">${sales!}${maoHao!}</span><span class="dd">
+									${cumulativeEvaluation!}${maoHao!} ${(product.commentCount!)!=null?product.commentCount!:'0'}　　
+									${cumulativeSales!} ${maoHao!} ${(product.allSales!)!=null?product.allSales!:'0'} ${product.unit!}    　
+									${cumulativeFavorites!} ${maoHao!} ${(product.collectionCount!)!=null?product.collectionCount!:'0'}　
+								</span>
+							</div>
+							<div class="summary-attrs-1">
+								<%if(isNotEmpty(skuList)){
+									var sku1=skuList[0];%>
+								<% var selectSpec=fy.getMsg({key:'选择规格'});%>
+									<span class="dt">${selectSpec!}${maoHao!}</span>
+									<span class="dd">
+										<ul class="th">
+											<% if((skuList[0].spec1!)!=null){ %>
+												<li class="con1">${strutil.split(skuList[0].spec1,"_")[1]}</li>
+											<%}%>
+											<% if((skuList[0].spec2!)!=null){ %>
+												<li class="con2">${strutil.split(skuList[0].spec2,"_")[1]}</li>
+											<%}%>
+											<% if((skuList[0].spec3!)!=null){ %>
+												<li class="con3">${strutil.split(skuList[0].spec3,"_")[1]}</li>
+											<%}%>
+											<li class="con4"><% var priceVal=fy.getMsg({key:'价格'});%> ${priceVal!}</li>
+											<li class="con5"><% var inventory=fy.getMsg({key:'库存'});%> ${inventory!}</li>
+											<li class="con9"><% var buyNum=fy.getMsg({key:'购买数量'});%> ${buyNum!}</li>
+										</ul>
+									</span>
+									<span class="dd summary-list-box summary-list-box-section sectionSpec">
+										<% for(sku in skuList){ %>
+											<ul>
+												<% if((sku.spec1V!)!=null){ %>
+													<li class="con1">${sku.spec1V}</li>
+												<%}%>
+												<% if((sku.spec2V!)!=null){ %>
+													<li class="con2">${sku.spec2V}</li>
+												<%}%>
+												<% if((sku.spec3V!)!=null){ %>
+													<li class="con3">${sku.spec3V}</li>
+												<%}%>
+												<% var jian=fy.getMsg({key:'件'});
+												var availableSale=fy.getMsg({key:'可售'});
+												%>
+												<li class="con4 sectionPrice">${yuan!}<span class="sectionPriceFront">${product.maxPrice2!}</span></li>
+												<li class="con5">${sku.stock!}${isNotEmpty(product.unit!)?product.unit!:jian}</li>
+												<li class="con9">
+													<div class="input-number" id="section">
+														<div class="btn">
+															<a class="r" isSection="section"> - </a>
+															<div class="input">
+																<input id="txt" type="text" value="${skuList.~size==1 && isNotEmpty(product.purchasingAmount!)?product.purchasingAmount!:0}" class="buyNum" stock="${sku.stock!}" skuId="${sku.skuId!}" isSection="section"/>
+															</div>
+															<a class="l" stock="${sku.stock!}" isSection="section"> + </a>
+														</div>
+													</div>
+												</li>
+											</ul>
+										<%}%>
+									</span>
+								<%}%>
+							</div>
+						</div>
+						<div class="buy-btn">
+							<% var buyNow=fy.getMsg({key:'立即购买'});
+							var addShopCart=fy.getMsg({key:'加入购物车'});
+							%>
+							<a href="javascript:void(0);" class="addOrder buyNow" type="2">${buyNow!}</a>
+							<a href="javascript:void(0);" class="addCart" type="2">${addShopCart!}</a>
+						</div>
+						<div class="summary-text">
+							<% var tips=fy.getMsg({key:'温馨提示'});
+								var tipsContent=fy.getMsg({key:'温馨提示内容'});
+								var transactionPro=fy.getMsg({key:'交易保障'});
+								var faceToFace=fy.getMsg({key:'当面交易'});
+								var cashDelivery=fy.getMsg({key:'货到付款'});
+								var tradeMethod=fy.getMsg({key:'交易方式'});
+								var payMethod=fy.getMsg({key:'支付方式'});
+							%>
+							<span class="dt">${tips!}${maoHao!}</span><span class="dd">${tipsContent!}</span>
+							<!--<span class="dt">${transactionPro!}${maoHao!}</span>-->
+							<!-- <ul class="dd infoli">
+								<li><p>${faceToFace!}<br>${cashDelivery!}</p><strong>${tradeMethod} <i class="sui-icon icon-tb-unfold"></i></strong></li>
+								<li>
+									<p>
+										<% for(payWay in trade.payWayList()){ %>
+											${payWay.name!}
+											<% if(!payWayLP.last){%>
+												<br>
+											<%}%>
+										<%}%>
+									</p>
+									<strong>${payMethod!} <i class="sui-icon icon-tb-unfold"></i></strong>
+								</li>
+							</ul>-->
+						</div>
+					</div>
+					<!-- 批发商品结束 -->
+				<%}else{%>
+				<!--零售商品信息开始-->
+				<div class="goods-info-1">
+					<input type="hidden" name="type" value="1">
+					<div class="sku-name">${product.name!}</div>
+					<div class="sub-name">${product.nameSub!}</div>
+					<div class="summary">
+						<div class="summary-def">
+							<% var unitPrice=fy.getMsg({key:'单价'}); %>
+							<span class="dt">${unitPrice!}${maoHao!}</span>
+							<span class="dd Pirce-def">
+								<small>${yuan!}</small><span class="tqm_Pirce">${product.minPrice1!}</span>
+							</span>
+						</div>
+						<div class="wholesale"></div>
+						<div class="summary-def summary-total">
+							<% var totalStock=0;
+							if(isNotEmpty(skuList)){
+								for(sku in skuList){
+									totalStock=totalStock+parseLong(isEmpty(sku.stock!)?0:sku.stock!);
+								}
+							}%>
+							<% var totalSupply=fy.getMsg({key:'供应总量'});
+							var jian=fy.getMsg({key:'件'});
+							%>
+							<span class="dt">${totalSupply!}${maoHao!}</span><span class="dd">${totalStock} ${isNotEmpty(product.unit!)?product.unit!:jian}</span>
+						</div>
+						<div class="summary-def summary-total">
+							<% var offer=fy.getMsg({key:'优惠'});
+								var none=fy.getMsg({key:'无'});
+							%>
+							<span class="dt">${offer!}${maoHao!}</span><span class="dd" id="benefit">${isNotEmpty(product.benefit!)?product.benefit!:none!}</span>
+						</div>
+						<div class="summary-def summary-deliver">
+							<% var deliveryPeriod=fy.getMsg({key:'发货期限'}); %>
+							<span class="dt">${deliveryPeriod!}${maoHao}</span><span class="dd">${deliverGoodsDate!}</span>
+						</div>
+						<div class="summary-def summary-freight" id="summary-freight" style="display: inline-block;">
+							<% var saleArea=fy.getMsg({key:'销售区域'}); %>
+							<span class="dt logistics">${saleArea!}${maoHao}</span>
+							<span class="dd">
+								<div class="wl">
+									<dl class="goods-wl">
+										<dt class="box-header noborder areaTabs">
+											<% var address2;
+											if(user!=null){
+												var addressList=user.addressList({uid:user.uId}); 
+												if(isNotEmpty(addressList)){
+													address2=addressList[0];
+												}
+											}%>
+											<ul class="sui-nav nav-tabs" style="width: auto;">
+												<% var pleaseSelect1=fy.getMsg({key:'省'}); %>
+												<% var pleaseSelect2=fy.getMsg({key:'市'}); %>
+												<% var pleaseSelect3=fy.getMsg({key:'县'}); %>
+												<li class="active provinceTab">
+													<input type="hidden" name="provinceId" value="${(address2.provinceId!)!=null?address2.provinceId:''}"/>
+													<a href="#wl-1-1" data-toggle="tab">${(address2.provinceName!)!=null?address2.provinceName:pleaseSelect1}</a>
+												</li>
+												<li class="cityTab" style="display: none;" >
+													<input type="hidden" name="cityId" value="${(address2.cityId!)!=null?address2.cityId:''}"/>
+													<a href="#wl-1-2" data-toggle="tab">${(address2.cityName!)!=null?address2.cityName:pleaseSelect2}</a>
+												</li>
+												<li class="districtTab" style="display: none;">
+													<input type="hidden" name="districeId" value="${(address2.districtId!)!=null?address2.districtId:''}"/>
+													<a href="#wl-1-3" data-toggle="tab">${(address2.districtName!)!=null?address2.districtName:pleaseSelect3}</a>
+												</li>
+											</ul>
+										</dt>
+										<dd>
+											<div class="tab-content areaMsg">
+												<div id="wl-1-1" class="tab-pane active provincePane">
+													<ul class="wl-list">
+														<% for(province in area.list({parentId:1,limit:35})){ %>
+															<li id="${province.id}"><a href="javascript:">${province.name!}</a></li>
+														<%}%>
+													</ul>
+												</div>
+												<div id="wl-1-2" class="tab-pane cityPane">
+													<ul class="wl-list">
+													</ul>
+												</div>
+												<div id="wl-1-3" class="tab-pane districtPane">
+													<ul class="wl-list">
+													</ul>
+												</div>
+											</div>
+										</dd>
+									</dl>
+								</div>
+								<% var shippingTo=fy.getMsg({key:'配送至'});
+									var inStock=fy.getMsg({key:'有货'});
+								%>
+								<p class="adds">${shippingTo!}
+									<span class="sendAddress" pid="${pid!}">
+										<span>${address2.provinceName!} ${address2.cityName!} ${address2.districtName!}</span> 
+										<i class="sui-icon icon-tb-unfold"></i>
+									</span>
+									<input type="hidden" name="provinceId" class="provinceId" value="${(address2.provinceId!)!=null?address2.provinceId:''}"/>
+										<input type="hidden" name="cityId" class="cityId" value="${(address2.cityId!)!=null?address2.cityId:''}"/>
+										<input type="hidden" name="districeId" class="districtId" value="${(address2.districtId!)!=null?address2.districtId:''}"/>
+								</p>
+								<strong class="sendProduct">${inStock!}</strong>
+							</span>
+						</div>
+						<div class="summary-sales">
+							<% var sales=fy.getMsg({key:'销售情况'});
+							var cumulativeEvaluation=fy.getMsg({key:'累计评价'});
+							var cumulativeSales=fy.getMsg({key:'累计销量'});
+							var cumulativeFavorites=fy.getMsg({key:'累计收藏'});
+							%>
+							<span class="dt">${sales!}${maoHao!}</span><span class="dd">
+								${cumulativeEvaluation!}${maoHao!} ${(product.commentCount!)!=null?product.commentCount!:'0'}　　
+								${cumulativeSales!}${maoHao!} ${(product.allSales!)!=null?product.allSales!:'0'} ${product.unit!}    　
+								${cumulativeFavorites!}${maoHao!} ${(product.collectionCount!)!=null?product.collectionCount!:'0'}
+							</span>
+						</div>
+						<% var spec1="";
+						var spec2="";
+						var spec3="";
+						var spec1VList=[];
+						var spec2VList=[];
+						var spec3VList=[];
+						if(isNotEmpty(skuList)){
+							var sku1=skuList[0];
+							if(isNotEmpty(sku1.spec1!)){
+								if(strutil.split(sku1.spec1,"_").~size>1){
+									spec1=strutil.split(sku1.spec1,"_")[1];
+								}
+							}
+							if(isNotEmpty(sku1.spec2!)){
+								if(strutil.split(sku1.spec2,"_").~size>1){
+									spec2=strutil.split(sku1.spec2,"_")[1];
+								}
+							}
+							if(isNotEmpty(sku1.spec3!)){
+								if(strutil.split(sku1.spec3,"_").~size>1){
+									spec3=strutil.split(sku1.spec3,"_")[1];
+								}
+							}
+							
+							for(sku in skuList){
+								if(isNotEmpty(sku.spec1V!)){
+									if(!array.contain(spec1VList,sku.spec1V!)){
+										array.add(spec1VList,sku.spec1V!);
+									}
+								}
+								if(isNotEmpty(sku.spec2V!)){
+									if(!array.contain(spec2VList,sku.spec2V!)){
+										array.add(spec2VList,sku.spec2V!);
+									}
+								}
+								if(isNotEmpty(sku.spec3V!)){
+									if(!array.contain(spec3VList,sku.spec3V!)){
+										array.add(spec3VList,sku.spec3V!);
+									}
+								}
+							}
+						}%>
+						<div class="summary-attrs">
+							<%if(isNotEmpty(spec1)){%>
+								<span class="dt">${spec1}：</span>
+								<%if(isNotEmpty(spec1VList)){%>
+									<span class="dd specdd">
+										<%for(spec1V in spec1VList){%>
+											<label class="radio-pretty ${spec1VLP.first?'checked':''}">
+												<input type="radio" name="radio"><b></b>
+												<% var flag=true;
+													for(mapping in product.productPictureMappingList!){
+														if(mapping.color==spec1V){
+															if(flag){
+																flag=false;%>
+																<div class="specImage" style="background-image:url(${ctxfs}${mapping.storeAlbumPicture.path!}@!40X40)" picId="${mapping.storeAlbumPicture.pictureId!}" class="specImage" src1="${mapping.storeAlbumPicture.path!}" ></div>
+																<img src="${ctxfs}${mapping.storeAlbumPicture.path!}@!40X40" picId="${mapping.storeAlbumPicture.pictureId!}" class="specImage" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');" src1="${mapping.storeAlbumPicture.path!}" alt=""/>
+																<% break;
+															}
+														}
+													}
+												%>
+												<font>${spec1V}</font>
+											</label>
+										<%}%>
+										<div class="clear"></div>	
+									</span>
+								<%}%>
+							<%}%>
+						<!-- </div>
+						<div class="summary-attrs"> -->
+							<%if(isNotEmpty(spec2)){%>
+								<span class="dt">${spec2}：</span>
+								<%if(isNotEmpty(spec2VList)){%>
+									<span class="dd specdd">
+										<%for(spec2V in spec2VList){%>
+											<label class="radio-pretty ${spec2VLP.first?'checked':''}">
+												<input type="radio" name="radio1"><b></b>
+												<% var flag=true;
+													for(mapping in product.productPictureMappingList!){
+														if(mapping.color==spec2V){
+															if(flag){
+																flag=false;%>
+																<div class="specImage" style="background-image:url(${ctxfs}${mapping.storeAlbumPicture.path!}@!40X40)" picId="${mapping.storeAlbumPicture.pictureId!}" class="specImage" src1="${mapping.storeAlbumPicture.path!}" ></div>
+																<img src="${ctxfs}${mapping.storeAlbumPicture.path!}@!40X40"  picId="${mapping.storeAlbumPicture.pictureId!}"
+																	class="specImage" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');" src1="${mapping.storeAlbumPicture.path!}" alt=""/>
+																<% break;
+															}
+														}
+													}
+												%>
+												<font>${spec2V}</font>
+											</label>
+										<%}%>	
+									</span>
+								<%}%>
+							<%}%>
+						<!-- </div>
+						<div class="summary-attrs"> -->
+							<%if(isNotEmpty(spec3)){%>
+								<span class="dt">${spec3}：</span>
+								<%if(spec3VList!=null){%>
+									<span class="dd specdd">
+										<%for(spec3V in spec3VList){%>
+											<label class="radio-pretty ${spec3VLP.first?'checked':''}">
+												<input type="radio" name="radio2"><b></b>
+												<% var flag=true;
+													for(mapping in product.productPictureMappingList!){
+														if(mapping.color==spec3V){
+															if(flag){
+																flag=false;%>
+																<div class="specImage" style="background-image:url(${ctxfs}${mapping.storeAlbumPicture.path!}@!40X40)" picId="${mapping.storeAlbumPicture.pictureId!}" class="specImage" src1="${mapping.storeAlbumPicture.path!}" ></div>
+																<img src="${ctxfs}${mapping.storeAlbumPicture.path!}@!40X40"  picId="${mapping.storeAlbumPicture.pictureId!}"
+																	class="specImage" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');" src1="${mapping.storeAlbumPicture.path!}" alt=""/>
+																<% break;
+															}
+														}
+													}
+												%>
+												<font>${spec3V}</font>
+											</label>
+										<%}%>	
+									</span>
+								<%}%>
+							<%}%>
+						</div>
+						<div class="summary-attrs summary-attrs-1 summary-number" style="display:inline">
+							<% var quantity=fy.getMsg({key:'数量'}); %>
+							<span class="dt">${quantity!}${maoHao!}</span>
+							<span class="dd specdd">
+								<div class="input-number" id="retail">
+									<div class="input">
+										<input id="txt" type="text" value="${isNotEmpty(product.purchasingAmount!)?product.purchasingAmount!:1}"  class="buyNum" stock="${isNotEmpty(skuList)?skuList[0].stock!:''}"/>
+									</div>
+									<div class="btn">
+										<a class="l" stock="${isNotEmpty(skuList)?skuList[0].stock!:''}"> + </a>
+										<a class="r"> - </a>
+									</div>
+									<span>
+										<% var inventory=fy.getMsg({key:'库存'});
+										var purchaseAmount=fy.getMsg({key:'起购量'});%>
+										${inventory!}<span class="skuStock">${isNotEmpty(skuList)?skuList[0].stock:''}</span>${isNotEmpty(product.unit!)?product.unit!:jian!} (${purchaseAmount!}${product.type=='3'?'1':product.purchasingAmount!}${isNotEmpty(product.unit!)?product.unit!:jian!})
+										<span class="isHasStock"></span>
+										<input type="hidden" name="skuId" class="skuId" value="${isNotEmpty(skuList)?skuList[0].skuId!:''}">
+									</span>
+								</div>
+							</span>
+						</div>
+					</div>
+					<div class="buy-btn">
+						<% var buyNow=fy.getMsg({key:'立即购买'});
+						var addShopCart=fy.getMsg({key:'加入购物车'});%>
+						<a href="javascript:void(0)" class="addOrder buyNow" type="1">${buyNow!}</a>
+						<a href="javascript:void(0)" class="addCart" type="1">${addShopCart!}</a>
+					</div>
+					<div class="summary-text">
+						<% var tips=fy.getMsg({key:'温馨提示'});
+						var tipsContent=fy.getMsg({key:'温馨提示内容'});
+						var transactionPro=fy.getMsg({key:'交易保障'});
+						var faceToFace=fy.getMsg({key:'当面交易'});
+						var cashDelivery=fy.getMsg({key:'货到付款'});
+						var tradeMethod=fy.getMsg({key:'交易方式'});
+						var payMethod=fy.getMsg({key:'支付方式'});
+						%>
+						<span class="dt">${tips!}${maoHao!}</span><span class="dd">${tipsContent!}</span>
+						<!--<span class="dt">${transactionPro!}${maoHao!}</span>-->
+						<!-- <ul class="dd infoli">
+							<li><p>${faceToFace!}<br>${cashDelivery!}</p><strong>${tradeMethod!} <i class="sui-icon icon-tb-unfold"></i></strong></li>
+							<li>
+								<p>
+									<% for(payWay in trade.payWayList()){ %>
+										${payWay.name!}
+										<% if(!payWayLP.last){%>
+											<br>
+										<%}%>
+									<%}%>
+								</p>
+								<strong>${payMethod!} <i class="sui-icon icon-tb-unfold"></i></strong>
+							</li>
+						</ul>-->
+					</div>
+				</div>
+				<%}%>
+				<!--零售商品信息结束-->
+				<!-- 右侧店铺信息开始 -->
+				<div class="store-msg">
+					<% include("/include/store_left.html",{'storeOne':storeOne,'sid':sid}){}%>
+				</div>
+				<!-- 右侧店铺信息结束 -->
+			</div>
+		</form>
+		<!-- 商品详细信息结束 -->
+		<!--goods-view end-->
+		<div class="wp selected-box mt20 mt70">
+			<% var hotSale=fy.getMsg({key:'热卖橱窗'}); %>
+			<div class="title"><span></span>${hotSale!}</div>
+			<div class="scroll-outer">
+				<div id="scroll-cc" class="owl-carousel">
+					<% var productMap=product.list({sid:sid,sort:"allSales",sortMode:"desc",limit:10});
+					for(p in productMap["search"].items){%>
+						<div class="item">
+							<div class="p-picture"style="line-height: 200px;">
+								<a target="_blank" href="${ctxf}/detail/${p.pId}.htm">
+									<img src="${ctxfs}/${p.image!}@!200X200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+								</a>
+							</div>
+							<div class="text">
+								<a href="#">
+									<p class="p-price">
+										<% if((p.type!)=='1'){%>
+											${yuan!}${p.minPrice1!}<span class="price-type"></span>
+										<%}%>
+										<% if((p.type!)=='2'){%>
+											${yuan!}${p.minPrice2!}~${yuan!}${p.maxPrice2!}<span class="price-type2"></span>
+										<%}%>
+									</p>	
+									<p class="p-name">${p.name}</p>
+								</a>
+							</div>
+						</div>
+					<%}%>
+				</div>
+			</div>
+
+			<script type="text/javascript">
+			$(function(){
+				$('#scroll-cc').owlCarousel({
+					items: 5,
+					autoPlay: false,
+					navigation: true,
+					navigationText: ["",""],
+					slideSpeed:1000,
+					autoHeight:true,
+					scrollPerPage: true,
+					responsive:false
+				});
+			});
+			</script>
+		</div>
+		<!--橱窗结束-->	
+		<div class="wp mt20 goods-page clearfix" id="product_detail">
+			<!-- 商品详情开始 -->
+			<ul class="sui-nav nav-tabs goods-content-tabs w980" id="detail_tabs">
+				<% var productDetail=fy.getMsg({key:'商品介绍'});
+				var productParam=fy.getMsg({key:'商品参数'});
+				var productComment=fy.getMsg({key:'商品评价内容'});
+				var productConsult=fy.getMsg({key:'商品咨询'});
+				%>
+				<li class="active"><a href="#product_detail" hrefs="#goods-main" data-toggle="tab">${productDetail!}</a></li>
+				<li><a href="#product_detail" hrefs="#more_param_div" data-toggle="tab">${productParam!}</a></li>
+				<li><a href="#product_detail" hrefs="#goods-comment" data-toggle="tab">${productComment!}</a></li>
+				<li><a href="#product_detail" hrefs="#goods-ask" data-toggle="tab">${productConsult!}</a></li>
+			</ul>
+			<div class="tab-content w980">
+				<div class="goods-main" id="goods-main">
+					<!-- 商品参数开始 -->
+					<% var paramList1=product.paramList({pid:pid,limit:6});
+					var paramList2=product.paramList({pid:pid});
+					var brankFy=fy.getMsg({key:'品牌'});
+					var moreParameters=fy.getMsg({key:'更多参数'});
+					if(isNotEmpty(paramList2)){%>
+						<ul class="table-div clearfix detail_tab" id="">
+							<%if(isNotEmpty(product.brandName!)){%>
+								<li class="w100"><span>${brankFy!}${maoHao!}</span>${product.brandName!} ${isNotEmpty(product.brandEnglishName!)?'('+product.brandEnglishName!+')':"" }</li>
+							<%}%>
+							<% for(param in product.paramList({pid:pid,limit:6})){ %>
+								<li><span>${param.name!}：</span>${param.value!}</li>
+							<%}%>
+							<li class="w100 align-right"><a href="javascript:void(0);" class="moreParam" style="color:#005aa0;">${moreParameters!} &gt;&gt;</a></li>
+						</ul>
+					<%}%>
+					<%if(isNotEmpty(paramList2)){%>
+						<ul class="table-div clearfix detail_tab" id="more_param_div" style="display: none;">
+							<%if(isNotEmpty(product.brandName!)){%>
+								<li class="w100"><span>${brankFy!}${maoHao!}</span>${product.brandName!} ${isNotEmpty(product.brandEnglishName!)?'('+product.brandEnglishName!+')':"" }</li>
+							<%}%>
+							<% for(param in product.paramList({pid:pid})){ %>
+								<li><span>${param.name!}：</span>${param.value!}</li>
+							<%}%>
+						</ul>
+					<%}%>
+					<!-- 商品详情开始 -->
+					<div class="goods-detailed detail_tab" style="">
+						${product.productDetail.introduction!}
+					</div>
+					<!-- 商品详情结束 -->
+					<!-- 商品评论开始 -->
+					<div class="goods-comment detail_tab" id="goods-comment">
+						<dl class="">
+							<dt class="box-header noborder">
+								<a href="javascript:" name="comment"></a>
+								<a href="#" class="sui-brand">${productComment!}</a>
+								<% var cumulativeComm=fy.getMsg({key:'累计评价'});
+								var praise=fy.getMsg({key:'好评'});
+								var middleRating=fy.getMsg({key:'中评'});
+								var negativeEvaluation=fy.getMsg({key:'差评'});
+								%>
+							 	<ul class="sui-nav nav-tabs commentTabs">
+									<li class="active" grade=""><a href="javascript:" data-toggle="tab" size="">${cumulativeComm!}（<span class="commentCount count">0</span>）</a></li>
+									<li class="" grade="1"><a href="javascript:" size="">${praise!}（<span class="commentGrade1Count count">0</span>）</a></li>
+									<li class="" grade="2"><a href="javascript:" size="">${middleRating!}（<span class="commentGrade2Count count">0</span>）</a></li>
+									<li class="" grade="3"><a href="javascript:" size="">${negativeEvaluation!}（<span class="commentGrade3Count count">0</span>）</a></li>
+							 	</ul>
+							</dt>
+							<dd>
+							 <div class="tab-content">
+								<div id="comment-1" class="tab-pane active">
+									<dl class="comment-list">
+									</dl>
+									<!--分页开始-->
+									<div class="commentPage pages" style="display: none;">
+										<ul class="page-list r mr10 mt50 commentPageList">
+											<input type="hidden" value="1" class="pageNo" />
+											<input type="hidden" value="" class="grade" />
+											<% var homePage=fy.getMsg({key:'首页'});
+												var previous=fy.getMsg({key:'上一页'});
+												var nextPage=fy.getMsg({key:'下一页'});
+												var lastPage=fy.getMsg({key:'尾页'});
+											%>
+											<li id="fist" class="fist" pageNo="1"><a href="javascript:void(0);">${homePage!}</a></li>
+											<li id="prev" class="prev" pageNo=""><a href="javascript:void(0);">${previous!}</a></li>
+											<li id="next" class="next" pageNo=""><a href="javascript:void(0);">${nextPage!}</a></li>
+											<li id="last" class="last" pageNo=""><a href="javascript:void(0);">${lastPage!}</a></li>
+											<div class="clear"></div>
+										</ul>
+										<div class="clear"></div>
+									</div>
+									<!--分页结束-->
+								</div>
+							 </div>
+							</dd>
+						</dl>
+					</div>
+					<!-- 商品评论结束 -->
+					<!-- 商品咨询开始 -->
+					<div id="goods-ask" class="goods-ask askAnswer detail_tab">
+						<div class="mt">
+		                    <h3>${productConsult!}</h3>
+		                </div>
+		                <div class="ask-wrap">
+	                        <i class="icon-dog"></i>
+							<% var productConsultContent=fy.getMsg({key:'商品咨询提示'});
+								var wantAsk=fy.getMsg({key:'我要咨询'});
+							%>
+	                        <p>${productConsultContent!}</p>
+	                        <a href="#none" clstag="shangpin|keycount|product|woyaotiwen" class="J-btn-ask btn-ask">${wantAsk!}</a>
+	                    </div>
+	                    <div class="goods-ask">
+		                	<dl class="">
+								<dt class="box-header noborder">
+									<a href="#" class="sui-brand">${productConsult!}</a>
+									<% var allConsult=fy.getMsg({key:'全部咨询'});
+									var paymentProblem=fy.getMsg({key:'支付问题'});
+									var invoiceWarranty=fy.getMsg({key:'发票及保修'});
+									var promotions=fy.getMsg({key:'促销及赠品'});
+									%>
+								 	<ul class="sui-nav nav-tabs askTabs">
+										<li class="active" category=""><a href="javascript:" data-toggle="tab" size="">${allConsult!}（<span class="askCount count">0</span>）</a></li>
+										<li class="" category="1"><a href="javascript:" size="">${productConsult!}（<span class="askCate1Count count">0</span>）</a></li>
+										<li class="" category="2"><a href="javascript:" size="">${paymentProblem!}（<span class="askCate2Count count">0</span>）</a></li>
+										<li class="" category="3"><a href="javascript:" size="">${invoiceWarranty!}（<span class="askCate3Count count">0</span>）</a></li>
+										<li class="" category="4"><a href="javascript:" size="">${promotions!}（<span class="askCate4Count count">0</span>）</a></li>
+								 	</ul>
+								</dt>
+								<dd class="goods-ask-list">
+								</dd>
+							</dl>
+							<!--分页开始-->
+							<div class="askPage pages" style="display: none;">
+								<ul class="page-list r mr10 mt50 askPageList">
+									<input type="hidden" value="1" class="pageNo" />
+									<input type="hidden" value="" class="category" />
+									<li id="fist" class="fist" pageNo="1"><a href="javascript:void(0);">${homePage!}</a></li>
+									<li id="prev" class="prev" pageNo=""><a href="javascript:void(0);">${previous!}</a></li>
+									<li id="next" class="next" pageNo=""><a href="javascript:void(0);">${nextPage!}</a></li>
+									<li id="last" class="last" pageNo=""><a href="javascript:void(0);">${lastPage!}</a></li>
+									<div class="clear"></div>
+								</ul>
+								<div class="clear"></div>
+							</div>
+							<!--分页结束-->
+						</div>
+					</div>
+					<!-- 商品咨询结束 -->
+					<!-- 表单 start -->
+					<div data-reactroot="" class="detail-module module-fastFeedback ls-feedback" id="J-ls-feedback">
+						<h3 class="feedback-title">Send your message to this supplier</h3>
+						<div class="feedback-wrapper" id="fastFeedbackContent" style="overflow: hidden;">
+							<div class="ui-fast-feedback">
+								<form class="ui2-form ui2-form-horizontal rfq-form" method="POST" action="/" novalidate="novalidate">
+									<input type="hidden" name="pid" class="pid" value="${pid}"/>
+									<div class="ui2-form-item inquiry-message">
+										<label class="ui2-form-label"><span class="ui2-form-required">*</span>Message:&nbsp;&nbsp;</label>
+										<div class="ui2-form-control">
+											<div class="content-container content-container-snoop">
+												<textarea class="ui2-textfield ui2-textfield-normal inquiry-content describe" name="content" placeholder="What are you looking for…" style="margin: 0px; height: 246px; width: 530px;" maxlength="250"></textarea>
+												<div class="ui2-balloon ui2-balloon-lt">
+													<div class="fast-feedback-balloon-content">
+														<p>For better quotations, include:</p>
+														<p>- A self introduction</p>
+														<p>- Special requests, if any</p>
+													</div>
+												</div>
+											</div>
+											<div class="inquiry-tip">Your message must be between 1-250 characters</div>
+										</div>
+									</div>
+									<div class="ui2-form-item mt15">
+										<label class="ui2-form-label" for="inquiry-email"><span class="ui2-form-required">*</span>Contact info :&nbsp;&nbsp;</label>
+										<div class="ui2-form-control">
+											<input type="text" name="loginId" value="" class="ui2-textfield ui2-textfield-system inquiry-text-from contactInfo"
+												   placeholder="Your email or mobile number" autocomplete="off" maxlength="64">
+										</div>
+									</div>
+									<div class="ui2-form-item mt15">
+									<label class="ui2-form-label" for=""><span class="ui2-form-required">*</span>Quantity:&nbsp;&nbsp;</label>
+										<div class="ui2-form-control">
+											<input type="text" name="quantity" value="" class="ui2-textfield ui2-textfield-system inquiry-text-from quantity"
+											   placeholder="Please enter a number" autocomplete="off" maxlength="11">
+										</div>
+									</div>
+									<div class="ui2-form-item mt15">
+										<label class="ui2-form-label" for="">&nbsp;&nbsp;</label>
+										<div class="ui2-form-control">
+											<input type="button" value="Send" class="ui2-button ui2-button-primary ui2-button-large rfq-submit">
+										</div>
+									</div>
+									<input type="hidden" name="domain">
+								</form>
+							</div>
+						</div>
+					</div>
+					<!-- 表单 end -->
+
+					<!-- 橱窗开始 -->
+					<div class="wp selected-box mt20" style="width: 910px;">
+						<div class="title"><span></span>${hotSale!}</div>
+						<div class="scroll-outer" style="min-width: 910px;">
+							<div id="scroll-dd" class="owl-carousel">
+								<% var productMap1=product.list({sid:sid,sort:"allSales",sortMode:"desc",limit:10});
+								for(p in productMap1["search"].items){%>
+									<div class="item">
+										<div class="p-picture"style="line-height: 200px;">
+											<a target="_blank" href="${ctxf}/detail/${p.pId}.htm">
+												<img src="${ctxfs}/${p.image!}@!200X200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');"/>
+											</a>
+										</div>
+										<div class="text">
+											<a href="#">
+												<p class="p-price">
+													<% if((p.type!)=='1'){%>
+														${yuan!}${p.minPrice1!}<span class="price-type"></span>
+													<%}%>
+													<% if((p.type!)=='2'){%>
+														${yuan!}${p.minPrice2!}~${yuan!}${p.maxPrice2!}<span class="price-type2"></span>
+													<%}%>
+												</p>	
+												<p class="p-name">${p.name}</p>
+											</a>
+										</div>
+									</div>
+								<%}%>
+							</div>
+						</div>
+
+						<script type="text/javascript">
+						$(function(){
+							$('#scroll-dd').owlCarousel({
+								items: 4,
+								autoPlay: false,
+								navigation: true,
+								navigationText: ["",""],
+								slideSpeed:1000,
+								autoHeight:true,
+								scrollPerPage: true,
+								responsive:false
+							});
+						});
+						</script>
+					</div>
+					<!--橱窗结束-->	
+				</div>
+			</div>
+			<!-- 商品详情结束 -->
+			<!-- 右侧推荐开始 -->
+			<div class="tuijian-you">
+				<% include("/include/store_left2.html",{'storeOne':storeOne,'sid':sid}){}%>
+			</div>
+			<!-- 右侧推荐结束 -->
+		</div>
+		<div class="store-by">${storeOne.name!} BY SiC B2B2C Shop</div>
+	<%}%>
+	<!-- 咨询弹出框开始 -->
+	<div id="askModal" tabindex="-1" role="dialog" data-hasfoot="false" class="hide" style="border-radius: 5px;">
+		<div class="modal-body" style="padding: 0;">
+			<form id="askForm" name="" action="" method="post">
+				<input type="hidden" name="ordersId" value="142">
+				<table class="sui-table table-bordered" id="delTable">
+					<tbody>
+						<tr>
+							<% var consultationType=fy.getMsg({key:'咨询类型'});
+							var productConsult=fy.getMsg({key:'商品咨询'});
+							var paymentProblem=fy.getMsg({key:'支付问题'});
+							var invoiceWarranty=fy.getMsg({key:'发票及保修'});
+							var promotions=fy.getMsg({key:'促销及赠品'});
+							%>
+							<td class="" style="text-align: right;height: 30px;">${consultationType!}${maoHao!}</td>
+							<td>
+								<div class="text-box">
+									<label class="radio-pretty inline checked">
+										<input type="radio" name="category" checked="checked" value="1"><span>${productConsult!}</span>
+									</label>
+									<label class="radio-pretty inline">
+										<input type="radio" name="category" value="2"><span>${paymentProblem!}</span>
+									</label>
+									<label class="radio-pretty inline">
+										<input type="radio" name="category" value="3"><span>${invoiceWarranty!}</span>
+									</label>
+									<label class="radio-pretty inline">
+										<input type="radio" name="category" value="4"><span> ${promotions!}</span>
+									</label>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<% var consultContent=fy.getMsg({key:'咨询内容'});
+								var moreChares=fy.getMsg({key:'最多可输入200个字'});
+							%>
+							<td class="" style="text-align: right;">${consultContent!}${maoHao!}</td>
+							<td>
+								<textarea rows="5" cols="55" name="content" class="content" maxlength="200" placeholder="${moreChares!}" style="display: block;"></textarea>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="span3"></div>
+				<div class="modal-footer" id="delayReceiptModal-footer">
+					<% var determine=fy.getMsg({key:'确定'});
+					var cancel=fy.getMsg({key:'取消'});
+					%>
+					<button type="submit" data-ok="modal" class="sui-btn btn-danger btn-large askBtn" style="margin-right: 10px;" orderId="">${determine!}</button>
+					<button type="button" data-dismiss="modal" class="sui-btn btn-default btn-large"  onclick="(function(){layer.closeAll('page');}())">${cancel!}</button>
+				</div>
+			</form>
+		</div>
+	</div>
+	<!-- 咨询收货弹出框结束 -->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+	<script type="text/javascript">
+		var content='${message!}';
+		var type='${type!}';
+		sysMessage(content,type);
+	</script>
+	<script type="text/template" id="area_tpl" info="地区下拉选模板">
+		<li id="{{d.id}}"><a href="javascript:">{{d.name}}</a></li>
+	</script>
+	<script type="text/template" id="comment_tpl" info="评价模板">
+		<dd>
+			<div class="comment-user-info">
+				<div class="comment-star star{{d.commentScore}}"></div>
+				<div class="comment-date">{{d.commentDate}}</div>
+				<div class="comment-avatar">
+					{{d.commentLoginName}}
+					<img src="//misc.360buyimg.com/lib/img/u/b62.gif" width="25" height="25" alt="">
+				</div>
+			</div>
+			<div class="comment-con">{{d.commentContent}}</div>
+			<div class="comment-pic">
+				{{d.commentImg}}
+			</div>
+			{{d.commentExplain}}
+
+			{{d.commentAdd}}
+
+			<div class="comment-pic">
+				{{d.commentAddImg}}
+			</div>
+			{{d.commentAddExplain}}
+		</dd>
+	</script>
+	<script type="text/template" id="comment_img_tpl" info="评价图片模板">
+		<a class="J-thumb-img" href="{{d.path}}" data-ind="0"><img src="{{d.path}}@!48X48" width="48" height="48" alt="j***1的晒单图片"></a>
+	</script>
+	<script type="text/template" id="comment_explain_tpl" info="评价解释模板">
+		<div class="comment-con" style="color: #a7a4a4;">
+			<% var explanation=fy.getMsg({key:'解释'});%>
+			[${explanation!}] {{d.commentExplain}}
+		</div>
+	</script>
+	<script type="text/template" id="comment_add_tpl" info="追加评价模板">
+		<div class="comment-con comment-con-add">
+			<% var addCommon=fy.getMsg({key:'追加评价'});%>
+			<div style="color: #999;">[{{d.commentDate}} ${addCommon!}]</div>
+			{{d.commentAddContent}}
+		</div>
+	</script>
+	<script type="text/template" id="comment_no_tpl" info="无评价模板">
+		<div class="no-comment">
+			<% var noProduct=fy.getMsg({key:'暂无商品'});%>
+			${noProduct!}
+		</div>
+	</script>
+	<script type="text/template" id="consultation_tpl" info="咨询模板">
+		<div class="askAnswer-item">
+			<div class="ask">
+				<% var ask=fy.getMsg({key:'问'});%>
+				<i class="icon-ask">${ask!}</i>
+				<div class="item-con">
+					<p>{{d.ask}}</p>
+					<span>{{d.userName}}&nbsp;&nbsp;{{d.data}}</span>
+				</div>           
+			</div>
+			<div class="answer {{d.disabled}}">
+				<% var answer=fy.getMsg({key:'答'});%>
+				<i class="icon-answer">${answer!}</i>
+				<div class="item-con">                    
+					<p>{{d.answer}}</p>                   
+				</div>            
+			</div>
+		</div>
+	</script>
+	<script type="text/template" id="consultation_no_tpl" info="无咨询模板">
+		<div class="no-consultation">
+			${noProduct!}
+		</div>
+	</script>
+</body>
+</html>

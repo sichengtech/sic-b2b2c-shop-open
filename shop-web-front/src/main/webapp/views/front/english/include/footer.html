@@ -1,0 +1,56 @@
+<footer id="ui-footer" class="ui-footer ui-footer-wrapper  ui-footer-background-version5 mt30">
+	<hr style="border-top:1px solid #445268;">
+	<!-- 页脚 start -->
+	<div class="ui-footer-sitemap util-clearfix">
+		<% for(channel in cms.channelList({parentId:1127,limit:5})){
+			if(channelLP.index==1){%>
+				<div class="ui-footer-col ui-footer-col-first">
+			<%}else{%>
+				<div class="ui-footer-col">
+			<%}%>
+				<dl>
+					<dt>${channel.name!}</dt>
+					<% for(article in cms.articleList({channelId:channel.id!})){%>
+						<dd>
+							<%if( isNotEmpty(article.link!) ){%>
+							<a rel="nofollow" href="${article.link!}" target="_blank">${article.title!}</a>
+							<%}else{%>
+							<a rel="nofollow" href="${ctxf}/articleDetail/${article.id!}.htm" target="_blank">${article.title!}</a>
+							<%}%>
+						</dd>
+					<%}%>
+				</dl>
+			</div>
+		<%}%>
+	</div>
+	<!-- 页脚 end -->
+
+	<!-- 版权信息 start -->
+	<div class="ui-footer-seo">
+		<p class="ui-footer-seo-brand">
+			Browse Alphabetically:
+			<a href="javascript:;">Onetouch</a>
+			| <a href="javascript:;">Showroom</a>
+			| <a href="javascript:;">Country Search</a>
+			| <a href="javascript:;">Suppliers</a>
+			| <a href="javascript:;">Wholesaler</a>
+			| <a href="javascript:;">Affiliate</a>
+		</p>
+		<p class="ui-footer-seo-policy">
+			<a href="javascript:;" rel="nofollow">
+				Product Listing Policy
+			</a>
+			- <a href="javascript:;" rel="nofollow">Intellectual Property Protection</a>
+			- <a href="javascript:;" rel="nofollow">Privacy Policy</a>
+			- <a href="javascript:;" rel="nofollow">Terms of Use</a>
+			- <a href="javascript:; rel="nofollow">User Information Legal Enquiry Guide</a>
+		</p>
+		<p class="ui-footer-copyright">
+<!--			<a href="javascript:;">-->
+<!--				<img style="height: 28px;width: 26px;vertical-align: middle;margin-right: 6px;" src="${ctx}/views/front/english/images/authority.gif">-->
+<!--			</a>-->
+			Copyright © 1999-2100 SiCheng.net All rights reserved.
+		</p>
+	</div>
+	<!-- 版权信息 end -->
+</footer>

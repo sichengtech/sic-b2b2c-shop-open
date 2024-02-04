@@ -1,0 +1,480 @@
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="data-spm" content="a272h">
+    <meta name="ahot-aplus" content="1">
+    <meta name="aplus-rate-ahot" content="0.2">
+    <% var seo=seo.one({type:"商品分类页"});%>
+    <title>${seo.title!} Powered by SiC</title>
+    <% include("/include/head.html"){}%>
+    <link rel="stylesheet" href="${ctx}/views/front/english/css/async.css">
+    <link rel="stylesheet" href="${ctx}/views/front/english/css/categoryIndex.css">
+</head>
+<body style="background-position:0% 0%;background-repeat:repeat;background-color:#F2F2F2;">
+    <!-- header start -->
+    <% include("/include/header.html"){}%>
+    <!-- header end -->
+    <% var categoryOne=product.category({cid:cid});  %>
+    <!-- 页面内容 start -->
+    <div class="ocms-container">
+        <!-- 背景图开始 -->
+        <div class="ocms-fusion-alibaba-pc-common-layout-1-0-3">
+            <div class="ocms-fusion-alibaba-pc-common-layout b2b-ocms-fusion-layout full">
+                <div name="main" class="croco slot">
+                    <div class="ocms-fusion-alibaba-pc-hover-category-nav-1-1-9 ctrdot-item ctrdot-item-ocms">
+                        <div class="ocms-fusion-alibaba-pc-hover-category-nav b2b-ocms-fusion-comp">
+                            <div class="nav-wrapper">
+                                <div class="nav-bg-img"
+                                    style="height:160px;background-image:url(https://img.alicdn.com/tfs/TB1ymCQxkzoK1RjSZFlXXai4VXa-1920-160.png);"
+                                    alt="test"></div>
+                                <div class="hover-nav">
+                                    <h1 class="nav-title" style="padding-top:42px;">
+                                        ${categoryOne.name!}
+                                    </h1>
+                                    <div class="hover-menu-wrapper"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 背景图结束 -->
+        <div class="ocms-fusion-alibaba-pc-ch-layout-main-0-1-2 ctrdot-item ctrdot-item-ocms">
+            <div class="ocms-fusion-alibaba-pc-ch-layout-main b2b-ocms-fusion-comp column-one">
+                <div class="bainer-div" style="height:0px;"></div>
+                <div class="ch-main-layout column-one">
+                    <div class="ch-right-layout">
+                        <div name="right-content" class="croco slot">
+                            <!-- 轮播 start -->
+                            <div class="ctrdot-item ctrdot-item-ocms">
+                                <div class="ocms-fusion-alibaba-pc-ch-slider-banner b2b-ocms-fusion-comp">
+                                    <div class="next-slick next-slick-inline next-slick-horizontal">
+                                        <div draggable="true" class="next-slick-inner next-slick-initialized">
+                                            <div class="next-slick-list">
+                                                <div class="next-slick-track" id="carousel">
+                                                    <% for(carousel in site.carouselList({type:14})){%>
+	                                                    <a class="next-slick-slide ch-banner-wrapper" href="${carousel.url!}" target="_blank" style="outline: none; width: 1200px;">
+	                                                        <div class="inner-banner" style="background:url(${ctxfs}${carousel.path!}) center / cover;"></div>
+	                                                    </a>
+                                                    <%}%>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 轮播 end -->
+                            <!-- SHOP BY CATEGORY start -->
+                            <div class="ctrdot-item ctrdot-item-ocms">
+                                <div class="ocms-fusion-alibaba-pc-ch-nav-with-image b2b-ocms-fusion-comp">
+                                    <div class="ch-nav-img-head">SHOP BY CATEGORY</div>
+                                    <ul class="ch-nav-img-list">
+                                        <% var productMap1=product.list({limit:9,cid:cid});%>
+                                        <%for(product in productMap1["search"].items){%>
+                                        <li class="ch-nav-img-item">
+                                            <a href="${ctxf}/detail/${product.pId!}.htm" target="_blank">
+                                                <div class="img-box">
+                                                    <img class="img-item" src="${ctxfs}${product.image}@!80X80" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+                                                </div>
+                                                <div class="category-name" title="Steel">${product.name!}</div>
+                                            </a>
+                                        </li>
+                                        <%}%>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- SHOP BY CATEGORY end -->
+                            <!-- top5 start -->
+                            <div class="ctrdot-item ctrdot-item-ocms home-theme-container home-theme-promotion">
+                                <div class="theme-item home-theme-weekly-deals-container">
+                                    <div class="home-theme-weekly-deals" data-spm="weeklydeals">
+                                        <div class="header clearfix">
+                                            <h2><span>TOP 5 </span> hot products</h2>
+                                            <span class="line"></span>
+                                            <a href="">see more</a>
+                                        </div>
+                                        <div class="content">
+                                            <div class="items-wrap">
+                                                <% var productMap2=product.list({limit:5,cid:cid,sort:'allSales'});%>
+                                                <%for(product in productMap2["search"].items){%>
+                                                    <div class="item-wrap item-0">
+                                                        <a class="item" href="${ctxf}/detail/${product.pId!}.htm" target="_blank">
+                                                            <div class="item-image zoom-wrap">
+                                                                <img class="image zoom-in" src="${ctxfs}${product.image}@!220X220"
+                                                                     onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+                                                            </div>
+                                                            <div class="product-name">
+                                                               ${product.name!}
+                                                            </div>
+                                                            <div class="hidden-wrap">
+                                                                <div class="item-tag">
+                                                                    <p>
+                                                                        <span class="price">
+                                                                            <% if((product.type!)=='1'){%>
+                                                                                $${product.minPrice1!}
+                                                                            <%}%>
+                                                                            <% if((product.type!)=='2'){%>
+                                                                                $${product.minPrice2!}~${product.maxPrice2!}
+                                                                            <%}%>
+                                                                        </span>
+                                                                        <span class="units"> / ${isNotEmpty(product.unit!)?product.unit!:'Piece'}</span>
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </a>
+                                                    </div>
+                                                <%}%>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- top5 end -->
+                            <!-- 商品列表 start -->
+                            <div class="ctrdot-item ctrdot-item-ocms product-content">
+                                <div class="item-flex">
+                                    <% var industrialTooling=site.recommend({number:'category_industrial_tooling'});
+                                    	var industrialToolingList=industrialTooling.siteRecommendItemList!;
+                                    	var industrialToolingItem1=industrialToolingList[0]!;
+                                    %>
+                                    <div class="flex-top">
+                                        <div class="top-tex">${industrialTooling.name!}</div>
+                                        <div class="top-see">
+                                        	<a href="${ctxf}/product/list.htm?k=${industrialTooling.name!}" target="_blank">See more</a>
+                                        </div>
+                                    </div>
+                                    <div class="item-offer">
+                                        <div class="offer-product">
+                                            <div class="product-title">
+                                                <a href="${industrialToolingItem1.url!}">${industrialToolingItem1.addInfo1!}</a>
+                                            </div>
+                                            <div class="product-img">
+                                                <a href="${industrialToolingItem1.url!}">
+                                                    <img src="${ctxfs}${industrialToolingItem1.path!}@!130x130" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="offer-list">
+                                        	<% for(var i=1;i<industrialToolingList.~size;i++){
+												var industrialToolingItem=industrialToolingList[i]!;%>
+												<div class="list-product">
+	                                                <a href="${industrialToolingItem.url!}">
+	                                                    <div class="l-product-img">
+	                                                        <img src="${ctxfs}${industrialToolingItem.path!}@!106x106" alt="">
+	                                                    </div>
+	                                                    <div class="l-product-text">${industrialToolingItem.addInfo1!}</div>
+	                                                </a>
+	                                            </div>
+											<%}%>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-flex">
+                                	<% var consumerElectronics=site.recommend({number:'category_consumer_electronics'});
+                                	    var consumerElectronicsList=consumerElectronics.siteRecommendItemList!;
+                                    	var consumerElectronicsItem1=consumerElectronicsList[0]!;
+                                	%>
+                                    <div class="flex-top">
+                                        <div class="top-tex">${consumerElectronics.name!}</div>
+                                        <div class="top-see">
+                                        	<a href="${ctxf}/product/list.htm?k=${consumerElectronics.name!}" target="_blank">See more</a>
+                                        </div>
+                                    </div>
+                                    <div class="item-offer">
+                                        <div class="offer-product">
+                                            <div class="product-title">
+                                                <a href="${consumerElectronicsItem1.url!}">${consumerElectronicsItem1.addInfo1!}</a>
+                                            </div>
+                                            <div class="product-img">
+                                                <a href="${consumerElectronicsItem1.url!}">
+                                                    <img src="${ctxfs}${consumerElectronicsItem1.path!}@!130x130" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="offer-list">
+	                                        <% for(var i=1;i<consumerElectronicsList.~size;i++){
+												var consumerElectronicsItem=consumerElectronicsList[i]!;%>
+												<div class="list-product">
+	                                                <a href="${consumerElectronicsItem.url!}">
+	                                                    <div class="l-product-img">
+	                                                        <img src="${ctxfs}${consumerElectronicsItem.path!}@!106x106" alt="">
+	                                                    </div>
+	                                                    <div class="l-product-text">${consumerElectronicsItem.addInfo1!}</div>
+	                                                </a>
+	                                            </div>
+											<%}%>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="item-flex">
+                                	<% var chemicalIndustry=site.recommend({number:'category_chemical_industry'});
+                                	    var chemicalIndustryList=chemicalIndustry.siteRecommendItemList!;
+                                    	var chemicalIndustryItem1=chemicalIndustryList[0]!;
+                                	%>
+                                    <div class="flex-top">
+                                        <div class="top-tex">${chemicalIndustry.name!}</div>
+                                        <div class="top-see">
+                                        	<a href="${ctxf}/product/list.htm?k=${chemicalIndustry.name!}" target="_blank">See more</a>
+                                        </div>
+                                    </div>
+                                    <div class="item-offer">
+                                        <div class="offer-product">
+                                            <div class="product-title">
+                                                <a href="${chemicalIndustryItem1.url!}">${chemicalIndustryItem1.addInfo1!}</a>
+                                            </div>
+                                            <div class="product-img">
+                                                <a href="${chemicalIndustryItem1.url!}">
+                                                    <img src="${ctxfs}${chemicalIndustryItem1.path!}@!130x130" alt="">
+                                                </a>
+                                            </div>
+                                        </div>
+                                        <div class="offer-list">
+											<% for(var i=1;i<chemicalIndustryList.~size;i++){
+												var chemicalIndustryItem=chemicalIndustryList[i]!;%>
+												<div class="list-product">
+	                                                <a href="${chemicalIndustryItem.url!}">
+	                                                    <div class="l-product-img">
+	                                                        <img src="${ctxfs}${chemicalIndustryItem.path!}@!106x106" alt="">
+	                                                    </div>
+	                                                    <div class="l-product-text">${chemicalIndustryItem.addInfo1!}</div>
+	                                                </a>
+	                                            </div>
+											<%}%>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- 商品列表 end -->
+                            <!-- 二级分类列表 start -->
+                            <% for(categoryTwo in product.categoryList({parentId:cid,limit:3})){%>
+                            <div class="ctrdot-item ctrdot-item-ocms list-one">
+                                <div class="one-wrap">
+                                    <div class="one_w-left">
+                                        <h3>${categoryTwo.name!}</h3>
+                                        <ul>
+                                            <% for(categoryThree in product.categoryList({parentId:categoryTwo.categoryId!,limit:7})){%>
+                                            <li>
+                                                <a href="${ctxf}/product/list.htm?cid=${categoryTwo.categoryId!}">${categoryThree.name!}</a>
+                                            </li>
+                                            <%}%>
+                                            <li>
+                                                <a href="${ctxf}/categoryAll.htm">
+                                                    See More
+                                                    <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-right"></i>
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                    <div class="one_w-right">
+                                        <% var productMap3=product.list({limit:10,cid:cid,sort:'allSales'});%>
+                                        <%for(product in productMap3["search"].items){%>
+                                        <div class="right-item">
+                                            <div class="item-top">
+                                                <a href="${ctxf}/detail/${product.pId!}.htm">
+                                                    <img src="${ctxfs}${product.image}@!179X179" alt="" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+                                                </a>
+                                            </div>
+                                            <div class="item-bottom">
+                                                <div class="bottom-text">
+                                                    <a href="${ctxf}/detail/${product.pId!}.htm">${product.name!}</a>
+                                                </div>
+                                                <div class="bottom-pmo">
+                                                    <b class="pmo-price">
+                                                        <% if((product.type!)=='1'){%>
+                                                        $${product.minPrice1!}
+                                                        <%}%>
+                                                        <% if((product.type!)=='2'){%>
+                                                        $${product.minPrice2!}~${product.maxPrice2!}
+                                                        <%}%>
+                                                    </b>
+                                                    <span class="unit"> / ${isNotEmpty(product.unit!)?product.unit!:'Piece'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <%}%>
+                                    </div>
+                                </div>
+                            </div>
+                            <%}%>
+                            <!-- 二级分类列表 end -->
+                            <!-- RECOMMENDATIONS FOR YOU start -->
+                            <div class="ctrdot-item product-list recommendation-for-you ctrdot-item-ocms home-theme-container">
+                                <div class="theme-item home-theme-weekly-deals-container">
+                                    <div class="home-theme-weekly-deals" data-spm="weeklydeals">
+                                        <div class="header clearfix">
+                                            <h2>RECOMMENDATIONS FOR YOU</h2>
+                                            <span class="line" style="margin-right: 0;"></span>
+                                            <!-- <a href="">see more</a> -->
+                                        </div>
+                                        <!-- 8个商品 start -->
+                                        <% var productMap4=product.list({limit:24,cid:cid,sort:'isRecommend'});
+                                            var productList4=productMap4["search"].items;
+                                            var size=8;
+                                            if(productList4.~size<8){
+                                                size=productList4.~size;
+                                            }
+                                        %>
+                                        <div class="m-r4u-product-block">
+                                            <div class="m-r4u-product-list m-r4u-list" data-role="m-r4u-list">
+                                            <%for(var i=0;i<size;i++){
+                                                var product=productList4[i];%>
+                                                <div class="m-r4u-product-item-wrapper">
+                                                    <div class="m-r4u-product-item">
+                                                        <div class="item-main">
+                                                            <div class="item-img">
+                                                                <div class="place"></div>
+                                                                <div class="item-img-inner">
+                                                                    <a target="_self" href="${ctxf}/detail/${product.pId!}.htm" class="first-item">
+                                                                        <div class="product-image-box">
+                                                                            <img src="${ctxfs}${product.image!}@!204X204" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+                                                                        </div>
+                                                                    </a>
+                                                                </div>
+                                                            </div>
+                                                            <div class="item-info">
+                                                                <h2 class="title two-line">
+                                                                    <a target="_self" href="${ctxf}/detail/${product.pId!}.htm" title="${product.name!}">
+                                                                        ${product.name!}
+                                                                    </a>
+                                                                </h2>
+                                                                <div class="pmo">
+                                                                    <div class="price" title="US $9.0-13.0 / Piece">
+                                                                        <b>
+                                                                            <% if((product.type!)=='1'){%>
+                                                                            $${product.minPrice1!}
+                                                                            <%}%>
+                                                                            <% if((product.type!)=='2'){%>
+                                                                            $${product.minPrice2!}~${product.maxPrice2!}
+                                                                            <%}%>
+                                                                        </b>
+                                                                        <span class="unit">
+                                                                            / ${isNotEmpty(product.unit!)?product.unit!:'Piece'}
+                                                                        </span>
+                                                                    </div>
+                                                                    <div class="min-order">
+                                                                        <b>${isNotEmpty(product.purchasingAmount!)?product.purchasingAmount!:'1'} Piece</b> (Min. Order)
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            <%}%>
+                                            </div>
+                                        </div>
+                                        <!-- 8个商品 end -->
+                                        <!-- 右侧推荐 start -->
+                                        <div class="recommend">
+                                            <div class="recommend-title">most inquiries</div>
+                                            <% if(productList4.~size>8){
+                                                size=14;
+                                                if(productList4.~size<size){
+                                                    size=productList4.~size;
+                                                }
+                                                for(var i=8;i<size;i++){
+                                            %>
+                                                <div class="recommend-list">
+                                                    <div class="r-list-product">
+                                                        <div class="producnt-img">
+                                                            <a href="${ctxf}/detail/${productList4[i].pId!}.htm">
+                                                                <img src="${ctxfs}${productList4[i].image!}@!80X80" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+                                                            </a>
+                                                        </div>
+                                                        <div class="producnt-msg">
+                                                            <div class="msg-title">
+                                                                <a href="${ctxf}/detail/${productList4[i].pId!}.htm">${productList4[i].name!}</a>
+                                                            </div>
+                                                            <div class="msg-price">
+                                                                <b>
+                                                                    <% if((productList4[i].type!)=='1'){%>
+                                                                        $${productList4[i].minPrice1!}
+                                                                    <%}%>
+                                                                    <% if((productList4[i].type!)=='2'){%>
+                                                                        $${productList4[i].minPrice2!}~${productList4[i].maxPrice2!}
+                                                                    <%}%>
+                                                                </b>
+                                                                <span>/ ${isNotEmpty(productList4[i].unit!)?productList4[i].unit!:'Piece'}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <%}%>
+                                            <%}%>
+                                        </div>
+                                        <!-- 右侧推荐 end -->
+                                        <!-- 10个商品 start -->
+                                        <div class="m-r4u-product-block ten">
+                                            <div class="m-r4u-product-list m-r4u-list">
+                                                <% if(productList4.~size>8){
+                                                    size=24;
+                                                    if(productList4.~size<size){
+                                                    size=productList4.~size;
+                                                    }
+                                                    for(var i=14;i<size;i++){
+                                                %>
+                                                    <div class="m-r4u-product-item-wrapper">
+                                                        <div class="m-r4u-product-item">
+                                                            <div class="item-main">
+                                                                <div class="item-img">
+                                                                    <div class="place"></div>
+                                                                    <div class="item-img-inner">
+                                                                        <a target="_self" href="${ctxf}/detail/${productList4[i].pId!}.htm" class="first-item">
+                                                                            <div class="product-image-box">
+                                                                                <img src="${ctxfs}${productList4[i].image!}@!204X204" onerror="fdp.defaultImage('/static/static/images/default_goods.png');">
+                                                                            </div>
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="item-info">
+                                                                    <h2 class="title two-line">
+                                                                        <a target="_self" href="${ctxf}/detail/${productList4[i].pId!}.htm" title="${productList4[i].name!}">
+                                                                            ${productList4[i].name!}
+                                                                        </a>
+                                                                    </h2>
+                                                                    <div class="pmo">
+                                                                        <div class="price">
+                                                                            <b>
+                                                                                <% if((productList4[i].type!)=='1'){%>
+                                                                                $${productList4[i].minPrice1!}
+                                                                                <%}%>
+                                                                                <% if((productList4[i].type!)=='2'){%>
+                                                                                $${productList4[i].minPrice2!}~${productList4[i].maxPrice2!}
+                                                                                <%}%>
+                                                                            </b>
+                                                                            <span class="unit">
+                                                                                / ${isNotEmpty(productList4[i].unit!)?product.unit!:'Piece'}
+                                                                            </span>
+                                                                        </div>
+                                                                        <div class="min-order">
+                                                                            <b>${isNotEmpty(productList4[i].purchasingAmount!)?productList4[i].purchasingAmount!:'1'} Piece</b> (Min. Order)
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <%}%>
+                                                <%}%>
+                                            </div>
+                                        </div>
+                                        <!-- 10个商品 end -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- RECOMMENDATIONS FOR YOU end -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- 页面内容 start -->
+    <!-- footer start -->
+    <% include("/include/footer.html"){}%>
+    <!-- footer end -->
+</body>
+<!-- 业务js -->
+<script src="${ctx}/views/front/english/categoryIndex.js"></script>
+<% include("/include/foot.html"){}%>
+</html>

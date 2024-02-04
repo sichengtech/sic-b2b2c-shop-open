@@ -1,0 +1,560 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<% var seo=seo.one({type:"商品列表页"});%>
+<title>${seo.title!} Powered by SiC</title>
+<meta name="Keywords" content="${seo.keywords!}"/>
+<meta name="description" content="${seo.description!}"/>
+<% include("/include/head.html"){}%>
+<!--业务js-->
+<script type="text/javascript" src="${ctx}/views/front/english/productList.js"></script>
+<script type="text/javascript" src="${ctx}/views/front/english/collection.js"></script>
+<script type="text/javascript" src="${ctxStatic}/fdp/manager.js"></script>
+<style>
+	.goods-list ul.goods-pic-list li .allSalesAndCommentCount{height: 18px; overflow:hidden; color:#000}
+	.goods-list ul.goods-pic-list li .allSalesAndCommentCount span{ width:50%; display:inline-block; float:left; padding: 0}
+	.goods-list ul.goods-pic-list li .p-name.hover {margin-top: 23px;}
+	/*.goods-list ul.goods-pic-list li .text.pifa p.p-name.nohover { margin-bottom: 11px!important; }*/
+	.goods-list ul.goods-pic-list li .text.pifa p.p-name.hover { margin-top: 22px; }
+
+	/* 修改 */
+	body { background-color: #F2F2F2; }
+	.screen { border: #e7e7e7 solid 1px; }
+	.screen .param { border-bottom: none; }
+	.crumbs .selected { background: #fff; margin-left: 5px; }
+	.screen .param dt { width: 85px; background: #fbfbfbfb; }
+	.screen .param dd ul li a { color: #969696; }
+	.search-tool .search-navbar-inner { border: 1px solid #e7e7e7; background: #fff; }
+	.search-tool .search-navbar-inner .sui-nav>li.active a { background-color: #ff6a00;  }
+	.sui-navbar .sui-form { margin-top: 7px; }
+	.search-tool .search-navbar-inner .sui-form input, .search-tool .search-navbar-inner .sui-form .sui-btn { margin-top: 0; }
+	.search-tool .search-navbar-inner .sui-nav>li>a i { background-image: url(${ctx}/views/front/english/images/cssimg/e-arrow_prodlist.png); }
+	/* .search-tool .search-navbar-inner .sui-nav > li > a { overflow: hidden; padding: 3px 15px; margin-top: 6.5px; line-height: 27px; }
+	.search-tool .search-navbar-inner .sui-nav > li > a > i { position: relative; left: 0px; top: 5px;filter: drop-shadow(26px 0 #ff0000); }
+	.sui-navbar .sui-nav > li > a:hover > i { position: relative; left: 30px; top: 5px;filter: drop-shadow(-30px 0 #ff6a00); }
+	.sui-navbar .sui-nav > li.active > a:hover > i { filter: drop-shadow(-30px 0 #fff); }
+	.search-tool .search-navbar-inner .sui-nav>li>a i.asc { background-position: 0 -220px; }
+	.search-tool .search-navbar-inner .sui-nav>li.active>a i.desc { background-position: 0 -124px; }
+	.search-tool .search-navbar-inner .sui-nav>li.active>a i.asc { background-position: 0px -155px; } */
+	.goods-list ul.goods-pic-list li .p-price-ladder span small { display: block;text-overflow: ellipsis; overflow: hidden; white-space: normal; height: 18px; }
+	.conditions { display: inline-block; margin-left: 20px; }
+	.goods-list ul.goods-pic-list { width: 945px; margin-top: 20px; }
+	.goods-list ul.goods-pic-list li { background: #fff; box-sizing: border-box; width: 225px; height: 350px; float: none; display: inline-block; overflow: hidden; margin-right: 10px; border: 1px solid #dedede;margin-top: 0px; margin-bottom: 8px;}
+	.goods-list ul.goods-pic-list li .go-store a, .goods-list ul.goods-pic-list li .p-price-ladder  { width: 100%; }
+	.goods-list ul.goods-pic-list li .p-price-ladder { border-bottom: 0; margin-left: 0; }
+	.goods-list ul.goods-pic-list li .p-price-ladder span { padding:4px; border: none; }
+	.goods-list ul.goods-pic-list li .p-name.hover { margin-top: 0; }
+	.goods-list ul.goods-pic-list li p.p-name { margin-top: 0; }
+	.goods-list ul.goods-pic-list li .text.pifa p.p-name.hover { margin-top: 0px; }
+	.goods-list ul.goods-pic-list li p.p-name { margin-top: 0; }
+	.goods-list ul.goods-pic-list li:nth-child(4n) {margin-right: 0;}
+	.goods-list ul.goods-pic-list li .p-price-ladder.ladder-3 span { width: 56px; }
+
+	/* 分页按钮 */
+	.pages { width: 945px; }
+	.pages .page-list { background: #fff; padding: 15px 0; border: 1px solid #dedede; margin: 0;height: 38px;}
+	.pages .page-list li a.cur { color: #ff6a00;  border-color: #ff6a00; }
+	.pages .page-list li a:hover { color: #fff;  border-color: #ff6a00; background: #ff6a00; }
+
+	/* 推荐 */
+	.goods-list ul.goods-pic-list.tuijian { width: 244px; border: 1px solid #dedede; box-sizing: border-box; display: flex; justify-content: center; flex-wrap: wrap;float: right; padding: 12px 0 4px 0;}
+	.goods-list ul.goods-pic-list.tuijian li { margin-right: 0; width: 218px; }
+
+	/* 轮播 */
+	.selected-box { background: #fff; }
+	.screen .param dd{margin-right: 183px;}
+	.screen .param .more{width: 191px;}
+	.screen .param .more a{width: 80px;}
+</style>
+</head>
+<body class="owl">
+	<% include("/include/header.html"){}%>
+
+	<% 
+		var cid=parameter.cid;
+		var cname=parameter.cname;
+		var k=parameter.k;
+		var sid=parameter.sid;
+		var models=parameter.models;
+		var pids=parameter.pids;
+		var price=parameter.price;
+		var bid=parameter.bid;
+		var bname=parameter.bname;
+		var pageNo=parameter.pageNo;
+		var pageSize=parameter.pageSize;
+		var pageCount=parameter.pageCount;
+		var attr=parameter.attr;
+		var sort=parameter.sort;
+		var sortMode=parameter.sortMode;
+		var minPrice="";
+		var manPrice="";
+		if(isNotEmpty(price)){
+			var index=strutil.index(price,"-");
+			minPrice=strutil.subStringTo(price,0,index);
+			maxPrice=strutil.subString(price,index+1);
+		}
+		var resultMap=product.page({cid:cid,cname:cname,k:k,sid:sid,models:models,pids:pids,
+	 		price:price,bid:bid,bname:bname,pageNo:pageNo,pageSize:pageSize,pageCount:pageCount,
+	 		attr:attr,sort:sort,sortMode:sortMode});
+	 	var user=user.current();
+		var yuan=fy.getMsg({key:'元'});
+		var maoHao=fy.getMsg({key:'：'});
+	 %>
+	<div class="crumbs wp mt10" style="min-height: 40px;">
+		<%var allResults =fy.getMsg({key:'全部结果'});%>
+		<span style="float: left">${allResults!} ></span>
+		<%if(cid!=null){
+			var category_leve3=product.category({cid:cid});
+			var category_leve2=product.category({cid:category_leve3.parentId!});
+			var category_leve1=product.category({cid:category_leve2.parentId!});%>
+			
+			<% if(category_leve1!=null){%>
+				<ul id="navul" class="cl categoryMsg" style="float: none;">
+					<li class="li_1" style="background-image: url('');margin: 7px 10px 0 10px;height: 24px;line-height: 24px;border: 1px solid #e6e6e6;">
+						<a href="#" style="color: #000;">${category_leve1.name!}<i class="sui-icon icon-tb-unfold"></i></a>
+						<ul style="width: 320px;">
+							<% var cate1List=product.categoryList({parentId:0});
+							for(cate1 in cate1List){%>
+								<li style="width: 18%;">
+									<a href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" categoryId=${cate1.categoryId!} style="color: #000;">${cate1.name!}</a>
+								</li>
+							<%}%>
+						</ul>	
+					</li>
+				</ul>
+			<%}%>
+			<% if(category_leve2!=null){%>
+				<ul id="navul" class="cl" style="float: none;;">
+					<li class="li_1" style="background-image: url('');margin: 7px 10px 0px 0px;height: 24px;line-height: 24px;border: 1px solid #e6e6e6;">
+						<a href="#" style="color: #000;">${category_leve2.name!}<i class="sui-icon icon-tb-unfold"></i></a>
+						<ul style="width: 320px;">
+							<% var cate2List=product.categoryList({parentId:category_leve2.parentId!});
+							for(cate2 in cate2List){%>
+								<li style="width: 18%;">
+									<a href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}" categoryId=${cate2.categoryId!} style="color: #000;">${cate2.name!}</a>
+								</li>
+							<%}%>
+						</ul>	
+					</li>
+				</ul>
+			<%}%>
+			<% if(category_leve3!=null){%>
+				<ul id="navul" class="cl" style="float: none;;">
+					<li class="li_1" style="background-image: url('');margin: 7px 10px 0px 0px;height: 24px;line-height: 24px;border: 1px solid #e6e6e6;">
+						<a href="#" style="color: #000;">${category_leve3.name!}<i class="sui-icon icon-tb-unfold"></i></a>
+						<ul style="width: 320px;">
+							<%var cate3List=product.categoryList({parentId:category_leve3.parentId!});
+							for(cate3 in cate3List){%>
+								<li style="width: 18%;">
+									<a href="${ctxf}/product/list.htm?cid=${cate3.categoryId!}" categoryId=${cate3.categoryId!} style="color: #000;">${cate3.name!}</a>
+								</li>
+							<%}%>
+						</ul>	
+					</li>
+				</ul>
+			<%}%>
+		<%}%>
+		<%if(k!=null){%>
+			<%var keywords =fy.getMsg({key:'关键字'});
+			%>
+			<div class="selected" href="javascript:;">${keywords!}${maoHao!}
+				<em>${k}</em>
+			</div>
+		<%}%>
+        <%var brandVal =fy.getMsg({key:'品牌'});%>
+		<%if(bid!=null){%>
+			<div class="selected" href="javascript:;">${brandVal!}${maoHao!}
+				<% var bids=strutil.split(bid,",");
+				var bnames="";
+				if(bids.~size>0){
+					for(id in bids){
+						var brand=product.brand({bid:id,bname:bname});
+						bnames=bnames+brand.name!+"、";
+					}
+				}%>
+				<em> ${strutil.subStringTo(bnames!,0,strutil.length(bnames!)-1)}</em>
+				<span id="bid" class="removeParam"><i class="sui-icon icon-pc-error"></i></span>
+			</div>
+		<%}%>
+		
+		<%var paramIds="";
+		if(isNotEmpty(attr)){
+			var params=strutil.split(attr,",");
+			if(isNotEmpty(params)){
+				for(param in params){
+					var pa=strutil.split(param,"_");
+					if(pa.~size >=1){
+						paramIds=paramIds+pa[0]+",";
+						var paramValue=pa[1];%>
+						<div class="selected" href="javascript:;">${pa[0]}：
+							<!-- <em>${strutil.subStringTo(paramValue,0,strutil.length(paramValue)-1)}</em> -->
+							<em>
+								${strutil.replace (paramValue,":","、")}
+							</em>
+							<span id="attr" class="removeParam" paramId="${pa[0]}"><i class="sui-icon icon-pc-error"></i></span>
+						</div>
+					<%}
+				}
+			}
+		}%>
+	</div>
+	<% if(isNotEmpty(resultMap["suggestionWordList"])){%>
+		<div class="wp">
+			<div class="search-prompt">
+				<%var lookfor =fy.getMsg({key:'您要找的是不是'});%>
+				${lookfor!}${maoHao!}
+				<% for(sugg in resultMap["suggestionWordList"]){%>
+					<a href="${ctxf}/product/list.htm?k=${sugg!}">${sugg!}</a>
+				<%}%>
+			</div>
+		</div>
+	<%}%>
+    <%var more =fy.getMsg({key:'更多'});
+    var putWay=fy.getMsg({key:'收起'});
+    var multipleChooice=fy.getMsg({key:'多选'});
+	var determine =fy.getMsg({key:'确定'});
+	var cancel=fy.getMsg({key:'取消'});
+    %>
+	<% if(isNotEmpty(resultMap["brandList"]) || isNotEmpty(resultMap["categoryList"]) || isNotEmpty(resultMap["paramValueMap"])){%>
+		<div id="search-list-box" class="screen wp mt10 attr-list-box">
+			<!-- 商品品牌开始 -->
+			<% if(isNotEmpty(resultMap["brandList"])){%>
+				<dl class="param productBrand attr-none-more" id="brand" isBrand="1" style="display:${isNotEmpty(bid!)?'none':''};">
+					<dt>${brandVal!}${maoHao!}</dt>
+					<div class="more" multiselect="N">
+						<a href="javascript:" class="moreA">${more!} <i class="sui-icon icon-tb-right"></i></a>
+						<a href="javascript:" class="retractA" style="display:none;">${putWay!} <i class="sui-icon icon-tb-unfold"></i></a>
+						<a href="javascript:" class="multiselect">${multipleChooice!} <i class="sui-icon icon-tb-add"></i></a>
+					</div>
+					<dd>
+						<ul class="brandUl clearfix">
+							<% for(brand in resultMap["brandList"]){
+								if((brand.status!) =='1'){%>
+									<li brandId="${brand.brandId!}" brandName="${brand.name!}" class="">
+										<a href="javascript:">
+											${brand.name!}
+										</a>
+										<em></em>
+									</li>
+								<%}
+							}%>
+						</ul>
+						<div class="selectCondition">
+							<div class="select-btn">
+								<button class="sui-btn btn-danger sureAttr" id="brand">${determine!}</button>
+								<button class="sui-btn btn-bordered cancleMultiselect">${cancel!}</button>
+							</div>
+						</div>
+					</dd>
+				</dl>
+			<%}%>
+			<!-- 商品品牌结束 -->
+			<!-- 商品分类开始 -->
+			<% if(isNotEmpty(resultMap["categoryList"])){%>
+				<dl class="param attr-none-more" id="category">
+                    <%var categoryVal =fy.getMsg({key:'分类'});%>
+					<dt>${categoryVal!}${maoHao!}</dt>
+					<div class="more" multiselect="N">
+						<a href="javascript:" class="moreA">${more!} <i class="sui-icon icon-tb-right"></i></a>
+						<a href="javascript:" class="retractA" style="display:none;">${putWay!} <i class="sui-icon icon-tb-unfold"></i></a>
+					</div>
+					<dd>
+						<ul class="cateUl">
+							<% for(category in resultMap["categoryList"]){%>
+								<li categoryId="${category.categoryId!}" class=""><a href="javascript:">${category.name!}</a></li>
+							<%}%>
+							<div class="clear"></div>
+						</ul>
+					</dd>
+				</dl>
+			<%}%>
+			<!-- 商品分类结束 -->
+			<!-- 商品参数开始 -->
+			<% var paramIdss=[]; //用来参数的是否显示,如果当前已经查询的该参数下的商品,则不显示该参数
+			if(isNotEmpty(paramIds!)){
+				paramIdss=strutil.split(paramIds!,",");
+			}%>
+			<% for(param in resultMap["paramValueMap"]){ %>
+				<% if(!array.contain(paramIdss!,param.key!+"")){ %>
+					<dl class="param attr-none-more" id="attr" style=''>
+						<dt>${param.key!}：</dt>
+						<div class="more" multiselect="N">
+							<a href="javascript:" class="moreA">${more!} <i class="sui-icon icon-tb-right"></i></a>
+							<a href="javascript:" class="retractA" style="display:none;">${putWay!} <i class="sui-icon icon-tb-unfold"></i></a>
+							<a href="javascript:" class="multiselect">${multipleChooice!} <i class="sui-icon icon-tb-add"></i></a>
+						</div>
+						<dd>
+							<ul>
+								<% for(paramv in param.value){ %>
+									<li attrId="${param.key!}" class=""><a href="javascript:">${paramv!}</a></li>
+								<%}%>
+								<div class="clear"></div>
+							</ul>
+							<div class="selectCondition">
+								<div class="select-btn">
+									<button class="sui-btn btn-danger sureAttr" attrId="${param.key!}">${determine!}</button>
+									<button class="sui-btn btn-bordered cancleMultiselect">${cancel!}</button>
+								</div>
+							</div>
+						</dd>
+					</dl>
+				<%}%>
+			<%}%>
+			<!-- 商品参数结束 -->
+                <%var expand =fy.getMsg({key:'展开'});%>
+				<div class="search-list-box-more"><a href="javascript:" class="search-box-show">${expand!} <i class="sui-icon icon-tb-unfold"></i></a><a href="javascript:" class="search-box-hide" style="display:none">${putWay!} <i class="sui-icon icon-tb-fold"></i></a></div>
+		</div>
+	<%}%>
+	<!-- 商品参数结束 -->
+	<!-- 商品信息开始 -->
+	<div class="goods-list wp mt30">
+		<% if(isNotEmpty(resultMap["search"].items)){%>
+			<div class="sui-navbar search-tool">
+				<div class="search-navbar-inner">
+                    <%var productCount =fy.getMsg({key:'共找到',params:resultMap["page"].count!});%>
+					<div class="r">${productCount!}</div>
+					<ul class="sui-nav sortType">
+                        <%var comprehensive =fy.getMsg({key:'综合'});
+                        var sales =fy.getMsg({key:'销量'});
+                        var favorite =fy.getMsg({key:'收藏'});
+                        var comment =fy.getMsg({key:'评论'});
+                        var priceVal =fy.getMsg({key:'价格'});
+                        %>
+						<li class="${sort==null?'active':''} all" id=""><a href="javascript:"><i></i>${comprehensive!}</a></li>
+						<li class="${sort=='allSales'?'active':''}" id="allSales"><a href="javascript:"><i></i>${sales!}</a></li>
+						<li class="${sort=='collectionCount'?'active':''}" id="collectionCount"><a href="javascript:"><i></i>${favorite!}</a></li>
+						<li class="${sort=='commentCount'?'active':''}" id="commentCount"><a href="javascript:"><i></i>${comment!}</a></li>
+						<li class="${sort=='minPrice'?'active':''}" id="minPrice">
+							<a href="javascript:">
+								${priceVal!}
+								<span class="sortMode" id="${sortMode =='desc'?'asc':'desc'}">
+									${sortMode == 'desc'?'<i class="desc"></i>':'<i class="asc"></i>'}
+								</span>
+							</a>
+						</li>
+					</ul>
+					<form class="sui-form sui-form pull-left">
+						<div class="conditions">price:</div>
+						<input type="text" class="input-small" placeholder="${yuan!}" name="minPrice" value="${minPrice!}"> -
+						<input type="text" class="input-small" placeholder="${yuan!}" name="maxPrice" value="${maxPrice!}">
+                        <%var search =fy.getMsg({key:'搜索'});%>
+						<button class="sui-btn searchBtn" type="button">${search!}</button>
+					</form>
+				</div>
+			</div>
+		<%}%>
+		<ul class="goods-pic-list">
+			<% var enterShop=fy.getMsg({key:'进入店铺'}); %>
+			<%var jian =fy.getMsg({key:'件'});%>
+			<% for(product in resultMap["search"].items){ %>
+				<li>
+					<div class="p-picture">
+						<a target="_blank" href="${ctxf}/detail/${product.pId!}.htm">
+							<% if(product.type!='2' && isNotEmpty(product.storeAlbumPictureList2!)){%>
+								<img src="${ctxfs}${product.storeAlbumPictureList2[0].path!}@!220X220" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+							<%}else{%>
+								<img src="${ctxfs}${product.image}@!220X220" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+							<%}%>
+						</a>
+					</div>
+					<% if(product.type!='2'){ %>
+						<div class="go-color">
+							<% if(isNotEmpty(product.storeAlbumPictureList2!)){%>
+								<% for(img in product.storeAlbumPictureList2!){%>
+									<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}@!34X34" src1="${img.path!}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+								<%}%>
+							<%}%>
+						</div>
+					<%}else{%>
+						<div class="go-store hover"><a target="_blank" href="${ctxf}/store/${product.storeId!}.htm">${enterShop!}</a></div>
+					<%}%>
+					<div class="text ${product.type=='2'?'pifa':''}">
+						<p class="p-price ${product.type=='2'?'nohover':''}">
+							<% if(product.type=='2'){%>
+								${yuan!}${product.minPrice2!} ~ ${yuan!}${product.maxPrice2!}
+							<%}else{%>
+								${yuan!}${product.minPrice1!}
+							<%}%>
+						</p>
+						<a target="_blank" href="${ctxf}/detail/${product.pId!}.htm">
+							<% if(product.type=='2'){%>
+								<p class="p-price-ladder ladder-3 hover">
+									<% for(section in product.productSectionPriceList!){
+										if(!sectionLP.last){%>
+											<span>
+												<small>${section.section!}-${parseLong(product.productSectionPriceList[sectionLP.index].section!)-1} ${isNotEmpty(product.unit!)?product.unit!:jian}</small>
+												<small class="red">${yuan!}${section.price!}</small>
+											</span>
+										<%}else{%>
+											<span>
+												<small>≥ ${section.section!} ${isNotEmpty(product.unit!)?product.unit!:jian!}</small>
+												<small class="red">${yuan!}${section.price!}</small>
+											</span>
+										<%}
+									}%>
+								</p>
+							<%}%>
+                            <!-- <p class="nohover allSalesAndCommentCount">
+                                <span>成交量：${product.allSales!}</span><span>评价数：${product.commentCount}</span>
+                            </p> -->
+							<p class="p-name nohover">
+                                ${product.name!}
+                            </p>
+							<p class="p-name hover">
+                                ${product.name!}
+                            </p>
+							<!-- <p class="p-name hover"><span>成交量：${product.allSales!}</span><span>评价数：${product.commentCount}</span></p> -->
+						</a>
+					</div>
+					<div class="store"><a target="_blank" href="${ctxf}/store/${product.storeId!}.htm">${product.storeName!}</a></div>
+					<!-- <div class="button"><a href="javaScript:void(0);" class="fav" pId="${product.pId}"><i class="sui-icon icon-tb-favor"></i> 加入收藏</a><a target="_blank" href="${ctxf}/detail/${product.pId!}.htm" class="buy"><i class="sui-icon icon-tb-goods"></i> 立即购买</a></div> -->
+				</li>
+			<%}elsefor{%>
+				<div style="height: 300px;line-height: 300px;text-align: center;font-size: 40px;" >
+                    <%var noProducts =fy.getMsg({key:'暂无商品'});%>
+					<i class="sui-icon icon-touch-face"></i> ${noProducts!}
+				</div>
+			<%}%>
+			<div class="clear"></div>
+		</ul>
+
+		<!-- 推荐位 start -->
+		<ul class="goods-pic-list tuijian">
+			<% var leftProductList=site.recommend({number:'product_list_right'});%>
+			<% for(p in leftProductList.siteRecommendItemList!){
+				var recommendProduct=product.one({pid:p.pId!});
+				if(isNotEmpty(recommendProduct)){%>
+					<li>
+						<div class="p-picture">
+							<a target="_blank" href="${ctxf}/detail/${recommendProduct.pId!}.htm">
+								<% if(recommendProduct.type!='2' && isNotEmpty(recommendProduct.storeAlbumPictureList2!)){%>
+									<img src="${ctxfs}${recommendProduct.storeAlbumPictureList2[0].path!}@!220X220" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+								<%}else{%>
+									<img src="${ctxfs}${recommendProduct.image!}@!220X220" style="width: 220px;height: 220px;" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+								<%}%>
+							</a>
+						</div>
+						<% if(recommendProduct.type!='2'){ %>
+							<div class="go-color">
+								<% if(isNotEmpty(recommendProduct.storeAlbumPictureList2!)){%>
+									<% for(img in recommendProduct.storeAlbumPictureList2!){%>
+										<img class="${imgLP.first?'cur':''}" src="${ctxfs}${img.path!}@!34X34" src1="${img.path!}" onerror="fdp.defaultImage('/static/static/images/default_goods.png');"/>
+									<%}%>
+								<%}%>
+							</div>
+						<%}else{%>
+							<div class="go-store hover"><a target="_blank" href="${ctxf}/store/${recommendProduct.storeId!}.htm">${enterShop!}</a></div>
+						<%}%>
+						<div class="text ${recommendProduct.type=='2'?'pifa':''}">
+							<p class="p-price ${recommendProduct.type=='2'?'nohover':''}">
+								<% if(recommendProduct.type=='2'){%>
+									${yuan!}${recommendProduct.minPrice2!} ~ ${yuan!}${recommendProduct.maxPrice2!}
+								<%}else{%>
+									${yuan!}${recommendProduct.minPrice1!}
+								<%}%>
+							</p>
+							<a target="_blank" href="${ctxf}/detail/${recommendProduct.pId!}.htm">
+								<% if(recommendProduct.type=='2'){%>
+									<p class="p-price-ladder ladder-3 hover">
+										<% for(section in recommendProduct.productSectionPriceList!){
+											if(!sectionLP.last){%>
+												<span>
+													<small>${section.section!}-${parseLong(recommendProduct.productSectionPriceList[sectionLP.index].section!)-1} ${isNotEmpty(recommendProduct.unit!)?recommendProduct.unit!:jian!}</small>
+													<small class="red">${yuan!}${section.price!}</small>
+												</span>
+											<%}else{%>
+												<span>
+													<small>≥ ${section.section!} ${isNotEmpty(recommendProduct.unit!)?recommendProduct.unit!:jian!}</small>
+													<small class="red">${yuan!}${section.price!}</small>
+												</span>
+											<%}
+										}%>
+									</p>
+								<%}%>
+								<p class="p-name nohover">
+									${recommendProduct.name!}
+								</p>
+								<p class="p-name hover">
+									${recommendProduct.name!}
+								</p>
+							</a>
+						</div>
+						<div class="store"><a target="_blank" href="${ctxf}/store/${recommendProduct.storeId!}.htm">${recommendProduct.storeName!}</a></div>
+					</li>
+				<%}%>
+			<%}%>
+			<div class="clear"></div>
+		</ul>
+		<!-- 推荐位 end -->
+		<!--分页开始-->
+		<% if(isNotEmpty(resultMap["search"].items)){include("/page.html",{'page':resultMap["page"]}){}}%>
+		<!--分页结束-->
+		<!-- 热卖橱窗开始 -->
+		<div class="wp selected-box mt20">
+			<%var hotSale =fy.getMsg({key:'热卖橱窗'});%>
+			<div class="title"><span></span>${hotSale!}</div>
+			<div class="scroll-outer">
+				<div id="scroll-cc" class="owl-carousel">
+					<% var resultMap2=product.list({limit:10,sort:"allSales",sortMode:"desc"});
+					for(p in resultMap2["search"].items){%>
+						<div class="item">
+							<a target="_blank" href="${ctxf}/detail/${p.pId!}.htm">
+								<div class="p-picture" style="text-align: center;">
+									<img src="${ctxfs}/${p.image!}@!200X200" onerror="fdp.defaultImage('${ctxStatic}/images/default_goods.png');">
+								</div>
+							</a>
+							<div class="text">
+								<p class="p-price">
+									<% if((p.type!)=='1'){%>
+										${yuan!}${p.minPrice1!}
+									<%}%>
+									<% if((p.type!)=='2'){%>
+										${yuan!}${p.minPrice2!}~${yuan!}${p.maxPrice2!}
+									<%}%>
+								</p>
+								<a target="_blank" href="${ctxf}/detail/${p.pId!}.htm">	
+									<p class="p-name">${p.name}</p>
+								</a>
+							</div>
+							</a>
+						</div>
+					<%}%>
+				</div>
+			</div>
+			<script type="text/javascript">
+				$(function(){
+					$('#scroll-cc').owlCarousel({
+						items: 5,
+						autoPlay: false,
+						navigation: true,
+						navigationText: ["",""],
+						slideSpeed:1000,
+						autoHeight:true,
+						scrollPerPage: true,
+						responsive:false
+					});
+				});
+			</script>
+		</div>
+		<!--橱窗结束-->	
+		<!-- 您是不是要找start -->
+		<% if(isNotEmpty(resultMap["suggestionWordList"])){%>
+			<div class="hot-keywords mt20 clearfix">
+				<div class="keywords">
+					<span>您是不是要找：</span>
+					<% for(sugg in resultMap["suggestionWordList"]){%>
+						<a href="${ctxf}/product/list.htm?k=${sugg!}">${sugg!}</a>|
+					<%}%>
+				</div>
+			</div>
+		<%}%>
+		<!-- 您是不是要找end -->
+	</div>
+	<!-- 商品信息结束 -->
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+	<% include("/include/tool-right.html"){}%>
+</body>
+</html>

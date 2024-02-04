@@ -1,0 +1,17 @@
+<% for(channel in cms.channelList({parentId:1127,limit:5})){
+if(channelLP.index==1){%>
+<div class="ui-footer-col ui-footer-col-first">
+    <%}else{%>
+    <div class="ui-footer-col">
+        <%}%>
+        <dl>
+            <dt>${channel.name!}</dt>
+            <%
+            for(article in cms.articleList({channelId:channel.id!})){%>
+            <dd>
+                <a rel="nofollow" href="${ctxf}/articleDetail/${article.id!}.htm" target="_blank">${article.title!}</a>
+            </dd>
+            <%}%>
+        </dl>
+    </div>
+    <%}%>

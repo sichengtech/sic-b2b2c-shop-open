@@ -1,0 +1,286 @@
+<div class="header-nav clearfix">
+	<div class="nav_bottom_line"></div>
+	<div class="wp">
+		<div class="menu">
+			<h2><i class="sui-icon icon-pc-list"></i> 品类目录</h2>
+			<div class="subpage">
+				<ul class="prosul" id="proinfo">
+					<%
+						var category1=product.category({cid:1});
+						if(category1!=null){
+					%>
+						<li>
+							<p>
+								<a target="_blank" href="${ctxf}/category/${category1.categoryId!}.htm" target="_blank"><strong>${category1.name!}</strong></a>
+							</p>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=2">动力系统</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=98">油滤包</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=35">行走装置</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=97">挖掘机械</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=44">起重机械</a>
+							<!--子导航开始-->
+							<div class="prosmore hide">
+								<div class="brand">
+									<ul class="piclink-list">
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/360.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/anyi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/xiaomi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/yingshi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<div class="clear"></div>
+									</ul>
+									<div class="sub-nav-brand">
+										<a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/adad11.png"></a>
+									</div>
+								</div>
+								<div style="height: 416px;overflow-y:auto;">
+									<% for(cate1 in product.categoryList({parentId:category1.categoryId!,limit:90})){ %>
+										<dl class="sub-sub-menu">
+											<dt>
+												<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" class="typename">${cate1.name!} <i class="sui-icon icon-tb-right"></i></a>
+											</dt>
+											<dd>
+												<% for(cate2 in product.categoryList({parentId:cate1.categoryId!,limit:70})){ %>
+													<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}">${cate2.name!}</a>
+												<%}%>
+											</dd>
+										</dl>
+									<%}%>
+								</div>
+							</div>
+							<!--子导航结束-->
+						</li>
+					<%}%>
+					
+					<%
+						var category2=product.category({cid:329});
+						if(category2!=null){
+					%>
+						<li>
+							<p>
+								<a target="_blank" href="${ctxf}/category/${category2.categoryId!}.htm" target="_blank"><strong>${category2.name!}</strong></a>
+							</p>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=350">净水器</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=407">电饼铛 </a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=392">饮水设备</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=385">厨卫电器 </a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=342">爆米花机</a>
+							<!--子导航开始-->
+							<div class="prosmore hide">
+								<div class="brand">
+									<ul class="piclink-list">
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/360.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/anyi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/xiaomi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/yingshi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<div class="clear"></div>
+									</ul>
+									<div class="sub-nav-brand">
+										<a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/adad11.png"></a>
+									</div>
+								</div>
+								<div style="height: 416px;overflow-y:auto;">
+									<% for(cate1 in product.categoryList({parentId:category2.categoryId!,limit:90})){ %>
+										<dl class="sub-sub-menu">
+											<dt>
+												<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" class="typename">${cate1.name!} <i class="sui-icon icon-tb-right"></i></a>
+											</dt>
+											<dd>
+												<% for(cate2 in product.categoryList({parentId:cate1.categoryId!,limit:70})){ %>
+													<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}">${cate2.name!}</a>
+												<%}%>
+											</dd>
+										</dl>
+									<%}%>
+								</div>
+							</div>
+							<!--子导航结束-->
+						</li>
+					<%}%>
+					
+					<%
+						var category3=product.category({cid:108});
+						if(category3!=null){
+					%>
+						<li>
+							<p>
+								<a target="_blank" href="${ctxf}/product/list.htm?cid=${category3.categoryId!}" target="_blank"><strong>${category3.name!}</strong></a>
+							</p>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=160">平板电脑 </a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=174">智能家居</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=164">路由器</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=137">影音娱乐</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=130">手机配件</a>
+							<!--子导航开始-->
+							<div class="prosmore hide">
+								<div class="brand">
+									<ul class="piclink-list">
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/360.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/anyi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/xiaomi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/yingshi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<div class="clear"></div>
+									</ul>
+									<div class="sub-nav-brand">
+										<a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/adad11.png"></a>
+									</div>
+								</div>
+								<div style="height: 416px;overflow-y:auto;">
+									<% for(cate1 in product.categoryList({parentId:category3.categoryId!,limit:90})){ %>
+										<dl class="sub-sub-menu">
+											<dt>
+												<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" class="typename">${cate1.name!} <i class="sui-icon icon-tb-right"></i></a>
+											</dt>
+											<dd>
+												<% for(cate2 in product.categoryList({parentId:cate1.categoryId!,limit:70})){ %>
+													<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}">${cate2.name!}</a>
+												<%}%>
+											</dd>
+										</dl>
+									<%}%>
+								</div>
+							</div>
+							<!--子导航结束-->
+						</li>
+					<%}%>
+					
+					<%
+						var category4=product.category({cid:179});
+						if(category4!=null){
+					%>
+					<li>
+						<p>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=${category4.categoryId!}" target="_blank"><strong>${category4.name!}</strong></a>
+						</p>
+						<a target="_blank" href="${ctxf}/product/list.htm?cid=235">机房系统 </a>
+						<a target="_blank" href="${ctxf}/product/list.htm?cid=234">对讲机</a>
+						<a target="_blank" href="${ctxf}/product/list.htm?cid=218">门禁产品 </a>
+						<a target="_blank" href="${ctxf}/product/list.htm?cid=180">视频监控</a>
+						<a target="_blank" href="${ctxf}/product/list.htm?cid=199">存储产品</a>
+						<!--子导航开始-->
+						<div class="prosmore hide">
+							<div class="brand">
+								<ul class="piclink-list">
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/360.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/anyi.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/xiaomi.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/yingshi.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+									<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+									<div class="clear"></div>
+								</ul>
+								<div class="sub-nav-brand">
+									<a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/adad11.png"></a>
+								</div>
+							</div>
+							<div style="height: 416px;overflow-y:auto;">
+								<% for(cate1 in product.categoryList({parentId:category4.categoryId!,limit:90})){ %>
+									<dl class="sub-sub-menu">
+										<dt>
+											<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" class="typename">${cate1.name!} <i class="sui-icon icon-tb-right"></i></a>
+										</dt>
+										<dd>
+											<% for(cate2 in product.categoryList({parentId:cate1.categoryId!,limit:70})){ %>
+												<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}">${cate2.name!}</a>
+											<%}%>
+										</dd>
+									</dl>
+								<%}%>
+							</div>
+						</div>
+						<!--子导航结束-->
+					</li>
+					<%}%>
+					
+					<%
+						var category5=product.category({cid:240});
+						if(category5!=null){
+					%>
+						<li class="last">
+							<p>
+								<a target="_blank" href="${ctxf}/product/list.htm?cid=${category5.categoryId!}" target="_blank"><strong>${category5.name!}</strong></a>
+							</p>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=281">汽车电子</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=305">汽车精品</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=316">牌照灯</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=241">汽车配件 </a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=252">汽车制动</a>
+							<a target="_blank" href="${ctxf}/product/list.htm?cid=288">千斤顶</a>
+							<!--子导航开始-->
+							<div class="prosmore hide">
+								<div class="brand">
+									<ul class="piclink-list">
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/360.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/anyi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/xiaomi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/yingshi.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/fitbit.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/ketai.jpg"></a></li>
+										<li><a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/logo/sanling.jpg"></a></li>
+										<div class="clear"></div>
+									</ul>
+									<div class="sub-nav-brand">
+										<a href="javascript:void(0);"><img src="${ctx}/views/front/english/img/adad11.png"></a>
+									</div>
+								</div>
+								<div style="height: 416px;overflow-y:auto;">
+									<% for(cate1 in product.categoryList({parentId:category5.categoryId!,limit:90})){ %>
+										<dl class="sub-sub-menu">
+											<dt>
+												<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate1.categoryId!}" class="typename">${cate1.name!} <i class="sui-icon icon-tb-right"></i></a>
+											</dt>
+											<dd>
+												<% for(cate2 in product.categoryList({parentId:cate1.categoryId!,limit:70})){ %>
+													<a target="_blank" href="${ctxf}/product/list.htm?cid=${cate2.categoryId!}">${cate2.name!}</a>
+												<%}%>
+											</dd>
+										</dl>
+									<%}%>
+								</div>
+							</div>
+							<!--子导航结束-->
+						</li>
+					<%}%>
+				</ul>
+			</div>
+		<!--subpage end-->
+		</div>
+		<ul class="nav">
+			<li class="home"><a target="_blank" href="${ctxf}/index.htm">首页</a></li>
+			<li><a target="_blank" href="${ctxf}/category/1.htm">工程机械</a></li>
+			<li><a target="_blank" href="${ctxf}/product/list.htm?cid=108"><b class="new"></b>3C数码</a></li>
+			<li><a target="_blank" href="${ctxf}/product/list.htm?cid=179">安防监控</a></li>
+			<li><a target="_blank" href="${ctxf}/product/list.htm?cid=240">汽车汽配</a></li>
+			<li><a target="_blank" href="${ctxf}/category/329.htm">家电产品</a></li>
+			<li><a target="_blank" href="${ctxf}/custom/customerPurchase.htm">大客户采购</a></li>
+			<li><a target="_blank" href="${ctxf}/purchase/index.htm">采购信息</a></li>
+			<li><a target="_blank" href="${ctxf}/custom/shopFestival.htm"><b class="hot"></b>618购物节</a></li>
+			<li><a target="_blank" href="${ctxf}/newsIndex.htm">资讯</a></li>
+		</ul>
+	</div>
+</div>
+<!--header-nav end-->

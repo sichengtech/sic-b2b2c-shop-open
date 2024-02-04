@@ -1,0 +1,135 @@
+* {
+    margin: 0;
+}
+.clearfixx:before, .clearfixx:after{content: "";display: table;}
+.clearfixx:after{clear: both;}
+.clearfixx{zoom:1;}
+
+.line {
+    margin: 0 10px;
+    font-size: 27px;
+    color: #eee;
+    line-height: 1.33;
+}
+.banner_wrap {
+    /* height: 430px; */
+    position: relative;
+    overflow: hidden;
+}
+.banner_content {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 5;
+}
+.content_text {
+    width: 1200px;
+    margin: 0 auto;
+}
+
+.h1 .text_1 {
+    font-size: 50px;
+    font-weight: 700;
+    line-height: 1;
+    margin-top: 2%;
+    color: #fff;
+    text-align: center;
+    text-shadow: -4px 4px 28px #000, 0 0 30px #000, 0 0 30px #000;
+}
+.h1 .text_2 {
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1;
+    margin-top: 0.5%;
+    color: #fff;
+    text-align: center;
+    text-shadow: -4px 4px 20px #000, 0 0 25px #000, 0 0 25px #000;
+}
+
+.h2 {
+    font-weight: 400;
+    font-size: 36px;
+    line-height: 1;
+    margin-top: 1%;
+    color: #fff;
+    text-align: center;
+    text-shadow: -4px 4px 20px #000, 0 0 25px #000, 0 0 25px #000;
+}
+
+.h2 + .h2 {
+    font-size: 28px;
+    color: #fff;
+    margin: 1.5% 0 0;
+    text-align: center;
+    text-shadow: -4px 4px 20px #000, 0 0 25px #000, 0 0 25px #000;
+}
+.banner_img {
+    display: block;
+    position: relative;
+    left: 50%;
+    /* margin-left: -960px; */
+    transform: translateX(-50%);
+}
+
+.bttn {
+    text-align: center;
+    margin-top: 3%;
+}
+
+.bttn a {
+    font-size: 24px;
+    font-weight: 500;
+    padding: 7px 38px;
+    background-color: #c00;
+    border-radius: 4px;
+    color: #fff!important;
+    border: none;
+    display: inline-block;
+    vertical-align: middle;
+    cursor: pointer;
+    text-align: center;
+    -webkit-appearance: none;
+    text-decoration: none;
+}
+
+.main {
+    width: 1200px;
+    margin: 0 auto;
+}
+.main_content {
+    margin-top: 50px;
+}
+.content_item {
+    float: left;
+    width: 22%;
+    padding: 0 1.5%;
+    font-size: 16px;
+    text-align: center;
+    position: relative;
+}
+.content_item:after {
+    content: '';
+    width: 0;
+    height: 240px;
+    display: block;
+    border-right: 1px solid #ddd;
+    position: absolute;
+    top: 10px;
+    right: 0;
+}
+.content_item:last-child:after{display:none;}
+.item_img {
+    height: 70px;
+}
+.date {
+    margin-top: 55px;
+    font-size: 1.25em;
+    font-weight: 700;
+}
+.intro {
+    color: #666;
+    min-height: 6.5em;
+    margin-top: 25px;
+}

@@ -1,0 +1,22 @@
+<div class="r-tool">
+	<ul>
+		<% var memberCentre =fy.getMsg({key:'会员中心'});
+		var shopCart =fy.getMsg({key:'购物车'});
+		var collection =fy.getMsg({key:'我的收藏'});
+		var ShoppingProcess =fy.getMsg({key:'购物流程'});
+		var onlineService =fy.getMsg({key:'在线客服'});
+
+		%>
+		<li class="con1 r-tool-btn" href="${ctxm}/index.htm"><a target="_blank" href="javascript:;"><strong> </strong><span>${memberCentre!}</span></a></li>
+		<li class="con2 r-tool-btn" href="${ctxf}/trade/cart/list.htm"><a target="_blank"><strong> </strong><span>${shopCart!}</span></a></li>
+				<li class="con3 r-tool-btn" href="${ctxm}/collect/memberCollectionProduct/list.htm"><a target="_blank" href="javascript:;"><strong> </strong><span>${collection!}</span></a></li>
+		<li class="con4"><a target="_blank" href="${ctxf}/articleDetail/1279.htm"><strong> </strong><span>${ShoppingProcess!}</span></a></li>
+		<li class="con5">
+			<a target="_blank" href="${ctxf}/articleDetail/1285.htm">
+			<strong> </strong>
+			<span>${onlineService!}</span>
+			</a>
+		</li>
+	</ul>
+	<div class="gotop"><a href="#"> </a></div>
+</div>

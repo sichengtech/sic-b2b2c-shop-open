@@ -1,0 +1,33 @@
+<!-- 新闻右侧广告和推荐 -->
+<dd class="mt30 money-ico"><i><%var ad =fy.getMsg({key:'赞助商广告'});%> ${ad!}</i>
+	<%
+	var htmlList=site.specialList({number:"news_index_right",render:true});
+	for(item in htmlList!){
+	%>
+	${item!}
+	<%}%>
+</dd>
+<dt class="mt30"><%var recommend =fy.getMsg({key:'推荐'});%> ${recommend!}</dt>
+<dd class="news-recommend">
+	<ul class="a-list">
+		<% var r=site.recommend({number:'News_right_article'});%>
+		<% for(item in r.siteRecommendItemList!){
+
+		var title=item.addInfo1!;
+		if(strutil.length(title)>27){
+			title=strutil.subStringTo(title,0,27)+"...";
+		}
+		%>
+		<li class="${itemLP.first?'top':''}">
+			<div class="a-pic" style="${itemLP.first?'':'width: 120px;'}">
+				<a target="_blank" href="${item.url}">
+					<img src="${ctxfs}${item.path!}">
+				</a>
+			</div>
+			<div class="a-word" style="${itemLP.first?'':'width: 150px;'}">
+				<a target="_blank" href="${item.url}" class="title">${title}</a>
+			</div>
+		</li>
+		<%}%>
+	</ul>
+</dd>

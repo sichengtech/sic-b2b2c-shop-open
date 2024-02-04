@@ -1,0 +1,76 @@
+<!-- 业务js -->
+<style>
+	.left1 dt.store-name { background: url(${ctx}/views/front/english/images/storeIndex-1.png); background-repeat: round; color: #fff; height: 98px; line-height: 1.4; }
+	.left1.w190 { width: 100%; float: left; font-size: 14px;}
+	.left1 dt.store-name { display: flex;justify-content: center;align-items: center; }
+	.left1 .name-title { height: 40px; padding: 0 20px; margin-top: -17px; display: -webkit-box;text-overflow: ellipsis;-webkit-line-clamp: 2;-webkit-box-orient: vertical;overflow: hidden; }
+	.left1 .panel { background: #f7f8fa; }
+	.left1 dd .score { display: flex; }
+	.left1 dd .score li { float: none; width: auto; min-width: 56px; }
+	.left1 a.sui-btn { padding: 2px 0; width: 47%; }
+	.left1 .panel-border { padding-top: 0px; margin: 10px; border-top: 1px solid #dfdfe0; }
+	.left1 .panel-border p { color: #999; }
+</style>
+<div class="l w190 left1">
+	<% 	
+		var k = parameter.k;
+		var price = parameter.price;
+		var mixPrice ="";
+		var maxPrice ="";
+		if(price!= null){
+			var prices = reg.split(price,"-");
+			if(prices.~size==1){
+				if("-" == strutil.subStringTo(price,0,1)){
+					maxPrice = prices[0];
+				}
+				if("-" == strutil.subStringTo(price,strutil.length(price)-1,strutil.length(price))){
+					mixPrice = prices[0];
+				}
+			}
+			if(prices.~size>1){
+				mixPrice = prices[0];
+				maxPrice = prices[1];
+			}
+		}
+		var toDay = strutil.formatDate(date(),'yyyy');
+		var createDate = strutil.formatDate(storeOne.createDate,'yyyy');
+		%>
+	<dl class="panel">
+		<%var maohao=fy.getMsg({key:'：'});%>
+		<%var none=fy.getMsg({key:'无'});%>
+		<dt class="align-center store-name">
+			<div class="name-title">${storeOne.name!}</div>
+		</dt>
+		<dd class="p10">
+			<%var yearStore=fy.getMsg({key:'年店'});%>
+			<div class="align-center store-year">english <font>${parseInt(toDay)-parseInt(createDate)<=0?'1':parseInt(toDay)-parseInt(createDate)}</font> ${yearStore!}</div>
+			<div class="align-center p10"><span class="comment-star-1 ${storeOne.storeAnalyze.starLevel!}"></span></div>
+			<ul class="score">
+				<li><%var quotation=fy.getMsg({key:'商述'});%>${quotation!}<p class="${storeOne.storeAnalyze.productScoreUpOrDown == '1' ? 'red' : 'green'}">${storeOne.storeAnalyze.productScore!}${storeOne.storeAnalyze.productScoreUpOrDown == "1" ? "↑" : "↓"}</p></li>
+				<li><%var service=fy.getMsg({key:'服务'});%>${service!}<p class="${storeOne.storeAnalyze.serviceAttitudeScoreUpOrDown == '1' ? 'red' : 'green'}">${storeOne.storeAnalyze.serviceAttitudeScore!}${storeOne.storeAnalyze.serviceAttitudeScoreUpOrDown == "1" ? "↑" : "↓"}</p></li>
+				<li><%var logistics=fy.getMsg({key:'物流'});%>${logistics!}<p class="${storeOne.storeAnalyze.logisticsScoreUpOrDown == '1' ? 'red' : 'green'}">${storeOne.storeAnalyze.logisticsScore!}${storeOne.storeAnalyze.logisticsScoreUpOrDown == "1" ? "↑" : "↓"}</p></li>
+				<div class="clear"></div>
+			</ul>
+			<div class="text-align">
+				<a target="_blank" href="${ctxf}/store/${storeOne.storeId!}.htm" class="sui-btn btn-gray"><%var shopAround=fy.getMsg({key:'进店逛逛'});%>${shopAround!}</a>
+				<a href="javascript:void(0);" storeId="${storeOne.storeId!}" class="sui-btn btn-lgrey ml8 collectionStore"><%var collectionShop=fy.getMsg({key:'收藏店铺'});%>${collectionShop!}</a>
+			</div>
+		</dd>
+		<dd class="panel-border">
+			<p class="pt10">
+				<%var shopHotline=fy.getMsg({key:'店铺客服电话'});%>${shopHotline!}${maohao!}${isNotEmpty(storeOne.storeTel!)?storeOne.storeTel!:none!}
+			</p>
+		</dd>
+		<dd class="panel-border">
+			<p class="pt10">Country/Region：china</p>
+			<p>Province/State：guangdong</p>
+			<p>City：shenzhen</p>
+			<%
+				var margin = fy.getMsg({key:'保证金'});
+				if(storeOne.markingImgPath == "1"){
+					%><p><span style="color: #fff;background-color: #f19430;padding: 3px 10px;border-radius: 15px;display: inline-block;">${margin!}</span></p><%
+				}
+			%>
+		</dd>
+	</dl>
+</div>

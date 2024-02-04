@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<% var articleId=parameter.id;%>
+<% var storeArticle=store.article({sid:sid,id:articleId});%>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<% var storeOne = store.one({sid:sid});%>
+<title>${storeOne.name}-${storeArticle.title!} Powered by SiC</title>
+<% include("/include/head.html"){}%>
+<style type="text/css">
+	.error_div{background-image: url(${ctx}/views/front/english/images/error.jpg);height: 471px;
+    	background-repeat: no-repeat;width: 854px;margin: 0 auto;margin-top: 20px; border: 1px solid white;}
+	.error_div .error_msg{margin-top: 221px;color: orange;font-size: 16px;margin-left: 20px;}
+    .error_div .error_msg a{color: orange;}
+	.content{border: #e0e0e0 solid 1px;padding: 5px;}
+	.store-index-main { margin-left: 290px; }
+</style>
+</head>
+<body>
+	<% include("/include/header.html"){}%>
+	<% if(isEmpty(storeOne)){ %>
+		<div class="error_div">
+			<div class="error_msg">
+				<p><%var storeNot =fy.getMsg({key:'数据不存在提示',params:'店铺'});%>${storeNot!}</p><br>
+				<p><a href="${ctxf}/index.htm">(1) <%var storeReturnIndex=fy.getMsg({key:'返回首页'});%>${storeReturnIndex!}</a></p><br>
+				<p><a href="javascript:;" onclick="history.go(-1);">(2) <%var storeReturnPrevious=fy.getMsg({key:'返回上一页'});%>${storeReturnPrevious!}</a></p><br>
+			</div>
+		</div>
+	<%}else{%>
+		<% include("/include/header-store.html",{'storeOne':storeOne}){}%>
+		<div class="wp clearfix mt20">
+			<div style="width: 260px;"><% include("/include/store_left.html",{'storeOne':storeOne}){}%></div>
+			<div class="store-index-main">
+				<dl>
+					<dt><strong><b></b>${storeArticle.title!}</strong></dt>
+					<div class="content">${storeArticle.content!}</div>
+				</dl>
+			</div>
+		</div>
+	<%}%>
+	<% include("/include/footer.html"){}%>
+	<% include("/include/foot.html"){}%>
+</body>
+</html>

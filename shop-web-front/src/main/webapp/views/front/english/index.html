@@ -1,0 +1,1089 @@
+<html class="rwd rwd-l">
+<head>
+	<meta charset="utf-8">
+	<% var seo=seo.one({type:"大首页"});%>
+	<title>${seo.title!} Powered by SiC</title>
+	<meta name="Keywords" content="${seo.keywords!}"/>
+	<meta name="description" content="${seo.description!}"/>
+	<% include("/include/head.html"){}%>
+	<!-- index css-->
+	<link rel="stylesheet" href="${ctx}/views/front/english/css/index.css">
+</head>
+<body>
+    <!-- 引入header -->
+    <% include("/include/header.html"){}%>
+<div class="m-face">
+	<div class="main-content main-first-floor" data-spm-anchor-id="a2700.8293689.0.i0.2ce267afKKiM6p">
+		<!-- banner start -->
+		<div class="row category-banner-ta" data-ctrdot="firstScreen">
+			<div class="fix-content fix-content-left">
+				<div class="fix-content fix-content-right" data-spm="201702">
+					<!-- tangram:1564 begin-->
+					<!-- 轮播图 start -->
+					<div id="first-banner" class="first-banner ui-switchable owl-theme" data-widget-cid="widget-11">
+						<div class="scroller" id="scroller" style="position: relative;">
+							<% for(carousel in site.carouselList({type:1,limit:7})){%>
+								<% var target=dict.label({value:carousel.target!,type:'target'}); %>
+                                <a id="first-banner-item" flasher-preload="true" class="banner-item ui-switchable-panel" data-common-dot="area=banner-1&amp;orderId=0"
+                                    data-goldlog="" data-role="banner-item" target="${target!}" href="${carousel.url!}" data-src="${ctxfs}${carousel.path!}" style="float: left;">
+                                    <img class="banner-image" src="${ctxfs}${carousel.path!}">
+                                </a>
+							<%}%>
+						</div>
+					</div>
+					<!-- tangram:1564 end-->
+					<!-- 轮播图 end -->
+				</div>
+				<div class="col col-right">
+					<!-- tangram:2920 begin-->
+					<!-- 轮播右侧 start -->
+					<div class="ta-promotion row-content" data-spm="201704">
+						<a data-goldlog="area=title" data-goldkey="bannerRight" target="_blank"
+						   href="${ctxf}/product/list.htm?k=Computer" class="top-banner">
+							 <%var selectedProducts =fy.getMsg({key:'精选商品'});%> ${selectedProducts!}
+							<span class="view-more">View details</span>
+						</a>
+						<div class="ta-promotion-list">
+							<% var selectedProductList=site.recommend({number:'index_selected _products'});%>
+							<% for(selectedProduct in selectedProductList.siteRecommendItemList!){%>
+								<a href="${selectedProduct.url!}" target="_blank" data-goldlog="area=item&amp;index=1" data-goldkey="bannerRight" class="ta-promotion-item zoom-wrap">
+									<div class="title">${selectedProduct.addInfo1!}</div>
+									<div class="view-more"><%var viewDetails =fy.getMsg({key:'查看详情'});%> ${viewDetails!}</div>
+									<div class="item-banner">
+										<img src="${ctxfs}${selectedProduct.path!}@!80x80" class="zoom-in">
+									</div>
+								</a>
+							<%}%>	
+						</div>
+					</div>
+					<!-- tangram:2920 end-->
+					<!-- 轮播右侧 end -->
+				</div>
+			</div>
+			<div class="col col-left">
+				<!-- tangram:1764 begin-->
+				<div class="row-content" data-spm="201703" data-role="homepage-categories">
+					<div class="scc-category-unit scc-category-unit-index" id="scc-category-unit-index">
+						<div class="menu-category-view index-category indiv-category-view">
+							<h3 class="menu-button-title ">
+								<i class="ui2-icon ui2-icon-category ui2-icon-s"> </i><%var hotCategory =fy.getMsg({key:'热门分类'});%> ${hotCategory!} </h3>
+							<ul class="indiv-category-list" data-role="indiv-category-list" data-static="false"
+								data-new="false">
+								<li class="category-item-wrapper  first-item ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/1081.htm" title="Spin">
+										Spin
+									</a>
+								</li>
+								<li class="category-item-wrapper ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/980.htm" title="Business services">
+										Business services
+									</a>
+								</li>
+								<li class="category-item-wrapper ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/938.htm"  title="Printing">
+										Printing
+									</a>
+								</li>
+								<li class="category-item-wrapper ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/920.htm"
+									   title="Auto & Transportation">
+										Auto & Transportation
+									</a>
+								</li>
+								<li class="category-item-wrapper ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/928.htm" title="Metallurgy, Chemicals, Rubber & Plastics">
+										Metallurgy, Chemicals, Rubber & Plastics
+									</a>
+								</li>
+								<li class="category-item-wrapper ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/778.htm" title="Machinery">
+										Machinery, Industrial Parts & Tools
+									</a>
+								</li>
+								<li class="category-item-wrapper ">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/709.htm"
+									   title="Construction">
+										Construction
+									</a>
+								</li>
+								<li class="category-item-wrapper">
+									<a class="category-item util-ellipsis" target="_blank"
+									   href="${ctxf}/category/636.htm"
+									   title="Electrical Equipment, Components & Telecoms">
+										Electrical Equipment, Components & Telecoms
+									</a>
+								</li>
+								<li class="category-item-wrapper vmore">
+									<a class="category-item vmore-link" target="_blank" href="${ctxf}/categoryAll.htm" data-goldkey="9">
+										<%var allCategoriesc =fy.getMsg({key:'全部分类'});%> ${allCategoriesc!}
+										<i class="ui2-icon ui2-icon-arrow-right"></i></a>
+									<div class="hover-fix"></div>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<!-- tangram:1764 end-->
+			</div>
+		</div>
+		<!-- banner end -->
+		<!-- 热销推荐 start -->
+		<!-- tangram:3672 begin-->
+		<div data-spm="2018taBelt" data-ctrdot="ta-belt" class="m-belt">
+			<div class="september-hot normal">
+				<div class="hot-wrap">
+					<div class="hot-item">
+						<% var todayBestProductList1=site.recommend({number:'index_today1'});%>
+						<div class="item-title sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-right">
+							${todayBestProductList1.name!}
+						</div>
+						<div class="item-products">
+							<% for(todayBestProduct1 in todayBestProductList1.siteRecommendItemList!){%>
+								<div class="item-product">
+									<a href="${todayBestProduct1.url!}" target="_blank">
+										<img class="product-img zoom-in" src="${ctxfs}${todayBestProduct1.path!}@!130x130" alt="">
+										<div class="product-price" title="${todayBestProduct1.addInfo1!}">${todayBestProduct1.addInfo1!}</div>
+									</a>
+								</div>
+							<%}%>
+						</div>
+					</div>
+					<div class="hot-item">
+						<% var todayBestProductList2=site.recommend({number:'index_today2'});%>
+						<div class="item-title sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-right">
+							${todayBestProductList2.name!}
+						</div>
+						<div class="item-products">
+							
+							<% for(todayBestProduct2 in todayBestProductList2.siteRecommendItemList!){%>
+								<div class="item-product">
+									<a href="${todayBestProduct2.url!}" target="_blank">
+										<img class="product-img zoom-in" src="${ctxfs}${todayBestProduct2.path!}@!130x130" alt="">
+										<div class="product-price" title="${todayBestProduct2.addInfo1!}">${todayBestProduct2.addInfo1!}</div>
+									</a>
+								</div>
+							<%}%>
+						</div>
+					</div>
+					<div class="hot-item">
+					<% var todayBestProductList3=site.recommend({number:'index_today3'});%>
+						<div class="item-title sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-right">
+							${todayBestProductList3.name!}
+						</div>
+						<div class="item-products">
+							<% for(todayBestProduct3 in todayBestProductList3.siteRecommendItemList!){%>
+								<div class="item-product">
+									<a href="${todayBestProduct3.url!}" target="_blank">
+										<img class="product-img zoom-in" src="${ctxfs}${todayBestProduct3.path!}@!130x130" alt="">
+										<div class="product-price" title="${todayBestProduct3.addInfo1!}">${todayBestProduct3.addInfo1!}</div>
+									</a>
+								</div>
+							<%}%>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- tangram:3672 end-->
+		<!-- 热销推荐 end -->
+	</div>
+</div>
+<div class="l-page">
+	<div class="main-content main-second-floor">
+		<!-- tangram:3083 begin-->
+		<div class="home-category-info-norm-container">
+			<div class="home-category-info-norm-mask">
+				<!-- 列表1 start -->
+				<% var chemicalProducts=site.recommend({number:'index_chemical_products'});
+					var chemicalProductList=chemicalProducts.siteRecommendItemList!;%>
+				<div class="home-category-info-norm">
+					<div class="home-category-info-header">
+						<h2>${chemicalProducts.name!}</h2>
+						<span class="home-category-info-header-line"></span>
+						<a href="${ctxf}/product/list.htm?cid=828" target="_blank"><%var seeMore =fy.getMsg({key:'查看更多'});%> ${seeMore!}</a>
+					</div>
+					<div class="home-category-info-content category-2">
+						<div class="home-category-info-banner-warpper">
+							<a class="home-category-info-banner banner-new " href="${ctxf}/product/list.htm?cid=402" target="_blank">
+							<img class="theme-image" src="//i.alicdn.com/img/tfs/TB1J5jev7voK1RjSZPfXXXPKFXa-300-320.png" crossorigin="anonymous">
+							<h3 class="title"><%var selectedChemicalProducts  =fy.getMsg({key:'精选化工产品'});%> ${selectedChemicalProducts!}</h3>
+							<div class="btn-wrapper" style="color: rgb(131, 176, 220);">
+								<%var seeCategory =fy.getMsg({key:'查看分类'});%> ${seeCategory!}
+							</div>
+						</a></div>
+						<div class="home-category-info-detail">
+							<% for(var i=0;i<chemicalProductList.~size;i++){
+							var chemicalProductItem=chemicalProductList[i]!;
+							if(i==0){ %>
+								<div class="home-category-info-item">
+									<a href="${chemicalProductItem.url!}" target="_blank">
+										<div class="product-item">
+											<p>${chemicalProductItem.addInfo1!}</p>
+											<div class="oem-certificate">
+												<img src="//s.alicdn.com/@img/tfs/TB1d7y4p4jaK1RjSZKzXXXVwXXa-42-10.svg" alt="">
+											</div>
+											<div class="local">
+												<span title="${chemicalProductItem.addInfo2!}">${chemicalProductItem.addInfo2!}</span>
+											</div>
+											<img class="zoom-in" style="height: 160px" src="${ctxfs}${chemicalProductItem.path!}@!220x220">
+										</div>
+									</a>
+								</div>
+								<%}else{%>
+									<div class="home-category-info-item">
+										<a href="${chemicalProductItem.url!}" target="_blank">
+											<div class="product-item">
+												<p>${chemicalProductItem.addInfo1!}</p>
+												<div class="local">
+													<span title="${chemicalProductItem.addInfo2!}">${chemicalProductItem.addInfo2!}</span>
+												</div>
+												<img class="zoom-in" src="${ctxfs}${chemicalProductItem.path!}@!220x220">
+											</div>
+										</a>
+										<%if(i+1<chemicalProductList.~size){ var chemicalProductItem2=chemicalProductList[i+1]!;i++; %> 
+											<a href="${chemicalProductItem2.url!}" target="_blank">
+												<div class="product-item">
+													<p>${chemicalProductItem2.addInfo1!}</p>
+													<div class="local">
+														<span title="${chemicalProductItem2.addInfo2!}">${chemicalProductItem2.addInfo2!}</span>
+													</div>
+													<img class="zoom-in" src="${ctxfs}${chemicalProductItem2.path!}@!220x220">
+												</div>
+											</a>
+										<%}%>
+									</div>
+								<%}%>
+							<%}%>
+						</div>
+					</div>
+					<div class="home-category-info-footer"></div>
+				</div>
+				<!-- 列表1 end -->
+				<!-- 列表2 start -->
+				<% var consumerElectronics=site.recommend({number:'index_consumer_electronics'});
+					var consumerElectronicList=consumerElectronics.siteRecommendItemList!;%>
+				<div class="home-category-info-norm">
+					<div class="home-category-info-header">
+						<h2>${consumerElectronics.name!}</h2>
+						<span class="home-category-info-header-line"></span>
+						<a href="${ctxf}/product/list.htm?cid=612" target="_blank">${seeMore!}</a>
+					</div>
+					<div class="home-category-info-content category-2">
+						<div class="home-category-info-banner-warpper">
+							<a class="home-category-info-banner banner-new " href="${ctxf}/product/list.htm?cid=402" target="_blank">
+							<img class="theme-image" src="//i.alicdn.com/img/tfs/TB1ZXXNIgHqK1RjSZFkXXX.WFXa-300-320.jpg" crossorigin="anonymous">
+							<h3 class="title"><%var selectedConsumerProducts =fy.getMsg({key:'精选消费品'});%> ${selectedConsumerProducts!}</h3>
+							<div class="btn-wrapper" style="color: rgb(160, 194, 196);">
+								${seeCategory!}
+							</div>
+							</a>
+						</div>
+						<div class="home-category-info-detail">
+							<% for(var i=0;i<consumerElectronicList.~size;i++){
+							var consumerElectronicItem=consumerElectronicList[i]!;
+							if(i==0){ %>
+								<div class="home-category-info-item">
+									<a href="${consumerElectronicItem.url!}" target="_blank">
+										<div class="product-item">
+											<p>${consumerElectronicItem.addInfo1!}</p>
+											<div class="oem-certificate">
+												<img src="//s.alicdn.com/@img/tfs/TB1d7y4p4jaK1RjSZKzXXXVwXXa-42-10.svg" alt="">
+											</div>
+											<div class="local">
+												<span title="${consumerElectronicItem.addInfo2!}">${consumerElectronicItem.addInfo2!}</span>
+											</div>
+											<img class="zoom-in" style="height: 160px" src="${ctxfs}${consumerElectronicItem.path!}@!220x220">
+										</div>
+									</a>
+								</div>
+								<%}else{%>
+									<div class="home-category-info-item">
+										<a href="${consumerElectronicItem.url!}" target="_blank">
+											<div class="product-item">
+												<p>${consumerElectronicItem.addInfo1!}</p>
+												<div class="local">
+													<span title="${consumerElectronicItem.addInfo2!}">${consumerElectronicItem.addInfo2!}</span>
+												</div>
+												<img class="zoom-in" src="${ctxfs}${consumerElectronicItem.path!}@!220x220">
+											</div>
+										</a>
+										<%if(i+1<consumerElectronicList.~size){ var consumerElectronicItem2=consumerElectronicList[i+1]!;i++; %> 
+											<a href="${consumerElectronicItem2.url!}" target="_blank">
+												<div class="product-item">
+													<p>${consumerElectronicItem2.addInfo1!}</p>
+													<div class="local">
+														<span title="${consumerElectronicItem2.addInfo2!}">${consumerElectronicItem2.addInfo2!}</span>
+													</div>
+													<img class="zoom-in" src="${ctxfs}${consumerElectronicItem2.path!}@!220x220">
+												</div>
+											</a>
+										<%}%>
+									</div>
+								<%}%>
+							<%}%>
+						</div>
+					</div>
+					<div class="home-category-info-footer"></div>
+				</div>
+				<!-- 列表2 end -->
+				<!-- 列表3 start -->
+				<% var mechanicalEquipments=site.recommend({number:'index_mechanical_equipment'});
+					var mechanicalEquipmentList=mechanicalEquipments.siteRecommendItemList!;%>
+				<div data-goldexpovalue="userType=old&amp;cid=23&amp;floorIndex=2" class="home-category-info-norm"
+					 data-role="category-info" data-ctrdot="categoryInfoIndustry23" data-spm="categoryInfoIndustry-3"
+					 data-id="23">
+					<div class="home-category-info-header">
+						<h2>${mechanicalEquipments.name!}</h2>
+						<span class="home-category-info-header-line"></span>
+						<a href="${ctxf}/product/list.htm?cid=636" target="_blank">${seeMore!}</a>
+					</div>
+					<div class="home-category-info-content category-2">
+						<div class="home-category-info-banner-warpper">
+							<a class="home-category-info-banner banner-new " href="${ctxf}/product/list.htm?cid=402" target="_blank">
+							<img class="theme-image" src="//i.alicdn.com/img/tfs/TB1KwYevVzqK1RjSZSgXXcpAVXa-300-320.png" crossorigin="anonymous">
+							<h3 class="title">Selected mechanical products</h3>
+							<div class="btn-wrapper" style="color: rgb(218, 182, 137);">
+								${seeCategory!}
+							</div>
+							</a>
+						</div>
+						<div class="home-category-info-detail">
+							<% for(var i=0;i<mechanicalEquipmentList.~size;i++){
+							var mechanicalEquipmentItem=mechanicalEquipmentList[i]!;
+							if(i==0){ %>
+								<div class="home-category-info-item">
+									<a href="${mechanicalEquipmentItem.url!}" target="_blank">
+										<div class="product-item">
+											<p>${mechanicalEquipmentItem.addInfo1!}</p>
+											<div class="oem-certificate">
+												<img src="//s.alicdn.com/@img/tfs/TB1d7y4p4jaK1RjSZKzXXXVwXXa-42-10.svg" alt="">
+											</div>
+											<div class="local">
+												<span title="${mechanicalEquipmentItem.addInfo2!}">${mechanicalEquipmentItem.addInfo2!}</span>
+											</div>
+											<img class="zoom-in" style="height: 160px" src="${ctxfs}${mechanicalEquipmentItem.path!}@!220x220">
+										</div>
+									</a>
+								</div>
+								<%}else{%>
+									<div class="home-category-info-item">
+										<a href="${mechanicalEquipmentItem.url!}" target="_blank">
+											<div class="product-item">
+												<p>${mechanicalEquipmentItem.addInfo1!}</p>
+												<div class="local">
+													<span title="${mechanicalEquipmentItem.addInfo2!}">${mechanicalEquipmentItem.addInfo2!}</span>
+												</div>
+												<img class="zoom-in" src="${ctxfs}${mechanicalEquipmentItem.path!}@!220x220">
+											</div>
+										</a>
+										<%if(i+1<mechanicalEquipmentList.~size){ var mechanicalEquipmentItem2=mechanicalEquipmentList[i+1]!;i++; %> 
+											<a href="${mechanicalEquipmentItem2.url!}" target="_blank">
+												<div class="product-item">
+													<p>${mechanicalEquipmentItem2.addInfo1!}</p>
+													<div class="local">
+														<span title="${mechanicalEquipmentItem2.addInfo2!}">${mechanicalEquipmentItem2.addInfo2!}</span>
+													</div>
+													<img class="zoom-in" src="${ctxfs}${mechanicalEquipmentItem2.path!}@!220x220">
+												</div>
+											</a>
+										<%}%>
+									</div>
+								<%}%>
+							<%}%>
+						</div>
+					</div>
+					<div class="home-category-info-footer"></div>
+				</div>
+				<!-- 列表3 end -->
+			</div>
+		</div>
+		<!-- tangram:3083 end-->
+		<!-- tangram:3648 begin-->
+		<div class="home-theme-container home-theme-promotion">
+			<!-- tangram:3650 begin-->
+			<!-- 周热销 start -->
+			<div class="theme-item home-theme-weekly-deals-container">
+				<% var bargainProductList=site.recommend({number:'index_bargain_products'});%>
+				<div class="home-theme-weekly-deals" data-spm="weeklydeals">
+					<div class="header clearfix">
+						<h2>${bargainProductList.name!}</h2>
+						<span class="line"></span>
+						<a href="${ctxf}/product/list.htm" target="_blank">${seeMore!}</a>
+					</div>
+					<div class="content">
+						<div class="items-wrap">
+							<%var pieces =fy.getMsg({key:'件'});%>
+							<% for(bargainProduct in bargainProductList.siteRecommendItemList!){%>
+								<div class="item-wrap item-0" data-ctrdot="expose_cid-3803#senseid-9200_9#pvid-669262ca-113a-4ad7-a7be-af705775eb65#id-681428247#algPos-0#matchType-3#fatherId-null#blockId-310828#">
+									<a class="item" href="${bargainProduct.url!}" target="_blank" data-goldkey="theme"
+									    data-goldlog="pos=tab&amp;type=weeklydeals&amp;index=0&amp;clickParam=click_cid-3852#click_senseid-9200_9#pvid-669262ca-113a-4ad7-a7be-af705775eb65#id-681428247#pos-0#matchType-3#fatherId-null#blockId-310828">
+										<div class="item-image zoom-wrap">
+											<img class="image zoom-in" src="${ctxfs}${bargainProduct.path!}@!140x140">
+										</div>
+										<div class="product-name">${bargainProduct.addInfo1!}</div>
+										<div class="hidden-wrap">
+											<div class="item-tag">
+												<span class="status">-10%</span>
+												<p>
+													<span class="price">${bargainProduct.addInfo2!}
+													</span>
+													<span class="units"> / ${pieces!}</span>
+												</p>
+											</div>
+										</div>
+									</a>
+									<a class="view-more" data-goldkey="theme" data-goldlog="pos=banner&amp;type=weeklydeals" href="${bargainProduct.url!}" target="_blank">
+										${seeMore!} <i class="ui2-icon ui2-icon-arrow-right"></i>
+									</a>
+								</div>
+							<%}%>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 周热销 end -->
+			<!-- tangram:3650 end-->
+			<!-- tangram:3651 begin-->
+			<!-- 周热销 第二列 左侧 start -->
+			<div class="theme-item home-theme-buyer-hub-container">
+				<% var ecommerBuyZoneList=site.recommend({number:'index_ecommer_buy_zone'});%>
+				<div class="home-theme-buyer-hub" data-spm="buyerhub">
+					<div class="header clearfix">
+						<h2>${ecommerBuyZoneList.name!}</h2>
+						<span class="line"></span>
+					</div>
+					<div class="content">
+						<a class="banner" data-goldkey="theme" data-goldlog="pos=banner&amp;type=buyerHub"
+						   style="background-image: url(//i.alicdn.com/img/tfs/TB18b9VtbZnBKNjSZFKXXcGOVXa-720-400.png_350x350.jpg)"
+						   href="${ctxf}/product/list.htm?cid=1161"
+						   target="_blank">
+							<h3><%var lookProduct=fy.getMsg({key:'查看产品'});%> ${lookProduct!}</h3>
+							<!-- <p class="description">One-Stop Service Suppliers</p> -->
+							<div class="view-more">${seeMore!}</div>
+						</a>
+						<div class="items-wrap no-flex">
+							<p class="desc"><%var searchEasier=fy.getMsg({key:'通过产品链接轻松搜索'});%> ${searchEasier!}</p>
+							<p class="benefit"><%var pasteProductLink=fy.getMsg({key:'粘贴产品链接或上传照片'});%> ${pasteProductLink!}</p>
+							<div class="images-wrap">
+								<% for(ecommerBuyZone in ecommerBuyZoneList.siteRecommendItemList!){%>
+									<a class="item-image zoom-wrap" data-goldkey="theme" data-ctrdot="" href="${ecommerBuyZone.url!}" target="_blank"
+								    	data-goldlog="pos=tab&amp;type=buyerHub&amp;index=0&amp;clickParam=">
+										<img class="image zoom-in" src="${ctxfs}${ecommerBuyZone.path!}@!100x100">
+									</a>
+								<%}%>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 周热销 第二列 左侧 end -->
+			<!-- tangram:3651 end-->
+			<!-- tangram:3649 begin-->
+			<!-- 周热销 第二列 右侧 start -->
+			<div class="theme-item home-theme-brand-zone-container">
+				<div class="home-theme-brand-zone" data-spm="brandzone">
+					<% 
+						var popularBrandList=site.recommend({number:'index_brand_zone'});
+						var popularBrands=popularBrandList.siteRecommendItemList!;
+						var popularBrand1=popularBrands[0]!;
+						var popularBrand2=popularBrands[1]!;
+					%>
+					<div class="header clearfix">
+						<h2>${popularBrandList.name!}</h2>
+						<span class="line"></span>
+					</div>
+					<div class="content">
+						<a class="banner" data-goldkey="theme" data-goldlog="pos=banner&amp;type=brandzone"
+						   style="background-image: url(//i.alicdn.com/img/tfs/TB1YTEooH3nBKNjSZFMXXaUSFXa-720-400.png_350x350.jpg)"
+						   href="${ctxf}/product/list.htm?cid=1037"
+						   target="_blank">
+							<h3><%var popularBrandsFy=fy.getMsg({key:'人气品牌'});%> ${popularBrandsFy!}</h3>
+							<div class="view-more">${seeMore!}</div>
+						</a>
+						<div class="items-wrap">
+							<div class="item-wrap">
+								<a class="item" href="//www.alibaba.com/brandzone#specialOffers" target="_blank"
+								   data-goldkey="theme" data-goldlog="pos=tab&amp;type=brandzone&amp;index=0">
+									<i class="icon"
+									   style="background-image: url(//i.alicdn.com/sc01/kf/HTB1QlmVacnrK1RkHFrdq6xCoFXaq.jpg)"></i>
+									<div class="item-image zoom-wrap">
+										<img class="image zoom-in" src="${ctxfs}${popularBrand1.path!}@!140x140">
+									</div>
+									<div class="hidden-wrap">
+										<p class="item-desc">${popularBrand1.addInfo1!}</p>
+										<div class="item-tag">
+											<span class="status">${popularBrand1.addInfo2!}</span>
+											<span class="price">${popularBrand1.addInfo3!}</span>
+										</div>
+									</div>
+								</a>
+								<a class="view-more" href="${popularBrand1.url!}" target="_blank" data-goldkey="theme" data-goldlog="pos=banner&amp;type=brandzone">
+								   ${popularBrand1.addInfo4!}
+								</a>
+							</div>
+							<div class="item-wrap">
+								<a class="item" href="${popularBrand2.url!}" target="_blank"
+								   data-goldkey="theme" data-goldlog="pos=tab&amp;type=brandzone&amp;index=1">
+									<i class="icon"
+									   style="background-image: url(//i.alicdn.com/sc01/kf/HTB1Xm3mX5DxK1RjSsphq6zHrpXax.jpg)"></i>
+									<div class="item-image zoom-wrap">
+										<img class="image zoom-in" src="${ctxfs}${popularBrand2.path!}@!140x140">
+									</div>
+									<div class="hidden-wrap">
+										<p class="item-desc">${popularBrand2.addInfo1!}</p>
+										<div class="item-tag">
+											<span class="status">${popularBrand2.addInfo2!}</span>
+											<span class="price">${popularBrand2.addInfo3!}</span>
+										</div>
+									</div>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- 周热销 第二列 右侧 end -->
+			<!-- tangram:3649 end-->
+		</div>
+		<!-- tangram:3648 end-->
+		<!-- 咨询表单 start -->
+		<div class="row rfq" data-spm="201709" data-ctrdot="rfq">
+			<div class="row-title util-clearfix" data-spm="201709-1">
+				<div class="home-category-info-header">
+					<h2> <%var requestQuotation=fy.getMsg({key:'报价要求'});%> ${requestQuotation!}</h2>
+					<span class="home-category-info-header-line" style="margin-right: 0;"></span>
+				</div>
+				<!-- <div class="sub-title util-left">Customization Service</div> -->
+				<div class="label"></div>
+			</div>
+			<div class="row-content util-clearfix">
+				<!-- tangram:1486 begin-->
+				<div class="rfq-form rfq-form-multi-en_US" data-spm="201709-3">
+					<form target="_blank" action="" method="post">
+						<input type="hidden" name="pid" class="pid" value=""/>
+						<div class="rfq-title">
+							<label>${requestQuotation!}</label>
+						</div>
+						<div class="rfq-row">
+							<%var lookingFor=fy.getMsg({key:'产品描述'});%>
+							<textarea class="ui2-textfield ui2-textfield-single searchbar-keyword describe" placeholder="${lookingFor!}" maxlength="250"></textarea>
+						</div>
+						<div class="rfq-row">
+							<%var emailOrMobile=fy.getMsg({key:'邮箱或手机号'});%>
+							<input type="text" name="rfqName"
+								   class="rfq-keywords ui2-textfield ui2-textfield-large ui2-textfield-single searchbar-keyword contactInfo"
+								   maxlength="64" placeholder="${emailOrMobile!}">
+						</div>
+						<div class="rfq-row util-clearfix">
+							<%var quantity=fy.getMsg({key:'数量'});%>
+							<input type="text" name="quantity"
+								   class="rfq-quantity ui2-textfield ui2-textfield-large ui2-textfield-single quantity"
+								   placeholder="${quantity!}" maxlength="11">
+						</div>
+						<button class="rfq-submit ui2-button ui2-button-default ui2-button-primary ui2-button-large" type="button">
+							 <%var request=fy.getMsg({key:'请求'});%> ${request!}
+						</button>
+					</form>
+				</div>
+
+				<div class="rfq-banner-0705 rfq-form-multi-en_US" data-spm="201709-2">
+					<div id="J_RFQ_Slide" class="rfq-banner-slider rfq-banner-slider-onlyone ui-switchable"
+						 data-widget-cid="widget-1">
+						<ul class="rfq-banner-list util-clearfix ui-switchable-content" data-role="content">
+							<li data-role="panel" class="ui-switchable-panel"
+								style="opacity: 1; position: absolute; z-index: 9;">
+								<a href="${ctxf}/custom/special.htm"
+								   target="_blank" class="rfq-banner-item zoom-in"
+								   style="background-image:url(//i.alicdn.com/img/tfs/TB1wECTkGagSKJjy0FbXXa.mVXa-1060-376.jpg)">
+								</a>
+							</li>
+						</ul>
+						<div data-role="prev" class="rfq-banner-prev ui-switchable-prev-btn">
+							<div class="ui2-icon ui2-icon-arrow-left"></div>
+						</div>
+						<div data-role="next" class="rfq-banner-next ui-switchable-next-btn">
+							<div class="ui2-icon ui2-icon-arrow-right"></div>
+						</div>
+						<ul class="ui-switchable-nav">
+							<li class="current ui-switchable-trigger">1</li>
+						</ul>
+					</div>
+				</div>
+				<!-- tangram:1487 end-->
+			</div>
+		</div>
+		<!-- 咨询表单 end -->
+
+		<!-- 商品列表 start -->
+		<div id="recommendation-for-you" data-spm="youMayAlsoLike" data-role="recommendation-for-you"
+			 class="row row-sub recommendation-for-you" data-widget-cid="widget-3" data-tabcc="youMayAlsoLike"
+			 data-tabccinited="true">
+			<% var recommendForYouList=site.recommend({number:'index_recommend_for_you'});%>
+			<div class="row-title home-category-info-header util-clearfix">
+				<h2>${recommendForYouList.name!}</h2>
+				<span class="home-category-info-header-line" style="margin-right:  0;"></span>
+				<!-- <a href="">see more</a> -->
+				<div class="sub-title util-left"></div>
+				<div class="label"></div>
+			</div>
+			<div class="row-content util-clearfix">
+				<div class="m-r4u-product-block">
+					<div class="m-r4u-product-list m-r4u-list" data-role="m-r4u-list">
+						<% for(recommendForYou in recommendForYouList.siteRecommendItemList!){%>
+							<div class="m-r4u-product-item-wrapper">
+								<div class="m-r4u-product-item">
+									<div class="item-main" data-ctrdot="id:r4u_60417161445,ext:expose_cid-3803#senseid-8405_121#pvid-ec4013a0-42e8-4f7a-b3f6-47d450d951b2#realPos-0#id-60417161445#algPos-0#matchType-6#type-product#isCurrentControl-baseline#isAIRefresh-false#">
+										<div class="item-img">
+											<div class="place"></div>
+											<div class="item-img-inner">
+												<a target="_blank" href="${recommendForYou.url!}" class="first-item" data-role="item-anchor"
+												   data-goldlog="click_item=r4u_product&amp;productId=60417161445&amp;click_cid-3852#click_senseid-8405_121#pvid-ec4013a0-42e8-4f7a-b3f6-47d450d951b2#realPos-0#id-60417161445#pos-0#matchType-6#type-product#isCurrentControl-baseline#isAIRefresh-false#">
+													<div class="product-image-box">
+														<img src="${ctxfs}${recommendForYou.path!}@!265x265" alt="">
+													</div>
+												</a>
+											</div>
+										</div>
+										<div class="item-info">
+											<h2 class="title two-line">
+												<a target="_blank" href="${recommendForYou.url!}" title="${recommendForYou.addInfo1!}">${recommendForYou.addInfo1!}</a>
+											</h2>
+											<div class="pmo">
+												<div class="price" title="US ${recommendForYou.addInfo2!} / ${pieces!}">
+													<b>${recommendForYou.addInfo2!}</b>
+													<span class="unit"> / ${pieces!}</span>
+												</div>
+												<div class="min-order"><b>${recommendForYou.addInfo3!}</b> (Min. Order)</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						<%}%>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 商品列表 end -->
+
+		<!-- 贸易展览 start -->
+		<div class="row row-sub util-clearfix" id="home2017_countries" data-ctrdot="services">
+			<div class="services-v3" data-spm="201712">
+				<div class="home-category-info-header">
+					<h2><%var eventTradeShowsFy=fy.getMsg({key:'活动和贸易展览'});%> ${eventTradeShowsFy!}</h2>
+					<span class="home-category-info-header-line" style="margin-right: 0;"></span>
+				</div>
+				<div class="row-content">
+					<div class="trade-wrap">
+						<div class="trade-left">
+							<div id="carousel" class="left-carousel">
+								<% for(carouselShow in site.carouselList({type:13})){%>
+									<a href="${carouselShow.url!}">
+										<img src="${ctxfs}${carouselShow.path!}" alt="">
+									</a>
+								<%}%>
+							</div>
+						</div>
+						<div class="trade-right">
+							<div class="right-list">
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-1.png" alt="">
+										<div class="item-text">MUMBAIWOOD 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-2.png" alt="">
+										<div class="item-text">MUMBAIWOOD 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-3.png" alt="">
+										<div class="item-text">Automation Expo 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-4.png" alt="">
+										<div class="item-text">MUMBAIWOOD 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-5.png" alt="">
+										<div class="item-text">Automation Expo 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-4.png" alt="">
+										<div class="item-text">MUMBAIWOOD 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-5.png" alt="">
+										<div class="item-text">Automation Expo 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-3.png" alt="">
+										<div class="item-text">MUMBAIWOOD 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-2.png" alt="">
+										<div class="item-text"> Woodex Asia 2019</div>
+									</a>
+								</div>
+								<div class="list-item">
+									<a href="">
+										<img src="${ctx}/views/front/english/images/trade-show-1.png" alt="">
+										<div class="item-text">MUMBAIWOOD 2019</div>
+									</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 贸易展览 end -->
+
+		<!-- 服务 start -->
+		<div class="row row-sub util-clearfix" id="home2017_countries" data-ctrdot="services">
+			<div class="services-v3" data-spm="201712">
+				<div class="row-title util-clearfix">
+					<div class="home-category-info-header">
+						<h2><%var atYourService=fy.getMsg({key:'SiC_Shop为你服务'});%> ${atYourService!}</h2>
+						<span class="home-category-info-header-line" style="margin-right: 0;"></span>
+						<!-- <a href="">see more</a> -->
+					</div>
+					<div class="label"></div>
+				</div>
+				<div class="row-content">
+					<ul class="util-clearfix service-list">
+						<div class="service-item-wrap">
+							<a class="service-item" href="${ctxf}/newsDetail/1260.htm" target="_blank">
+								<div class="service-copy-mask">
+									<div class="service-copy-wrap"
+										 style="background-image:url('//i.alicdn.com/img/tfs/TB1uRJAxnqWBKNjSZFxXXcpLpXa-1180-360.png')">
+										<label></label>
+										<p class="copy">
+											<%var protectionService=fy.getMsg({key:'贸易保证是提供的免费订单保护服务'});%>
+											${protectionService!}
+										</p>
+									</div>
+								</div>
+								<div class="hover-service">
+									<h3>
+										<%var benefits=fy.getMsg({key:'好处'});%>
+										${benefits!}
+									</h3>
+									<ul>
+										<li>
+											<%var onTimeShipping=fy.getMsg({key:'准时送货'});%>
+											${onTimeShipping!}
+										</li>
+										<li>
+											<%var qualityProtection=fy.getMsg({key:'品质保证'});%>
+											${qualityProtection!}
+										</li>
+									</ul>
+									<div class="faqs-more">
+										<object>
+											<a class="learn-more"href="${ctxf}/newsIndex.htm"target="_blank">
+												<%var learnMore=fy.getMsg({key:'学习更多'});%>
+												${learnMore!}
+											</a>
+										</object>
+									</div>
+								</div>
+								<div class="service-content">
+									<div class="service-icon"><i class="ta"></i></div>
+									<div class="service-title-wrap">
+										<h3 class="title">
+											<%var assurance=fy.getMsg({key:'贸易保证'});%>
+											${assurance!}
+										</h3>
+										<p class="subtitle">
+											<%var orderProtetion=fy.getMsg({key:'订单保护'});%>
+											${orderProtetion!}
+										</p>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div class="service-item-wrap">
+							<a class="service-item" href="${ctxf}/newsDetail/1260.htm" target="_blank">
+								<div class="service-copy-mask">
+									<div class="service-copy-wrap"
+										 style="background-image:url('//i.alicdn.com/img/tfs/TB1yrZSw7omBKNjSZFqXXXtqVXa-1180-360.png')">
+										<label></label>
+										<p class="copy">
+											<%var laterProgram=fy.getMsg({key:'在以后付款计划下，企业可以轻松申请最多150,000美元的信贷'});%>
+											${laterProgram!}
+										</p>
+									</div>
+								</div>
+								<div class="hover-service">
+									<h3>
+										${benefits!}
+									</h3>
+									<ul>
+										<li>
+											<%var freeApply=fy.getMsg({key:'免费申请'});%>
+											${freeApply!}
+										</li>
+										<li>
+											<%var competitiveRates=fy.getMsg({key:'竞争率'});%>
+											${competitiveRates!}
+										</li>
+										<li>
+											<%var noEarlyRepaymentFee=fy.getMsg({key:'无需提前还款'});%>
+											${noEarlyRepaymentFee!}
+										</li>
+									</ul>
+									<div class="faqs-more">
+										<object>
+											<a class="learn-more"href="${ctxf}/newsIndex.htm"target="_blank">${learnMore!}</a>
+										</object>
+									</div>
+								</div>
+								<div class="service-content">
+									<div class="service-icon"><i class="sp"></i></div>
+									<div class="service-title-wrap">
+										<h3 class="title">
+											<%var payLater=fy.getMsg({key:'以后支付'});%>
+											${payLater!}
+										</h3>
+										<p class="subtitle">
+											<%var financingSolution=fy.getMsg({key:'融资解决方案'});%>
+											${financingSolution!}
+										</p>
+									</div>
+								</div>
+							</a>
+						</div>
+						<div class="service-item-wrap">
+							<a class="service-item" href="${ctxf}/newsDetail/1260.htm" target="_blank">
+								<div class="service-copy-mask">
+									<div class="service-copy-wrap"
+										 style="background-image:url('//i.alicdn.com/img/tfs/TB10TSmw67nBKNjSZLeXXbxCFXa-1180-360.png')">
+										<label></label>
+										<p class="copy">
+											<%var productionMonitoring=fy.getMsg({key:'贸易保证订单上的生产监控和检验服务'});%>
+											${productionMonitoring!}
+										</p>
+									</div>
+								</div>
+								<div class="hover-service">
+									<h3>
+										${benefits!}
+									</h3>
+									<ul>
+										<li>
+											<%var productionMonitor=fy.getMsg({key:'生产监控'});%>
+											${productionMonitor!}
+										</li>
+										<li>
+											<%var factoryCheck=fy.getMsg({key:'现场工厂检查'});%>
+											${factoryCheck!}
+										</li>
+										<li>
+											<%var reducedRisks=fy.getMsg({key:'减少延误和产品合格的风险'});%>
+											${reducedRisks!}
+										</li>
+									</ul>
+									<div class="faqs-more">
+										<object>
+											<a class="learn-more"href="${ctxf}/newsIndex.htm"target="_blank">${learnMore!}</a>
+										</object>
+									</div>
+								</div>
+								<div class="service-content">
+									<div class="service-icon"><i class="is"></i></div>
+									<div class="service-title-wrap">
+										<h3 class="title">
+											<%var inspectionSolution=fy.getMsg({key:'检验方案'});%>
+											${inspectionSolution!}
+										</h3>
+										<p class="subtitle">
+											<%var inspection=fy.getMsg({key:'检查'});%>
+											${inspection!}
+										</p>
+									</div>
+								</div>
+							</a>
+						</div>
+
+						<div class="service-item-wrap">
+							<a class="service-item" href="${ctxf}/newsDetail/1260.htm" target="_blank">
+								<div class="service-copy-mask">
+
+									<div class="service-copy-wrap"
+										 style="background-image:url('//i.alicdn.com/img/tfs/TB17KqGN7zoK1RjSZFlXXai4VXa-1180-360.png')">
+										<label></label>
+										<p class="copy">
+											<%var reliableShipping=fy.getMsg({key:'通过海运或空运实现快速，可靠的运输'});%>
+											${reliableShipping!}
+										</p>
+									</div>
+								</div>
+								<div class="hover-service">
+									<h3>
+										${benefits!}
+									</h3>
+									<ul>
+										<li>
+											<%var fastOcean=fy.getMsg({key:'快速的海运和空运'});%>
+											${fastOcean!}
+										</li>
+										<li>
+											<%var competitivePrices=fy.getMsg({key:'有竞争力的价格'});%>
+											${competitivePrices!}
+										</li>
+										<li>
+											<%var onlineTracking=fy.getMsg({key:'在线追踪'});%>
+											${onlineTracking!}
+										</li>
+									</ul>
+									<div class="faqs-more">
+										<object>
+											<a class="learn-more"href="${ctxf}/newsIndex.htm"target="_blank">${learnMore!}</a>
+										</object>
+									</div>
+								</div>
+								<div class="service-content">
+									<div class="service-icon"><i class="ls"></i></div>
+									<div class="service-title-wrap">
+										<h3 class="title">
+											<%var OceanAndAirShipping=fy.getMsg({key:'海运和空运'});%>
+											${OceanAndAirShipping!}
+										</h3>
+										<p class="subtitle">
+											<%var logisticsService=fy.getMsg({key:'物流服务'});%>
+											${logisticsService!}
+										</p>
+									</div>
+								</div>
+							</a>
+						</div>
+					</ul>
+				</div>
+			</div>
+		</div>
+		<!-- 服务 end -->
+	</div>
+
+	<!-- 当滚动页面时出现的搜索框 start -->
+	<div class="sticky-areas ui2-shadow-normal">
+		<div class="sticky-content">
+			<div class="alibaba-logo util-left"><a href="//www.alibaba.com/" class="J-sc-hd-i-logo sc-hd-i-logo"></a>
+			</div>
+			<div id="sticky-searchbar" class="ui-searchbar ui-searchbar-size-middle ui-searchbar-home">
+				<div class="ui-searchbar-body">
+					<form method="get" action="//www.alibaba.com/trade/search"><i class="ui-searchbar-button-icon"></i>
+						<input type="hidden" name="fsb" value="y">
+						<input class="ui-searchbar-field-type" type="hidden" name="IndexArea" value="product_en">
+						<input class="ui-searchbar-field-category" type="hidden" name="CatId" value="">
+						<div class="ui-searchbar-type"></div>
+						<div class="ui-searchbar-main">
+							<input type="text" class="ui-searchbar-keyword" name="SearchText" autocomplete="off"
+								   x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:translate" lang="en"
+								   placeholder="What are you looking for...">
+							<div class="ui-searchbar-keyword-panel ui-searchbar-keyword-hide ui-searchbar-dynamic"
+								 data-widget-cid="widget-5" aria-hidden="true"
+								 style="display: none; z-index: 99; height: auto;">
+								<ul class="ui-searchbar-dynamic-ctn" data-role="items" style="width: auto;">
+								</ul>
+								<div class="ui-searchbar-dynamic-query-container" data-role="attributes-container">
+								</div>
+							</div>
+							<div class="ui-searchbar-keyword-panel ui-searchbar-keyword-hide ui-searchbar-static ui-searchbar-static-labelbox"
+								 style="display: none;" data-widget-cid="widget-7">
+								<h3 class="ui-searchbar-static-title">
+									<span class="J-title-text"></span>
+									<span class="ui-searchbar-static-btn-clear" data-status="normal"
+										  data-role="clear-switch" style="display: none;">Clear History</span>
+								</h3>
+								<ul class="ui-searchbar-static-content" data-role="static-content"></ul>
+								<div class="ui-searchbar-static-row" data-role="static-row-clear" style="display:none;">
+                                    <span class="ui-searchbar-static-btn-clear" data-status="normal"
+										  data-role="clear-switch">Clear History</span>
+								</div>
+								<div class="ui-searchbar-static-products" style="display:none;">
+									<h3 class="ui-searchbar-static-p-title">
+										<a href="" target="_blank" class="ui-searchbar-static-inspired-title"
+										   data-role="inspired-title">Inspired by your Recent Search:</a>
+										<a href="#" target="_blank" class="ui-searchbar-static-view-more"
+										   data-role="view-more" style="display: none;">View More</a>
+									</h3>
+									<div class="ui-searchbar-static-products-list" data-role="static-products-list"></div>
+								</div>
+							</div>
+						</div>
+						<input type="submit" class="ui-searchbar-submit" value="Search">
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 当滚动页面时出现的搜索框 end -->
+
+	<!-- tangram:1522 begin-->
+
+	<!-- 侧边栏按钮 start -->
+	<div class="m-toolbar-side" data-role="toolbar-side" data-spm="201718">
+		<div class="m-toolbar-item m-go-top" data-role="go-top" data-goldlog="gotop">
+			<div class="icon-wrap" id="goTop">
+				<i class="ui2-icon ui2-icon-arrow-up ui2-icon-s"></i>
+				<div class="text">TOP</div>
+			</div>
+		</div>
+		<a class="m-toolbar-item" data-role="survey" target="_blank"
+		   href="https://open-s.alibaba.com/internation/icbuXiniuSurveyPc.htm?for=pc:homepage-toolbar"
+		   data-goldlog="survey">
+			<!--<div class="icon-wrap"><i class="ui2-icon ui2-icon-feedback ui2-icon-s"></i></div>-->
+			<div class="hover-wrap">Leave Feedback</div>
+		</a>
+	</div>
+	<!-- 侧边栏按钮 end -->
+
+	<!-- 引入footer -->
+	<% include("/include/footer.html"){}%>
+
+	<div id="ServerId" style="color:whitesmoke;text-align:center;background:whitesmoke"> aisn011027118198 </div>
+	<!-- 样本表单的下拉数据 start -->
+	<div class="ui2-popup-menu ui2-dropdown ui2-popup-menu-spec" data-widget-cid="widget-2" aria-hidden="true"
+		 style="width: 250px; display: none; z-index: 99; position: absolute; left: 1036px; top: 2994px; max-height: 300px;">
+		<ul data-role="content">
+			<li data-role="item" class="rfq-unit-selected" data-value="Bag/Bags" data-defaultselected="false"
+				data-selected="true" data-disabled="false"><a>Bag/Bags</a></li>
+			<li data-role="item" class="" data-value="Barrel/Barrels" data-defaultselected="false" data-selected="false"
+				data-disabled="false"><a>Barrel/Barrels</a></li>
+			<li data-role="item" class="" data-value="Bushel/Bushels" data-defaultselected="false" data-selected="false"
+				data-disabled="false"><a>Bushel/Bushels</a></li>
+			<li data-role="item" class="" data-value="Cubic Meter/Cubic Meters" data-defaultselected="false"
+				data-selected="false" data-disabled="false"><a>Cubic Meter/Cubic Meters</a></li>
+			<li data-role="item" class="" data-value="Dozen/Dozens" data-defaultselected="false" data-selected="false"
+				data-disabled="false"><a>Dozen/Dozens</a></li>
+		</ul>
+	</div>
+	<!-- 样本表单的下拉数据 end -->
+</body>
+<!-- 业务js -->
+<script src="${ctx}/views/front/english/index.js"></script>
+<% include("/include/foot.html"){}%>
+</html>

@@ -1,0 +1,406 @@
+<div id="J_SC_header" data-spm="scGlobalHomeHeader"
+     class="sc-hd sc-hd-language sc-hd-rwd-min-s sc-hd-rwd-max-xl sc-hd-rwd    sc-hd-biztype-home sc-hd-rwd-l">
+    <header class="sc-hd-header">
+        <!--   header start  -->
+        <div class="sc-hd-row sc-hd-main">
+            <%var siteInfo = site.info();%>
+            <div class="sc-hd-cell sc-hd-hide-s sc-hd-m-logo">
+                <a href="${ctxf}/index.htm"  alt="${siteInfo.name}" data-val="${siteInfo.name}">
+                    <img src="${siteInfo.siteLogo != null ? ctxfs : ctx}${siteInfo.siteLogo != null ? siteInfo.siteLogo : '/views/front/english/images/logo_02.png'}"
+                         class="logo" style="padding-left: 0px;margin-left: -17px;margin-top: -10px;">
+                </a>
+            </div>
+            <div class="sc-hd-cell sc-hd-searchbar-wrap search-div" style="display: block; width: calc(100% - 586px);">
+                <div class="J-sc-hd-searchbar ui-searchbar ui2-searchbar ui-searchbar-size-middle ui-searchbar-primary ui-searchbar-mod-type ui-searchbar-img-search">
+                    <div class="ui-searchbar-body">
+                        <!--<form method="get" class="ui-searchbar-form" action="${ctxf}/product/list.htm">-->
+                        <i class="ui-searchbar-button-icon"></i>
+                        <!-- 照相机 -->
+                        <div class="ui-searchbar-type">
+                            <input type="hidden" name="searchType" class="searchType" value=""/>
+                            <div class="dropdown" data-widget-cid="widget-17">
+                                <%var headerProduct =fy.getMsg({key:'商品'});%>
+                                <button class="btn dropdown-toggle" type="button" id="dropdownMenu1"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                    ${headerProduct!}
+                                    <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-down sc-hd-prefix2-icon-xs"></i>
+                                </button>
+                                <ul class="dropdown-menu ui-searchbar-type-options" aria-labelledby="dropdownMenu1">
+                                    <li class="ui-searchbar-type-option" type="1">
+                                        <a href="javascript:void(0);">${headerProduct!}</a>
+                                    </li>
+                                    <li class="ui-searchbar-type-option" type="2">
+                                        <a href="javascript:void(0);"><%var headerSuppliers =fy.getMsg({key:'供应商'});%>
+                                            ${headerSuppliers!}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="ui-searchbar-main" style="margin-left: 104px;">
+                            <input type="text" class="ui-searchbar-keyword" name="k" autocomplete="off"
+                                   value="${parameter.k!=null?parameter.k:'Computer'}"
+                                   x-webkit-speech="x-webkit-speech" x-webkit-grammar="builtin:translate" lang="en"
+                                   placeholder="What are you looking for...">
+                        </div>
+                        <%var headerSearch =fy.getMsg({key:'查询'});%>
+                        <input type="button" class="ui-searchbar-submit" value="${headerSearch!}">
+                        <span class="ui-searchbar-advanced">
+                            <a class="ui-searchbar-advanced-link" href="javascript:;" data-val=""></a>
+                        </span>
+                        <!--</form>-->
+                    </div>
+                </div>
+                <div class="hotsearch" style="margin-top: 0px;margin-left: 102px;width: 287px;">
+                    <div class="title"><%var hotSerarchKey =fy.getMsg({key:'热搜关键词'});%> ${hotSerarchKey!} ：</div>
+                    <%
+                    var siteHotSearchWords = site.hotSearchWord({type:0,pageSize:12});
+                    for(siteHotSearchWord in siteHotSearchWords!){
+                    %>
+                    <a target="_blank" href="javascript:"
+                       onclick="window.location.href ='${ctxf}/product/list.htm?k=${siteHotSearchWord.word!}'">${siteHotSearchWord.word!}</a>
+                    <%} %>
+                </div>
+            </div>
+            <div class="sc-hd-cell sc-hd-m-notify sc-hd-float-r sc-hd-text-right">
+                <div class="J-hd-m-notify-tab sc-hd-hide-s sc-hd-ms-tab sc-hd-ms-ma J-sc-hd-ms-ma" data-tab="ma">
+                    <!-- 登陆前显示效果 start -->
+                    <div class="J-hd-m-notify-tab-trigger  sc-hd-ms-trigger sc-hd-ms-unsign login-before-show"
+                         data-tab="ma">
+                        <div class="sc-hd-ms-icon sc-hd-i-unsignavatar"></div>
+                        <div class="sc-hd-ms-title-top">
+                            <div class="sc-hd-ms-login">
+                                <a rel="nofollow" href="${ctxsso}/login/login.htm" data-val="ma_signin" title="Sign In"><%var
+                                    headerLogin =fy.getMsg({key:'登录'});%> ${headerLogin!}</a>
+                            </div>
+                            <div class="sc-hd-ms-login">
+                                <a href="${ctxsso}/register/save1.htm" data-val="ma_joinfree" title="Join Free"> <%var
+                                    headerJoinFree =fy.getMsg({key:'注册'});%> ${headerJoinFree!}</a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 登陆前显示效果 end -->
+
+                    <!-- 登陆后显示效果 start -->
+                    <%var headerMyenglish =fy.getMsg({key:'我的'});%>
+                    <div class="J-hd-m-notify-tab-trigger sc-hd-ms-trigger login-aftet-show" data-tab="ma"
+                         style="display:none">
+                        <div class="sc-hd-icon-container">
+                            <a class="sc-hd-ms-icon sc-hd-ms-avatar" data-val="maicon" href="javascript:;"
+                               title="My english" data-spm-anchor-id="a2700.8293689.scGlobalHomeHeader.11">
+                                <div class="sc-hd-ms-icon sc-hd-i-unsignavatar"></div>
+                            </a>
+                        </div>
+                        <div class="sc-hd-text-container">
+                            <a class="login-aftet-show-login-name" title="My english" href="javascript:;"
+                               data-spm-anchor-id="a2700.8293689.scGlobalHomeHeader.12">
+                                ${headerMyenglish!}
+                            </a>
+                        </div>
+                    </div>
+                    <div class="sc-hd-ms-panel login-aftet-show" style="display:none">
+                        <a class="sc-hd-ms-maentry" target="_blank" href="${ctxf}/index.htm">
+                            ${headerMyenglish!}&nbsp;&nbsp;<i class="sc-hd-i-arr-r"></i>
+                        </a>
+                        <!--<a class="sc-hd-ms-maentrys" target="_blank"
+                            href="//sourcing.alibaba.com/?tracelog=header_rfq_market" rel="nofollow"
+                            data-val="ma-//sourcing.alibaba.com/?tracelog=header_rfq_market">
+                            RFQ Market
+                        </a>-->
+                        <a class="sc-hd-ms-maentrys" target="_blank" href="${ctxm}/trade/tradeOrder/list.htm"
+                           rel="nofollow" data-val="${ctxm}/trade/tradeOrder/list.htm">
+                            <%var headerMyOrder =fy.getMsg({key:'我的订单'});%> ${headerMyOrder!}
+                        </a>
+                        <a class="sc-hd-ms-maentrys" target="_blank"
+                           href="${ctxm}/collect/memberCollectionProduct/list.htm"
+                           rel="nofollow" data-val="${ctxm}/collect/memberCollectionProduct/list.htm">
+                            <%var headerMyFavorites =fy.getMsg({key:'我的收藏'});%> ${headerMyFavorites!}
+                        </a>
+                        <a class="sc-hd-ms-maentrys" target="_blank" href="${ctxm}/user/userMember/save1.htm"
+                           rel="nofollow" data-val="${ctxm}/user/userMember/save1.htm">
+                            <%var headerMyAccount =fy.getMsg({key:'我的账号'});%> ${headerMyAccount!}
+                        </a>
+                        <div class="sc-hd-ms-group-sign">
+                            <div class="sc-hd-ms-btgroup">
+                                <a href="${ctxsso}/logout.htm" title="Sign In" target="_self" data-val="ma_signin"
+                                   class="sc-hd-ms-btsignin">
+                                    <%var headerLogout =fy.getMsg({key:'退出'});%> ${headerLogout!}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 登陆后显示效果 end -->
+                </div>
+                <!-- 判断用户是否登录 -->
+                <script>
+                    function changeTopBar() {
+                        var loginStatus = usm.isLogin();//usm-判断用户是否登录
+                        var isloginInvalid = usm.getCookie('usm.isloginInvalid');//是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）
+                        var loginName = usm.getCookie('usm.loginName');//用户名
+                        if (loginStatus && isloginInvalid) {
+                            $(".login-aftet-show").css("display", "")
+                            $(".login-before-show").css("display", "none")
+                            $(".login-aftet-show-login-name").html(loginName)
+                        } else {
+                            $(".login-aftet-show").css("display", "none")
+                            $(".login-before-show").css("display", "")
+                        }
+                    }
+
+                    changeTopBar();
+
+                    /**
+                     * 店铺搜索和商品搜索函数
+                     */
+                    function query() {
+                        var keyWord = $("#keyWord").val();
+                        var url = "";
+                        if (keyWord.length <= 0) {
+                            return;
+                        }
+                        if ($("#searchType").html() == "产品") {
+                            url = "${ctxf}/product/list.htm?k=";
+                        } else {
+                            url = "${ctxf}/store/list.htm?k=";
+                        }
+                        window.location.href = url + keyWord;
+                    }
+
+                </script>
+                <div class="J-hd-m-notify-tab sc-hd-hide-s sc-hd-ms-tab sc-hd-ms-message J-sc-hd-ms-message"
+                     data-tab="message">
+                    <div class="sc-hd-m-notify">
+                        <div class="J-hd-m-notify-tab sc-hd-ms-message" data-tab="message">
+                            <div class="J-hd-m-notify-tab-trigger J-hd-m-notify-tab-message-wrap sc-hd-ms-trigger sc-hd-ms-last"
+                                 data-tab="message">
+                                <div class="sc-hd-icon-container">
+                                    <a class="sc-hd-ms-icon sc-hd-i-unsignavatar" href="${ctxs}/index.htm"
+                                       data-val="seller" target="_blank" title="Seller"></a>
+                                </div>
+                                <div class="sc-hd-text-container">
+                                    <a href="${ctxs}/index.htm" target="_blank" title="Seller">
+                                        <%var headerSeller =fy.getMsg({key:'商家中心'});%> ${headerSeller!}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- 消息按钮 hover效果 start -->
+                    <!-- 消息按钮 hover效果 end -->
+                </div>
+                <div class="J-hd-m-notify-tab sc-hd-hide-s sc-hd-ms-tab sc-hd-ms-order J-sc-hd-ms-order"
+                     data-tab="order">
+                    <div class="J-hd-m-notify-tab-trigger sc-hd-ms-trigger sc-hd-ms-last" data-tab="order">
+                        <div class="sc-hd-icon-container">
+                            <a class="sc-hd-ms-icon sc-hd-i-taorder-new" data-val="ordericon" title="Orders"
+                               href="${ctxm}/trade/tradeOrder/list.htm" target="_blank"></a>
+                        </div>
+                        <div class="sc-hd-text-container">
+                            <a title="Orders" href="${ctxm}/trade/tradeOrder/list.htm" target="_blank">
+                                <%var headerOrders =fy.getMsg({key:'订单'});%> ${headerOrders!}
+                            </a>
+                        </div>
+                    </div>
+                    <!-- 订单按钮 hover效果 start -->
+                    <!-- 订单按钮 hover效果 end -->
+                </div>
+                <div class="J-hd-m-notify-tab sc-hd-ms-tab sc-hd-ms-cart J-sc-hd-ms-cart" data-tab="cart"
+                     data-widget-cid="widget-10">
+                    <div>
+                        <div class="icbu-simple-shopping-cart  s-empty">
+                            <a class="icbu-simple-shopping-cart-link"
+                               href="${ctxf}/trade/cart/list.htm" target="_blank">
+                                <div class="J-hd-m-notify-tab-trigger sc-hd-ms-trigger sc-hd-ms-last"
+                                     data-tab="cart">
+                                    <div class="sc-hd-icon-container">
+                                        <a class="sc-hd-ms-icon sc-hd-i-cart-new" data-val="carticon"
+                                           href="${ctxf}/trade/cart/list.htm" target="_blank"></a>
+                                    </div>
+                                    <div class="sc-hd-text-container">
+                                        <a title="Cart" href="${ctxf}/trade/cart/list.htm" target="_blank"
+                                           data-val="Cart" data-type="text">
+                                            <%var headerCart =fy.getMsg({key:'购物车2'});%> ${headerCart!}
+                                        </a>
+                                    </div>
+                                </div>
+                                <span class="J-sc-hd-num sc-hd-sc-num" data-type="count">0</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--   header end  -->
+
+        <div class="sc-hd-line" style="background: #E6E7EB;height: 1px;width: 100%;"></div>
+        <!-- tangram:4421 begin-->
+
+        <!-- 分类栏 start  --->
+        <div class="sc-hd-row sc-hd-link">
+            <div>
+                <div class="sc-hd-category">
+                    <div class="J-sc-hd-scc-category-unit sc-hd-scc-category-unit" data-role="scc-category-unit"
+                         data-widget-cid="widget-21">
+                        <div class="header-category-wrapper trigger-active">
+                            <h3 class="header-category-trigger">
+                                <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-category sc-hd-prefix2-icon-s"></i>
+                                <span><%var headerCategories =fy.getMsg({key:'分类'});%> ${headerCategories!}</span>
+                                <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-down sc-hd-prefix2-icon-xs"></i>
+                            </h3>
+                            <div class="header-category">
+                                <ul class="component-list" data-role="component-list">
+                                    <% for(oneCategroy in product.categoryList({parentId:0})){%>
+                                    <!-- 一级分类 -->
+                                    <li>
+                                        <div class="title">
+                                            <a href="${ctxf}/category/${oneCategroy.categoryId!}.htm" target="_blank">${oneCategroy.name!}</a>
+                                            <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-right"></i>
+                                        </div>
+                                        <div class="level-one-list">
+                                            <div class="level-one-inner">
+                                                <% for(twoCategroy in product.categoryList({parentId:oneCategroy.categoryId!,limit:4})){%>
+                                                <!-- 二级分类 -->
+                                                <div class="level-one">
+                                                    <a class="level-one-title"
+                                                       href="${ctxf}/product/list.htm?cid=${twoCategroy.categoryId!}"
+                                                       target="_blank">${twoCategroy.name!}</a>
+                                                    <div class="level-two-list">
+                                                        <!-- 三级分类 -->
+                                                        <% for(threeCategroy in product.categoryList({parentId:twoCategroy.categoryId!,limit:4})){%>
+                                                        <a class="level-two-title"
+                                                           href="${ctxf}/product/list.htm?cid=${threeCategroy.categoryId!}"
+                                                           target="_blank">
+                                                            ${threeCategroy.name!}
+                                                        </a>
+                                                        <%}%>
+                                                        <a class="view-more" target="_blank" href="${ctxf}/categoryAll.htm" rel="nofollow">
+                                                            <%var headerViewMore =fy.getMsg({key:'查看更多'});%>
+                                                            ${headerViewMore!}
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                                <%}%>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <%}%>
+                                </ul>
+                                <a class="all-categories" target="_blank" href="${ctxf}/categoryAll.htm"> 
+                                	<%var headerAllCategories=fy.getMsg({key:'全部分类'});%> ${headerAllCategories!}
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="sc-hd-i-delimit"></div>
+                <div class="sc-hd-links-box">
+                    <ul>
+                        <li>
+                            <a target="&quot;_blank&quot;"
+                               href="${ctxf}/custom/special.htm">
+                                <%var headerTradeShows =fy.getMsg({key:'交易展览'});%> ${headerTradeShows!}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)"><%var headerHelp =fy.getMsg({key:'帮助'});%> ${headerHelp!}</a>
+                            <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-down sc-hd-prefix2-icon-xs"></i>
+                            <i class="sc-hd-panel-arrow"></i>
+                            <div class="sc-hd-panel">
+                                <ul>
+                                    <li>
+                                        <a target="&quot;_blank&quot;" href="${ctxf}/articleDetail/1358.htm">
+                                            <span class="sc-hd-text-warp"><%var headerHelpCenter =fy.getMsg({key:'帮助中心'});%> ${headerHelpCenter!}</span>
+
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a target="&quot;_blank&quot;" href="${ctxf}/articleDetail/1370.htm">
+                                            <span class="sc-hd-text-warp"><%var headerForSuppliers =fy.getMsg({key:'对于供应商'});%> ${headerForSuppliers!}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a target="&quot;_blank&quot;" href="${ctxf}/articleDetail/1361.htm">
+                                            <span class="sc-hd-text-warp"><%var headerSubmitDispute =fy.getMsg({key:'提交争议'});%> ${headerSubmitDispute!}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a target="&quot;_blank&quot;"
+                                           href="${ctxf}/articleDetail/1362.htm">
+                                            <span class="sc-hd-text-warp"><%var headerReportInfringement =fy.getMsg({key:'举报侵犯知识产权'});%> ${headerReportInfringement!}</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a target="&quot;_blank&quot;"
+                                           href="${ctxf}/articleDetail/1360.htm">
+                                            <span class="sc-hd-text-warp"><%var headerReportAbuse =fy.getMsg({key:'报告滥用'});%> ${headerReportAbuse!}</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li>
+                            <a href="${ctxf}/newsIndex.htm" target="_blank">
+                                <%var headerNews =fy.getMsg({key:'资讯'});%>
+                            ${headerNews!}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${ctxf}/custom/special.htm" target="_blank">
+                                <%var headerThematic =fy.getMsg({key:'专题'});%> ${headerThematic!}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="${ctx}/purchase/index.htm" target="_blank">
+                                <%var headerPurchase=fy.getMsg({key:'采购'});%> ${headerPurchase!}
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- 分类栏右侧的切换语言 start -->
+                <div class="sc-hd-right sc-hd-float-r">
+                    <div class="sc-hd-i-delimit"></div>
+                    <div class="sc-hd-lan">
+                        <div class="ui-header-lan J-header-lan" data-widget-cid="widget-13">
+                            <div class="header-language-currency">
+                                <div class="current-value" style="width: auto">
+                                    <label class="ellipsis"  title="" style="margin-right: 5px;">
+                                        <span class="ellipsis current-language">Language</span>
+                                    </label>
+                                    <i class="sc-hd-prefix2-icon sc-hd-prefix2-icon-arrow-down" style="line-height: 24px;"></i>
+                                </div>
+                                <script>
+                                    var languageSimp=fy.getCurrentLanguage();
+                                    if(languageSimp=='zh_CN'){
+                                        $(".current-language").text("中文");
+                                    }else{
+                                        $(".current-language").text("English");
+                                    }
+                                </script>
+                                <div class="header-control-panel">
+                                    <form action="" method="post">
+                                        <%var languageSettings=fy.getMsg({key:'设置语言'});%>
+                                        <div class="title"><b>${languageSettings!}</b></div>
+                                        <div class="input-container">
+                                            <div data-role="select-language" data-widget-cid="widget-22">
+                                                <select name="language" style="width: 100%;height: 30px;border: 1px solid #DCDEE3;" class="select-language">
+                                                    <option value="zh_CN">中文</option>
+                                                    <option value="en_US">English</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="btn-container">
+                                            <%var saveLanguage=fy.getMsg({key:'保存'});%>
+                                            <button data-role="save" type="submit" id="saveLanguage">${saveLanguage!}</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 分类栏右侧的切换语言 end -->
+            </div>
+        </div>
+        <!-- 分类栏 end --->
+    </header>
+</div>

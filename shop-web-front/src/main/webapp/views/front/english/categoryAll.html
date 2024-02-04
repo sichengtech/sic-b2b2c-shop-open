@@ -1,0 +1,89 @@
+<html class="rwd rwd-l">
+<head>
+    <title>All Categories Powered by SiC</title>
+    <% include("/include/head.html"){}%>
+    <link rel="stylesheet" href="${ctx}/views/front/english/css/categoryAll.css">
+<body>
+    <% include("/include/header.html"){}%>
+    <div class="cg cg-page" id="category" style="padding-top:20px;">
+        <div class="en-us">
+            <div class="ui-breadcrumb">
+                <a href="${ctxf}/index.htm">Home</a>
+                <span class="divider">&gt;</span>
+                <h1 class="active">All Categories</h1>
+            </div>
+        </div>
+        <h2 class="cg-title">Products by Category</h2>
+        <table class="cg-nav-wrapper cg-nav-wrapper-row-2" data-role="cg-nav-wrapper"
+               style="position: relative; left: 0px; top: 0px; bottom: 0px;">
+            <tbody>
+            <% var oneCategroyList=product.categoryList({parentId:0,limit:0}); %>
+            <%for(var i=0;i< oneCategroyList.~size;i++){%>
+                <% if(i%5==0){%> <tr> <%}%>
+                <td class="anchor-wrap anchor${i+1}-wrap" data-role="anchor${i+1}">
+                    <a class="anchor${i+1} anchor-agricuture" data-role="cont" href="#name${i+1}">
+                        <div class="anchor">
+                            <img src="${ctxfs}${oneCategroyList[i].categoryImg!}@!40X40" onerror="fdp.defaultImage('${ctx}/views/front/english/images/c_4.png');"/>
+                        </div>
+                        <span class="desc">${oneCategroyList[i].name!}</span>
+                    </a>
+                </td>
+                <% if((i!=0 && (i+1)%5==0) || i== (oneCategroyList.~size-1)){%></tr><%}%>
+            <%}%>
+            </tbody>
+        </table>
+
+        <div class="util-clearfix cg-container">
+            <!-- main -->
+            <div class="cg-main">
+                <%for(var i=0;i< oneCategroyList.~size;i++){
+                    var categoryOne=oneCategroyList[i];
+                %>
+                <div class="item util-clearfix" data-spm="${i+1}">
+                    <h3 class="big-title anchor${i+1} anchor-apparel" id="name${i+1}">
+                        <span id="anchor${i+1}" class="anchor-subsitution"></span>
+                        <img class="cg-icon" src="${ctxfs}${categoryOne.categoryImg!}@!32X32" onerror="fdp.defaultImage('${ctx}/views/front/english/images/c_4.png');"/>
+                        ${categoryOne.name!}
+                    </h3>
+                    <div class="sub-item-wrapper util-clearfix">
+                        <% for(categoryTwo in product.categoryList({parentId:categoryOne.categoryId!,limit:0})){ %>
+                        <div class="sub-item">
+                            <h4 class="sub-title">
+                                <a href="${ctxf}/product/list.htm?cid=${categoryTwo.categoryId!}">
+                                    ${categoryTwo.name!}
+                                </a>
+                            </h4>
+                            <div class="sub-item-cont-wrapper">
+                                <ul class="sub-item-cont util-clearfix">
+                                    <% for(categoryThree in product.categoryList({parentId:categoryTwo.categoryId!,limit:0})){ %>
+                                    <li>
+                                        <a href="${ctxf}/product/list.htm?cid=${categoryThree.categoryId!}">
+                                            ${categoryThree.name!}
+                                        </a>
+                                    </li>
+                                    <%}%>
+                                </ul>
+                            </div>
+                        </div>
+                        <%}%>
+                    </div>
+                </div>
+                <%}%>
+            </div>
+            <!-- main END -->
+        </div>
+        <div class="m-toolbar-side" data-role="toolbar-side">
+            <div class="m-toolbar-item m-go-top" data-role="go-top">
+                <div class="icon-wrap" id="goTop" style="display: none;">
+                    <i class="ui2-icon ui2-icon-arrow-up ui2-icon-s"></i>
+                    <div class="text">TOP</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <% include("/include/footer.html"){}%>
+</body>
+<% include("/include/foot.html"){}%>
+<!-- 业务js -->
+<script src="${ctx}/views/front/english/categoryAll.js"></script>
+</html>
