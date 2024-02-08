@@ -63,5 +63,14 @@
 第N步：架构升级。  
 第N步：功能升级。  
 
-# 效果图
-![思程 Shop PC效果图](./docs/images/pc.png "思程 Shop PC效果图")  
+# 效果图-简体中文商城PC端
+![思程 Shop PC效果图](./docs/images/pc-cn.png "思程 Shop PC效果图")  
+
+# 效果图-英文国际商城PC端
+![思程 Shop PC效果图](./docs/images/pc-en.png "思程 Shop PC效果图")  
+
+# 效果图-简体中文商城移动端
+![思程 Shop PC效果图](./docs/images/m-cn.png "思程 Shop PC效果图")
+
+# 效果图-英文国际商城移动端
+![思程 Shop PC效果图](./docs/images/m-en.png "思程 Shop PC效果图")  
