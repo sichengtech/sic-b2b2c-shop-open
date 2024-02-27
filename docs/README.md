@@ -1,25 +1,10 @@
-# 开发指南（待完善...）
+# 说明
+## docs目录说明：  
+docs目录原计划用于存放文档，但随着文档数量越来越多，文档已经迁移到社区官网。
+更多信息请到官网查看，那里有最新最全面的文档。 社区官网：https://www.sicheng.net/
 
-## 关于这个指南
+## lib目录说明：  
+lib目录用于存储本地jar包。例如fdp-core-3.6.7.jar 无法从Maven中央仓库下载，所以被放在这里供本项目引用。
 
-* **The target audience** of this guide is OceanBase contributors, both new and experienced.
-* **The objective** of this guide is to help contributors become an expert of OceanBase, who is familiar with its design and implementation and thus is able to use it fluently in the real world as well as develop OceanBase itself deeply.
-
-## 本指南的结构
-
-At present, the guide is composed of the following parts:
-
-1. **Get started**: Setting up the development environment, build and connect to the OceanBase server, the subsections are based on an imagined newbie user journey.
-    1. Install toolchain
-    2. Get the code, build and run
-    3. Set up an IDE
-    4. Write and run unit tests
-    5. Debug and profile
-    6. Commit code and submit a pull request
-2. **Contribute to OceanBase**: helps you quickly get involved in the OceanBase community, which illustrates what contributions you can make and how to quickly make one.
-
-## 用为文档
-
-This guide does _not_ contains user documents.
-
-For user documents, please refer to [oceanbase-doc](https://github.com/oceanbase/oceanbase-doc).
+## images目录说明：  
+images目录用存放一些图片，供主README.md文件引用
