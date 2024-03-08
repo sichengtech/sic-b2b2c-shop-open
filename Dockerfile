@@ -26,8 +26,10 @@ RUN rm -f /etc/localtime \
 && echo "Asia/Shanghai" > /etc/timezone
 
 
-# 将war包copy到tomcat的合适目录中
+# 将war包copy到tomcat的合适目录中（适用于Jenkins自动化环境）
 COPY *.war /usr/local/tomcat/webapps/
+
+# 将war包copy到tomcat的合适目录中（适用用windows开发环境）
 # COPY shop-web-admin/target/*.war /usr/local/tomcat/webapps/
 # COPY shop-web-front/target/*.war /usr/local/tomcat/webapps/
 # COPY shop-web-static/target/*.war /usr/local/tomcat/webapps/

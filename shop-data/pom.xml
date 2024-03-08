@@ -27,6 +27,9 @@
             <version>2.6</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- maven依赖的本地jar包 -->
+
     </dependencies>
 
 </project>

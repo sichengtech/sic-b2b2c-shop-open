@@ -121,8 +121,7 @@
         <!-- fdp-core基础工具库  -->
         <dependency>
 		<groupId>io.github.sichengtech</groupId>
-            <artifactId>fdp-core</artifactId>
-            <version>3.6.7</version>
+		<artifactId>fdp-core-open</artifactId>
         </dependency>
 
         <!-- SPRING begin -->

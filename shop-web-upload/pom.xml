@@ -23,6 +23,8 @@
 
         <!-- 依赖第三方jar包 -->
 
+        <!-- maven依赖的本地jar包 -->
+
         <!-- 百度富文本编辑的java服务端，在处理上传文件时，依赖本json包，与fastJson小有不同 -->
         <dependency>
             <groupId>org.json</groupId>

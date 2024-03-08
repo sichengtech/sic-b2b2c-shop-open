@@ -23,5 +23,7 @@
 
         <!-- 依赖第三方jar包 -->
 
+        <!-- maven依赖的本地jar包 -->
+
     </dependencies>
 </project>
