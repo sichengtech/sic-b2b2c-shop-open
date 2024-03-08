@@ -120,8 +120,8 @@
     <dependencies>
         <!-- fdp-core基础工具库  -->
         <dependency>
-		<groupId>io.github.sichengtech</groupId>
-		<artifactId>fdp-core-open</artifactId>
+            <groupId>io.github.sichengtech</groupId>
+            <artifactId>fdp-core-open</artifactId>
             <version>3.6.7</version> 
         </dependency>
 
