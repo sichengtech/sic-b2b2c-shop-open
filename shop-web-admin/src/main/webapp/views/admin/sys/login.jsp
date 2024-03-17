@@ -64,7 +64,7 @@
         </form>
     </div>
 </div>
-<img src="${ctxStatic}/sicheng-admin/images/login-bg.png" width="100%" height="100%" alt="" class="bgimg"/>
+<img src="${ctxStatic}/sicheng-admin/images/login-bg.png" width="100%" height="100%" alt="" class="admin-login-bgimg"/>
 <!--body wrapper start-->
 <!--body wrapper end-->
 </body>
