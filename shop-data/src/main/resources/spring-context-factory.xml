@@ -51,7 +51,7 @@
 	MybatisNoCache类 是表示不使用MyBatis二级缓存
 
 	特点：
-	这3个MyBatis二级缓存的实现类，注意scope="prototype"，它是多实例的，一个实例对应一个namespace缓存分区对应一张数据表，清理缓存时namespace是最小单位清理。
+	这几个MyBatis二级缓存的实现类，注意scope="prototype"，它是多实例的，一个实例对应一个namespace缓存分区对应一张数据表，清理缓存时namespace是最小单位清理。
 	-->
 	<bean id="mybatisEhcache" class="com.sicheng.common.persistence.cache.MybatisEhcache" scope="prototype">
 		<property name="cacheManager" ref="cacheManager" />
@@ -60,46 +60,33 @@
 <!--	<bean id="mybatisNoCache" class="com.sicheng.common.persistence.cache.MybatisNoCache" scope="prototype">-->
 <!--	</bean> -->
 	
-	
 	<!-- 
 	lockConfig的作用是：
-	用来控制“定时任务”在启动时是否使用分布式锁，来保证同一个定时任务只能在一个服务器节点上执行，防止同一个定时任务在多台服务器上同时执行。
-	在单节点部署的背景下，“定时任务”全局也只有一份，所以最多只能在一个服务器节点上执行，所以不需要使用分布式锁来保证“单一性”。
-	在集群部署的背景下，由于使用了多台服务器，“定时任务”也会有多份，但必须保证一个定时任务致多只能在一个服务器节点上执行，防止同一个定时任务在多台服务器上同时执行重复做任务。就需要使用分布式锁
-
-	有以下2个选项，请二选一
-	false:由于工程采用了单点部署，“定时任务”在启动时，不需要使用分布式销。
-	true:由于工程采用了集群部署，，“定时任务”在启动时，必须使用分布式锁保证“单一性”，（分布式锁依赖Redis，请在fdp.p配置文件提前配置好Redis的连接信息）
+	用来保证同一个定时任务只能在一个服务器节点上执行，在单节点部署的背景下，“定时任务”全局也只有一份，所以最多只能在一个服务器节点上执行。
+	选项：false:在工程采用了单点部署的情况下使用false。
 	-->
 	<bean id="lockConfig" class="com.sicheng.common.redis.LockConfig" scope="prototype">
-<!--		<property name="distributed" value="true" />-->
 		<property name="distributed" value="false" />
 	</bean>
 
 	<!-- Shiro缓存管理器
 	EhCacheManager类，是EhCache做为Shiro缓存管理器。（作者在日常开发时就使用EhCache）
-	-->
-	<!-- Shiro缓存管理器 ehcache实现，适用于单机环境-->
+	Shiro缓存管理器 ehcache实现，适用于单机环境-->
 	<bean id="shiroCacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">
 		<property name="cacheManager" ref="cacheManager"/>
 	</bean>
 
-
 	<!--
 	“文章”全文检索接口，用于通过关键词来搜索出相关的文章。
-	两种实现，请二选一
+	以下实现：
 	ArticleSearch4Solr类，是Solr实现。需要提前部署Solr服务。
-	ArticleSearch4Es类，是ES实现。需要提前部署ES服务。
 	-->
 	<bean id="articleSearch" class="com.sicheng.search.ArticleSearch4Solr" destroy-method="destroy"></bean>
-	<!--<bean id="articleSearch" class="com.sicheng.search.ArticleSearch4Es" destroy-method="destroy"></bean> -->
 
 	<!--
 	“商品”全文检索接口,使用多个条件搜索商品
-	两种实现，请二选一
+	以下实现：
 	ArticleSearch4Solr类，是Solr实现。需要提前部署Solr服务。
-	ArticleSearch4Es类，是ES实现。需要提前部署ES服务。
 	-->
 	<bean id="productSearch" class="com.sicheng.search.ProductSearch4Solr" destroy-method="destroy"></bean>
-	<!--<bean id="productSearch" class="com.sicheng.search.ProductSearch4Es" destroy-method="destroy"></bean> -->
 </beans>
