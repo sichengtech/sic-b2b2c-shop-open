@@ -37,13 +37,17 @@
         <%--		<div class="logo"><img src="${ctxStatic}/sicheng-admin/images/login-logo.png" alt="${fns:getConfig('productName')}" title="${fns:getConfig('productName')}"/></div>--%>
         <p class="message">${message}</p>
         <form id="inputForm" class="form-signin" action="${ctxa}/login.do" method="post">
-            <label class="control-label label-name"><i class="icon"></i>
-                <input type="text" id="username" name="username" class="input-username" placeholder="${fns:fy('请输入管理员帐号')}"
-                       value="${username}">
+
+            <input type="text" id="username" name="username" class="input-username" placeholder="${fns:fy('请输入管理员帐号')}" value="${username}">
+            <label class="control-label label-name">
+                <i class="icon"></i>
             </label>
-            <label class="control-label label-password"><i class="icon"></i>
-                <input type="password" class="input-password" placeholder="${fns:fy('请输入密码')}" id="password" name="password">
+
+            <label class="control-label label-password">
+                <i class="icon"></i>
             </label>
+            <input type="password" class="input-password" placeholder="${fns:fy('请输入密码')}" id="password" name="password"/>
+
             <!--验证码开始-->
             <c:if test="${isValidateCodeLogin}">
                 <div class="validateCode">
