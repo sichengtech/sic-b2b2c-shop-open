@@ -7,15 +7,15 @@
 	<!-- 全部字段 -->
 	<sql id="productSpuColumns">
 	<trim suffixOverrides=",">
-		a.p_id AS "pId",                                                     <!-- id number(19)-->
+		a.p_id AS "pId",                                                     <!-- id bigint(20)-->
 		a.name AS "name",                                                    <!-- 商品名称 nvarchar2(128)-->
-		a.category_id AS "categoryId",                                       <!-- 商品分类（平台） number(19)-->
-		a.store_category_id AS "storeCategoryId",                            <!-- 商品分类（本店） number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.category_id AS "categoryId",                                       <!-- 商品分类（平台） bigint(20)-->
+		a.store_category_id AS "storeCategoryId",                            <!-- 商品分类（本店） bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
 		a.status AS "status",                                                <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 		a.image AS "image",                                                  <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-		a.brand_id AS "brandId",                                             <!-- 品牌 number(19)-->
-		a.u_id AS "uId",                                                     <!-- 关联(卖家扩展表) number(19)-->
+		a.brand_id AS "brandId",                                             <!-- 品牌 bigint(20)-->
+		a.u_id AS "uId",                                                     <!-- 关联(卖家扩展表) bigint(20)-->
 		a.name_sub AS "nameSub",                                             <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 		a.unit AS "unit",                                                    <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 		a.type AS "type",                                                    <!-- 1零售型、2批发型 char(1)-->
@@ -33,7 +33,7 @@
 		a.purchasing_amount AS "purchasingAmount",                           <!-- 起购量 nvarchar2(64)-->
 		a.express_type AS "expressType",                                     <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 		a.express_price AS "expressPrice",                                   <!-- 运费价格,express_type=0时有值 number(12,3)-->
-		a.lt_id AS "ltId",                                                   <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+		a.lt_id AS "ltId",                                                   <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 		a.cause AS "cause",                                                  <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 		a.shelf_time AS "shelfTime",                                         <!-- 上架时间 date(7)-->
 		a.create_date AS "createDate",                                       <!-- 创建日期 date(7)-->
@@ -206,15 +206,15 @@
 	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
 		INSERT INTO product_spu
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			p_id,                                              <!-- id number(19)-->
+			p_id,                                              <!-- id bigint(20)-->
 			name,                                              <!-- 商品名称 nvarchar2(128)-->
-			category_id,                                       <!-- 商品分类（平台） number(19)-->
-			store_category_id,                                 <!-- 商品分类（本店） number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			category_id,                                       <!-- 商品分类（平台） bigint(20)-->
+			store_category_id,                                 <!-- 商品分类（本店） bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
 			status,                                            <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			image,                                             <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			brand_id,                                          <!-- 品牌 number(19)-->
-			u_id,                                              <!-- 关联(卖家扩展表) number(19)-->
+			brand_id,                                          <!-- 品牌 bigint(20)-->
+			u_id,                                              <!-- 关联(卖家扩展表) bigint(20)-->
 			name_sub,                                          <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			unit,                                              <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			type,                                              <!-- 1零售型、2批发型 char(1)-->
@@ -232,7 +232,7 @@
 			purchasing_amount,                                 <!-- 起购量 nvarchar2(64)-->
 			express_type,                                      <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			express_price,                                     <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			lt_id,                                             <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			lt_id,                                             <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			cause,                                             <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			shelf_time,                                        <!-- 上架时间 date(7)-->
 			create_date,                                       <!-- 创建日期 date(7)-->
@@ -273,13 +273,13 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			#{entity.name},                                    <!-- 商品名称 nvarchar2(128)-->
-			#{entity.categoryId},                              <!-- 商品分类（平台） number(19)-->
-			#{entity.storeCategoryId},                         <!-- 商品分类（本店） number(19)-->
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.categoryId},                              <!-- 商品分类（平台） bigint(20)-->
+			#{entity.storeCategoryId},                         <!-- 商品分类（本店） bigint(20)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
 			#{entity.status},                                  <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			#{entity.image},                                   <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			#{entity.brandId},                                 <!-- 品牌 number(19)-->
-			#{entity.uId},                                     <!-- 关联(卖家扩展表) number(19)-->
+			#{entity.brandId},                                 <!-- 品牌 bigint(20)-->
+			#{entity.uId},                                     <!-- 关联(卖家扩展表) bigint(20)-->
 			#{entity.nameSub},                                 <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			#{entity.unit},                                    <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			#{entity.type},                                    <!-- 1零售型、2批发型 char(1)-->
@@ -297,7 +297,7 @@
 			#{entity.purchasingAmount},                        <!-- 起购量 nvarchar2(64)-->
 			#{entity.expressType},                             <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			#{entity.expressPrice},                            <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			#{entity.ltId},                                    <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			#{entity.ltId},                                    <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			#{entity.cause},                                   <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			#{entity.shelfTime},                               <!-- 上架时间 date(7)-->
 			#{entity.createDate},                              <!-- 创建日期 date(7)-->
@@ -338,13 +338,13 @@
 			<if test="entity.pkMode==1"><if test="entity.pId != null">p_id,</if></if>
 			<if test="entity.pkMode==2">p_id,</if>
 			<if test="entity.name != null">name,</if>                                          <!-- 商品名称 nvarchar2(128)-->
-			<if test="entity.categoryId != null">category_id,</if>                             <!-- 商品分类（平台） number(19)-->
-			<if test="entity.storeCategoryId != null">store_category_id,</if>                  <!-- 商品分类（本店） number(19)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 商品分类（平台） bigint(20)-->
+			<if test="entity.storeCategoryId != null">store_category_id,</if>                  <!-- 商品分类（本店） bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.status != null">status,</if>                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			<if test="entity.image != null">image,</if>                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			<if test="entity.brandId != null">brand_id,</if>                                   <!-- 品牌 number(19)-->
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.brandId != null">brand_id,</if>                                   <!-- 品牌 bigint(20)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 关联(卖家扩展表) bigint(20)-->
 			<if test="entity.nameSub != null">name_sub,</if>                                   <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			<if test="entity.unit != null">unit,</if>                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 1零售型、2批发型 char(1)-->
@@ -362,7 +362,7 @@
 			<if test="entity.purchasingAmount != null">purchasing_amount,</if>                 <!-- 起购量 nvarchar2(64)-->
 			<if test="entity.expressType != null">express_type,</if>                           <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			<if test="entity.expressPrice != null">express_price,</if>                         <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			<if test="entity.ltId != null">lt_id,</if>                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.ltId != null">lt_id,</if>                                         <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			<if test="entity.cause != null">cause,</if>                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			<if test="entity.shelfTime != null">shelf_time,</if>                               <!-- 上架时间 date(7)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建日期 date(7)-->
@@ -404,13 +404,13 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 商品名称 nvarchar2(128)-->
-			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 商品分类（平台） number(19)-->
-			<if test="entity.storeCategoryId != null">#{entity.storeCategoryId},</if>                    <!-- 商品分类（本店） number(19)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 商品分类（平台） bigint(20)-->
+			<if test="entity.storeCategoryId != null">#{entity.storeCategoryId},</if>                    <!-- 商品分类（本店） bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			<if test="entity.image != null">#{entity.image},</if>                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			<if test="entity.brandId != null">#{entity.brandId},</if>                                    <!-- 品牌 number(19)-->
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.brandId != null">#{entity.brandId},</if>                                    <!-- 品牌 bigint(20)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 关联(卖家扩展表) bigint(20)-->
 			<if test="entity.nameSub != null">#{entity.nameSub},</if>                                    <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			<if test="entity.unit != null">#{entity.unit},</if>                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 1零售型、2批发型 char(1)-->
@@ -428,7 +428,7 @@
 			<if test="entity.purchasingAmount != null">#{entity.purchasingAmount},</if>                  <!-- 起购量 nvarchar2(64)-->
 			<if test="entity.expressType != null">#{entity.expressType},</if>                            <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			<if test="entity.expressPrice != null">#{entity.expressPrice},</if>                          <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			<if test="entity.ltId != null">#{entity.ltId},</if>                                          <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.ltId != null">#{entity.ltId},</if>                                          <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			<if test="entity.cause != null">#{entity.cause},</if>                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			<if test="entity.shelfTime != null">#{entity.shelfTime},</if>                                <!-- 上架时间 date(7)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建日期 date(7)-->
@@ -466,13 +466,13 @@
 		UPDATE product_spu 
 		<set>
 			name = #{entity.name},                                          <!-- 商品名称 nvarchar2(128)-->
-			category_id = #{entity.categoryId},                             <!-- 商品分类（平台） number(19)-->
-			store_category_id = #{entity.storeCategoryId},                  <!-- 商品分类（本店） number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 商品分类（平台） bigint(20)-->
+			store_category_id = #{entity.storeCategoryId},                  <!-- 商品分类（本店） bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			status = #{entity.status},                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			image = #{entity.image},                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			brand_id = #{entity.brandId},                                   <!-- 品牌 number(19)-->
-			u_id = #{entity.uId},                                           <!-- 关联(卖家扩展表) number(19)-->
+			brand_id = #{entity.brandId},                                   <!-- 品牌 bigint(20)-->
+			u_id = #{entity.uId},                                           <!-- 关联(卖家扩展表) bigint(20)-->
 			name_sub = #{entity.nameSub},                                   <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			unit = #{entity.unit},                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			type = #{entity.type},                                          <!-- 1零售型、2批发型 char(1)-->
@@ -490,7 +490,7 @@
 			purchasing_amount = #{entity.purchasingAmount},                 <!-- 起购量 nvarchar2(64)-->
 			express_type = #{entity.expressType},                           <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			express_price = #{entity.expressPrice},                         <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			lt_id = #{entity.ltId},                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			lt_id = #{entity.ltId},                                         <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			cause = #{entity.cause},                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			shelf_time = #{entity.shelfTime},                               <!-- 上架时间 date(7)-->
 			create_date = #{entity.createDate},                             <!-- 创建日期 date(7)-->
@@ -530,13 +530,13 @@
 		UPDATE product_spu a 
 		<set>
 			name = #{entity.name},                                          <!-- 商品名称 nvarchar2(128)-->
-			category_id = #{entity.categoryId},                             <!-- 商品分类（平台） number(19)-->
-			store_category_id = #{entity.storeCategoryId},                  <!-- 商品分类（本店） number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 商品分类（平台） bigint(20)-->
+			store_category_id = #{entity.storeCategoryId},                  <!-- 商品分类（本店） bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			status = #{entity.status},                                      <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			image = #{entity.image},                                        <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			brand_id = #{entity.brandId},                                   <!-- 品牌 number(19)-->
-			u_id = #{entity.uId},                                           <!-- 关联(卖家扩展表) number(19)-->
+			brand_id = #{entity.brandId},                                   <!-- 品牌 bigint(20)-->
+			u_id = #{entity.uId},                                           <!-- 关联(卖家扩展表) bigint(20)-->
 			name_sub = #{entity.nameSub},                                   <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			unit = #{entity.unit},                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			type = #{entity.type},                                          <!-- 1零售型、2批发型 char(1)-->
@@ -554,7 +554,7 @@
 			purchasing_amount = #{entity.purchasingAmount},                 <!-- 起购量 nvarchar2(64)-->
 			express_type = #{entity.expressType},                           <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			express_price = #{entity.expressPrice},                         <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			lt_id = #{entity.ltId},                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			lt_id = #{entity.ltId},                                         <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			cause = #{entity.cause},                                        <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			shelf_time = #{entity.shelfTime},                               <!-- 上架时间 date(7)-->
 			create_date = #{entity.createDate},                             <!-- 创建日期 date(7)-->
@@ -600,13 +600,13 @@
 		UPDATE product_spu
 		<set>
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 商品名称 nvarchar2(128)-->
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 商品分类（平台） number(19)-->
-			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 商品分类（本店） number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 商品分类（平台） bigint(20)-->
+			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 商品分类（本店） bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌 number(19)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌 bigint(20)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(卖家扩展表) bigint(20)-->
 			<if test="entity.nameSub != null">name_sub = #{entity.nameSub},</if>                                                <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 1零售型、2批发型 char(1)-->
@@ -624,7 +624,7 @@
 			<if test="entity.purchasingAmount != null">purchasing_amount = #{entity.purchasingAmount},</if>                     <!-- 起购量 nvarchar2(64)-->
 			<if test="entity.expressType != null">express_type = #{entity.expressType},</if>                                    <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			<if test="entity.expressPrice != null">express_price = #{entity.expressPrice},</if>                                 <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			<if test="entity.cause != null">cause = #{entity.cause},</if>                                                       <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			<if test="entity.shelfTime != null">shelf_time = #{entity.shelfTime},</if>                                          <!-- 上架时间 date(7)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建日期 date(7)-->
@@ -663,13 +663,13 @@
 		UPDATE product_spu a
 		<set>
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 商品名称 nvarchar2(128)-->
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 商品分类（平台） number(19)-->
-			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 商品分类（本店） number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 商品分类（平台） bigint(20)-->
+			<if test="entity.storeCategoryId != null">store_category_id = #{entity.storeCategoryId},</if>                       <!-- 商品分类（本店） bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 10仓库中商品，20禁售商品，30等待审核商品，40审核失败商品，50在售商品 char(2)-->
 			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图path，冗余，用于搜索列表页 nvarchar2(128)-->
-			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌 number(19)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(卖家扩展表) number(19)-->
+			<if test="entity.brandId != null">brand_id = #{entity.brandId},</if>                                                <!-- 品牌 bigint(20)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(卖家扩展表) bigint(20)-->
 			<if test="entity.nameSub != null">name_sub = #{entity.nameSub},</if>                                                <!-- 副标题、商品卖点,显示名称下面的小红字 nvarchar2(255)-->
 			<if test="entity.unit != null">unit = #{entity.unit},</if>                                                          <!-- 计量单位，从计量单位表取中文值冗余在这里 nvarchar2(12)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 1零售型、2批发型 char(1)-->
@@ -687,7 +687,7 @@
 			<if test="entity.purchasingAmount != null">purchasing_amount = #{entity.purchasingAmount},</if>                     <!-- 起购量 nvarchar2(64)-->
 			<if test="entity.expressType != null">express_type = #{entity.expressType},</if>                                    <!-- 运费方式，0固定运费，1使用运费模板 char(1)-->
 			<if test="entity.expressPrice != null">express_price = #{entity.expressPrice},</if>                                 <!-- 运费价格,express_type=0时有值 number(12,3)-->
-			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板的ID,express_type=1时有值 number(19)-->
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板的ID,express_type=1时有值 bigint(20)-->
 			<if test="entity.cause != null">cause = #{entity.cause},</if>                                                       <!-- 禁售原因，审核失败原因 nvarchar2(512)-->
 			<if test="entity.shelfTime != null">shelf_time = #{entity.shelfTime},</if>                                          <!-- 上架时间 date(7)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建日期 date(7)-->

@@ -7,9 +7,9 @@
 	<!-- 全部字段 -->
 	<sql id="userColumns">
 	<trim suffixOverrides=",">
-		a.id AS "id",                                                        <!-- id number(19)-->
-		a.company_id AS "company.id",                                        <!-- 归属公司 number(19)-->
-		a.office_id AS "office.id",                                          <!-- 归属部门 number(19)-->
+		a.id AS "id",                                                        <!-- id bigint(20)-->
+		a.company_id AS "company.id",                                        <!-- 归属公司 bigint(20)-->
+		a.office_id AS "office.id",                                          <!-- 归属部门 bigint(20)-->
 		a.login_name AS "loginName",                                         <!-- 登录名 varchar2(100)-->
 		a.password AS "password",                                            <!-- 密码 varchar2(100)-->
 		a.no AS "no",                                                        <!-- 工号 varchar2(100)-->
@@ -158,9 +158,9 @@
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO sys_user
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			id,                                                <!-- id number(19)-->
-			company_id,                                        <!-- 归属公司 number(19)-->
-			office_id,                                         <!-- 归属部门 number(19)-->
+			id,                                                <!-- id bigint(20)-->
+			company_id,                                        <!-- 归属公司 bigint(20)-->
+			office_id,                                         <!-- 归属部门 bigint(20)-->
 			login_name,                                        <!-- 登录名 varchar2(100)-->
 			password,                                          <!-- 密码 varchar2(100)-->
 			no,                                                <!-- 工号 varchar2(100)-->
@@ -195,8 +195,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.company.id},                              <!-- 归属公司 number(19)-->
-			#{entity.office.id},                               <!-- 归属部门 number(19)-->
+			#{entity.company.id},                              <!-- 归属公司 bigint(20)-->
+			#{entity.office.id},                               <!-- 归属部门 bigint(20)-->
 			#{entity.loginName},                               <!-- 登录名 varchar2(100)-->
 			#{entity.password},                                <!-- 密码 varchar2(100)-->
 			#{entity.no},                                      <!-- 工号 varchar2(100)-->
@@ -231,8 +231,8 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
 			<if test="entity.pkMode==2">id,</if>
-			<if test="entity.company!= null and entity.company.id!= null ">company_id,</if>                              <!-- 归属公司 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 归属部门 number(19)-->
+			<if test="entity.company!= null and entity.company.id!= null ">company_id,</if>                              <!-- 归属公司 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 归属部门 bigint(20)-->
 			<if test="entity.loginName != null">login_name,</if>                               <!-- 登录名 varchar2(100)-->
 			<if test="entity.password != null">password,</if>                                  <!-- 密码 varchar2(100)-->
 			<if test="entity.no != null">no,</if>                                              <!-- 工号 varchar2(100)-->
@@ -268,8 +268,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.company!= null and entity.company.id!= null ">#{entity.company.id},</if>                              <!-- 归属公司 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 归属部门 number(19)-->
+			<if test="entity.company!= null and entity.company.id!= null ">#{entity.company.id},</if>                              <!-- 归属公司 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 归属部门 bigint(20)-->
 			<if test="entity.loginName != null">#{entity.loginName},</if>                                <!-- 登录名 varchar2(100)-->
 			<if test="entity.password != null">#{entity.password},</if>                                  <!-- 密码 varchar2(100)-->
 			<if test="entity.no != null">#{entity.no},</if>                                              <!-- 工号 varchar2(100)-->
@@ -301,8 +301,8 @@
 	<update id="updateById">
 		UPDATE sys_user 
 		<set>
-			company_id = #{entity.company.id},                              <!-- 归属公司 number(19)-->
-			office_id = #{entity.office.id},                                <!-- 归属部门 number(19)-->
+			company_id = #{entity.company.id},                              <!-- 归属公司 bigint(20)-->
+			office_id = #{entity.office.id},                                <!-- 归属部门 bigint(20)-->
 			login_name = #{entity.loginName},                               <!-- 登录名 varchar2(100)-->
 			password = #{entity.password},                                  <!-- 密码 varchar2(100)-->
 			no = #{entity.no},                                              <!-- 工号 varchar2(100)-->
@@ -335,8 +335,8 @@
 	<update id="updateByWhere">
 		UPDATE sys_user a 
 		<set>
-			company_id = #{entity.company.id},                              <!-- 归属公司 number(19)-->
-			office_id = #{entity.office.id},                                <!-- 归属部门 number(19)-->
+			company_id = #{entity.company.id},                              <!-- 归属公司 bigint(20)-->
+			office_id = #{entity.office.id},                                <!-- 归属部门 bigint(20)-->
 			login_name = #{entity.loginName},                               <!-- 登录名 varchar2(100)-->
 			password = #{entity.password},                                  <!-- 密码 varchar2(100)-->
 			no = #{entity.no},                                              <!-- 工号 varchar2(100)-->
@@ -375,8 +375,8 @@
 	<update id="updateByIdSelective">
 		UPDATE sys_user
 		<set>
-			<if test="entity.company!= null and entity.company.id!= null ">company_id = #{entity.company.id},</if>                                        <!-- 归属公司 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属部门 number(19)-->
+			<if test="entity.company!= null and entity.company.id!= null ">company_id = #{entity.company.id},</if>                                        <!-- 归属公司 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属部门 bigint(20)-->
 			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 登录名 varchar2(100)-->
 			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 varchar2(100)-->
 			<if test="entity.no != null">no = #{entity.no},</if>                                                                <!-- 工号 varchar2(100)-->
@@ -408,8 +408,8 @@
 	<update id="updateByWhereSelective">
 		UPDATE sys_user a
 		<set>
-			<if test="entity.company!= null and entity.company.id!= null ">company_id = #{entity.company.id},</if>                                        <!-- 归属公司 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属部门 number(19)-->
+			<if test="entity.company!= null and entity.company.id!= null ">company_id = #{entity.company.id},</if>                                        <!-- 归属公司 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属部门 bigint(20)-->
 			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 登录名 varchar2(100)-->
 			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 varchar2(100)-->
 			<if test="entity.no != null">no = #{entity.no},</if>                                                                <!-- 工号 varchar2(100)-->

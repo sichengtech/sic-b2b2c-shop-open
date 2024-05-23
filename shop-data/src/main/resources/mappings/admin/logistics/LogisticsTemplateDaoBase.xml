@@ -7,9 +7,9 @@
 	<!-- 全部字段 -->
 	<sql id="logisticsTemplateColumns">
 	<trim suffixOverrides=",">
-		a.lt_id AS "ltId",                                                   <!-- 主键 number(19)-->
-		a.default_dc_id AS "defaultDcId",                                    <!-- 默认物流公司(物流公司表id) number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.lt_id AS "ltId",                                                   <!-- 主键 bigint(20)-->
+		a.default_dc_id AS "defaultDcId",                                    <!-- 默认物流公司(物流公司表id) bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
 		a.name AS "name",                                                    <!-- 模板名称 nvarchar2(64)-->
 		a.is_free_shipping AS "isFreeShipping",                              <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 		a.valuation_method AS "valuationMethod",                             <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -133,9 +133,9 @@
 	<insert id="insert" keyProperty="entity.ltId" keyColumn="lt_id" useGeneratedKeys="true">
 		INSERT INTO logistics_template
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			lt_id,                                             <!-- 主键 number(19)-->
-			default_dc_id,                                     <!-- 默认物流公司(物流公司表id) number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			lt_id,                                             <!-- 主键 bigint(20)-->
+			default_dc_id,                                     <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
 			name,                                              <!-- 模板名称 nvarchar2(64)-->
 			is_free_shipping,                                  <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			valuation_method,                                  <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -161,8 +161,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.defaultDcId},                             <!-- 默认物流公司(物流公司表id) number(19)-->
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.defaultDcId},                             <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
 			#{entity.name},                                    <!-- 模板名称 nvarchar2(64)-->
 			#{entity.isFreeShipping},                          <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			#{entity.valuationMethod},                         <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -188,8 +188,8 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.ltId != null">lt_id,</if></if>
 			<if test="entity.pkMode==2">lt_id,</if>
-			<if test="entity.defaultDcId != null">default_dc_id,</if>                          <!-- 默认物流公司(物流公司表id) number(19)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.defaultDcId != null">default_dc_id,</if>                          <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 模板名称 nvarchar2(64)-->
 			<if test="entity.isFreeShipping != null">is_free_shipping,</if>                    <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			<if test="entity.valuationMethod != null">valuation_method,</if>                   <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -216,8 +216,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.defaultDcId != null">#{entity.defaultDcId},</if>                            <!-- 默认物流公司(物流公司表id) number(19)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.defaultDcId != null">#{entity.defaultDcId},</if>                            <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 模板名称 nvarchar2(64)-->
 			<if test="entity.isFreeShipping != null">#{entity.isFreeShipping},</if>                      <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			<if test="entity.valuationMethod != null">#{entity.valuationMethod},</if>                    <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -240,8 +240,8 @@
 	<update id="updateById">
 		UPDATE logistics_template 
 		<set>
-			default_dc_id = #{entity.defaultDcId},                          <!-- 默认物流公司(物流公司表id) number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			default_dc_id = #{entity.defaultDcId},                          <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			name = #{entity.name},                                          <!-- 模板名称 nvarchar2(64)-->
 			is_free_shipping = #{entity.isFreeShipping},                    <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			valuation_method = #{entity.valuationMethod},                   <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -266,8 +266,8 @@
 	<update id="updateByWhere">
 		UPDATE logistics_template a 
 		<set>
-			default_dc_id = #{entity.defaultDcId},                          <!-- 默认物流公司(物流公司表id) number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			default_dc_id = #{entity.defaultDcId},                          <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			name = #{entity.name},                                          <!-- 模板名称 nvarchar2(64)-->
 			is_free_shipping = #{entity.isFreeShipping},                    <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			valuation_method = #{entity.valuationMethod},                   <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -298,8 +298,8 @@
 	<update id="updateByIdSelective">
 		UPDATE logistics_template
 		<set>
-			<if test="entity.defaultDcId != null">default_dc_id = #{entity.defaultDcId},</if>                                   <!-- 默认物流公司(物流公司表id) number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.defaultDcId != null">default_dc_id = #{entity.defaultDcId},</if>                                   <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 模板名称 nvarchar2(64)-->
 			<if test="entity.isFreeShipping != null">is_free_shipping = #{entity.isFreeShipping},</if>                          <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			<if test="entity.valuationMethod != null">valuation_method = #{entity.valuationMethod},</if>                        <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->
@@ -323,8 +323,8 @@
 	<update id="updateByWhereSelective">
 		UPDATE logistics_template a
 		<set>
-			<if test="entity.defaultDcId != null">default_dc_id = #{entity.defaultDcId},</if>                                   <!-- 默认物流公司(物流公司表id) number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.defaultDcId != null">default_dc_id = #{entity.defaultDcId},</if>                                   <!-- 默认物流公司(物流公司表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 模板名称 nvarchar2(64)-->
 			<if test="entity.isFreeShipping != null">is_free_shipping = #{entity.isFreeShipping},</if>                          <!-- 是否包邮，0自定义运费、1卖家承担运费 char(1)-->
 			<if test="entity.valuationMethod != null">valuation_method = #{entity.valuationMethod},</if>                        <!-- 计价方式，0按件数、1按重量、3按体积 char(1)-->

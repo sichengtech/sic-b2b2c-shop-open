@@ -7,18 +7,18 @@
 	<!-- 全部字段 -->
 	<sql id="settlementWithdrawalsColumns">
 	<trim suffixOverrides=",">
-		a.withdrawals_id AS "withdrawalsId",                                 <!-- 主键 number(19)-->
+		a.withdrawals_id AS "withdrawalsId",                                 <!-- 主键 bigint(20)-->
 		a.recharge_number AS "rechargeNumber",                               <!-- 提现编号 nvarchar2(64)-->
-		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) number(19)-->
+		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) bigint(20)-->
 		a.money AS "money",                                                  <!-- 提现金额 number(12,3)-->
-		a.receivables_number AS "receivablesNumber",                         <!-- 收款账号 number(19)-->
-		a.pay_way_id AS "payWayId",                                          <!-- 收款方式(支付方式id) number(19)-->
+		a.receivables_number AS "receivablesNumber",                         <!-- 收款账号 bigint(20)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 收款方式(支付方式id) bigint(20)-->
 		a.status AS "status",                                                <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 		a.transaction_number AS "transactionNumber",                         <!-- 交易号 nvarchar2(64)-->
 		a.pay_terminal AS "payTerminal",                                     <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 		a.apply_date AS "applyDate",                                         <!-- 申请时间 date(7)-->
 		a.pay_time AS "payTime",                                             <!-- 支付时间 date(7)-->
-		a.admin_id AS "adminId",                                             <!-- 管理员(管理员表id) number(19)-->
+		a.admin_id AS "adminId",                                             <!-- 管理员(管理员表id) bigint(20)-->
 		a.rejection_reason AS "rejectionReason",                             <!-- 拒绝提现理由 nvarchar2(512)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
@@ -146,18 +146,18 @@
 	<insert id="insert" keyProperty="entity.withdrawalsId" keyColumn="withdrawals_id" useGeneratedKeys="true">
 		INSERT INTO settlement_withdrawals
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			withdrawals_id,                                    <!-- 主键 number(19)-->
+			withdrawals_id,                                    <!-- 主键 bigint(20)-->
 			recharge_number,                                   <!-- 提现编号 nvarchar2(64)-->
-			u_id,                                              <!-- 会员id(会员表id) number(19)-->
+			u_id,                                              <!-- 会员id(会员表id) bigint(20)-->
 			money,                                             <!-- 提现金额 number(12,3)-->
-			receivables_number,                                <!-- 收款账号 number(19)-->
-			pay_way_id,                                        <!-- 收款方式(支付方式id) number(19)-->
+			receivables_number,                                <!-- 收款账号 bigint(20)-->
+			pay_way_id,                                        <!-- 收款方式(支付方式id) bigint(20)-->
 			status,                                            <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			transaction_number,                                <!-- 交易号 nvarchar2(64)-->
 			pay_terminal,                                      <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			apply_date,                                        <!-- 申请时间 date(7)-->
 			pay_time,                                          <!-- 支付时间 date(7)-->
-			admin_id,                                          <!-- 管理员(管理员表id) number(19)-->
+			admin_id,                                          <!-- 管理员(管理员表id) bigint(20)-->
 			rejection_reason,                                  <!-- 拒绝提现理由 nvarchar2(512)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
@@ -183,16 +183,16 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			#{entity.rechargeNumber},                          <!-- 提现编号 nvarchar2(64)-->
-			#{entity.uId},                                     <!-- 会员id(会员表id) number(19)-->
+			#{entity.uId},                                     <!-- 会员id(会员表id) bigint(20)-->
 			#{entity.money},                                   <!-- 提现金额 number(12,3)-->
-			#{entity.receivablesNumber},                       <!-- 收款账号 number(19)-->
-			#{entity.payWayId},                                <!-- 收款方式(支付方式id) number(19)-->
+			#{entity.receivablesNumber},                       <!-- 收款账号 bigint(20)-->
+			#{entity.payWayId},                                <!-- 收款方式(支付方式id) bigint(20)-->
 			#{entity.status},                                  <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			#{entity.transactionNumber},                       <!-- 交易号 nvarchar2(64)-->
 			#{entity.payTerminal},                             <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			#{entity.applyDate},                               <!-- 申请时间 date(7)-->
 			#{entity.payTime},                                 <!-- 支付时间 date(7)-->
-			#{entity.adminId},                                 <!-- 管理员(管理员表id) number(19)-->
+			#{entity.adminId},                                 <!-- 管理员(管理员表id) bigint(20)-->
 			#{entity.rejectionReason},                         <!-- 拒绝提现理由 nvarchar2(512)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
@@ -218,16 +218,16 @@
 			<if test="entity.pkMode==1"><if test="entity.withdrawalsId != null">withdrawals_id,</if></if>
 			<if test="entity.pkMode==2">withdrawals_id,</if>
 			<if test="entity.rechargeNumber != null">recharge_number,</if>                     <!-- 提现编号 nvarchar2(64)-->
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.money != null">money,</if>                                        <!-- 提现金额 number(12,3)-->
-			<if test="entity.receivablesNumber != null">receivables_number,</if>               <!-- 收款账号 number(19)-->
-			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 收款方式(支付方式id) number(19)-->
+			<if test="entity.receivablesNumber != null">receivables_number,</if>               <!-- 收款账号 bigint(20)-->
+			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 收款方式(支付方式id) bigint(20)-->
 			<if test="entity.status != null">status,</if>                                      <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			<if test="entity.transactionNumber != null">transaction_number,</if>               <!-- 交易号 nvarchar2(64)-->
 			<if test="entity.payTerminal != null">pay_terminal,</if>                           <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			<if test="entity.applyDate != null">apply_date,</if>                               <!-- 申请时间 date(7)-->
 			<if test="entity.payTime != null">pay_time,</if>                                   <!-- 支付时间 date(7)-->
-			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.rejectionReason != null">rejection_reason,</if>                   <!-- 拒绝提现理由 nvarchar2(512)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
@@ -254,16 +254,16 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			<if test="entity.rechargeNumber != null">#{entity.rechargeNumber},</if>                      <!-- 提现编号 nvarchar2(64)-->
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.money != null">#{entity.money},</if>                                        <!-- 提现金额 number(12,3)-->
-			<if test="entity.receivablesNumber != null">#{entity.receivablesNumber},</if>                <!-- 收款账号 number(19)-->
-			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 收款方式(支付方式id) number(19)-->
+			<if test="entity.receivablesNumber != null">#{entity.receivablesNumber},</if>                <!-- 收款账号 bigint(20)-->
+			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 收款方式(支付方式id) bigint(20)-->
 			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			<if test="entity.transactionNumber != null">#{entity.transactionNumber},</if>                <!-- 交易号 nvarchar2(64)-->
 			<if test="entity.payTerminal != null">#{entity.payTerminal},</if>                            <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			<if test="entity.applyDate != null">#{entity.applyDate},</if>                                <!-- 申请时间 date(7)-->
 			<if test="entity.payTime != null">#{entity.payTime},</if>                                    <!-- 支付时间 date(7)-->
-			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.rejectionReason != null">#{entity.rejectionReason},</if>                    <!-- 拒绝提现理由 nvarchar2(512)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
@@ -286,16 +286,16 @@
 		UPDATE settlement_withdrawals 
 		<set>
 			recharge_number = #{entity.rechargeNumber},                     <!-- 提现编号 nvarchar2(64)-->
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
 			money = #{entity.money},                                        <!-- 提现金额 number(12,3)-->
-			receivables_number = #{entity.receivablesNumber},               <!-- 收款账号 number(19)-->
-			pay_way_id = #{entity.payWayId},                                <!-- 收款方式(支付方式id) number(19)-->
+			receivables_number = #{entity.receivablesNumber},               <!-- 收款账号 bigint(20)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 收款方式(支付方式id) bigint(20)-->
 			status = #{entity.status},                                      <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			transaction_number = #{entity.transactionNumber},               <!-- 交易号 nvarchar2(64)-->
 			pay_terminal = #{entity.payTerminal},                           <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			apply_date = #{entity.applyDate},                               <!-- 申请时间 date(7)-->
 			pay_time = #{entity.payTime},                                   <!-- 支付时间 date(7)-->
-			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) bigint(20)-->
 			rejection_reason = #{entity.rejectionReason},                   <!-- 拒绝提现理由 nvarchar2(512)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
@@ -320,16 +320,16 @@
 		UPDATE settlement_withdrawals a 
 		<set>
 			recharge_number = #{entity.rechargeNumber},                     <!-- 提现编号 nvarchar2(64)-->
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
 			money = #{entity.money},                                        <!-- 提现金额 number(12,3)-->
-			receivables_number = #{entity.receivablesNumber},               <!-- 收款账号 number(19)-->
-			pay_way_id = #{entity.payWayId},                                <!-- 收款方式(支付方式id) number(19)-->
+			receivables_number = #{entity.receivablesNumber},               <!-- 收款账号 bigint(20)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 收款方式(支付方式id) bigint(20)-->
 			status = #{entity.status},                                      <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			transaction_number = #{entity.transactionNumber},               <!-- 交易号 nvarchar2(64)-->
 			pay_terminal = #{entity.payTerminal},                           <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			apply_date = #{entity.applyDate},                               <!-- 申请时间 date(7)-->
 			pay_time = #{entity.payTime},                                   <!-- 支付时间 date(7)-->
-			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) bigint(20)-->
 			rejection_reason = #{entity.rejectionReason},                   <!-- 拒绝提现理由 nvarchar2(512)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
@@ -360,16 +360,16 @@
 		UPDATE settlement_withdrawals
 		<set>
 			<if test="entity.rechargeNumber != null">recharge_number = #{entity.rechargeNumber},</if>                           <!-- 提现编号 nvarchar2(64)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.money != null">money = #{entity.money},</if>                                                       <!-- 提现金额 number(12,3)-->
-			<if test="entity.receivablesNumber != null">receivables_number = #{entity.receivablesNumber},</if>                  <!-- 收款账号 number(19)-->
-			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 收款方式(支付方式id) number(19)-->
+			<if test="entity.receivablesNumber != null">receivables_number = #{entity.receivablesNumber},</if>                  <!-- 收款账号 bigint(20)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 收款方式(支付方式id) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			<if test="entity.transactionNumber != null">transaction_number = #{entity.transactionNumber},</if>                  <!-- 交易号 nvarchar2(64)-->
 			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			<if test="entity.applyDate != null">apply_date = #{entity.applyDate},</if>                                          <!-- 申请时间 date(7)-->
 			<if test="entity.payTime != null">pay_time = #{entity.payTime},</if>                                                <!-- 支付时间 date(7)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.rejectionReason != null">rejection_reason = #{entity.rejectionReason},</if>                        <!-- 拒绝提现理由 nvarchar2(512)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
@@ -393,16 +393,16 @@
 		UPDATE settlement_withdrawals a
 		<set>
 			<if test="entity.rechargeNumber != null">recharge_number = #{entity.rechargeNumber},</if>                           <!-- 提现编号 nvarchar2(64)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.money != null">money = #{entity.money},</if>                                                       <!-- 提现金额 number(12,3)-->
-			<if test="entity.receivablesNumber != null">receivables_number = #{entity.receivablesNumber},</if>                  <!-- 收款账号 number(19)-->
-			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 收款方式(支付方式id) number(19)-->
+			<if test="entity.receivablesNumber != null">receivables_number = #{entity.receivablesNumber},</if>                  <!-- 收款账号 bigint(20)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 收款方式(支付方式id) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 提现状态，0未支付、1已支付、2拒绝提现 char(1)-->
 			<if test="entity.transactionNumber != null">transaction_number = #{entity.transactionNumber},</if>                  <!-- 交易号 nvarchar2(64)-->
 			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 提现终端，0pc端1、移动端 nvarchar2(64)-->
 			<if test="entity.applyDate != null">apply_date = #{entity.applyDate},</if>                                          <!-- 申请时间 date(7)-->
 			<if test="entity.payTime != null">pay_time = #{entity.payTime},</if>                                                <!-- 支付时间 date(7)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.rejectionReason != null">rejection_reason = #{entity.rejectionReason},</if>                        <!-- 拒绝提现理由 nvarchar2(512)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->

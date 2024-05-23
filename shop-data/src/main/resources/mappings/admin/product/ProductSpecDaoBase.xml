@@ -6,8 +6,8 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="productSpecColumns">
-		a.spec_id AS "specId",                                               <!-- 规格id number(19)-->
-		a.category_id AS "categoryId",                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+		a.spec_id AS "specId",                                               <!-- 规格id bigint(20)-->
+		a.category_id AS "categoryId",                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 		a.spec_sort AS "specSort",                                           <!-- 排序 number(10)-->
 		a.is_color AS "isColor",                                             <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 		a.name AS "name",                                                    <!-- 规格名 nvarchar2(64)-->
@@ -116,8 +116,8 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.specId" keyColumn="spec_id" useGeneratedKeys="true">
 		INSERT INTO product_spec(
-			spec_id,                                           <!-- 规格id number(19)-->
-			category_id,                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			spec_id,                                           <!-- 规格id bigint(20)-->
+			category_id,                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			spec_sort,                                         <!-- 排序 number(10)-->
 			is_color,                                          <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			name,                                              <!-- 规格名 nvarchar2(64)-->
@@ -135,7 +135,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.categoryId},                              <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			#{entity.categoryId},                              <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			#{entity.specSort},                                <!-- 排序 number(10)-->
 			#{entity.isColor},                                 <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			#{entity.name},                                    <!-- 规格名 nvarchar2(64)-->
@@ -155,7 +155,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.specId != null">spec_id,</if></if>
 			<if test="entity.pkMode==2">spec_id,</if>
-			<if test="entity.categoryId != null">category_id,</if>                             <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			<if test="entity.specSort != null">spec_sort,</if>                                 <!-- 排序 number(10)-->
 			<if test="entity.isColor != null">is_color,</if>                                   <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 规格名 nvarchar2(64)-->
@@ -176,7 +176,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			<if test="entity.specSort != null">#{entity.specSort},</if>                                  <!-- 排序 number(10)-->
 			<if test="entity.isColor != null">#{entity.isColor},</if>                                    <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 规格名 nvarchar2(64)-->
@@ -192,7 +192,7 @@
 	<!-- 根据主键更新记录-->
 	<update id="updateById">
 		UPDATE product_spec SET
-			category_id = #{entity.categoryId},                             <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			spec_sort = #{entity.specSort},                                 <!-- 排序 number(10)-->
 			is_color = #{entity.isColor},                                   <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			name = #{entity.name},                                          <!-- 规格名 nvarchar2(64)-->
@@ -209,7 +209,7 @@
 	<!-- 根据条件更新记录-->
 	<update id="updateByWhere">
 		UPDATE product_spec a SET
-			category_id = #{entity.categoryId},                             <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			spec_sort = #{entity.specSort},                                 <!-- 排序 number(10)-->
 			is_color = #{entity.isColor},                                   <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			name = #{entity.name},                                          <!-- 规格名 nvarchar2(64)-->
@@ -233,7 +233,7 @@
 	<update id="updateByIdSelective">
 		UPDATE product_spec
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			<if test="entity.specSort != null">spec_sort = #{entity.specSort},</if>                                             <!-- 排序 number(10)-->
 			<if test="entity.isColor != null">is_color = #{entity.isColor},</if>                                                <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 规格名 nvarchar2(64)-->
@@ -251,7 +251,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE product_spec a
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 分类id，目前无用做为保留。-1表示未与任何分类关联的规格，是平台的通用规格 bigint(20)-->
 			<if test="entity.specSort != null">spec_sort = #{entity.specSort},</if>                                             <!-- 排序 number(10)-->
 			<if test="entity.isColor != null">is_color = #{entity.isColor},</if>                                                <!-- 是否是颜色，颜色规格会上传不同的图片。0否，1是。 char(1)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 规格名 nvarchar2(64)-->

@@ -7,17 +7,17 @@
 	<!-- 全部字段 -->
 	<sql id="tradeComplaintColumns">
 	<trim suffixOverrides=",">
-		a.complaint_id AS "complaintId",                                     <!-- 主键 number(19)-->
-		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
-		a.p_id AS "pId",                                                     <!-- 产品id(产品表id) number(19)-->
-		a.sku_id AS "skuId",                                                 <!-- sku id(产品sku表id) number(19)-->
-		a.order_id AS "orderId",                                             <!-- 订单id(订单表id) number(19)-->
+		a.complaint_id AS "complaintId",                                     <!-- 主键 bigint(20)-->
+		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
+		a.p_id AS "pId",                                                     <!-- 产品id(产品表id) bigint(20)-->
+		a.sku_id AS "skuId",                                                 <!-- sku id(产品sku表id) bigint(20)-->
+		a.order_id AS "orderId",                                             <!-- 订单id(订单表id) bigint(20)-->
 		a.theme AS "theme",                                                  <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 		a.content AS "content",                                              <!-- 投诉(申诉)内容 nvarchar2(255)-->
 		a.ip AS "ip",                                                        <!-- ip nvarchar2(64)-->
 		a.type AS "type",                                                    <!-- 类型，0投诉、1申诉 char(1)-->
-		a.reply_id AS "replyId",                                             <!-- 申诉的投诉id(本表的id) number(19)-->
+		a.reply_id AS "replyId",                                             <!-- 申诉的投诉id(本表的id) bigint(20)-->
 		a.status AS "status",                                                <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
@@ -31,10 +31,10 @@
 		a.bak8 AS "bak8",                                                    <!-- 备用字段8 nvarchar2(64)-->
 		a.bak9 AS "bak9",                                                    <!-- 备用字段9 nvarchar2(64)-->
 		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
-		a.order_detail_id AS "orderDetailId",                                <!-- 订单详情id(订单详情表id) number(19)-->
+		a.order_detail_id AS "orderDetailId",                                <!-- 订单详情id(订单详情表id) bigint(20)-->
 		a.system_handle_time AS "systemHandleTime",                          <!-- 平台处理时间 date(7)-->
 		a.system_handle_handel_opinion AS "systemHandleHandelOpinion",       <!-- 平台处理意见 nvarchar2(1024)-->
-		a.admin_id AS "adminId",                                             <!-- 处理人(管理员表id) number(19)-->
+		a.admin_id AS "adminId",                                             <!-- 处理人(管理员表id) bigint(20)-->
 
 	</trim>
 	</sql>
@@ -150,17 +150,17 @@
 	<insert id="insert" keyProperty="entity.complaintId" keyColumn="complaint_id" useGeneratedKeys="true">
 		INSERT INTO trade_complaint
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			complaint_id,                                      <!-- 主键 number(19)-->
-			u_id,                                              <!-- 会员id(会员表id) number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
-			p_id,                                              <!-- 产品id(产品表id) number(19)-->
-			sku_id,                                            <!-- sku id(产品sku表id) number(19)-->
-			order_id,                                          <!-- 订单id(订单表id) number(19)-->
+			complaint_id,                                      <!-- 主键 bigint(20)-->
+			u_id,                                              <!-- 会员id(会员表id) bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
+			p_id,                                              <!-- 产品id(产品表id) bigint(20)-->
+			sku_id,                                            <!-- sku id(产品sku表id) bigint(20)-->
+			order_id,                                          <!-- 订单id(订单表id) bigint(20)-->
 			theme,                                             <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			content,                                           <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			ip,                                                <!-- ip nvarchar2(64)-->
 			type,                                              <!-- 类型，0投诉、1申诉 char(1)-->
-			reply_id,                                          <!-- 申诉的投诉id(本表的id) number(19)-->
+			reply_id,                                          <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			status,                                            <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
@@ -174,10 +174,10 @@
 			bak8,                                              <!-- 备用字段8 nvarchar2(64)-->
 			bak9,                                              <!-- 备用字段9 nvarchar2(64)-->
 			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
-			order_detail_id,                                   <!-- 订单详情id(订单详情表id) number(19)-->
+			order_detail_id,                                   <!-- 订单详情id(订单详情表id) bigint(20)-->
 			system_handle_time,                                <!-- 平台处理时间 date(7)-->
 			system_handle_handel_opinion,                      <!-- 平台处理意见 nvarchar2(1024)-->
-			admin_id,                                          <!-- 处理人(管理员表id) number(19)-->
+			admin_id,                                          <!-- 处理人(管理员表id) bigint(20)-->
 
 		</trim>
 		 VALUES 
@@ -188,16 +188,16 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.uId},                                     <!-- 会员id(会员表id) number(19)-->
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
-			#{entity.pId},                                     <!-- 产品id(产品表id) number(19)-->
-			#{entity.skuId},                                   <!-- sku id(产品sku表id) number(19)-->
-			#{entity.orderId},                                 <!-- 订单id(订单表id) number(19)-->
+			#{entity.uId},                                     <!-- 会员id(会员表id) bigint(20)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
+			#{entity.pId},                                     <!-- 产品id(产品表id) bigint(20)-->
+			#{entity.skuId},                                   <!-- sku id(产品sku表id) bigint(20)-->
+			#{entity.orderId},                                 <!-- 订单id(订单表id) bigint(20)-->
 			#{entity.theme},                                   <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			#{entity.content},                                 <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			#{entity.ip},                                      <!-- ip nvarchar2(64)-->
 			#{entity.type},                                    <!-- 类型，0投诉、1申诉 char(1)-->
-			#{entity.replyId},                                 <!-- 申诉的投诉id(本表的id) number(19)-->
+			#{entity.replyId},                                 <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			#{entity.status},                                  <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
@@ -211,10 +211,10 @@
 			#{entity.bak8},                                    <!-- 备用字段8 nvarchar2(64)-->
 			#{entity.bak9},                                    <!-- 备用字段9 nvarchar2(64)-->
 			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
-			#{entity.orderDetailId},                           <!-- 订单详情id(订单详情表id) number(19)-->
+			#{entity.orderDetailId},                           <!-- 订单详情id(订单详情表id) bigint(20)-->
 			#{entity.systemHandleTime},                        <!-- 平台处理时间 date(7)-->
 			#{entity.systemHandleHandelOpinion},               <!-- 平台处理意见 nvarchar2(1024)-->
-			#{entity.adminId},                                 <!-- 处理人(管理员表id) number(19)-->
+			#{entity.adminId},                                 <!-- 处理人(管理员表id) bigint(20)-->
 
 	</trim>
 	</insert>
@@ -225,16 +225,16 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.complaintId != null">complaint_id,</if></if>
 			<if test="entity.pkMode==2">complaint_id,</if>
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">p_id,</if>                                           <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">sku_id,</if>                                       <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">sku_id,</if>                                       <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.theme != null">theme,</if>                                        <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			<if test="entity.content != null">content,</if>                                    <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			<if test="entity.ip != null">ip,</if>                                              <!-- ip nvarchar2(64)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 类型，0投诉、1申诉 char(1)-->
-			<if test="entity.replyId != null">reply_id,</if>                                   <!-- 申诉的投诉id(本表的id) number(19)-->
+			<if test="entity.replyId != null">reply_id,</if>                                   <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			<if test="entity.status != null">status,</if>                                      <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
@@ -248,10 +248,10 @@
 			<if test="entity.bak8 != null">bak8,</if>                                          <!-- 备用字段8 nvarchar2(64)-->
 			<if test="entity.bak9 != null">bak9,</if>                                          <!-- 备用字段9 nvarchar2(64)-->
 			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
-			<if test="entity.orderDetailId != null">order_detail_id,</if>                      <!-- 订单详情id(订单详情表id) number(19)-->
+			<if test="entity.orderDetailId != null">order_detail_id,</if>                      <!-- 订单详情id(订单详情表id) bigint(20)-->
 			<if test="entity.systemHandleTime != null">system_handle_time,</if>                <!-- 平台处理时间 date(7)-->
 			<if test="entity.systemHandleHandelOpinion != null">system_handle_handel_opinion,</if>     <!-- 平台处理意见 nvarchar2(1024)-->
-			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 处理人(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 处理人(管理员表id) bigint(20)-->
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -263,16 +263,16 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">#{entity.skuId},</if>                                        <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">#{entity.skuId},</if>                                        <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.theme != null">#{entity.theme},</if>                                        <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			<if test="entity.ip != null">#{entity.ip},</if>                                              <!-- ip nvarchar2(64)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型，0投诉、1申诉 char(1)-->
-			<if test="entity.replyId != null">#{entity.replyId},</if>                                    <!-- 申诉的投诉id(本表的id) number(19)-->
+			<if test="entity.replyId != null">#{entity.replyId},</if>                                    <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
@@ -286,10 +286,10 @@
 			<if test="entity.bak8 != null">#{entity.bak8},</if>                                          <!-- 备用字段8 nvarchar2(64)-->
 			<if test="entity.bak9 != null">#{entity.bak9},</if>                                          <!-- 备用字段9 nvarchar2(64)-->
 			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
-			<if test="entity.orderDetailId != null">#{entity.orderDetailId},</if>                        <!-- 订单详情id(订单详情表id) number(19)-->
+			<if test="entity.orderDetailId != null">#{entity.orderDetailId},</if>                        <!-- 订单详情id(订单详情表id) bigint(20)-->
 			<if test="entity.systemHandleTime != null">#{entity.systemHandleTime},</if>                  <!-- 平台处理时间 date(7)-->
 			<if test="entity.systemHandleHandelOpinion != null">#{entity.systemHandleHandelOpinion},</if>  <!-- 平台处理意见 nvarchar2(1024)-->
-			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 处理人(管理员表id) number(19)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 处理人(管理员表id) bigint(20)-->
 		</trim>
 	</insert>
 
@@ -297,16 +297,16 @@
 	<update id="updateById">
 		UPDATE trade_complaint 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
-			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) number(19)-->
-			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) number(19)-->
-			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) bigint(20)-->
+			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) bigint(20)-->
+			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) bigint(20)-->
 			theme = #{entity.theme},                                        <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			content = #{entity.content},                                    <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			ip = #{entity.ip},                                              <!-- ip nvarchar2(64)-->
 			type = #{entity.type},                                          <!-- 类型，0投诉、1申诉 char(1)-->
-			reply_id = #{entity.replyId},                                   <!-- 申诉的投诉id(本表的id) number(19)-->
+			reply_id = #{entity.replyId},                                   <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			status = #{entity.status},                                      <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
@@ -320,10 +320,10 @@
 			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
 			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
 			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
-			order_detail_id = #{entity.orderDetailId},                      <!-- 订单详情id(订单详情表id) number(19)-->
+			order_detail_id = #{entity.orderDetailId},                      <!-- 订单详情id(订单详情表id) bigint(20)-->
 			system_handle_time = #{entity.systemHandleTime},                <!-- 平台处理时间 date(7)-->
 			system_handle_handel_opinion = #{entity.systemHandleHandelOpinion},     <!-- 平台处理意见 nvarchar2(1024)-->
-			admin_id = #{entity.adminId},                                   <!-- 处理人(管理员表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 处理人(管理员表id) bigint(20)-->
 
 		</set>
 		WHERE complaint_id = #{entity.complaintId}
@@ -333,16 +333,16 @@
 	<update id="updateByWhere">
 		UPDATE trade_complaint a 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
-			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) number(19)-->
-			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) number(19)-->
-			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) bigint(20)-->
+			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) bigint(20)-->
+			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) bigint(20)-->
 			theme = #{entity.theme},                                        <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			content = #{entity.content},                                    <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			ip = #{entity.ip},                                              <!-- ip nvarchar2(64)-->
 			type = #{entity.type},                                          <!-- 类型，0投诉、1申诉 char(1)-->
-			reply_id = #{entity.replyId},                                   <!-- 申诉的投诉id(本表的id) number(19)-->
+			reply_id = #{entity.replyId},                                   <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			status = #{entity.status},                                      <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
@@ -356,10 +356,10 @@
 			bak8 = #{entity.bak8},                                          <!-- 备用字段8 nvarchar2(64)-->
 			bak9 = #{entity.bak9},                                          <!-- 备用字段9 nvarchar2(64)-->
 			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
-			order_detail_id = #{entity.orderDetailId},                      <!-- 订单详情id(订单详情表id) number(19)-->
+			order_detail_id = #{entity.orderDetailId},                      <!-- 订单详情id(订单详情表id) bigint(20)-->
 			system_handle_time = #{entity.systemHandleTime},                <!-- 平台处理时间 date(7)-->
 			system_handle_handel_opinion = #{entity.systemHandleHandelOpinion},     <!-- 平台处理意见 nvarchar2(1024)-->
-			admin_id = #{entity.adminId},                                   <!-- 处理人(管理员表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 处理人(管理员表id) bigint(20)-->
 
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
@@ -375,16 +375,16 @@
 	<update id="updateByIdSelective">
 		UPDATE trade_complaint
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.theme != null">theme = #{entity.theme},</if>                                                       <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- ip nvarchar2(64)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，0投诉、1申诉 char(1)-->
-			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 申诉的投诉id(本表的id) number(19)-->
+			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
@@ -398,10 +398,10 @@
 			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
 			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
 			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
-			<if test="entity.orderDetailId != null">order_detail_id = #{entity.orderDetailId},</if>                             <!-- 订单详情id(订单详情表id) number(19)-->
+			<if test="entity.orderDetailId != null">order_detail_id = #{entity.orderDetailId},</if>                             <!-- 订单详情id(订单详情表id) bigint(20)-->
 			<if test="entity.systemHandleTime != null">system_handle_time = #{entity.systemHandleTime},</if>                    <!-- 平台处理时间 date(7)-->
 			<if test="entity.systemHandleHandelOpinion != null">system_handle_handel_opinion = #{entity.systemHandleHandelOpinion},</if>          <!-- 平台处理意见 nvarchar2(1024)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 处理人(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 处理人(管理员表id) bigint(20)-->
 		</set>
 		WHERE complaint_id = #{entity.complaintId}
 	</update>
@@ -410,16 +410,16 @@
 	<update id="updateByWhereSelective">
 		UPDATE trade_complaint a
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.theme != null">theme = #{entity.theme},</if>                                                       <!-- 投诉主题，1售后保障服务，2未收到货 char(1)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 投诉(申诉)内容 nvarchar2(255)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- ip nvarchar2(64)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，0投诉、1申诉 char(1)-->
-			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 申诉的投诉id(本表的id) number(19)-->
+			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 申诉的投诉id(本表的id) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 投诉状态，10新投诉、20待申诉、30对话中、40待仲裁、50已完成 char(2)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
@@ -433,10 +433,10 @@
 			<if test="entity.bak8 != null">bak8 = #{entity.bak8},</if>                                                          <!-- 备用字段8 nvarchar2(64)-->
 			<if test="entity.bak9 != null">bak9 = #{entity.bak9},</if>                                                          <!-- 备用字段9 nvarchar2(64)-->
 			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
-			<if test="entity.orderDetailId != null">order_detail_id = #{entity.orderDetailId},</if>                             <!-- 订单详情id(订单详情表id) number(19)-->
+			<if test="entity.orderDetailId != null">order_detail_id = #{entity.orderDetailId},</if>                             <!-- 订单详情id(订单详情表id) bigint(20)-->
 			<if test="entity.systemHandleTime != null">system_handle_time = #{entity.systemHandleTime},</if>                    <!-- 平台处理时间 date(7)-->
 			<if test="entity.systemHandleHandelOpinion != null">system_handle_handel_opinion = #{entity.systemHandleHandelOpinion},</if>          <!-- 平台处理意见 nvarchar2(1024)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 处理人(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 处理人(管理员表id) bigint(20)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
 		<trim prefixOverrides="AND |OR ">

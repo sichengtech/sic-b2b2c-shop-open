@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="storeDomainColumns">
 	<trim suffixOverrides=",">
-		a.store_id AS "storeId",                                             <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) number(19)-->
+		a.store_id AS "storeId",                                             <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
 		a.domain AS "domain",                                                <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
 		a.modify_count AS "modifyCount",                                     <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
@@ -116,7 +116,7 @@
 	<insert id="insert" keyProperty="entity.storeId" keyColumn="store_id" useGeneratedKeys="true">
 		INSERT INTO store_domain
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			store_id,                                          <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) number(19)-->
+			store_id,                                          <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
 			domain,                                            <!-- 二级域名，假如一级域名是：taobao.com本字段存储：tanchisha， 表示tanchisha.taobao.com可访问店铺首页 nvarchar2(64)-->
 			modify_count,                                      <!-- 二级域名变更次数(限值在fdp配置文件去配置，每自然月可变更N次) number(10)-->
 			create_date,                                       <!-- 创建时间 date(7)-->

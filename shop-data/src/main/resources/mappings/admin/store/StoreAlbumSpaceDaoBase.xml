@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="storeAlbumSpaceColumns">
-		a.album_space_id AS "albumSpaceId",                                  <!-- 主键 number(19)-->
+		a.album_space_id AS "albumSpaceId",                                  <!-- 主键 bigint(20)-->
 		a.picture_count AS "pictureCount",                                   <!-- 图片数量 number(10)-->
 		a.album_count AS "albumCount",                                       <!-- 相册的数量 number(10)-->
 		a.total_space AS "totalSpace",                                       <!-- 图片总空间(单位byte) number(10)-->
@@ -115,7 +115,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.albumSpaceId" keyColumn="album_space_id" useGeneratedKeys="true">
 		INSERT INTO store_album_space(
-			album_space_id,                                    <!-- 主键 number(19)-->
+			album_space_id,                                    <!-- 主键 bigint(20)-->
 			picture_count,                                     <!-- 图片数量 number(10)-->
 			album_count,                                       <!-- 相册的数量 number(10)-->
 			total_space,                                       <!-- 图片总空间(单位byte) number(10)-->

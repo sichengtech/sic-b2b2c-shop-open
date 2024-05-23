@@ -7,12 +7,12 @@
 	<!-- 全部字段 -->
 	<sql id="siteAdColumns">
 	<trim suffixOverrides=",">
-		a.ad_id AS "adId",                                                   <!-- 主键 number(19)-->
+		a.ad_id AS "adId",                                                   <!-- 主键 bigint(20)-->
 		a.ad_number AS "adNumber",                                           <!-- 编号 nvarchar2(64)-->
 		a.name AS "name",                                                    <!-- 广告标题 nvarchar2(255)-->
 		a.info AS "info",                                                    <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 		a.is_open AS "isOpen",                                               <!-- 是否开启(0否、1是) char(1)-->
-		a.sort AS "sort",                                                    <!-- 排序 number(19)-->
+		a.sort AS "sort",                                                    <!-- 排序 bigint(20)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -123,12 +123,12 @@
 	<insert id="insert" keyProperty="entity.adId" keyColumn="ad_id" useGeneratedKeys="true">
 		INSERT INTO site_ad
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			ad_id,                                             <!-- 主键 number(19)-->
+			ad_id,                                             <!-- 主键 bigint(20)-->
 			ad_number,                                         <!-- 编号 nvarchar2(64)-->
 			name,                                              <!-- 广告标题 nvarchar2(255)-->
 			info,                                              <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			is_open,                                           <!-- 是否开启(0否、1是) char(1)-->
-			sort,                                              <!-- 排序 number(19)-->
+			sort,                                              <!-- 排序 bigint(20)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
@@ -150,7 +150,7 @@
 			#{entity.name},                                    <!-- 广告标题 nvarchar2(255)-->
 			#{entity.info},                                    <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			#{entity.isOpen},                                  <!-- 是否开启(0否、1是) char(1)-->
-			#{entity.sort},                                    <!-- 排序 number(19)-->
+			#{entity.sort},                                    <!-- 排序 bigint(20)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
 			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -172,7 +172,7 @@
 			<if test="entity.name != null">name,</if>                                          <!-- 广告标题 nvarchar2(255)-->
 			<if test="entity.info != null">info,</if>                                          <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 是否开启(0否、1是) char(1)-->
-			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -195,7 +195,7 @@
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 广告标题 nvarchar2(255)-->
 			<if test="entity.info != null">#{entity.info},</if>                                          <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 是否开启(0否、1是) char(1)-->
-			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -214,7 +214,7 @@
 			name = #{entity.name},                                          <!-- 广告标题 nvarchar2(255)-->
 			info = #{entity.info},                                          <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			is_open = #{entity.isOpen},                                     <!-- 是否开启(0否、1是) char(1)-->
-			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -235,7 +235,7 @@
 			name = #{entity.name},                                          <!-- 广告标题 nvarchar2(255)-->
 			info = #{entity.info},                                          <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			is_open = #{entity.isOpen},                                     <!-- 是否开启(0否、1是) char(1)-->
-			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -262,7 +262,7 @@
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 广告标题 nvarchar2(255)-->
 			<if test="entity.info != null">info = #{entity.info},</if>                                                          <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启(0否、1是) char(1)-->
-			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -282,7 +282,7 @@
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 广告标题 nvarchar2(255)-->
 			<if test="entity.info != null">info = #{entity.info},</if>                                                          <!-- 说明信息(说明这个广告位的详细信息，如广告的宽高 640x100px) nvarchar2(255)-->
 			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启(0否、1是) char(1)-->
-			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->

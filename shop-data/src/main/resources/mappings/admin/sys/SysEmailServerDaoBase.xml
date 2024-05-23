@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="sysEmailServerColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.status AS "status",                                                <!-- 状态，0停用，1启用 char(1)-->
 		a.sender AS "sender",                                                <!-- 发件人展示名称或网站名称 nvarchar2(64)-->
 		a.smtp AS "smtp",                                                    <!-- SMTP服务器地址 nvarchar2(64)-->
@@ -121,7 +121,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO sys_email_server(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			status,                                            <!-- 状态，0停用，1启用 char(1)-->
 			sender,                                            <!-- 发件人展示名称或网站名称 nvarchar2(64)-->
 			smtp,                                              <!-- SMTP服务器地址 nvarchar2(64)-->

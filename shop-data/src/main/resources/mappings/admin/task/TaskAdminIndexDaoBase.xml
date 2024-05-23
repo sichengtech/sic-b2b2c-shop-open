@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="taskAdminIndexColumns">
 	<trim suffixOverrides=",">
-		a.tai_id AS "taiId",                                                 <!-- 主键 number(19)-->
+		a.tai_id AS "taiId",                                                 <!-- 主键 bigint(20)-->
 		a.moneycountday AS "moneycountday",                                  <!-- 今日成交额 number(12,3)-->
 		a.ordercountpending AS "ordercountpending",                          <!-- 待处理订单 number(10)-->
 		a.ordercountday AS "ordercountday",                                  <!-- 今日订单 number(10)-->
@@ -136,7 +136,7 @@
 	<insert id="insert" keyProperty="entity.taiId" keyColumn="tai_id" useGeneratedKeys="true">
 		INSERT INTO task_admin_index
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			tai_id,                                            <!-- 主键 number(19)-->
+			tai_id,                                            <!-- 主键 bigint(20)-->
 			moneycountday,                                     <!-- 今日成交额 number(12,3)-->
 			ordercountpending,                                 <!-- 待处理订单 number(10)-->
 			ordercountday,                                     <!-- 今日订单 number(10)-->

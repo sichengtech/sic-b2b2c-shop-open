@@ -6,10 +6,10 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="settlementBillDetailColumns">
-		a.bill_detail_id AS "billDetailId",                                  <!-- 主键 number(19)-->
-		a.bill_id AS "billId",                                               <!-- 账单id number(19)-->
+		a.bill_detail_id AS "billDetailId",                                  <!-- 主键 bigint(20)-->
+		a.bill_id AS "billId",                                               <!-- 账单id bigint(20)-->
 		a.type AS "type",                                                    <!-- 类型，1商品订单、2退货订单 char(1)-->
-		a.order_id AS "orderId",                                             <!-- 订单id(订单表的id、退单表id) number(19)-->
+		a.order_id AS "orderId",                                             <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -113,10 +113,10 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.billDetailId" keyColumn="bill_detail_id" useGeneratedKeys="true">
 		INSERT INTO settlement_bill_detail(
-			bill_detail_id,                                    <!-- 主键 number(19)-->
-			bill_id,                                           <!-- 账单id number(19)-->
+			bill_detail_id,                                    <!-- 主键 bigint(20)-->
+			bill_id,                                           <!-- 账单id bigint(20)-->
 			type,                                              <!-- 类型，1商品订单、2退货订单 char(1)-->
-			order_id,                                          <!-- 订单id(订单表的id、退单表id) number(19)-->
+			order_id,                                          <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
@@ -132,9 +132,9 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.billId},                                  <!-- 账单id number(19)-->
+			#{entity.billId},                                  <!-- 账单id bigint(20)-->
 			#{entity.type},                                    <!-- 类型，1商品订单、2退货订单 char(1)-->
-			#{entity.orderId},                                 <!-- 订单id(订单表的id、退单表id) number(19)-->
+			#{entity.orderId},                                 <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
 			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -152,9 +152,9 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.billDetailId != null">bill_detail_id,</if></if>
 			<if test="entity.pkMode==2">bill_detail_id,</if>
-			<if test="entity.billId != null">bill_id,</if>                                     <!-- 账单id number(19)-->
+			<if test="entity.billId != null">bill_id,</if>                                     <!-- 账单id bigint(20)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 类型，1商品订单、2退货订单 char(1)-->
-			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单id(订单表的id、退单表id) number(19)-->
+			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -173,9 +173,9 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.billId != null">#{entity.billId},</if>                                      <!-- 账单id number(19)-->
+			<if test="entity.billId != null">#{entity.billId},</if>                                      <!-- 账单id bigint(20)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型，1商品订单、2退货订单 char(1)-->
-			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单id(订单表的id、退单表id) number(19)-->
+			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -189,9 +189,9 @@
 	<!-- 根据主键更新记录-->
 	<update id="updateById">
 		UPDATE settlement_bill_detail SET
-			bill_id = #{entity.billId},                                     <!-- 账单id number(19)-->
+			bill_id = #{entity.billId},                                     <!-- 账单id bigint(20)-->
 			type = #{entity.type},                                          <!-- 类型，1商品订单、2退货订单 char(1)-->
-			order_id = #{entity.orderId},                                   <!-- 订单id(订单表的id、退单表id) number(19)-->
+			order_id = #{entity.orderId},                                   <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -206,9 +206,9 @@
 	<!-- 根据条件更新记录-->
 	<update id="updateByWhere">
 		UPDATE settlement_bill_detail a SET
-			bill_id = #{entity.billId},                                     <!-- 账单id number(19)-->
+			bill_id = #{entity.billId},                                     <!-- 账单id bigint(20)-->
 			type = #{entity.type},                                          <!-- 类型，1商品订单、2退货订单 char(1)-->
-			order_id = #{entity.orderId},                                   <!-- 订单id(订单表的id、退单表id) number(19)-->
+			order_id = #{entity.orderId},                                   <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -230,9 +230,9 @@
 	<update id="updateByIdSelective">
 		UPDATE settlement_bill_detail
 		<set>
-			<if test="entity.billId != null">bill_id = #{entity.billId},</if>                                                   <!-- 账单id number(19)-->
+			<if test="entity.billId != null">bill_id = #{entity.billId},</if>                                                   <!-- 账单id bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，1商品订单、2退货订单 char(1)-->
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表的id、退单表id) number(19)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -248,9 +248,9 @@
 	<update id="updateByWhereSelective">
 		UPDATE settlement_bill_detail a
 		<set>
-			<if test="entity.billId != null">bill_id = #{entity.billId},</if>                                                   <!-- 账单id number(19)-->
+			<if test="entity.billId != null">bill_id = #{entity.billId},</if>                                                   <!-- 账单id bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，1商品订单、2退货订单 char(1)-->
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表的id、退单表id) number(19)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表的id、退单表id) bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->

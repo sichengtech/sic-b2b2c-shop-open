@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="productConfigColumns">
-		a.id AS "id",                                                        <!-- 主键ID number(19)-->
+		a.id AS "id",                                                        <!-- 主键ID bigint(20)-->
 		a.set1 AS "set1",                                                    <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
 		a.set2 AS "set2",                                                    <!-- 设置2 nvarchar2(64)-->
 		a.set3 AS "set3",                                                    <!-- 设置3 nvarchar2(64)-->
@@ -113,7 +113,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO product_config(
-			id,                                                <!-- 主键ID number(19)-->
+			id,                                                <!-- 主键ID bigint(20)-->
 			set1,                                              <!-- 设置1，新发的商品是否需要审核，0否、1是 nvarchar2(64)-->
 			set2,                                              <!-- 设置2 nvarchar2(64)-->
 			set3,                                              <!-- 设置3 nvarchar2(64)-->

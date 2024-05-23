@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="sysTimedTaskColumns">
-		a.stt_id AS "sttId",                                                 <!-- 主键id number(19)-->
+		a.stt_id AS "sttId",                                                 <!-- 主键id bigint(20)-->
 		a.task_name AS "taskName",                                           <!-- 任务名称 nvarchar2(64)-->
 		a.task_explain AS "taskExplain",                                     <!-- 任务说明 nvarchar2(64)-->
 		a.task_time AS "taskTime",                                           <!-- 执行时间（表达式） nvarchar2(64)-->
@@ -118,7 +118,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.sttId" keyColumn="stt_id" useGeneratedKeys="true">
 		INSERT INTO sys_timed_task(
-			stt_id,                                            <!-- 主键id number(19)-->
+			stt_id,                                            <!-- 主键id bigint(20)-->
 			task_name,                                         <!-- 任务名称 nvarchar2(64)-->
 			task_explain,                                      <!-- 任务说明 nvarchar2(64)-->
 			task_time,                                         <!-- 执行时间（表达式） nvarchar2(64)-->

@@ -7,11 +7,11 @@
 	<!-- 全部字段 -->
 	<sql id="categoryColumns">
 	<trim suffixOverrides=",">
-		a.id AS "id",                                                        <!-- 编号 number(19)-->
-		a.parent_id AS "parent.id",                                          <!-- 父级编号 number(19)-->
+		a.id AS "id",                                                        <!-- 编号 bigint(20)-->
+		a.parent_id AS "parent.id",                                          <!-- 父级编号 bigint(20)-->
 		a.parent_ids AS "parentIds",                                         <!-- 所有父级编号 varchar2(2000)-->
-		a.site_id AS "siteId",                                               <!-- 站点编号 number(19)-->
-		a.office_id AS "office.id",                                          <!-- 归属机构 number(19)-->
+		a.site_id AS "siteId",                                               <!-- 站点编号 bigint(20)-->
+		a.office_id AS "office.id",                                          <!-- 归属机构 bigint(20)-->
 		a.module AS "module",                                                <!-- 栏目模块 varchar2(20)-->
 		a.name AS "name",                                                    <!-- 栏目名称 varchar2(100)-->
 		a.image AS "image",                                                  <!-- 栏目图片 varchar2(255)-->
@@ -161,11 +161,11 @@
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO cms_category
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			id,                                                <!-- 编号 number(19)-->
-			parent_id,                                         <!-- 父级编号 number(19)-->
+			id,                                                <!-- 编号 bigint(20)-->
+			parent_id,                                         <!-- 父级编号 bigint(20)-->
 			parent_ids,                                        <!-- 所有父级编号 varchar2(2000)-->
-			site_id,                                           <!-- 站点编号 number(19)-->
-			office_id,                                         <!-- 归属机构 number(19)-->
+			site_id,                                           <!-- 站点编号 bigint(20)-->
+			office_id,                                         <!-- 归属机构 bigint(20)-->
 			module,                                            <!-- 栏目模块 varchar2(20)-->
 			name,                                              <!-- 栏目名称 varchar2(100)-->
 			image,                                             <!-- 栏目图片 varchar2(255)-->
@@ -198,10 +198,10 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.parent.id},                               <!-- 父级编号 number(19)-->
+			#{entity.parent.id},                               <!-- 父级编号 bigint(20)-->
 			#{entity.parentIds},                               <!-- 所有父级编号 varchar2(2000)-->
-			#{entity.siteId},                                  <!-- 站点编号 number(19)-->
-			#{entity.office.id},                               <!-- 归属机构 number(19)-->
+			#{entity.siteId},                                  <!-- 站点编号 bigint(20)-->
+			#{entity.office.id},                               <!-- 归属机构 bigint(20)-->
 			#{entity.module},                                  <!-- 栏目模块 varchar2(20)-->
 			#{entity.name},                                    <!-- 栏目名称 varchar2(100)-->
 			#{entity.image},                                   <!-- 栏目图片 varchar2(255)-->
@@ -234,10 +234,10 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
 			<if test="entity.pkMode==2">id,</if>
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- 父级编号 number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- 父级编号 bigint(20)-->
 			<if test="entity.parentIds != null">parent_ids,</if>                               <!-- 所有父级编号 varchar2(2000)-->
-			<if test="entity.siteId != null">site_id,</if>                                     <!-- 站点编号 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 归属机构 number(19)-->
+			<if test="entity.siteId != null">site_id,</if>                                     <!-- 站点编号 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 归属机构 bigint(20)-->
 			<if test="entity.module != null">module,</if>                                      <!-- 栏目模块 varchar2(20)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 栏目名称 varchar2(100)-->
 			<if test="entity.image != null">image,</if>                                        <!-- 栏目图片 varchar2(255)-->
@@ -271,10 +271,10 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- 父级编号 number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- 父级编号 bigint(20)-->
 			<if test="entity.parentIds != null">#{entity.parentIds},</if>                                <!-- 所有父级编号 varchar2(2000)-->
-			<if test="entity.siteId != null">#{entity.siteId},</if>                                      <!-- 站点编号 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 归属机构 number(19)-->
+			<if test="entity.siteId != null">#{entity.siteId},</if>                                      <!-- 站点编号 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 归属机构 bigint(20)-->
 			<if test="entity.module != null">#{entity.module},</if>                                      <!-- 栏目模块 varchar2(20)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 栏目名称 varchar2(100)-->
 			<if test="entity.image != null">#{entity.image},</if>                                        <!-- 栏目图片 varchar2(255)-->
@@ -304,10 +304,10 @@
 	<update id="updateById">
 		UPDATE cms_category 
 		<set>
-			parent_id = #{entity.parent.id},                                <!-- 父级编号 number(19)-->
+			parent_id = #{entity.parent.id},                                <!-- 父级编号 bigint(20)-->
 			parent_ids = #{entity.parentIds},                               <!-- 所有父级编号 varchar2(2000)-->
-			site_id = #{entity.siteId},                                     <!-- 站点编号 number(19)-->
-			office_id = #{entity.office.id},                                <!-- 归属机构 number(19)-->
+			site_id = #{entity.siteId},                                     <!-- 站点编号 bigint(20)-->
+			office_id = #{entity.office.id},                                <!-- 归属机构 bigint(20)-->
 			module = #{entity.module},                                      <!-- 栏目模块 varchar2(20)-->
 			name = #{entity.name},                                          <!-- 栏目名称 varchar2(100)-->
 			image = #{entity.image},                                        <!-- 栏目图片 varchar2(255)-->
@@ -338,10 +338,10 @@
 	<update id="updateByWhere">
 		UPDATE cms_category a 
 		<set>
-			parent_id = #{entity.parent.id},                                <!-- 父级编号 number(19)-->
+			parent_id = #{entity.parent.id},                                <!-- 父级编号 bigint(20)-->
 			parent_ids = #{entity.parentIds},                               <!-- 所有父级编号 varchar2(2000)-->
-			site_id = #{entity.siteId},                                     <!-- 站点编号 number(19)-->
-			office_id = #{entity.office.id},                                <!-- 归属机构 number(19)-->
+			site_id = #{entity.siteId},                                     <!-- 站点编号 bigint(20)-->
+			office_id = #{entity.office.id},                                <!-- 归属机构 bigint(20)-->
 			module = #{entity.module},                                      <!-- 栏目模块 varchar2(20)-->
 			name = #{entity.name},                                          <!-- 栏目名称 varchar2(100)-->
 			image = #{entity.image},                                        <!-- 栏目图片 varchar2(255)-->
@@ -378,10 +378,10 @@
 	<update id="updateByIdSelective">
 		UPDATE cms_category
 		<set>
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级编号 number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级编号 bigint(20)-->
 			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级编号 varchar2(2000)-->
-			<if test="entity.siteId != null">site_id = #{entity.siteId},</if>                                                   <!-- 站点编号 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属机构 number(19)-->
+			<if test="entity.siteId != null">site_id = #{entity.siteId},</if>                                                   <!-- 站点编号 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属机构 bigint(20)-->
 			<if test="entity.module != null">module = #{entity.module},</if>                                                    <!-- 栏目模块 varchar2(20)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 栏目名称 varchar2(100)-->
 			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 栏目图片 varchar2(255)-->
@@ -411,10 +411,10 @@
 	<update id="updateByWhereSelective">
 		UPDATE cms_category a
 		<set>
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级编号 number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父级编号 bigint(20)-->
 			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级编号 varchar2(2000)-->
-			<if test="entity.siteId != null">site_id = #{entity.siteId},</if>                                                   <!-- 站点编号 number(19)-->
-			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属机构 number(19)-->
+			<if test="entity.siteId != null">site_id = #{entity.siteId},</if>                                                   <!-- 站点编号 bigint(20)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 归属机构 bigint(20)-->
 			<if test="entity.module != null">module = #{entity.module},</if>                                                    <!-- 栏目模块 varchar2(20)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 栏目名称 varchar2(100)-->
 			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 栏目图片 varchar2(255)-->

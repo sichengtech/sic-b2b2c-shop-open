@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="siteMessageTemplateColumns">
 	<trim suffixOverrides=",">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.num AS "num",                                                      <!-- 模板编号（手输入） nvarchar2(64)-->
 		a.name AS "name",                                                    <!-- 模板名称 nvarchar2(64)-->
 		a.type AS "type",                                                    <!-- 消息模板类型 nvarchar2(64)-->
@@ -137,7 +137,7 @@
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_message_template
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			num,                                               <!-- 模板编号（手输入） nvarchar2(64)-->
 			name,                                              <!-- 模板名称 nvarchar2(64)-->
 			type,                                              <!-- 消息模板类型 nvarchar2(64)-->

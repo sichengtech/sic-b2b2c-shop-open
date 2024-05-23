@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="storeIndustryColumns">
-		a.industry_id AS "industryId",                                       <!-- 主键 number(19)-->
+		a.industry_id AS "industryId",                                       <!-- 主键 bigint(20)-->
 		a.industry_name AS "industryName",                                   <!-- 行业名称 nvarchar2(64)-->
 		a.industry_money AS "industryMoney",                                 <!-- 保证金 number(12,3)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
@@ -115,7 +115,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.industryId" keyColumn="industry_id" useGeneratedKeys="true">
 		INSERT INTO store_industry(
-			industry_id,                                       <!-- 主键 number(19)-->
+			industry_id,                                       <!-- 主键 bigint(20)-->
 			industry_name,                                     <!-- 行业名称 nvarchar2(64)-->
 			industry_money,                                    <!-- 保证金 number(12,3)-->
 			sort,                                              <!-- 排序 number(10)-->

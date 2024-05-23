@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="articleColumns">
 	<trim suffixOverrides=",">
-		a.id AS "id",                                                        <!-- 编号 number(19)-->
-		a.category_id AS "categoryId",                                       <!-- 栏目编号 number(19)-->
+		a.id AS "id",                                                        <!-- 编号 bigint(20)-->
+		a.category_id AS "categoryId",                                       <!-- 栏目编号 bigint(20)-->
 		a.title AS "title",                                                  <!-- 标题 varchar2(255)-->
 		a.link AS "link",                                                    <!-- 文章链接 varchar2(255)-->
 		a.color AS "color",                                                  <!-- 标题颜色 varchar2(50)-->
@@ -144,8 +144,8 @@
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO cms_article
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			id,                                                <!-- 编号 number(19)-->
-			category_id,                                       <!-- 栏目编号 number(19)-->
+			id,                                                <!-- 编号 bigint(20)-->
+			category_id,                                       <!-- 栏目编号 bigint(20)-->
 			title,                                             <!-- 标题 varchar2(255)-->
 			link,                                              <!-- 文章链接 varchar2(255)-->
 			color,                                             <!-- 标题颜色 varchar2(50)-->
@@ -174,7 +174,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.categoryId},                              <!-- 栏目编号 number(19)-->
+			#{entity.categoryId},                              <!-- 栏目编号 bigint(20)-->
 			#{entity.title},                                   <!-- 标题 varchar2(255)-->
 			#{entity.link},                                    <!-- 文章链接 varchar2(255)-->
 			#{entity.color},                                   <!-- 标题颜色 varchar2(50)-->
@@ -203,7 +203,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
 			<if test="entity.pkMode==2">id,</if>
-			<if test="entity.categoryId != null">category_id,</if>                             <!-- 栏目编号 number(19)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 栏目编号 bigint(20)-->
 			<if test="entity.title != null">title,</if>                                        <!-- 标题 varchar2(255)-->
 			<if test="entity.link != null">link,</if>                                          <!-- 文章链接 varchar2(255)-->
 			<if test="entity.color != null">color,</if>                                        <!-- 标题颜色 varchar2(50)-->
@@ -233,7 +233,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 栏目编号 number(19)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 栏目编号 bigint(20)-->
 			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 标题 varchar2(255)-->
 			<if test="entity.link != null">#{entity.link},</if>                                          <!-- 文章链接 varchar2(255)-->
 			<if test="entity.color != null">#{entity.color},</if>                                        <!-- 标题颜色 varchar2(50)-->
@@ -259,7 +259,7 @@
 	<update id="updateById">
 		UPDATE cms_article 
 		<set>
-			category_id = #{entity.categoryId},                             <!-- 栏目编号 number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 栏目编号 bigint(20)-->
 			title = #{entity.title},                                        <!-- 标题 varchar2(255)-->
 			link = #{entity.link},                                          <!-- 文章链接 varchar2(255)-->
 			color = #{entity.color},                                        <!-- 标题颜色 varchar2(50)-->
@@ -286,7 +286,7 @@
 	<update id="updateByWhere">
 		UPDATE cms_article a 
 		<set>
-			category_id = #{entity.categoryId},                             <!-- 栏目编号 number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 栏目编号 bigint(20)-->
 			title = #{entity.title},                                        <!-- 标题 varchar2(255)-->
 			link = #{entity.link},                                          <!-- 文章链接 varchar2(255)-->
 			color = #{entity.color},                                        <!-- 标题颜色 varchar2(50)-->
@@ -319,7 +319,7 @@
 	<update id="updateByIdSelective">
 		UPDATE cms_article
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 bigint(20)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 标题 varchar2(255)-->
 			<if test="entity.link != null">link = #{entity.link},</if>                                                          <!-- 文章链接 varchar2(255)-->
 			<if test="entity.color != null">color = #{entity.color},</if>                                                       <!-- 标题颜色 varchar2(50)-->
@@ -345,7 +345,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE cms_article a
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 bigint(20)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 标题 varchar2(255)-->
 			<if test="entity.link != null">link = #{entity.link},</if>                                                          <!-- 文章链接 varchar2(255)-->
 			<if test="entity.color != null">color = #{entity.color},</if>                                                       <!-- 标题颜色 varchar2(50)-->

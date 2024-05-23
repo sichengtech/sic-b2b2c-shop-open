@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="productBrandColumns">
 	<trim suffixOverrides=",">
-		a.brand_id AS "brandId",                                             <!-- id number(19)-->
+		a.brand_id AS "brandId",                                             <!-- id bigint(20)-->
 		a.name AS "name",                                                    <!-- 品牌名称 nvarchar2(64)-->
 		a.first_letter AS "firstLetter",                                     <!-- 首页字母 nvarchar2(64)-->
 		a.english_name AS "englishName",                                     <!-- 英文名称 nvarchar2(64)-->
@@ -31,7 +31,7 @@
 		a.apply_path_p1 AS "applyPathP1",                                    <!-- 注册证/受理书，图1 nvarchar2(64)-->
 		a.apply_path_p2 AS "applyPathP2",                                    <!-- 注册证/受理书，图2 nvarchar2(64)-->
 		a.brand_owner AS "brandOwner",                                       <!-- 品牌所有者 nvarchar2(64)-->
-		a.store_id AS "storeId",                                             <!-- 谁申请的品牌 number(19)-->
+		a.store_id AS "storeId",                                             <!-- 谁申请的品牌 bigint(20)-->
 
 	</trim>
 	</sql>
@@ -150,7 +150,7 @@
 	<insert id="insert" keyProperty="entity.brandId" keyColumn="brand_id" useGeneratedKeys="true">
 		INSERT INTO product_brand
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			brand_id,                                          <!-- id number(19)-->
+			brand_id,                                          <!-- id bigint(20)-->
 			name,                                              <!-- 品牌名称 nvarchar2(64)-->
 			first_letter,                                      <!-- 首页字母 nvarchar2(64)-->
 			english_name,                                      <!-- 英文名称 nvarchar2(64)-->
@@ -174,7 +174,7 @@
 			apply_path_p1,                                     <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			apply_path_p2,                                     <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			brand_owner,                                       <!-- 品牌所有者 nvarchar2(64)-->
-			store_id,                                          <!-- 谁申请的品牌 number(19)-->
+			store_id,                                          <!-- 谁申请的品牌 bigint(20)-->
 
 		</trim>
 		 VALUES 
@@ -208,7 +208,7 @@
 			#{entity.applyPathP1},                             <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			#{entity.applyPathP2},                             <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			#{entity.brandOwner},                              <!-- 品牌所有者 nvarchar2(64)-->
-			#{entity.storeId},                                 <!-- 谁申请的品牌 number(19)-->
+			#{entity.storeId},                                 <!-- 谁申请的品牌 bigint(20)-->
 
 	</trim>
 	</insert>
@@ -242,7 +242,7 @@
 			<if test="entity.applyPathP1 != null">apply_path_p1,</if>                          <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			<if test="entity.applyPathP2 != null">apply_path_p2,</if>                          <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			<if test="entity.brandOwner != null">brand_owner,</if>                             <!-- 品牌所有者 nvarchar2(64)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 谁申请的品牌 number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 谁申请的品牌 bigint(20)-->
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -277,7 +277,7 @@
 			<if test="entity.applyPathP1 != null">#{entity.applyPathP1},</if>                            <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			<if test="entity.applyPathP2 != null">#{entity.applyPathP2},</if>                            <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			<if test="entity.brandOwner != null">#{entity.brandOwner},</if>                              <!-- 品牌所有者 nvarchar2(64)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 谁申请的品牌 number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 谁申请的品牌 bigint(20)-->
 		</trim>
 	</insert>
 
@@ -308,7 +308,7 @@
 			apply_path_p1 = #{entity.applyPathP1},                          <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			apply_path_p2 = #{entity.applyPathP2},                          <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			brand_owner = #{entity.brandOwner},                             <!-- 品牌所有者 nvarchar2(64)-->
-			store_id = #{entity.storeId},                                   <!-- 谁申请的品牌 number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 谁申请的品牌 bigint(20)-->
 
 		</set>
 		WHERE brand_id = #{entity.brandId}
@@ -341,7 +341,7 @@
 			apply_path_p1 = #{entity.applyPathP1},                          <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			apply_path_p2 = #{entity.applyPathP2},                          <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			brand_owner = #{entity.brandOwner},                             <!-- 品牌所有者 nvarchar2(64)-->
-			store_id = #{entity.storeId},                                   <!-- 谁申请的品牌 number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 谁申请的品牌 bigint(20)-->
 
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
@@ -380,7 +380,7 @@
 			<if test="entity.applyPathP1 != null">apply_path_p1 = #{entity.applyPathP1},</if>                                   <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			<if test="entity.applyPathP2 != null">apply_path_p2 = #{entity.applyPathP2},</if>                                   <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			<if test="entity.brandOwner != null">brand_owner = #{entity.brandOwner},</if>                                       <!-- 品牌所有者 nvarchar2(64)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 谁申请的品牌 number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 谁申请的品牌 bigint(20)-->
 		</set>
 		WHERE brand_id = #{entity.brandId}
 	</update>
@@ -412,7 +412,7 @@
 			<if test="entity.applyPathP1 != null">apply_path_p1 = #{entity.applyPathP1},</if>                                   <!-- 注册证/受理书，图1 nvarchar2(64)-->
 			<if test="entity.applyPathP2 != null">apply_path_p2 = #{entity.applyPathP2},</if>                                   <!-- 注册证/受理书，图2 nvarchar2(64)-->
 			<if test="entity.brandOwner != null">brand_owner = #{entity.brandOwner},</if>                                       <!-- 品牌所有者 nvarchar2(64)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 谁申请的品牌 number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 谁申请的品牌 bigint(20)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
 		<trim prefixOverrides="AND |OR ">

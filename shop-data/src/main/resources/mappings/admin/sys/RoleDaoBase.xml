@@ -6,8 +6,8 @@
 	</cache>
     <!-- 全部字段 -->
 	<sql id="sysRoleColumns">
-		a.id AS "id",                                                        <!-- id number(19)-->
-		a.office_id AS "office.id",                                          <!-- 机构id number(19)-->
+		a.id AS "id",                                                        <!-- id bigint(20)-->
+		a.office_id AS "office.id",                                          <!-- 机构id bigint(20)-->
 		a.name AS "name",                                                    <!-- 角色名称 nvarchar2(100)-->
 		a.enname AS "enname",                                                <!-- 英文名称 varchar2(255)-->
 		a.role_type AS "roleType",                                           <!-- 权限类型 varchar2(255)-->
@@ -129,8 +129,8 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO sys_role(
-			id,                                                <!-- id number(19)-->
-			office_id,                                         <!-- 机构id number(19)-->
+			id,                                                <!-- id bigint(20)-->
+			office_id,                                         <!-- 机构id bigint(20)-->
 			name,                                              <!-- 角色名称 nvarchar2(100)-->
 			enname,                                            <!-- 英文名称 varchar2(255)-->
 			role_type,                                         <!-- 权限类型 varchar2(255)-->
@@ -151,7 +151,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.office.id},                               <!-- 机构id number(19)-->
+			#{entity.office.id},                               <!-- 机构id bigint(20)-->
 			#{entity.name},                                    <!-- 角色名称 nvarchar2(100)-->
 			#{entity.enname},                                  <!-- 英文名称 varchar2(255)-->
 			#{entity.roleType},                                <!-- 权限类型 varchar2(255)-->
@@ -174,7 +174,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
 			<if test="entity.pkMode==2">id,</if>
-			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 机构id number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id,</if>                                <!-- 机构id bigint(20)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 角色名称 nvarchar2(100)-->
 			<if test="entity.enname != null">enname,</if>                                      <!-- 英文名称 varchar2(255)-->
 			<if test="entity.roleType != null">role_type,</if>                                 <!-- 权限类型 varchar2(255)-->
@@ -198,7 +198,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 机构id number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">#{entity.office.id},</if>                                <!-- 机构id bigint(20)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 角色名称 nvarchar2(100)-->
 			<if test="entity.enname != null">#{entity.enname},</if>                                      <!-- 英文名称 varchar2(255)-->
 			<if test="entity.roleType != null">#{entity.roleType},</if>                                  <!-- 权限类型 varchar2(255)-->
@@ -217,7 +217,7 @@
 	<!-- 根据主键更新记录-->
 	<update id="updateById">
 		UPDATE sys_role SET
-			office_id = #{entity.office.id},                                <!-- 机构id number(19)-->
+			office_id = #{entity.office.id},                                <!-- 机构id bigint(20)-->
 			name = #{entity.name},                                          <!-- 角色名称 nvarchar2(100)-->
 			enname = #{entity.enname},                                      <!-- 英文名称 varchar2(255)-->
 			role_type = #{entity.roleType},                                 <!-- 权限类型 varchar2(255)-->
@@ -236,7 +236,7 @@
 	<!-- 根据条件更新记录-->
 	<update id="updateByWhere">
 		UPDATE sys_role a SET
-			office_id = #{entity.office.id},                                <!-- 机构id number(19)-->
+			office_id = #{entity.office.id},                                <!-- 机构id bigint(20)-->
 			name = #{entity.name},                                          <!-- 角色名称 nvarchar2(100)-->
 			enname = #{entity.enname},                                      <!-- 英文名称 varchar2(255)-->
 			role_type = #{entity.roleType},                                 <!-- 权限类型 varchar2(255)-->
@@ -262,7 +262,7 @@
 	<update id="updateByIdSelective">
 		UPDATE sys_role
 		<set>
-			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 机构id number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 机构id bigint(20)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 角色名称 nvarchar2(100)-->
 			<if test="entity.enname != null">enname = #{entity.enname},</if>                                                    <!-- 英文名称 varchar2(255)-->
 			<if test="entity.roleType != null">role_type = #{entity.roleType},</if>                                             <!-- 权限类型 varchar2(255)-->
@@ -282,7 +282,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE sys_role a
 		<set>
-			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 机构id number(19)-->
+			<if test="entity.office!= null and entity.office.id!= null ">office_id = #{entity.office.id},</if>                                           <!-- 机构id bigint(20)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 角色名称 nvarchar2(100)-->
 			<if test="entity.enname != null">enname = #{entity.enname},</if>                                                    <!-- 英文名称 varchar2(255)-->
 			<if test="entity.roleType != null">role_type = #{entity.roleType},</if>                                             <!-- 权限类型 varchar2(255)-->

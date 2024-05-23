@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="siteInfoColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.name AS "name",                                                    <!-- 网站名称 nvarchar2(128)-->
 		a.icp AS "icp",                                                      <!-- ICP备案号 nvarchar2(128)-->
 		a.code AS "code",                                                    <!-- 第三方流量统计代码 nvarchar2(1024)-->
@@ -130,7 +130,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_info(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			name,                                              <!-- 网站名称 nvarchar2(128)-->
 			icp,                                               <!-- ICP备案号 nvarchar2(128)-->
 			code,                                              <!-- 第三方流量统计代码 nvarchar2(1024)-->

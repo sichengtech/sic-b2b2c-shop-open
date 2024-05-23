@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="storeAlbumColumns">
 	<trim suffixOverrides=",">
-		a.album_id AS "albumId",                                             <!-- 主键 number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.album_id AS "albumId",                                             <!-- 主键 bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
 		a.album_name AS "albumName",                                         <!-- 相册名称 nvarchar2(64)-->
 		a.picture_count AS "pictureCount",                                   <!-- 图片数量 number(10)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
@@ -118,8 +118,8 @@
 	<insert id="insert" keyProperty="entity.albumId" keyColumn="album_id" useGeneratedKeys="true">
 		INSERT INTO store_album
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			album_id,                                          <!-- 主键 number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			album_id,                                          <!-- 主键 bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
 			album_name,                                        <!-- 相册名称 nvarchar2(64)-->
 			picture_count,                                     <!-- 图片数量 number(10)-->
 			sort,                                              <!-- 排序 number(10)-->
@@ -140,7 +140,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
 			#{entity.albumName},                               <!-- 相册名称 nvarchar2(64)-->
 			#{entity.pictureCount},                            <!-- 图片数量 number(10)-->
 			#{entity.sort},                                    <!-- 排序 number(10)-->
@@ -161,7 +161,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.albumId != null">album_id,</if></if>
 			<if test="entity.pkMode==2">album_id,</if>
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.albumName != null">album_name,</if>                               <!-- 相册名称 nvarchar2(64)-->
 			<if test="entity.pictureCount != null">picture_count,</if>                         <!-- 图片数量 number(10)-->
 			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
@@ -183,7 +183,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.albumName != null">#{entity.albumName},</if>                                <!-- 相册名称 nvarchar2(64)-->
 			<if test="entity.pictureCount != null">#{entity.pictureCount},</if>                          <!-- 图片数量 number(10)-->
 			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
@@ -201,7 +201,7 @@
 	<update id="updateById">
 		UPDATE store_album 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			album_name = #{entity.albumName},                               <!-- 相册名称 nvarchar2(64)-->
 			picture_count = #{entity.pictureCount},                         <!-- 图片数量 number(10)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
@@ -221,7 +221,7 @@
 	<update id="updateByWhere">
 		UPDATE store_album a 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			album_name = #{entity.albumName},                               <!-- 相册名称 nvarchar2(64)-->
 			picture_count = #{entity.pictureCount},                         <!-- 图片数量 number(10)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
@@ -247,7 +247,7 @@
 	<update id="updateByIdSelective">
 		UPDATE store_album
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.albumName != null">album_name = #{entity.albumName},</if>                                          <!-- 相册名称 nvarchar2(64)-->
 			<if test="entity.pictureCount != null">picture_count = #{entity.pictureCount},</if>                                 <!-- 图片数量 number(10)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
@@ -266,7 +266,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE store_album a
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.albumName != null">album_name = #{entity.albumName},</if>                                          <!-- 相册名称 nvarchar2(64)-->
 			<if test="entity.pictureCount != null">picture_count = #{entity.pictureCount},</if>                                 <!-- 图片数量 number(10)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->

@@ -6,15 +6,15 @@
 <!--	</cache>-->
 	<!-- 全部字段 -->
 	<sql id="commentColumns">
-		a.id AS "id",                                                        <!-- 编号 number(19)-->
-		a.category_id AS "categoryId",                                       <!-- 栏目编号 number(19)-->
-		a.content_id AS "contentId",                                         <!-- 栏目内容的编号 number(19)-->
+		a.id AS "id",                                                        <!-- 编号 bigint(20)-->
+		a.category_id AS "categoryId",                                       <!-- 栏目编号 bigint(20)-->
+		a.content_id AS "contentId",                                         <!-- 栏目内容的编号 bigint(20)-->
 		a.title AS "title",                                                  <!-- 栏目内容的标题 varchar2(255)-->
 		a.content AS "content",                                              <!-- 评论内容 varchar2(255)-->
 		a.name AS "name",                                                    <!-- 评论姓名 varchar2(100)-->
 		a.ip AS "ip",                                                        <!-- 评论IP varchar2(100)-->
 		a.create_date AS "createDate",                                       <!-- 评论时间 timestamp(6)-->
-		a.audit_user_id AS "auditUserId",                                    <!-- 审核人 number(19)-->
+		a.audit_user_id AS "auditUserId",                                    <!-- 审核人 bigint(20)-->
 		a.audit_date AS "auditDate",                                         <!-- 审核时间 timestamp(6)-->
 		a.del_flag AS "delFlag"                                             <!-- 删除标记 char(1)-->
 		
@@ -126,15 +126,15 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO cms_comment(
-			id,                                                <!-- 编号 number(19)-->
-			category_id,                                       <!-- 栏目编号 number(19)-->
-			content_id,                                        <!-- 栏目内容的编号 number(19)-->
+			id,                                                <!-- 编号 bigint(20)-->
+			category_id,                                       <!-- 栏目编号 bigint(20)-->
+			content_id,                                        <!-- 栏目内容的编号 bigint(20)-->
 			title,                                             <!-- 栏目内容的标题 varchar2(255)-->
 			content,                                           <!-- 评论内容 varchar2(255)-->
 			name,                                              <!-- 评论姓名 varchar2(100)-->
 			ip,                                                <!-- 评论IP varchar2(100)-->
 			create_date,                                       <!-- 评论时间 timestamp(6)-->
-			audit_user_id,                                     <!-- 审核人 number(19)-->
+			audit_user_id,                                     <!-- 审核人 bigint(20)-->
 			audit_date,                                        <!-- 审核时间 timestamp(6)-->
 			del_flag                                          <!-- 删除标记 char(1)-->
 
@@ -145,14 +145,14 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.categoryId},                              <!-- 栏目编号 number(19)-->
-			#{entity.contentId},                               <!-- 栏目内容的编号 number(19)-->
+			#{entity.categoryId},                              <!-- 栏目编号 bigint(20)-->
+			#{entity.contentId},                               <!-- 栏目内容的编号 bigint(20)-->
 			#{entity.title},                                   <!-- 栏目内容的标题 varchar2(255)-->
 			#{entity.content},                                 <!-- 评论内容 varchar2(255)-->
 			#{entity.name},                                    <!-- 评论姓名 varchar2(100)-->
 			#{entity.ip},                                      <!-- 评论IP varchar2(100)-->
 			#{entity.createDate},                              <!-- 评论时间 timestamp(6)-->
-			#{entity.auditUserId},                             <!-- 审核人 number(19)-->
+			#{entity.auditUserId},                             <!-- 审核人 bigint(20)-->
 			#{entity.auditDate},                               <!-- 审核时间 timestamp(6)-->
 			#{entity.delFlag}                                 <!-- 删除标记 char(1)-->
 
@@ -165,14 +165,14 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.id != null">id,</if></if>
 			<if test="entity.pkMode==2">id,</if>
-			<if test="entity.categoryId != null">category_id,</if>                             <!-- 栏目编号 number(19)-->
-			<if test="entity.contentId != null">content_id,</if>                               <!-- 栏目内容的编号 number(19)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 栏目编号 bigint(20)-->
+			<if test="entity.contentId != null">content_id,</if>                               <!-- 栏目内容的编号 bigint(20)-->
 			<if test="entity.title != null">title,</if>                                        <!-- 栏目内容的标题 varchar2(255)-->
 			<if test="entity.content != null">content,</if>                                    <!-- 评论内容 varchar2(255)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 评论姓名 varchar2(100)-->
 			<if test="entity.ip != null">ip,</if>                                              <!-- 评论IP varchar2(100)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 评论时间 timestamp(6)-->
-			<if test="entity.auditUserId != null">audit_user_id,</if>                          <!-- 审核人 number(19)-->
+			<if test="entity.auditUserId != null">audit_user_id,</if>                          <!-- 审核人 bigint(20)-->
 			<if test="entity.auditDate != null">audit_date,</if>                               <!-- 审核时间 timestamp(6)-->
 			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- 删除标记 char(1)-->
 		</trim>
@@ -186,14 +186,14 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 栏目编号 number(19)-->
-			<if test="entity.contentId != null">#{entity.contentId},</if>                                <!-- 栏目内容的编号 number(19)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 栏目编号 bigint(20)-->
+			<if test="entity.contentId != null">#{entity.contentId},</if>                                <!-- 栏目内容的编号 bigint(20)-->
 			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 栏目内容的标题 varchar2(255)-->
 			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 评论内容 varchar2(255)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 评论姓名 varchar2(100)-->
 			<if test="entity.ip != null">#{entity.ip},</if>                                              <!-- 评论IP varchar2(100)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 评论时间 timestamp(6)-->
-			<if test="entity.auditUserId != null">#{entity.auditUserId},</if>                            <!-- 审核人 number(19)-->
+			<if test="entity.auditUserId != null">#{entity.auditUserId},</if>                            <!-- 审核人 bigint(20)-->
 			<if test="entity.auditDate != null">#{entity.auditDate},</if>                                <!-- 审核时间 timestamp(6)-->
 			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- 删除标记 char(1)-->
 		</trim>
@@ -202,14 +202,14 @@
 	<!-- 根据主键更新记录-->
 	<update id="updateById">
 		UPDATE cms_comment SET
-			category_id = #{entity.categoryId},                             <!-- 栏目编号 number(19)-->
-			content_id = #{entity.contentId},                               <!-- 栏目内容的编号 number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 栏目编号 bigint(20)-->
+			content_id = #{entity.contentId},                               <!-- 栏目内容的编号 bigint(20)-->
 			title = #{entity.title},                                        <!-- 栏目内容的标题 varchar2(255)-->
 			content = #{entity.content},                                    <!-- 评论内容 varchar2(255)-->
 			name = #{entity.name},                                          <!-- 评论姓名 varchar2(100)-->
 			ip = #{entity.ip},                                              <!-- 评论IP varchar2(100)-->
 			create_date = #{entity.createDate},                             <!-- 评论时间 timestamp(6)-->
-			audit_user_id = #{entity.auditUserId},                          <!-- 审核人 number(19)-->
+			audit_user_id = #{entity.auditUserId},                          <!-- 审核人 bigint(20)-->
 			audit_date = #{entity.auditDate}                                <!-- 审核时间 timestamp(6)-->
 
 		WHERE id = #{entity.id}
@@ -218,14 +218,14 @@
 	<!-- 根据条件更新记录-->
 	<update id="updateByWhere">
 		UPDATE cms_comment a SET
-			category_id = #{entity.categoryId},                             <!-- 栏目编号 number(19)-->
-			content_id = #{entity.contentId},                               <!-- 栏目内容的编号 number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 栏目编号 bigint(20)-->
+			content_id = #{entity.contentId},                               <!-- 栏目内容的编号 bigint(20)-->
 			title = #{entity.title},                                        <!-- 栏目内容的标题 varchar2(255)-->
 			content = #{entity.content},                                    <!-- 评论内容 varchar2(255)-->
 			name = #{entity.name},                                          <!-- 评论姓名 varchar2(100)-->
 			ip = #{entity.ip},                                              <!-- 评论IP varchar2(100)-->
 			create_date = #{entity.createDate},                             <!-- 评论时间 timestamp(6)-->
-			audit_user_id = #{entity.auditUserId},                          <!-- 审核人 number(19)-->
+			audit_user_id = #{entity.auditUserId},                          <!-- 审核人 bigint(20)-->
 			audit_date = #{entity.auditDate}                                <!-- 审核时间 timestamp(6)-->
 
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
@@ -241,14 +241,14 @@
 	<update id="updateByIdSelective">
 		UPDATE cms_comment
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 number(19)-->
-			<if test="entity.contentId != null">content_id = #{entity.contentId},</if>                                          <!-- 栏目内容的编号 number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 bigint(20)-->
+			<if test="entity.contentId != null">content_id = #{entity.contentId},</if>                                          <!-- 栏目内容的编号 bigint(20)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 栏目内容的标题 varchar2(255)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 评论内容 varchar2(255)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 评论姓名 varchar2(100)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- 评论IP varchar2(100)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 评论时间 timestamp(6)-->
-			<if test="entity.auditUserId != null">audit_user_id = #{entity.auditUserId},</if>                                   <!-- 审核人 number(19)-->
+			<if test="entity.auditUserId != null">audit_user_id = #{entity.auditUserId},</if>                                   <!-- 审核人 bigint(20)-->
 			<if test="entity.auditDate != null">audit_date = #{entity.auditDate},</if>                                          <!-- 审核时间 timestamp(6)-->
 		</set>
 		WHERE id = #{entity.id}
@@ -258,14 +258,14 @@
 	<update id="updateByWhereSelective">
 		UPDATE cms_comment a
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 number(19)-->
-			<if test="entity.contentId != null">content_id = #{entity.contentId},</if>                                          <!-- 栏目内容的编号 number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 栏目编号 bigint(20)-->
+			<if test="entity.contentId != null">content_id = #{entity.contentId},</if>                                          <!-- 栏目内容的编号 bigint(20)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 栏目内容的标题 varchar2(255)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 评论内容 varchar2(255)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 评论姓名 varchar2(100)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- 评论IP varchar2(100)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 评论时间 timestamp(6)-->
-			<if test="entity.auditUserId != null">audit_user_id = #{entity.auditUserId},</if>                                   <!-- 审核人 number(19)-->
+			<if test="entity.auditUserId != null">audit_user_id = #{entity.auditUserId},</if>                                   <!-- 审核人 bigint(20)-->
 			<if test="entity.auditDate != null">audit_date = #{entity.auditDate},</if>                                          <!-- 审核时间 timestamp(6)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->

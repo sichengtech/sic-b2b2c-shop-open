@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="storeNavigationDetailColumns">
 	<trim suffixOverrides=",">
-		a.store_navigation_id AS "storeNavigationId",                        <!-- 主键（和店铺导航id一样） number(19)-->
+		a.store_navigation_id AS "storeNavigationId",                        <!-- 主键（和店铺导航id一样） bigint(20)-->
 		a.content AS "content",                                              <!-- 店铺导航内容 clob-->
 
 	</trim>
@@ -98,7 +98,7 @@
 	<insert id="insert" keyProperty="entity.storeNavigationId" keyColumn="store_navigation_id" useGeneratedKeys="true">
 		INSERT INTO store_navigation_detail
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			store_navigation_id,                               <!-- 主键（和店铺导航id一样） number(19)-->
+			store_navigation_id,                               <!-- 主键（和店铺导航id一样） bigint(20)-->
 			content,                                           <!-- 店铺导航内容 clob-->
 
 		</trim>
@@ -141,7 +141,7 @@
 	<update id="updateById">
 		UPDATE store_navigation_detail 
 		<set>
-			store_navigation_id = #{entity.storeNavigationId},              <!-- 主键（和店铺导航id一样） number(19)-->
+			store_navigation_id = #{entity.storeNavigationId},              <!-- 主键（和店铺导航id一样） bigint(20)-->
 			content = #{entity.content},                                    <!-- 店铺导航内容 clob-->
 
 		</set>
@@ -152,7 +152,7 @@
 	<update id="updateByWhere">
 		UPDATE store_navigation_detail a 
 		<set>
-			store_navigation_id = #{entity.storeNavigationId},              <!-- 主键（和店铺导航id一样） number(19)-->
+			store_navigation_id = #{entity.storeNavigationId},              <!-- 主键（和店铺导航id一样） bigint(20)-->
 			content = #{entity.content},                                    <!-- 店铺导航内容 clob-->
 
 		</set>
@@ -169,7 +169,7 @@
 	<update id="updateByIdSelective">
 		UPDATE store_navigation_detail
 		<set>
-			<if test="entity.storeNavigationId != null">store_navigation_id = #{entity.storeNavigationId},</if>                 <!-- 主键（和店铺导航id一样） number(19)-->
+			<if test="entity.storeNavigationId != null">store_navigation_id = #{entity.storeNavigationId},</if>                 <!-- 主键（和店铺导航id一样） bigint(20)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺导航内容 clob-->
 		</set>
 		WHERE store_navigation_id = #{entity.storeNavigationId}
@@ -179,7 +179,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE store_navigation_detail a
 		<set>
-			<if test="entity.storeNavigationId != null">store_navigation_id = #{entity.storeNavigationId},</if>                 <!-- 主键（和店铺导航id一样） number(19)-->
+			<if test="entity.storeNavigationId != null">store_navigation_id = #{entity.storeNavigationId},</if>                 <!-- 主键（和店铺导航id一样） bigint(20)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺导航内容 clob-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->

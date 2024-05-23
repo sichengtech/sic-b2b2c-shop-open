@@ -6,8 +6,8 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="productCategoryAdimgColumns">
-		a.nav_img_id AS "navImgId",                                          <!-- 主键 number(19)-->
-		a.category_id AS "categoryId",                                       <!-- 关联(分类表) number(19)-->
+		a.nav_img_id AS "navImgId",                                          <!-- 主键 bigint(20)-->
+		a.category_id AS "categoryId",                                       <!-- 关联(分类表) bigint(20)-->
 		a.img_path AS "imgPath",                                             <!-- 图片地址 nvarchar2(64)-->
 		a.original_size AS "originalSize",                                   <!-- 原图尺寸 nvarchar2(64)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
@@ -121,8 +121,8 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.navImgId" keyColumn="nav_img_id" useGeneratedKeys="true">
 		INSERT INTO product_category_adimg(
-			nav_img_id,                                        <!-- 主键 number(19)-->
-			category_id,                                       <!-- 关联(分类表) number(19)-->
+			nav_img_id,                                        <!-- 主键 bigint(20)-->
+			category_id,                                       <!-- 关联(分类表) bigint(20)-->
 			img_path,                                          <!-- 图片地址 nvarchar2(64)-->
 			original_size,                                     <!-- 原图尺寸 nvarchar2(64)-->
 			sort,                                              <!-- 排序 number(10)-->
@@ -144,7 +144,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.categoryId},                              <!-- 关联(分类表) number(19)-->
+			#{entity.categoryId},                              <!-- 关联(分类表) bigint(20)-->
 			#{entity.imgPath},                                 <!-- 图片地址 nvarchar2(64)-->
 			#{entity.originalSize},                            <!-- 原图尺寸 nvarchar2(64)-->
 			#{entity.sort},                                    <!-- 排序 number(10)-->
@@ -168,7 +168,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.navImgId != null">nav_img_id,</if></if>
 			<if test="entity.pkMode==2">nav_img_id,</if>
-			<if test="entity.categoryId != null">category_id,</if>                             <!-- 关联(分类表) number(19)-->
+			<if test="entity.categoryId != null">category_id,</if>                             <!-- 关联(分类表) bigint(20)-->
 			<if test="entity.imgPath != null">img_path,</if>                                   <!-- 图片地址 nvarchar2(64)-->
 			<if test="entity.originalSize != null">original_size,</if>                         <!-- 原图尺寸 nvarchar2(64)-->
 			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
@@ -193,7 +193,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 关联(分类表) number(19)-->
+			<if test="entity.categoryId != null">#{entity.categoryId},</if>                              <!-- 关联(分类表) bigint(20)-->
 			<if test="entity.imgPath != null">#{entity.imgPath},</if>                                    <!-- 图片地址 nvarchar2(64)-->
 			<if test="entity.originalSize != null">#{entity.originalSize},</if>                          <!-- 原图尺寸 nvarchar2(64)-->
 			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
@@ -213,7 +213,7 @@
 	<!-- 根据主键更新记录-->
 	<update id="updateById">
 		UPDATE product_category_adimg SET
-			category_id = #{entity.categoryId},                             <!-- 关联(分类表) number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 关联(分类表) bigint(20)-->
 			img_path = #{entity.imgPath},                                   <!-- 图片地址 nvarchar2(64)-->
 			original_size = #{entity.originalSize},                         <!-- 原图尺寸 nvarchar2(64)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
@@ -234,7 +234,7 @@
 	<!-- 根据条件更新记录-->
 	<update id="updateByWhere">
 		UPDATE product_category_adimg a SET
-			category_id = #{entity.categoryId},                             <!-- 关联(分类表) number(19)-->
+			category_id = #{entity.categoryId},                             <!-- 关联(分类表) bigint(20)-->
 			img_path = #{entity.imgPath},                                   <!-- 图片地址 nvarchar2(64)-->
 			original_size = #{entity.originalSize},                         <!-- 原图尺寸 nvarchar2(64)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
@@ -262,7 +262,7 @@
 	<update id="updateByIdSelective">
 		UPDATE product_category_adimg
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 关联(分类表) number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 关联(分类表) bigint(20)-->
 			<if test="entity.imgPath != null">img_path = #{entity.imgPath},</if>                                                <!-- 图片地址 nvarchar2(64)-->
 			<if test="entity.originalSize != null">original_size = #{entity.originalSize},</if>                                 <!-- 原图尺寸 nvarchar2(64)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
@@ -284,7 +284,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE product_category_adimg a
 		<set>
-			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 关联(分类表) number(19)-->
+			<if test="entity.categoryId != null">category_id = #{entity.categoryId},</if>                                       <!-- 关联(分类表) bigint(20)-->
 			<if test="entity.imgPath != null">img_path = #{entity.imgPath},</if>                                                <!-- 图片地址 nvarchar2(64)-->
 			<if test="entity.originalSize != null">original_size = #{entity.originalSize},</if>                                 <!-- 原图尺寸 nvarchar2(64)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->

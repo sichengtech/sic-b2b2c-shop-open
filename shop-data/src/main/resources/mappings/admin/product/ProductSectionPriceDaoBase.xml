@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="productSectionPriceColumns">
 	<trim suffixOverrides=",">
-		a.sc_id AS "scId",                                                   <!-- 主键 number(19)-->
-		a.p_id AS "pId",                                                     <!-- 商品ID number(19)-->
+		a.sc_id AS "scId",                                                   <!-- 主键 bigint(20)-->
+		a.p_id AS "pId",                                                     <!-- 商品ID bigint(20)-->
 		a.section AS "section",                                              <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
 		a.price AS "price",                                                  <!-- 价格,批发模式使用本价格 number(12,3)-->
 		a.sort AS "sort",                                                    <!-- 排序，排序从1起 number(10)-->
@@ -114,8 +114,8 @@
 	<insert id="insert" keyProperty="entity.scId" keyColumn="sc_id" useGeneratedKeys="true">
 		INSERT INTO product_section_price
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			sc_id,                                             <!-- 主键 number(19)-->
-			p_id,                                              <!-- 商品ID number(19)-->
+			sc_id,                                             <!-- 主键 bigint(20)-->
+			p_id,                                              <!-- 商品ID bigint(20)-->
 			section,                                           <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
 			price,                                             <!-- 价格,批发模式使用本价格 number(12,3)-->
 			sort,                                              <!-- 排序，排序从1起 number(10)-->
@@ -134,7 +134,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.pId},                                     <!-- 商品ID number(19)-->
+			#{entity.pId},                                     <!-- 商品ID bigint(20)-->
 			#{entity.section},                                 <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
 			#{entity.price},                                   <!-- 价格,批发模式使用本价格 number(12,3)-->
 			#{entity.sort},                                    <!-- 排序，排序从1起 number(10)-->
@@ -153,7 +153,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.scId != null">sc_id,</if></if>
 			<if test="entity.pkMode==2">sc_id,</if>
-			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品ID number(19)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品ID bigint(20)-->
 			<if test="entity.section != null">section,</if>                                    <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
 			<if test="entity.price != null">price,</if>                                        <!-- 价格,批发模式使用本价格 number(12,3)-->
 			<if test="entity.sort != null">sort,</if>                                          <!-- 排序，排序从1起 number(10)-->
@@ -173,7 +173,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品ID number(19)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品ID bigint(20)-->
 			<if test="entity.section != null">#{entity.section},</if>                                    <!-- 区间，1表示1以上，10表示10以上 nvarchar2(64)-->
 			<if test="entity.price != null">#{entity.price},</if>                                        <!-- 价格,批发模式使用本价格 number(12,3)-->
 			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序，排序从1起 number(10)-->

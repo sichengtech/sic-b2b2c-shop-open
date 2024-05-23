@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="logisticsCompanyColumns">
-		a.lc_id AS "lcId",                                                   <!-- 主键id number(19)-->
+		a.lc_id AS "lcId",                                                   <!-- 主键id bigint(20)-->
 		a.large_area AS "largeArea",                                         <!-- 首字母 char(2)-->
 		a.company_name AS "companyName",                                     <!-- 公司名称 nvarchar2(64)-->
 		a.company_number AS "companyNumber",                                 <!-- 公司编号 nvarchar2(64)-->
@@ -122,7 +122,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.lcId" keyColumn="lc_id" useGeneratedKeys="true">
 		INSERT INTO logistics_company(
-			lc_id,                                             <!-- 主键id number(19)-->
+			lc_id,                                             <!-- 主键id bigint(20)-->
 			large_area,                                        <!-- 首字母 char(2)-->
 			company_name,                                      <!-- 公司名称 nvarchar2(64)-->
 			company_number,                                    <!-- 公司编号 nvarchar2(64)-->

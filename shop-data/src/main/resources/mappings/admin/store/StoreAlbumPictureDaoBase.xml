@@ -7,9 +7,9 @@
 	<!-- 全部字段 -->
 	<sql id="storeAlbumPictureColumns">
 	<trim suffixOverrides=",">
-		a.picture_id AS "pictureId",                                         <!-- 主键 number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
-		a.album_id AS "albumId",                                             <!-- store_album(相册夹表) number(19)-->
+		a.picture_id AS "pictureId",                                         <!-- 主键 bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
+		a.album_id AS "albumId",                                             <!-- store_album(相册夹表) bigint(20)-->
 		a.path AS "path",                                                    <!-- 图片的存储路径 nvarchar2(255)-->
 		a.pixel AS "pixel",                                                  <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 		a.file_size AS "fileSize",                                           <!-- 文件大小，单位byte number(10)-->
@@ -118,9 +118,9 @@
 	<insert id="insert" keyProperty="entity.pictureId" keyColumn="picture_id" useGeneratedKeys="true">
 		INSERT INTO store_album_picture
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			picture_id,                                        <!-- 主键 number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
-			album_id,                                          <!-- store_album(相册夹表) number(19)-->
+			picture_id,                                        <!-- 主键 bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
+			album_id,                                          <!-- store_album(相册夹表) bigint(20)-->
 			path,                                              <!-- 图片的存储路径 nvarchar2(255)-->
 			pixel,                                             <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			file_size,                                         <!-- 文件大小，单位byte number(10)-->
@@ -140,8 +140,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
-			#{entity.albumId},                                 <!-- store_album(相册夹表) number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
+			#{entity.albumId},                                 <!-- store_album(相册夹表) bigint(20)-->
 			#{entity.path},                                    <!-- 图片的存储路径 nvarchar2(255)-->
 			#{entity.pixel},                                   <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			#{entity.fileSize},                                <!-- 文件大小，单位byte number(10)-->
@@ -161,8 +161,8 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.pictureId != null">picture_id,</if></if>
 			<if test="entity.pkMode==2">picture_id,</if>
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
-			<if test="entity.albumId != null">album_id,</if>                                   <!-- store_album(相册夹表) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.albumId != null">album_id,</if>                                   <!-- store_album(相册夹表) bigint(20)-->
 			<if test="entity.path != null">path,</if>                                          <!-- 图片的存储路径 nvarchar2(255)-->
 			<if test="entity.pixel != null">pixel,</if>                                        <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			<if test="entity.fileSize != null">file_size,</if>                                 <!-- 文件大小，单位byte number(10)-->
@@ -183,8 +183,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
-			<if test="entity.albumId != null">#{entity.albumId},</if>                                    <!-- store_album(相册夹表) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.albumId != null">#{entity.albumId},</if>                                    <!-- store_album(相册夹表) bigint(20)-->
 			<if test="entity.path != null">#{entity.path},</if>                                          <!-- 图片的存储路径 nvarchar2(255)-->
 			<if test="entity.pixel != null">#{entity.pixel},</if>                                        <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			<if test="entity.fileSize != null">#{entity.fileSize},</if>                                  <!-- 文件大小，单位byte number(10)-->
@@ -201,8 +201,8 @@
 	<update id="updateById">
 		UPDATE store_album_picture 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
-			album_id = #{entity.albumId},                                   <!-- store_album(相册夹表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			album_id = #{entity.albumId},                                   <!-- store_album(相册夹表) bigint(20)-->
 			path = #{entity.path},                                          <!-- 图片的存储路径 nvarchar2(255)-->
 			pixel = #{entity.pixel},                                        <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			file_size = #{entity.fileSize},                                 <!-- 文件大小，单位byte number(10)-->
@@ -221,8 +221,8 @@
 	<update id="updateByWhere">
 		UPDATE store_album_picture a 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
-			album_id = #{entity.albumId},                                   <!-- store_album(相册夹表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			album_id = #{entity.albumId},                                   <!-- store_album(相册夹表) bigint(20)-->
 			path = #{entity.path},                                          <!-- 图片的存储路径 nvarchar2(255)-->
 			pixel = #{entity.pixel},                                        <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			file_size = #{entity.fileSize},                                 <!-- 文件大小，单位byte number(10)-->
@@ -247,8 +247,8 @@
 	<update id="updateByIdSelective">
 		UPDATE store_album_picture
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
-			<if test="entity.albumId != null">album_id = #{entity.albumId},</if>                                                <!-- store_album(相册夹表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.albumId != null">album_id = #{entity.albumId},</if>                                                <!-- store_album(相册夹表) bigint(20)-->
 			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片的存储路径 nvarchar2(255)-->
 			<if test="entity.pixel != null">pixel = #{entity.pixel},</if>                                                       <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			<if test="entity.fileSize != null">file_size = #{entity.fileSize},</if>                                             <!-- 文件大小，单位byte number(10)-->
@@ -266,8 +266,8 @@
 	<update id="updateByWhereSelective">
 		UPDATE store_album_picture a
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
-			<if test="entity.albumId != null">album_id = #{entity.albumId},</if>                                                <!-- store_album(相册夹表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.albumId != null">album_id = #{entity.albumId},</if>                                                <!-- store_album(相册夹表) bigint(20)-->
 			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片的存储路径 nvarchar2(255)-->
 			<if test="entity.pixel != null">pixel = #{entity.pixel},</if>                                                       <!-- 原图像素，例如：200x300，单位px nvarchar2(64)-->
 			<if test="entity.fileSize != null">file_size = #{entity.fileSize},</if>                                             <!-- 文件大小，单位byte number(10)-->

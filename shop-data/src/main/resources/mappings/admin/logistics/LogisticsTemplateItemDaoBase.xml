@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="logisticsTemplateItemColumns">
 	<trim suffixOverrides=",">
-		a.lti_id AS "ltiId",                                                 <!-- 主键 number(19)-->
-		a.lt_id AS "ltId",                                                   <!-- 运费模板id number(19)-->
+		a.lti_id AS "ltiId",                                                 <!-- 主键 bigint(20)-->
+		a.lt_id AS "ltId",                                                   <!-- 运费模板id bigint(20)-->
 		a.names AS "names",                                                  <!-- 地区名(冗余字段) nvarchar2(521)-->
 		a.first_item AS "firstItem",                                         <!-- 首件(件) number(10)-->
 		a.first_price AS "firstPrice",                                       <!-- 首重(元) number(12,3)-->
@@ -124,8 +124,8 @@
 	<insert id="insert" keyProperty="entity.ltiId" keyColumn="lti_id" useGeneratedKeys="true">
 		INSERT INTO logistics_template_item
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			lti_id,                                            <!-- 主键 number(19)-->
-			lt_id,                                             <!-- 运费模板id number(19)-->
+			lti_id,                                            <!-- 主键 bigint(20)-->
+			lt_id,                                             <!-- 运费模板id bigint(20)-->
 			names,                                             <!-- 地区名(冗余字段) nvarchar2(521)-->
 			first_item,                                        <!-- 首件(件) number(10)-->
 			first_price,                                       <!-- 首重(元) number(12,3)-->
@@ -149,7 +149,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.ltId},                                    <!-- 运费模板id number(19)-->
+			#{entity.ltId},                                    <!-- 运费模板id bigint(20)-->
 			#{entity.names},                                   <!-- 地区名(冗余字段) nvarchar2(521)-->
 			#{entity.firstItem},                               <!-- 首件(件) number(10)-->
 			#{entity.firstPrice},                              <!-- 首重(元) number(12,3)-->
@@ -173,7 +173,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.ltiId != null">lti_id,</if></if>
 			<if test="entity.pkMode==2">lti_id,</if>
-			<if test="entity.ltId != null">lt_id,</if>                                         <!-- 运费模板id number(19)-->
+			<if test="entity.ltId != null">lt_id,</if>                                         <!-- 运费模板id bigint(20)-->
 			<if test="entity.names != null">names,</if>                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
 			<if test="entity.firstItem != null">first_item,</if>                               <!-- 首件(件) number(10)-->
 			<if test="entity.firstPrice != null">first_price,</if>                             <!-- 首重(元) number(12,3)-->
@@ -198,7 +198,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.ltId != null">#{entity.ltId},</if>                                          <!-- 运费模板id number(19)-->
+			<if test="entity.ltId != null">#{entity.ltId},</if>                                          <!-- 运费模板id bigint(20)-->
 			<if test="entity.names != null">#{entity.names},</if>                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
 			<if test="entity.firstItem != null">#{entity.firstItem},</if>                                <!-- 首件(件) number(10)-->
 			<if test="entity.firstPrice != null">#{entity.firstPrice},</if>                              <!-- 首重(元) number(12,3)-->
@@ -219,7 +219,7 @@
 	<update id="updateById">
 		UPDATE logistics_template_item 
 		<set>
-			lt_id = #{entity.ltId},                                         <!-- 运费模板id number(19)-->
+			lt_id = #{entity.ltId},                                         <!-- 运费模板id bigint(20)-->
 			names = #{entity.names},                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
 			first_item = #{entity.firstItem},                               <!-- 首件(件) number(10)-->
 			first_price = #{entity.firstPrice},                             <!-- 首重(元) number(12,3)-->
@@ -242,7 +242,7 @@
 	<update id="updateByWhere">
 		UPDATE logistics_template_item a 
 		<set>
-			lt_id = #{entity.ltId},                                         <!-- 运费模板id number(19)-->
+			lt_id = #{entity.ltId},                                         <!-- 运费模板id bigint(20)-->
 			names = #{entity.names},                                        <!-- 地区名(冗余字段) nvarchar2(521)-->
 			first_item = #{entity.firstItem},                               <!-- 首件(件) number(10)-->
 			first_price = #{entity.firstPrice},                             <!-- 首重(元) number(12,3)-->
@@ -271,7 +271,7 @@
 	<update id="updateByIdSelective">
 		UPDATE logistics_template_item
 		<set>
-			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板id number(19)-->
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板id bigint(20)-->
 			<if test="entity.names != null">names = #{entity.names},</if>                                                       <!-- 地区名(冗余字段) nvarchar2(521)-->
 			<if test="entity.firstItem != null">first_item = #{entity.firstItem},</if>                                          <!-- 首件(件) number(10)-->
 			<if test="entity.firstPrice != null">first_price = #{entity.firstPrice},</if>                                       <!-- 首重(元) number(12,3)-->
@@ -293,7 +293,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE logistics_template_item a
 		<set>
-			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板id number(19)-->
+			<if test="entity.ltId != null">lt_id = #{entity.ltId},</if>                                                         <!-- 运费模板id bigint(20)-->
 			<if test="entity.names != null">names = #{entity.names},</if>                                                       <!-- 地区名(冗余字段) nvarchar2(521)-->
 			<if test="entity.firstItem != null">first_item = #{entity.firstItem},</if>                                          <!-- 首件(件) number(10)-->
 			<if test="entity.firstPrice != null">first_price = #{entity.firstPrice},</if>                                       <!-- 首重(元) number(12,3)-->

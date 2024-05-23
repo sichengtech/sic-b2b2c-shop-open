@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="sysSmsServerColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.status AS "status",                                                <!-- 状态，0停用，1启用 char(1)-->
 		a.url AS "url",                                                      <!-- 短信网关URL nvarchar2(255)-->
 		a.username AS "username",                                            <!-- 用户名 nvarchar2(64)-->
@@ -123,7 +123,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO sys_sms_server(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			status,                                            <!-- 状态，0停用，1启用 char(1)-->
 			url,                                               <!-- 短信网关URL nvarchar2(255)-->
 			username,                                          <!-- 用户名 nvarchar2(64)-->

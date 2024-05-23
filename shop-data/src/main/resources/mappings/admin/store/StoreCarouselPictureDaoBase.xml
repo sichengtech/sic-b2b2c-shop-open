@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="storeCarouselPictureColumns">
 	<trim suffixOverrides=",">
-		a.cp_id AS "cpId",                                                   <!-- 主键 number(19)-->
+		a.cp_id AS "cpId",                                                   <!-- 主键 bigint(20)-->
 		a.picture_path AS "picturePath",                                     <!-- 图片地址 nvarchar2(64)-->
 		a.original_size AS "originalSize",                                   <!-- 原图尺寸（单位像素） nvarchar2(64)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
@@ -24,7 +24,7 @@
 		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
 		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
 		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
 
 	</trim>
 	</sql>
@@ -133,7 +133,7 @@
 	<insert id="insert" keyProperty="entity.cpId" keyColumn="cp_id" useGeneratedKeys="true">
 		INSERT INTO store_carousel_picture
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			cp_id,                                             <!-- 主键 number(19)-->
+			cp_id,                                             <!-- 主键 bigint(20)-->
 			picture_path,                                      <!-- 图片地址 nvarchar2(64)-->
 			original_size,                                     <!-- 原图尺寸（单位像素） nvarchar2(64)-->
 			sort,                                              <!-- 排序 number(10)-->
@@ -150,7 +150,7 @@
 			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
 			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
 			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
 
 		</trim>
 		 VALUES 
@@ -177,7 +177,7 @@
 			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
 			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
 			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
 
 	</trim>
 	</insert>
@@ -204,7 +204,7 @@
 			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -232,7 +232,7 @@
 			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
 		</trim>
 	</insert>
 
@@ -256,7 +256,7 @@
 			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
 			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
 			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 
 		</set>
 		WHERE cp_id = #{entity.cpId}
@@ -282,7 +282,7 @@
 			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
 			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
 			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
@@ -314,7 +314,7 @@
 			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 		</set>
 		WHERE cp_id = #{entity.cpId}
 	</update>
@@ -339,7 +339,7 @@
 			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
 		<trim prefixOverrides="AND |OR ">

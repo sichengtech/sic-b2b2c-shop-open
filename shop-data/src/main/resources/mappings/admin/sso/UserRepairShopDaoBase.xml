@@ -7,18 +7,18 @@
 	<!-- 全部字段 -->
 	<sql id="userRepairShopColumns">
 	<trim suffixOverrides=",">
-		a.u_id AS "uId",                                                     <!-- 主键,会员的ID number(19)-->
+		a.u_id AS "uId",                                                     <!-- 主键,会员的ID bigint(20)-->
 		a.auth_type AS "authType",                                           <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
 		a.type AS "type",                                                    <!-- 门店类型（字典）use_shop_type char(2)-->
 		a.name AS "name",                                                    <!-- 门店名称 nvarchar2(64)-->
 		a.introduce AS "introduce",                                          <!-- 门店介绍 nvarchar2(255)-->
-		a.country_id AS "countryId",                                         <!-- 门店所在地国家(关联地区表) number(19)-->
+		a.country_id AS "countryId",                                         <!-- 门店所在地国家(关联地区表) bigint(20)-->
 		a.country_name AS "countryName",                                     <!-- 门店所在地国家名字 nvarchar2(64)-->
-		a.province_id AS "provinceId",                                       <!-- 门店所在地省(关联地区表) number(19)-->
+		a.province_id AS "provinceId",                                       <!-- 门店所在地省(关联地区表) bigint(20)-->
 		a.province_name AS "provinceName",                                   <!-- 门店所在地省名字 nvarchar2(64)-->
-		a.city_id AS "cityId",                                               <!-- 门店所在地市(关联地区表) number(19)-->
+		a.city_id AS "cityId",                                               <!-- 门店所在地市(关联地区表) bigint(20)-->
 		a.city_name AS "cityName",                                           <!-- 门店所在地市名字 nvarchar2(64)-->
-		a.district_id AS "districtId",                                       <!-- 门店所在地县(关联地区表) number(19)-->
+		a.district_id AS "districtId",                                       <!-- 门店所在地县(关联地区表) bigint(20)-->
 		a.district_name AS "districtName",                                   <!-- 县名字 nvarchar2(64)-->
 		a.detailed_address AS "detailedAddress",                             <!-- 详细地址 nvarchar2(255)-->
 		a.burns AS "burns",                                                  <!-- 门店面积 nvarchar2(64)-->
@@ -177,18 +177,18 @@
 	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
 		INSERT INTO user_repair_shop
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			u_id,                                              <!-- 主键,会员的ID number(19)-->
+			u_id,                                              <!-- 主键,会员的ID bigint(20)-->
 			auth_type,                                         <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
 			type,                                              <!-- 门店类型（字典）use_shop_type char(2)-->
 			name,                                              <!-- 门店名称 nvarchar2(64)-->
 			introduce,                                         <!-- 门店介绍 nvarchar2(255)-->
-			country_id,                                        <!-- 门店所在地国家(关联地区表) number(19)-->
+			country_id,                                        <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			country_name,                                      <!-- 门店所在地国家名字 nvarchar2(64)-->
-			province_id,                                       <!-- 门店所在地省(关联地区表) number(19)-->
+			province_id,                                       <!-- 门店所在地省(关联地区表) bigint(20)-->
 			province_name,                                     <!-- 门店所在地省名字 nvarchar2(64)-->
-			city_id,                                           <!-- 门店所在地市(关联地区表) number(19)-->
+			city_id,                                           <!-- 门店所在地市(关联地区表) bigint(20)-->
 			city_name,                                         <!-- 门店所在地市名字 nvarchar2(64)-->
-			district_id,                                       <!-- 门店所在地县(关联地区表) number(19)-->
+			district_id,                                       <!-- 门店所在地县(关联地区表) bigint(20)-->
 			district_name,                                     <!-- 县名字 nvarchar2(64)-->
 			detailed_address,                                  <!-- 详细地址 nvarchar2(255)-->
 			burns,                                             <!-- 门店面积 nvarchar2(64)-->
@@ -231,13 +231,13 @@
 			#{entity.type},                                    <!-- 门店类型（字典）use_shop_type char(2)-->
 			#{entity.name},                                    <!-- 门店名称 nvarchar2(64)-->
 			#{entity.introduce},                               <!-- 门店介绍 nvarchar2(255)-->
-			#{entity.countryId},                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			#{entity.countryId},                               <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			#{entity.countryName},                             <!-- 门店所在地国家名字 nvarchar2(64)-->
-			#{entity.provinceId},                              <!-- 门店所在地省(关联地区表) number(19)-->
+			#{entity.provinceId},                              <!-- 门店所在地省(关联地区表) bigint(20)-->
 			#{entity.provinceName},                            <!-- 门店所在地省名字 nvarchar2(64)-->
-			#{entity.cityId},                                  <!-- 门店所在地市(关联地区表) number(19)-->
+			#{entity.cityId},                                  <!-- 门店所在地市(关联地区表) bigint(20)-->
 			#{entity.cityName},                                <!-- 门店所在地市名字 nvarchar2(64)-->
-			#{entity.districtId},                              <!-- 门店所在地县(关联地区表) number(19)-->
+			#{entity.districtId},                              <!-- 门店所在地县(关联地区表) bigint(20)-->
 			#{entity.districtName},                            <!-- 县名字 nvarchar2(64)-->
 			#{entity.detailedAddress},                         <!-- 详细地址 nvarchar2(255)-->
 			#{entity.burns},                                   <!-- 门店面积 nvarchar2(64)-->
@@ -280,13 +280,13 @@
 			<if test="entity.type != null">type,</if>                                          <!-- 门店类型（字典）use_shop_type char(2)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 门店名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">introduce,</if>                                <!-- 门店介绍 nvarchar2(255)-->
-			<if test="entity.countryId != null">country_id,</if>                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name,</if>                           <!-- 门店所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id,</if>                             <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 门店所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name,</if>                         <!-- 门店所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id,</if>                                     <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 门店所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name,</if>                                 <!-- 门店所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id,</if>                             <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 门店所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.burns != null">burns,</if>                                        <!-- 门店面积 nvarchar2(64)-->
@@ -330,13 +330,13 @@
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 门店类型（字典）use_shop_type char(2)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 门店名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">#{entity.introduce},</if>                                <!-- 门店介绍 nvarchar2(255)-->
-			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 门店所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 门店所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 门店所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 门店所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 门店所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 门店所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.burns != null">#{entity.burns},</if>                                        <!-- 门店面积 nvarchar2(64)-->
@@ -372,18 +372,18 @@
 	<update id="updateById">
 		UPDATE user_repair_shop 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 主键,会员的ID number(19)-->
+			u_id = #{entity.uId},                                           <!-- 主键,会员的ID bigint(20)-->
 			auth_type = #{entity.authType},                                 <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
 			type = #{entity.type},                                          <!-- 门店类型（字典）use_shop_type char(2)-->
 			name = #{entity.name},                                          <!-- 门店名称 nvarchar2(64)-->
 			introduce = #{entity.introduce},                                <!-- 门店介绍 nvarchar2(255)-->
-			country_id = #{entity.countryId},                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 门店所在地国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 门店所在地省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 门店所在地省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 门店所在地省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 门店所在地市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 门店所在地市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 门店所在地市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 门店所在地县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 门店所在地县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 nvarchar2(255)-->
 			burns = #{entity.burns},                                        <!-- 门店面积 nvarchar2(64)-->
@@ -421,18 +421,18 @@
 	<update id="updateByWhere">
 		UPDATE user_repair_shop a 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 主键,会员的ID number(19)-->
+			u_id = #{entity.uId},                                           <!-- 主键,会员的ID bigint(20)-->
 			auth_type = #{entity.authType},                                 <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
 			type = #{entity.type},                                          <!-- 门店类型（字典）use_shop_type char(2)-->
 			name = #{entity.name},                                          <!-- 门店名称 nvarchar2(64)-->
 			introduce = #{entity.introduce},                                <!-- 门店介绍 nvarchar2(255)-->
-			country_id = #{entity.countryId},                               <!-- 门店所在地国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 门店所在地国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 门店所在地省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 门店所在地省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 门店所在地省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 门店所在地市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 门店所在地市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 门店所在地市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 门店所在地县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 门店所在地县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 nvarchar2(255)-->
 			burns = #{entity.burns},                                        <!-- 门店面积 nvarchar2(64)-->
@@ -476,18 +476,18 @@
 	<update id="updateByIdSelective">
 		UPDATE user_repair_shop
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 主键,会员的ID number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 主键,会员的ID bigint(20)-->
 			<if test="entity.authType != null">auth_type = #{entity.authType},</if>                                             <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 门店类型（字典）use_shop_type char(2)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 门店名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 门店介绍 nvarchar2(255)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 门店所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 门店所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 门店所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 门店所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 门店所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 门店所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.burns != null">burns = #{entity.burns},</if>                                                       <!-- 门店面积 nvarchar2(64)-->
@@ -524,18 +524,18 @@
 	<update id="updateByWhereSelective">
 		UPDATE user_repair_shop a
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 主键,会员的ID number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 主键,会员的ID bigint(20)-->
 			<if test="entity.authType != null">auth_type = #{entity.authType},</if>                                             <!-- 审核状态：0待审、1通过、2未通过 char(1)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 门店类型（字典）use_shop_type char(2)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 门店名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 门店介绍 nvarchar2(255)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 门店所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 门店所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 门店所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 门店所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 门店所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 门店所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 门店所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 门店所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 门店所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 门店所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 门店所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.burns != null">burns = #{entity.burns},</if>                                                       <!-- 门店面积 nvarchar2(64)-->

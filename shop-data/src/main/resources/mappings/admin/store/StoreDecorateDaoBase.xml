@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="storeDecorateColumns">
 	<trim suffixOverrides=",">
-		a.store_id AS "storeId",                                             <!-- 主键(店铺id) number(19)-->
+		a.store_id AS "storeId",                                             <!-- 主键(店铺id) bigint(20)-->
 		a.solution AS "solution",                                            <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 		a.content AS "content",                                              <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 
@@ -98,14 +98,14 @@
 	<insert id="insert">
 		INSERT INTO store_decorate
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			store_id,                                          <!-- 主键(店铺id) number(19)-->
+			store_id,                                          <!-- 主键(店铺id) bigint(20)-->
 			solution,                                          <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			content,                                           <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			#{entity.storeId},                                 <!-- 主键(店铺id) number(19)-->
+			#{entity.storeId},                                 <!-- 主键(店铺id) bigint(20)-->
 			#{entity.solution},                                <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			#{entity.content},                                 <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 
@@ -116,13 +116,13 @@
 	<insert id="insertSelective">
 		INSERT INTO store_decorate
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 主键(店铺id) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 主键(店铺id) bigint(20)-->
 			<if test="entity.solution != null">solution,</if>                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			<if test="entity.content != null">content,</if>                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 主键(店铺id) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 主键(店铺id) bigint(20)-->
 			<if test="entity.solution != null">#{entity.solution},</if>                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 		</trim>
@@ -132,7 +132,7 @@
 	<update id="updateById">
 		UPDATE store_decorate 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 主键(店铺id) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 主键(店铺id) bigint(20)-->
 			solution = #{entity.solution},                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			content = #{entity.content},                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 
@@ -144,7 +144,7 @@
 	<update id="updateByWhere">
 		UPDATE store_decorate a 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 主键(店铺id) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 主键(店铺id) bigint(20)-->
 			solution = #{entity.solution},                                  <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			content = #{entity.content},                                    <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 
@@ -162,7 +162,7 @@
 	<update id="updateByIdSelective">
 		UPDATE store_decorate
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺id) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺id) bigint(20)-->
 			<if test="entity.solution != null">solution = #{entity.solution},</if>                                              <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 		</set>
@@ -173,7 +173,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE store_decorate a
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺id) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 主键(店铺id) bigint(20)-->
 			<if test="entity.solution != null">solution = #{entity.solution},</if>                                              <!-- 店铺装修方案(1模板一2模板二3模板三) char(1)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 店铺装修方案在2和3的时候填写的东西 clob-->
 		</set>

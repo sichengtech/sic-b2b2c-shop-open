@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="sysExpressServerColumns">
 	<trim suffixOverrides=",">
-		a.ses_id AS "sesId",                                                 <!-- 主键 number(19)-->
+		a.ses_id AS "sesId",                                                 <!-- 主键 bigint(20)-->
 		a.status AS "status",                                                <!-- 状态，0停用，1启用 char(1)-->
 		a.ebusiness_id AS "ebusinessId",                                     <!-- 电商id nvarchar2(64)-->
 		a.appkey AS "appkey",                                                <!-- 电商加密私钥 nvarchar2(64)-->
@@ -118,7 +118,7 @@
 	<insert id="insert" keyProperty="entity.sesId" keyColumn="ses_id" useGeneratedKeys="true">
 		INSERT INTO sys_express_server
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			ses_id,                                            <!-- 主键 number(19)-->
+			ses_id,                                            <!-- 主键 bigint(20)-->
 			status,                                            <!-- 状态，0停用，1启用 char(1)-->
 			ebusiness_id,                                      <!-- 电商id nvarchar2(64)-->
 			appkey,                                            <!-- 电商加密私钥 nvarchar2(64)-->

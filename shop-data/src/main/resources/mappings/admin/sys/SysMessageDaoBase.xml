@@ -7,9 +7,9 @@
 	<!-- 全部字段 -->
 	<sql id="sysMessageColumns">
 	<trim suffixOverrides=",">
-		a.information_id AS "informationId",                                 <!-- 主键 number(19)-->
+		a.information_id AS "informationId",                                 <!-- 主键 bigint(20)-->
 		a.sender AS "sender",                                                <!-- 发送人类型:0系统 char(1)-->
-		a.u_id AS "uId",                                                     <!-- 接收人id 关联(买家表) number(19)-->
+		a.u_id AS "uId",                                                     <!-- 接收人id 关联(买家表) bigint(20)-->
 		a.type AS "type",                                                    <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 		a.status_msg AS "statusMsg",                                         <!-- 站内信：0未发送、1已发送 char(1)-->
 		a.status_sms AS "statusSms",                                         <!-- 短信：0未发送、1已发送 char(1)-->
@@ -135,9 +135,9 @@
 	<insert id="insert" keyProperty="entity.informationId" keyColumn="information_id" useGeneratedKeys="true">
 		INSERT INTO sys_message
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			information_id,                                    <!-- 主键 number(19)-->
+			information_id,                                    <!-- 主键 bigint(20)-->
 			sender,                                            <!-- 发送人类型:0系统 char(1)-->
-			u_id,                                              <!-- 接收人id 关联(买家表) number(19)-->
+			u_id,                                              <!-- 接收人id 关联(买家表) bigint(20)-->
 			type,                                              <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			status_msg,                                        <!-- 站内信：0未发送、1已发送 char(1)-->
 			status_sms,                                        <!-- 短信：0未发送、1已发送 char(1)-->
@@ -165,7 +165,7 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			#{entity.sender},                                  <!-- 发送人类型:0系统 char(1)-->
-			#{entity.uId},                                     <!-- 接收人id 关联(买家表) number(19)-->
+			#{entity.uId},                                     <!-- 接收人id 关联(买家表) bigint(20)-->
 			#{entity.type},                                    <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			#{entity.statusMsg},                               <!-- 站内信：0未发送、1已发送 char(1)-->
 			#{entity.statusSms},                               <!-- 短信：0未发送、1已发送 char(1)-->
@@ -193,7 +193,7 @@
 			<if test="entity.pkMode==1"><if test="entity.informationId != null">information_id,</if></if>
 			<if test="entity.pkMode==2">information_id,</if>
 			<if test="entity.sender != null">sender,</if>                                      <!-- 发送人类型:0系统 char(1)-->
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 接收人id 关联(买家表) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 接收人id 关联(买家表) bigint(20)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			<if test="entity.statusMsg != null">status_msg,</if>                               <!-- 站内信：0未发送、1已发送 char(1)-->
 			<if test="entity.statusSms != null">status_sms,</if>                               <!-- 短信：0未发送、1已发送 char(1)-->
@@ -222,7 +222,7 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			<if test="entity.sender != null">#{entity.sender},</if>                                      <!-- 发送人类型:0系统 char(1)-->
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 接收人id 关联(买家表) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 接收人id 关联(买家表) bigint(20)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			<if test="entity.statusMsg != null">#{entity.statusMsg},</if>                                <!-- 站内信：0未发送、1已发送 char(1)-->
 			<if test="entity.statusSms != null">#{entity.statusSms},</if>                                <!-- 短信：0未发送、1已发送 char(1)-->
@@ -247,7 +247,7 @@
 		UPDATE sys_message 
 		<set>
 			sender = #{entity.sender},                                      <!-- 发送人类型:0系统 char(1)-->
-			u_id = #{entity.uId},                                           <!-- 接收人id 关联(买家表) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 接收人id 关联(买家表) bigint(20)-->
 			type = #{entity.type},                                          <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			status_msg = #{entity.statusMsg},                               <!-- 站内信：0未发送、1已发送 char(1)-->
 			status_sms = #{entity.statusSms},                               <!-- 短信：0未发送、1已发送 char(1)-->
@@ -274,7 +274,7 @@
 		UPDATE sys_message a 
 		<set>
 			sender = #{entity.sender},                                      <!-- 发送人类型:0系统 char(1)-->
-			u_id = #{entity.uId},                                           <!-- 接收人id 关联(买家表) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 接收人id 关联(买家表) bigint(20)-->
 			type = #{entity.type},                                          <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			status_msg = #{entity.statusMsg},                               <!-- 站内信：0未发送、1已发送 char(1)-->
 			status_sms = #{entity.statusSms},                               <!-- 短信：0未发送、1已发送 char(1)-->
@@ -307,7 +307,7 @@
 		UPDATE sys_message
 		<set>
 			<if test="entity.sender != null">sender = #{entity.sender},</if>                                                    <!-- 发送人类型:0系统 char(1)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 接收人id 关联(买家表) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 接收人id 关联(买家表) bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			<if test="entity.statusMsg != null">status_msg = #{entity.statusMsg},</if>                                          <!-- 站内信：0未发送、1已发送 char(1)-->
 			<if test="entity.statusSms != null">status_sms = #{entity.statusSms},</if>                                          <!-- 短信：0未发送、1已发送 char(1)-->
@@ -333,7 +333,7 @@
 		UPDATE sys_message a
 		<set>
 			<if test="entity.sender != null">sender = #{entity.sender},</if>                                                    <!-- 发送人类型:0系统 char(1)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 接收人id 关联(买家表) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 接收人id 关联(买家表) bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型:1交易信息 2售后服务信息 3商品信息 4 运营信息 char(1)-->
 			<if test="entity.statusMsg != null">status_msg = #{entity.statusMsg},</if>                                          <!-- 站内信：0未发送、1已发送 char(1)-->
 			<if test="entity.statusSms != null">status_sms = #{entity.statusSms},</if>                                          <!-- 短信：0未发送、1已发送 char(1)-->

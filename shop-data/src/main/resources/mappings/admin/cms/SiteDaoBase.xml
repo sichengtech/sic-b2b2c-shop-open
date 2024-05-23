@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="siteColumns">
 	<trim suffixOverrides=",">
-		a.id AS "id",                                                        <!-- 编号 number(19)-->
+		a.id AS "id",                                                        <!-- 编号 bigint(20)-->
 		a.name AS "name",                                                    <!-- 站点名称 varchar2(100)-->
 		a.title AS "title",                                                  <!-- 站点标题 varchar2(100)-->
 		a.logo AS "logo",                                                    <!-- 站点Logo varchar2(255)-->
@@ -139,7 +139,7 @@
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO cms_site
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			id,                                                <!-- 编号 number(19)-->
+			id,                                                <!-- 编号 bigint(20)-->
 			name,                                              <!-- 站点名称 varchar2(100)-->
 			title,                                             <!-- 站点标题 varchar2(100)-->
 			logo,                                              <!-- 站点Logo varchar2(255)-->

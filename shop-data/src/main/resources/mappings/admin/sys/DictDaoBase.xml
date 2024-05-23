@@ -6,13 +6,13 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="dictColumns">
-		a.id AS "id",                                                        <!-- id number(19)-->
+		a.id AS "id",                                                        <!-- id bigint(20)-->
 		a.value AS "value",                                                  <!-- value varchar2(100)-->
 		a.label AS "label",                                                  <!-- label varchar2(100)-->
 		a.type AS "type",                                                    <!-- type varchar2(100)-->
 		a.description AS "description",                                      <!-- description nvarchar2(100)-->
 		a.sort AS "sort",                                                    <!-- sort number(10)-->
-		a.parent_id AS "parent.id",                                          <!-- parent_id number(19)-->
+		a.parent_id AS "parent.id",                                          <!-- parent_id bigint(20)-->
 		a.create_by AS "createBy.id",                                        <!-- create_by varchar2(64)-->
 		a.create_date AS "createDate",                                       <!-- create_date timestamp(6)-->
 		a.update_by AS "updateBy.id",                                        <!-- update_by varchar2(64)-->
@@ -124,13 +124,13 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO sys_dict(
-			id,                                                <!-- id number(19)-->
+			id,                                                <!-- id bigint(20)-->
 			value,                                             <!-- value varchar2(100)-->
 			label,                                             <!-- label varchar2(100)-->
 			type,                                              <!-- type varchar2(100)-->
 			description,                                       <!-- description nvarchar2(100)-->
 			sort,                                              <!-- sort number(10)-->
-			parent_id,                                         <!-- parent_id number(19)-->
+			parent_id,                                         <!-- parent_id bigint(20)-->
 			create_by,                                         <!-- create_by varchar2(64)-->
 			create_date,                                       <!-- create_date timestamp(6)-->
 			update_by,                                         <!-- update_by varchar2(64)-->
@@ -150,7 +150,7 @@
 			#{entity.type},                                    <!-- type varchar2(100)-->
 			#{entity.description},                             <!-- description nvarchar2(100)-->
 			#{entity.sort},                                    <!-- sort number(10)-->
-			#{entity.parent.id},                               <!-- parent_id number(19)-->
+			#{entity.parent.id},                               <!-- parent_id bigint(20)-->
 			#{entity.createBy.id},                             <!-- create_by varchar2(64)-->
 			#{entity.createDate},                              <!-- create_date timestamp(6)-->
 			#{entity.updateBy.id},                             <!-- update_by varchar2(64)-->
@@ -172,7 +172,7 @@
 			<if test="entity.type != null">type,</if>                                          <!-- type varchar2(100)-->
 			<if test="entity.description != null">description,</if>                            <!-- description nvarchar2(100)-->
 			<if test="entity.sort != null">sort,</if>                                          <!-- sort number(10)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- parent_id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- parent_id bigint(20)-->
 			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- create_by varchar2(64)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- create_date timestamp(6)-->
 			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by,</if>                              <!-- update_by varchar2(64)-->
@@ -195,7 +195,7 @@
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- type varchar2(100)-->
 			<if test="entity.description != null">#{entity.description},</if>                            <!-- description nvarchar2(100)-->
 			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- sort number(10)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- parent_id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- parent_id bigint(20)-->
 			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- create_by varchar2(64)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- create_date timestamp(6)-->
 			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">#{entity.updateBy.id},</if>                            <!-- update_by varchar2(64)-->
@@ -213,7 +213,7 @@
 			type = #{entity.type},                                          <!-- type varchar2(100)-->
 			description = #{entity.description},                            <!-- description nvarchar2(100)-->
 			sort = #{entity.sort},                                          <!-- sort number(10)-->
-			parent_id = #{entity.parent.id},                                <!-- parent_id number(19)-->
+			parent_id = #{entity.parent.id},                                <!-- parent_id bigint(20)-->
 			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
 			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
 			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
@@ -231,7 +231,7 @@
 			type = #{entity.type},                                          <!-- type varchar2(100)-->
 			description = #{entity.description},                            <!-- description nvarchar2(100)-->
 			sort = #{entity.sort},                                          <!-- sort number(10)-->
-			parent_id = #{entity.parent.id},                                <!-- parent_id number(19)-->
+			parent_id = #{entity.parent.id},                                <!-- parent_id bigint(20)-->
 			create_by = #{entity.createBy.id},                              <!-- create_by varchar2(64)-->
 			create_date = #{entity.createDate},                             <!-- create_date timestamp(6)-->
 			update_by = #{entity.updateBy.id},                              <!-- update_by varchar2(64)-->
@@ -256,7 +256,7 @@
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- type varchar2(100)-->
 			<if test="entity.description != null">description = #{entity.description},</if>                                     <!-- description nvarchar2(100)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- sort number(10)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- parent_id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- parent_id bigint(20)-->
 			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
 			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->
@@ -275,7 +275,7 @@
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- type varchar2(100)-->
 			<if test="entity.description != null">description = #{entity.description},</if>                                     <!-- description nvarchar2(100)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- sort number(10)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- parent_id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- parent_id bigint(20)-->
 			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- create_by varchar2(64)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- create_date timestamp(6)-->
 			<if test="entity.updateBy!= null and entity.updateBy.id!= null ">update_by = #{entity.updateBy.id},</if>                                       <!-- update_by varchar2(64)-->

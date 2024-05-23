@@ -7,13 +7,13 @@
 	<!-- 全部字段 -->
 	<sql id="siteRecommendColumns">
 	<trim suffixOverrides=",">
-		a.recommend_id AS "recommendId",                                     <!-- 主键 number(19)-->
+		a.recommend_id AS "recommendId",                                     <!-- 主键 bigint(20)-->
 		a.recommend_number AS "recommendNumber",                             <!-- 编号 nvarchar2(64)-->
 		a.name AS "name",                                                    <!-- 推荐位名称 nvarchar2(64)-->
 		a.info AS "info",                                                    <!-- 推荐位说明 nvarchar2(255)-->
 		a.is_open AS "isOpen",                                               <!-- 是否开启(0否、1是) char(1)-->
 		a.type AS "type",                                                    <!-- 类型(1图片，2商品) char(1)-->
-		a.sort AS "sort",                                                    <!-- 排序 number(19)-->
+		a.sort AS "sort",                                                    <!-- 排序 bigint(20)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -125,13 +125,13 @@
 	<insert id="insert" keyProperty="entity.recommendId" keyColumn="recommend_id" useGeneratedKeys="true">
 		INSERT INTO site_recommend
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			recommend_id,                                      <!-- 主键 number(19)-->
+			recommend_id,                                      <!-- 主键 bigint(20)-->
 			recommend_number,                                  <!-- 编号 nvarchar2(64)-->
 			name,                                              <!-- 推荐位名称 nvarchar2(64)-->
 			info,                                              <!-- 推荐位说明 nvarchar2(255)-->
 			is_open,                                           <!-- 是否开启(0否、1是) char(1)-->
 			type,                                              <!-- 类型(1图片，2商品) char(1)-->
-			sort,                                              <!-- 排序 number(19)-->
+			sort,                                              <!-- 排序 bigint(20)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
@@ -154,7 +154,7 @@
 			#{entity.info},                                    <!-- 推荐位说明 nvarchar2(255)-->
 			#{entity.isOpen},                                  <!-- 是否开启(0否、1是) char(1)-->
 			#{entity.type},                                    <!-- 类型(1图片，2商品) char(1)-->
-			#{entity.sort},                                    <!-- 排序 number(19)-->
+			#{entity.sort},                                    <!-- 排序 bigint(20)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
 			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -177,7 +177,7 @@
 			<if test="entity.info != null">info,</if>                                          <!-- 推荐位说明 nvarchar2(255)-->
 			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 是否开启(0否、1是) char(1)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 类型(1图片，2商品) char(1)-->
-			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -201,7 +201,7 @@
 			<if test="entity.info != null">#{entity.info},</if>                                          <!-- 推荐位说明 nvarchar2(255)-->
 			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 是否开启(0否、1是) char(1)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型(1图片，2商品) char(1)-->
-			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -221,7 +221,7 @@
 			info = #{entity.info},                                          <!-- 推荐位说明 nvarchar2(255)-->
 			is_open = #{entity.isOpen},                                     <!-- 是否开启(0否、1是) char(1)-->
 			type = #{entity.type},                                          <!-- 类型(1图片，2商品) char(1)-->
-			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -243,7 +243,7 @@
 			info = #{entity.info},                                          <!-- 推荐位说明 nvarchar2(255)-->
 			is_open = #{entity.isOpen},                                     <!-- 是否开启(0否、1是) char(1)-->
 			type = #{entity.type},                                          <!-- 类型(1图片，2商品) char(1)-->
-			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -271,7 +271,7 @@
 			<if test="entity.info != null">info = #{entity.info},</if>                                                          <!-- 推荐位说明 nvarchar2(255)-->
 			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启(0否、1是) char(1)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型(1图片，2商品) char(1)-->
-			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -292,7 +292,7 @@
 			<if test="entity.info != null">info = #{entity.info},</if>                                                          <!-- 推荐位说明 nvarchar2(255)-->
 			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 是否开启(0否、1是) char(1)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型(1图片，2商品) char(1)-->
-			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->

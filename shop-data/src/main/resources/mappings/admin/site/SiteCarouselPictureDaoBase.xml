@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="siteCarouselPictureColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.path AS "path",                                                    <!-- 图片地址 nvarchar2(64)-->
 		a.url AS "url",                                                      <!-- 目标连接 nvarchar2(255)-->
 		a.title AS "title",                                                  <!-- 标题 nvarchar2(64)-->
@@ -132,7 +132,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_carousel_picture(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			path,                                              <!-- 图片地址 nvarchar2(64)-->
 			url,                                               <!-- 目标连接 nvarchar2(255)-->
 			title,                                             <!-- 标题 nvarchar2(64)-->

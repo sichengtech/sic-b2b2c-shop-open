@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="userMainColumns">
 	<trim suffixOverrides=",">
-		a.u_id AS "uId",                                                     <!-- 主键,会员的ID number(19)-->
-		a.parent_uid AS "parentUid",                                         <!-- 父ID，为0表示是主账号 number(19)-->
+		a.u_id AS "uId",                                                     <!-- 主键,会员的ID bigint(20)-->
+		a.parent_uid AS "parentUid",                                         <!-- 父ID，为0表示是主账号 bigint(20)-->
 		a.login_name AS "loginName",                                         <!-- 用户名、登录名 nvarchar2(64)-->
 		a.password AS "password",                                            <!-- 密码 nvarchar2(64)-->
 		a.salt AS "salt",                                                    <!-- 盐 nvarchar2(64)-->
@@ -140,8 +140,8 @@
 	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
 		INSERT INTO user_main
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			u_id,                                              <!-- 主键,会员的ID number(19)-->
-			parent_uid,                                        <!-- 父ID，为0表示是主账号 number(19)-->
+			u_id,                                              <!-- 主键,会员的ID bigint(20)-->
+			parent_uid,                                        <!-- 父ID，为0表示是主账号 bigint(20)-->
 			login_name,                                        <!-- 用户名、登录名 nvarchar2(64)-->
 			password,                                          <!-- 密码 nvarchar2(64)-->
 			salt,                                              <!-- 盐 nvarchar2(64)-->
@@ -173,7 +173,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.parentUid},                               <!-- 父ID，为0表示是主账号 number(19)-->
+			#{entity.parentUid},                               <!-- 父ID，为0表示是主账号 bigint(20)-->
 			#{entity.loginName},                               <!-- 用户名、登录名 nvarchar2(64)-->
 			#{entity.password},                                <!-- 密码 nvarchar2(64)-->
 			#{entity.salt},                                    <!-- 盐 nvarchar2(64)-->
@@ -205,7 +205,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.uId != null">u_id,</if></if>
 			<if test="entity.pkMode==2">u_id,</if>
-			<if test="entity.parentUid != null">parent_uid,</if>                               <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.parentUid != null">parent_uid,</if>                               <!-- 父ID，为0表示是主账号 bigint(20)-->
 			<if test="entity.loginName != null">login_name,</if>                               <!-- 用户名、登录名 nvarchar2(64)-->
 			<if test="entity.password != null">password,</if>                                  <!-- 密码 nvarchar2(64)-->
 			<if test="entity.salt != null">salt,</if>                                          <!-- 盐 nvarchar2(64)-->
@@ -238,7 +238,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.parentUid != null">#{entity.parentUid},</if>                                <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.parentUid != null">#{entity.parentUid},</if>                                <!-- 父ID，为0表示是主账号 bigint(20)-->
 			<if test="entity.loginName != null">#{entity.loginName},</if>                                <!-- 用户名、登录名 nvarchar2(64)-->
 			<if test="entity.password != null">#{entity.password},</if>                                  <!-- 密码 nvarchar2(64)-->
 			<if test="entity.salt != null">#{entity.salt},</if>                                          <!-- 盐 nvarchar2(64)-->
@@ -267,7 +267,7 @@
 	<update id="updateById">
 		UPDATE user_main 
 		<set>
-			parent_uid = #{entity.parentUid},                               <!-- 父ID，为0表示是主账号 number(19)-->
+			parent_uid = #{entity.parentUid},                               <!-- 父ID，为0表示是主账号 bigint(20)-->
 			login_name = #{entity.loginName},                               <!-- 用户名、登录名 nvarchar2(64)-->
 			password = #{entity.password},                                  <!-- 密码 nvarchar2(64)-->
 			salt = #{entity.salt},                                          <!-- 盐 nvarchar2(64)-->
@@ -298,7 +298,7 @@
 	<update id="updateByWhere">
 		UPDATE user_main a 
 		<set>
-			parent_uid = #{entity.parentUid},                               <!-- 父ID，为0表示是主账号 number(19)-->
+			parent_uid = #{entity.parentUid},                               <!-- 父ID，为0表示是主账号 bigint(20)-->
 			login_name = #{entity.loginName},                               <!-- 用户名、登录名 nvarchar2(64)-->
 			password = #{entity.password},                                  <!-- 密码 nvarchar2(64)-->
 			salt = #{entity.salt},                                          <!-- 盐 nvarchar2(64)-->
@@ -335,7 +335,7 @@
 	<update id="updateByIdSelective">
 		UPDATE user_main
 		<set>
-			<if test="entity.parentUid != null">parent_uid = #{entity.parentUid},</if>                                          <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.parentUid != null">parent_uid = #{entity.parentUid},</if>                                          <!-- 父ID，为0表示是主账号 bigint(20)-->
 			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 用户名、登录名 nvarchar2(64)-->
 			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 nvarchar2(64)-->
 			<if test="entity.salt != null">salt = #{entity.salt},</if>                                                          <!-- 盐 nvarchar2(64)-->
@@ -365,7 +365,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE user_main a
 		<set>
-			<if test="entity.parentUid != null">parent_uid = #{entity.parentUid},</if>                                          <!-- 父ID，为0表示是主账号 number(19)-->
+			<if test="entity.parentUid != null">parent_uid = #{entity.parentUid},</if>                                          <!-- 父ID，为0表示是主账号 bigint(20)-->
 			<if test="entity.loginName != null">login_name = #{entity.loginName},</if>                                          <!-- 用户名、登录名 nvarchar2(64)-->
 			<if test="entity.password != null">password = #{entity.password},</if>                                              <!-- 密码 nvarchar2(64)-->
 			<if test="entity.salt != null">salt = #{entity.salt},</if>                                                          <!-- 盐 nvarchar2(64)-->

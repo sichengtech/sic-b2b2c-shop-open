@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="sysSmsLogColumns">
 	<trim suffixOverrides=",">
-		a.ssl_id AS "sslId",                                                 <!-- 主键 number(19)-->
+		a.ssl_id AS "sslId",                                                 <!-- 主键 bigint(20)-->
 		a.content AS "content",                                              <!-- 短信内容 nvarchar2(255)-->
 		a.templatecode AS "templatecode",                                    <!-- 模板id nvarchar2(128)-->
 		a.status AS "status",                                                <!-- 发送状态（0、失败，1、成功） char(1)-->
@@ -118,7 +118,7 @@
 	<insert id="insert" keyProperty="entity.sslId" keyColumn="ssl_id" useGeneratedKeys="true">
 		INSERT INTO sys_sms_log
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			ssl_id,                                            <!-- 主键 number(19)-->
+			ssl_id,                                            <!-- 主键 bigint(20)-->
 			content,                                           <!-- 短信内容 nvarchar2(255)-->
 			templatecode,                                      <!-- 模板id nvarchar2(128)-->
 			status,                                            <!-- 发送状态（0、失败，1、成功） char(1)-->

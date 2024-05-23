@@ -7,17 +7,17 @@
 	<!-- 全部字段 -->
 	<sql id="settlementRechargeColumns">
 	<trim suffixOverrides=",">
-		a.recharge_id AS "rechargeId",                                       <!-- 主键 number(19)-->
+		a.recharge_id AS "rechargeId",                                       <!-- 主键 bigint(20)-->
 		a.recharge_number AS "rechargeNumber",                               <!-- 充值编号 nvarchar2(64)-->
-		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) number(19)-->
+		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) bigint(20)-->
 		a.recharge_money AS "rechargeMoney",                                 <!-- 充值金额 number(12,3)-->
 		a.recharge_time AS "rechargeTime",                                   <!-- 充值时间 date(7)-->
 		a.pay_date AS "payDate",                                             <!-- 支付时间 date(7)-->
-		a.pay_way_id AS "payWayId",                                          <!-- 支付方式(支付方式id) number(19)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 支付方式(支付方式id) bigint(20)-->
 		a.staus AS "staus",                                                  <!-- 支付状态，0未支付、1已支付 char(1)-->
 		a.pay_terminal AS "payTerminal",                                     <!-- 支付终端，0pc端、1移动端 char(1)-->
 		a.trade_number AS "tradeNumber",                                     <!-- 交易号 nvarchar2(64)-->
-		a.admin_id AS "adminId",                                             <!-- 管理员(管理员表id) number(19)-->
+		a.admin_id AS "adminId",                                             <!-- 管理员(管理员表id) bigint(20)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -140,17 +140,17 @@
 	<insert id="insert" keyProperty="entity.rechargeId" keyColumn="recharge_id" useGeneratedKeys="true">
 		INSERT INTO settlement_recharge
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			recharge_id,                                       <!-- 主键 number(19)-->
+			recharge_id,                                       <!-- 主键 bigint(20)-->
 			recharge_number,                                   <!-- 充值编号 nvarchar2(64)-->
-			u_id,                                              <!-- 会员id(会员表id) number(19)-->
+			u_id,                                              <!-- 会员id(会员表id) bigint(20)-->
 			recharge_money,                                    <!-- 充值金额 number(12,3)-->
 			recharge_time,                                     <!-- 充值时间 date(7)-->
 			pay_date,                                          <!-- 支付时间 date(7)-->
-			pay_way_id,                                        <!-- 支付方式(支付方式id) number(19)-->
+			pay_way_id,                                        <!-- 支付方式(支付方式id) bigint(20)-->
 			staus,                                             <!-- 支付状态，0未支付、1已支付 char(1)-->
 			pay_terminal,                                      <!-- 支付终端，0pc端、1移动端 char(1)-->
 			trade_number,                                      <!-- 交易号 nvarchar2(64)-->
-			admin_id,                                          <!-- 管理员(管理员表id) number(19)-->
+			admin_id,                                          <!-- 管理员(管理员表id) bigint(20)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
@@ -174,15 +174,15 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			#{entity.rechargeNumber},                          <!-- 充值编号 nvarchar2(64)-->
-			#{entity.uId},                                     <!-- 会员id(会员表id) number(19)-->
+			#{entity.uId},                                     <!-- 会员id(会员表id) bigint(20)-->
 			#{entity.rechargeMoney},                           <!-- 充值金额 number(12,3)-->
 			#{entity.rechargeTime},                            <!-- 充值时间 date(7)-->
 			#{entity.payDate},                                 <!-- 支付时间 date(7)-->
-			#{entity.payWayId},                                <!-- 支付方式(支付方式id) number(19)-->
+			#{entity.payWayId},                                <!-- 支付方式(支付方式id) bigint(20)-->
 			#{entity.staus},                                   <!-- 支付状态，0未支付、1已支付 char(1)-->
 			#{entity.payTerminal},                             <!-- 支付终端，0pc端、1移动端 char(1)-->
 			#{entity.tradeNumber},                             <!-- 交易号 nvarchar2(64)-->
-			#{entity.adminId},                                 <!-- 管理员(管理员表id) number(19)-->
+			#{entity.adminId},                                 <!-- 管理员(管理员表id) bigint(20)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
 			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -206,15 +206,15 @@
 			<if test="entity.pkMode==1"><if test="entity.rechargeId != null">recharge_id,</if></if>
 			<if test="entity.pkMode==2">recharge_id,</if>
 			<if test="entity.rechargeNumber != null">recharge_number,</if>                     <!-- 充值编号 nvarchar2(64)-->
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.rechargeMoney != null">recharge_money,</if>                       <!-- 充值金额 number(12,3)-->
 			<if test="entity.rechargeTime != null">recharge_time,</if>                         <!-- 充值时间 date(7)-->
 			<if test="entity.payDate != null">pay_date,</if>                                   <!-- 支付时间 date(7)-->
-			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式(支付方式id) bigint(20)-->
 			<if test="entity.staus != null">staus,</if>                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
 			<if test="entity.payTerminal != null">pay_terminal,</if>                           <!-- 支付终端，0pc端、1移动端 char(1)-->
 			<if test="entity.tradeNumber != null">trade_number,</if>                           <!-- 交易号 nvarchar2(64)-->
-			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -239,15 +239,15 @@
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
 			<if test="entity.rechargeNumber != null">#{entity.rechargeNumber},</if>                      <!-- 充值编号 nvarchar2(64)-->
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.rechargeMoney != null">#{entity.rechargeMoney},</if>                        <!-- 充值金额 number(12,3)-->
 			<if test="entity.rechargeTime != null">#{entity.rechargeTime},</if>                          <!-- 充值时间 date(7)-->
 			<if test="entity.payDate != null">#{entity.payDate},</if>                                    <!-- 支付时间 date(7)-->
-			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式(支付方式id) bigint(20)-->
 			<if test="entity.staus != null">#{entity.staus},</if>                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
 			<if test="entity.payTerminal != null">#{entity.payTerminal},</if>                            <!-- 支付终端，0pc端、1移动端 char(1)-->
 			<if test="entity.tradeNumber != null">#{entity.tradeNumber},</if>                            <!-- 交易号 nvarchar2(64)-->
-			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -268,15 +268,15 @@
 		UPDATE settlement_recharge 
 		<set>
 			recharge_number = #{entity.rechargeNumber},                     <!-- 充值编号 nvarchar2(64)-->
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
 			recharge_money = #{entity.rechargeMoney},                       <!-- 充值金额 number(12,3)-->
 			recharge_time = #{entity.rechargeTime},                         <!-- 充值时间 date(7)-->
 			pay_date = #{entity.payDate},                                   <!-- 支付时间 date(7)-->
-			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式id) number(19)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式id) bigint(20)-->
 			staus = #{entity.staus},                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
 			pay_terminal = #{entity.payTerminal},                           <!-- 支付终端，0pc端、1移动端 char(1)-->
 			trade_number = #{entity.tradeNumber},                           <!-- 交易号 nvarchar2(64)-->
-			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -299,15 +299,15 @@
 		UPDATE settlement_recharge a 
 		<set>
 			recharge_number = #{entity.rechargeNumber},                     <!-- 充值编号 nvarchar2(64)-->
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
 			recharge_money = #{entity.rechargeMoney},                       <!-- 充值金额 number(12,3)-->
 			recharge_time = #{entity.rechargeTime},                         <!-- 充值时间 date(7)-->
 			pay_date = #{entity.payDate},                                   <!-- 支付时间 date(7)-->
-			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式id) number(19)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式id) bigint(20)-->
 			staus = #{entity.staus},                                        <!-- 支付状态，0未支付、1已支付 char(1)-->
 			pay_terminal = #{entity.payTerminal},                           <!-- 支付终端，0pc端、1移动端 char(1)-->
 			trade_number = #{entity.tradeNumber},                           <!-- 交易号 nvarchar2(64)-->
-			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) number(19)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员(管理员表id) bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -336,15 +336,15 @@
 		UPDATE settlement_recharge
 		<set>
 			<if test="entity.rechargeNumber != null">recharge_number = #{entity.rechargeNumber},</if>                           <!-- 充值编号 nvarchar2(64)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.rechargeMoney != null">recharge_money = #{entity.rechargeMoney},</if>                              <!-- 充值金额 number(12,3)-->
 			<if test="entity.rechargeTime != null">recharge_time = #{entity.rechargeTime},</if>                                 <!-- 充值时间 date(7)-->
 			<if test="entity.payDate != null">pay_date = #{entity.payDate},</if>                                                <!-- 支付时间 date(7)-->
-			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式id) bigint(20)-->
 			<if test="entity.staus != null">staus = #{entity.staus},</if>                                                       <!-- 支付状态，0未支付、1已支付 char(1)-->
 			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 支付终端，0pc端、1移动端 char(1)-->
 			<if test="entity.tradeNumber != null">trade_number = #{entity.tradeNumber},</if>                                    <!-- 交易号 nvarchar2(64)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -366,15 +366,15 @@
 		UPDATE settlement_recharge a
 		<set>
 			<if test="entity.rechargeNumber != null">recharge_number = #{entity.rechargeNumber},</if>                           <!-- 充值编号 nvarchar2(64)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
 			<if test="entity.rechargeMoney != null">recharge_money = #{entity.rechargeMoney},</if>                              <!-- 充值金额 number(12,3)-->
 			<if test="entity.rechargeTime != null">recharge_time = #{entity.rechargeTime},</if>                                 <!-- 充值时间 date(7)-->
 			<if test="entity.payDate != null">pay_date = #{entity.payDate},</if>                                                <!-- 支付时间 date(7)-->
-			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式id) number(19)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式id) bigint(20)-->
 			<if test="entity.staus != null">staus = #{entity.staus},</if>                                                       <!-- 支付状态，0未支付、1已支付 char(1)-->
 			<if test="entity.payTerminal != null">pay_terminal = #{entity.payTerminal},</if>                                    <!-- 支付终端，0pc端、1移动端 char(1)-->
 			<if test="entity.tradeNumber != null">trade_number = #{entity.tradeNumber},</if>                                    <!-- 交易号 nvarchar2(64)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) number(19)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员(管理员表id) bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->

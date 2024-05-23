@@ -7,17 +7,17 @@
 	<!-- 全部字段 -->
 	<sql id="storeEnterColumns">
 	<trim suffixOverrides=",">
-		a.enter_id AS "enterId",                                             <!-- 主键(卖家表，入驻申请，店铺表，店铺二级域名用1个id) number(19)-->
+		a.enter_id AS "enterId",                                             <!-- 主键(卖家表，入驻申请，店铺表，店铺二级域名用1个id) bigint(20)-->
 		a.status AS "status",                                                <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 		a.is_perfect AS "isPerfect",                                         <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 		a.company_name AS "companyName",                                     <!-- 公司名称 nvarchar2(64)-->
-		a.country_id AS "countryId",                                         <!-- 国家(关联地区表) number(19)-->
+		a.country_id AS "countryId",                                         <!-- 国家(关联地区表) bigint(20)-->
 		a.country_name AS "countryName",                                     <!-- 国家名字 nvarchar2(64)-->
-		a.province_id AS "provinceId",                                       <!-- 省(关联地区表) number(19)-->
+		a.province_id AS "provinceId",                                       <!-- 省(关联地区表) bigint(20)-->
 		a.province_name AS "provinceName",                                   <!-- 省名字 nvarchar2(64)-->
-		a.city_id AS "cityId",                                               <!-- 市(关联地区表) number(19)-->
+		a.city_id AS "cityId",                                               <!-- 市(关联地区表) bigint(20)-->
 		a.city_name AS "cityName",                                           <!-- 市名字 nvarchar2(64)-->
-		a.district_id AS "districtId",                                       <!-- 县(关联地区表) number(19)-->
+		a.district_id AS "districtId",                                       <!-- 县(关联地区表) bigint(20)-->
 		a.district_name AS "districtName",                                   <!-- 县名字 nvarchar2(64)-->
 		a.detailed_address AS "detailedAddress",                             <!-- 公司_详细地址 nvarchar2(255)-->
 		a.registered_capital AS "registeredCapital",                         <!-- 注册资金，单位万元 number(10)-->
@@ -42,8 +42,8 @@
 		a.store_name AS "storeName",                                         <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 		a.legal_id_card_code_positive AS "legalIdCardCodePositive",          <!-- 法人身份证号（正面） nvarchar2(64)-->
 		a.legal_id_card_code_opposite AS "legalIdCardCodeOpposite",          <!-- 法人身份证号（反面） nvarchar2(64)-->
-		a.level_id AS "levelId",                                             <!-- 店铺等级（关联店铺等级id） number(19)-->
-		a.industry_id AS "industryId",                                       <!-- 主营行业（关联主营行业id） number(19)-->
+		a.level_id AS "levelId",                                             <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+		a.industry_id AS "industryId",                                       <!-- 主营行业（关联主营行业id） bigint(20)-->
 		a.summary_of_coping AS "summaryOfCoping",                            <!-- 应付总金额 number(12,3)-->
 		a.payment_voucher_path AS "paymentVoucherPath",                      <!-- 商家上传付款凭证path nvarchar2(64)-->
 		a.payment_instructions AS "paymentInstructions",                     <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -209,17 +209,17 @@
 	<insert id="insert" keyProperty="entity.enterId" keyColumn="enter_id" useGeneratedKeys="true">
 		INSERT INTO store_enter
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			enter_id,                                          <!-- 主键(卖家表，入驻申请，店铺表，店铺二级域名用1个id) number(19)-->
+			enter_id,                                          <!-- 主键(卖家表，入驻申请，店铺表，店铺二级域名用1个id) bigint(20)-->
 			status,                                            <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			is_perfect,                                        <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			company_name,                                      <!-- 公司名称 nvarchar2(64)-->
-			country_id,                                        <!-- 国家(关联地区表) number(19)-->
+			country_id,                                        <!-- 国家(关联地区表) bigint(20)-->
 			country_name,                                      <!-- 国家名字 nvarchar2(64)-->
-			province_id,                                       <!-- 省(关联地区表) number(19)-->
+			province_id,                                       <!-- 省(关联地区表) bigint(20)-->
 			province_name,                                     <!-- 省名字 nvarchar2(64)-->
-			city_id,                                           <!-- 市(关联地区表) number(19)-->
+			city_id,                                           <!-- 市(关联地区表) bigint(20)-->
 			city_name,                                         <!-- 市名字 nvarchar2(64)-->
-			district_id,                                       <!-- 县(关联地区表) number(19)-->
+			district_id,                                       <!-- 县(关联地区表) bigint(20)-->
 			district_name,                                     <!-- 县名字 nvarchar2(64)-->
 			detailed_address,                                  <!-- 公司_详细地址 nvarchar2(255)-->
 			registered_capital,                                <!-- 注册资金，单位万元 number(10)-->
@@ -244,8 +244,8 @@
 			store_name,                                        <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			legal_id_card_code_positive,                       <!-- 法人身份证号（正面） nvarchar2(64)-->
 			legal_id_card_code_opposite,                       <!-- 法人身份证号（反面） nvarchar2(64)-->
-			level_id,                                          <!-- 店铺等级（关联店铺等级id） number(19)-->
-			industry_id,                                       <!-- 主营行业（关联主营行业id） number(19)-->
+			level_id,                                          <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			industry_id,                                       <!-- 主营行业（关联主营行业id） bigint(20)-->
 			summary_of_coping,                                 <!-- 应付总金额 number(12,3)-->
 			payment_voucher_path,                              <!-- 商家上传付款凭证path nvarchar2(64)-->
 			payment_instructions,                              <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -278,13 +278,13 @@
 			#{entity.status},                                  <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			#{entity.isPerfect},                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			#{entity.companyName},                             <!-- 公司名称 nvarchar2(64)-->
-			#{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			#{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
 			#{entity.countryName},                             <!-- 国家名字 nvarchar2(64)-->
-			#{entity.provinceId},                              <!-- 省(关联地区表) number(19)-->
+			#{entity.provinceId},                              <!-- 省(关联地区表) bigint(20)-->
 			#{entity.provinceName},                            <!-- 省名字 nvarchar2(64)-->
-			#{entity.cityId},                                  <!-- 市(关联地区表) number(19)-->
+			#{entity.cityId},                                  <!-- 市(关联地区表) bigint(20)-->
 			#{entity.cityName},                                <!-- 市名字 nvarchar2(64)-->
-			#{entity.districtId},                              <!-- 县(关联地区表) number(19)-->
+			#{entity.districtId},                              <!-- 县(关联地区表) bigint(20)-->
 			#{entity.districtName},                            <!-- 县名字 nvarchar2(64)-->
 			#{entity.detailedAddress},                         <!-- 公司_详细地址 nvarchar2(255)-->
 			#{entity.registeredCapital},                       <!-- 注册资金，单位万元 number(10)-->
@@ -309,8 +309,8 @@
 			#{entity.storeName},                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			#{entity.legalIdCardCodePositive},                 <!-- 法人身份证号（正面） nvarchar2(64)-->
 			#{entity.legalIdCardCodeOpposite},                 <!-- 法人身份证号（反面） nvarchar2(64)-->
-			#{entity.levelId},                                 <!-- 店铺等级（关联店铺等级id） number(19)-->
-			#{entity.industryId},                              <!-- 主营行业（关联主营行业id） number(19)-->
+			#{entity.levelId},                                 <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			#{entity.industryId},                              <!-- 主营行业（关联主营行业id） bigint(20)-->
 			#{entity.summaryOfCoping},                         <!-- 应付总金额 number(12,3)-->
 			#{entity.paymentVoucherPath},                      <!-- 商家上传付款凭证path nvarchar2(64)-->
 			#{entity.paymentInstructions},                     <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -343,13 +343,13 @@
 			<if test="entity.status != null">status,</if>                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			<if test="entity.isPerfect != null">is_perfect,</if>                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			<if test="entity.companyName != null">company_name,</if>                           <!-- 公司名称 nvarchar2(64)-->
-			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name,</if>                           <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name,</if>                         <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name,</if>                                 <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 公司_详细地址 nvarchar2(255)-->
 			<if test="entity.registeredCapital != null">registered_capital,</if>               <!-- 注册资金，单位万元 number(10)-->
@@ -374,8 +374,8 @@
 			<if test="entity.storeName != null">store_name,</if>                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodePositive != null">legal_id_card_code_positive,</if>  <!-- 法人身份证号（正面） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodeOpposite != null">legal_id_card_code_opposite,</if>  <!-- 法人身份证号（反面） nvarchar2(64)-->
-			<if test="entity.levelId != null">level_id,</if>                                   <!-- 店铺等级（关联店铺等级id） number(19)-->
-			<if test="entity.industryId != null">industry_id,</if>                             <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.levelId != null">level_id,</if>                                   <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			<if test="entity.industryId != null">industry_id,</if>                             <!-- 主营行业（关联主营行业id） bigint(20)-->
 			<if test="entity.summaryOfCoping != null">summary_of_coping,</if>                  <!-- 应付总金额 number(12,3)-->
 			<if test="entity.paymentVoucherPath != null">payment_voucher_path,</if>            <!-- 商家上传付款凭证path nvarchar2(64)-->
 			<if test="entity.paymentInstructions != null">payment_instructions,</if>           <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -409,13 +409,13 @@
 			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			<if test="entity.isPerfect != null">#{entity.isPerfect},</if>                                <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			<if test="entity.companyName != null">#{entity.companyName},</if>                            <!-- 公司名称 nvarchar2(64)-->
-			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 公司_详细地址 nvarchar2(255)-->
 			<if test="entity.registeredCapital != null">#{entity.registeredCapital},</if>                <!-- 注册资金，单位万元 number(10)-->
@@ -440,8 +440,8 @@
 			<if test="entity.storeName != null">#{entity.storeName},</if>                                <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodePositive != null">#{entity.legalIdCardCodePositive},</if>    <!-- 法人身份证号（正面） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodeOpposite != null">#{entity.legalIdCardCodeOpposite},</if>    <!-- 法人身份证号（反面） nvarchar2(64)-->
-			<if test="entity.levelId != null">#{entity.levelId},</if>                                    <!-- 店铺等级（关联店铺等级id） number(19)-->
-			<if test="entity.industryId != null">#{entity.industryId},</if>                              <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.levelId != null">#{entity.levelId},</if>                                    <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			<if test="entity.industryId != null">#{entity.industryId},</if>                              <!-- 主营行业（关联主营行业id） bigint(20)-->
 			<if test="entity.summaryOfCoping != null">#{entity.summaryOfCoping},</if>                    <!-- 应付总金额 number(12,3)-->
 			<if test="entity.paymentVoucherPath != null">#{entity.paymentVoucherPath},</if>              <!-- 商家上传付款凭证path nvarchar2(64)-->
 			<if test="entity.paymentInstructions != null">#{entity.paymentInstructions},</if>            <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -471,13 +471,13 @@
 			status = #{entity.status},                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			is_perfect = #{entity.isPerfect},                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
-			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 公司_详细地址 nvarchar2(255)-->
 			registered_capital = #{entity.registeredCapital},               <!-- 注册资金，单位万元 number(10)-->
@@ -502,8 +502,8 @@
 			store_name = #{entity.storeName},                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			legal_id_card_code_positive = #{entity.legalIdCardCodePositive},  <!-- 法人身份证号（正面） nvarchar2(64)-->
 			legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},  <!-- 法人身份证号（反面） nvarchar2(64)-->
-			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id） number(19)-->
-			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id） number(19)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id） bigint(20)-->
 			summary_of_coping = #{entity.summaryOfCoping},                  <!-- 应付总金额 number(12,3)-->
 			payment_voucher_path = #{entity.paymentVoucherPath},            <!-- 商家上传付款凭证path nvarchar2(64)-->
 			payment_instructions = #{entity.paymentInstructions},           <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -535,13 +535,13 @@
 			status = #{entity.status},                                      <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			is_perfect = #{entity.isPerfect},                               <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			company_name = #{entity.companyName},                           <!-- 公司名称 nvarchar2(64)-->
-			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 公司_详细地址 nvarchar2(255)-->
 			registered_capital = #{entity.registeredCapital},               <!-- 注册资金，单位万元 number(10)-->
@@ -566,8 +566,8 @@
 			store_name = #{entity.storeName},                               <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			legal_id_card_code_positive = #{entity.legalIdCardCodePositive},  <!-- 法人身份证号（正面） nvarchar2(64)-->
 			legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},  <!-- 法人身份证号（反面） nvarchar2(64)-->
-			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id） number(19)-->
-			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id） number(19)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id） bigint(20)-->
 			summary_of_coping = #{entity.summaryOfCoping},                  <!-- 应付总金额 number(12,3)-->
 			payment_voucher_path = #{entity.paymentVoucherPath},            <!-- 商家上传付款凭证path nvarchar2(64)-->
 			payment_instructions = #{entity.paymentInstructions},           <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -605,13 +605,13 @@
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			<if test="entity.isPerfect != null">is_perfect = #{entity.isPerfect},</if>                                          <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司_详细地址 nvarchar2(255)-->
 			<if test="entity.registeredCapital != null">registered_capital = #{entity.registeredCapital},</if>                  <!-- 注册资金，单位万元 number(10)-->
@@ -636,8 +636,8 @@
 			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodePositive != null">legal_id_card_code_positive = #{entity.legalIdCardCodePositive},</if>     <!-- 法人身份证号（正面） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodeOpposite != null">legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},</if>     <!-- 法人身份证号（反面） nvarchar2(64)-->
-			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id） number(19)-->
-			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id） bigint(20)-->
 			<if test="entity.summaryOfCoping != null">summary_of_coping = #{entity.summaryOfCoping},</if>                       <!-- 应付总金额 number(12,3)-->
 			<if test="entity.paymentVoucherPath != null">payment_voucher_path = #{entity.paymentVoucherPath},</if>              <!-- 商家上传付款凭证path nvarchar2(64)-->
 			<if test="entity.paymentInstructions != null">payment_instructions = #{entity.paymentInstructions},</if>            <!-- 商家付款凭证说明 nvarchar2(255)-->
@@ -668,13 +668,13 @@
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 入驻信息完善后才有值 审核状态：10一审待审核、20一审审核成功、30一审审核不通过、40二审待审核、50二审审核通过、60二审核不通过)一审审核基本信息，二审审核是付钱 char(2)-->
 			<if test="entity.isPerfect != null">is_perfect = #{entity.isPerfect},</if>                                          <!-- 入驻信息一审是否完善，0不完善、1完善 char(1)-->
 			<if test="entity.companyName != null">company_name = #{entity.companyName},</if>                                    <!-- 公司名称 nvarchar2(64)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司_详细地址 nvarchar2(255)-->
 			<if test="entity.registeredCapital != null">registered_capital = #{entity.registeredCapital},</if>                  <!-- 注册资金，单位万元 number(10)-->
@@ -699,8 +699,8 @@
 			<if test="entity.storeName != null">store_name = #{entity.storeName},</if>                                          <!-- 店铺名（注意店铺设置修改的时候记得把这个修改了） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodePositive != null">legal_id_card_code_positive = #{entity.legalIdCardCodePositive},</if>     <!-- 法人身份证号（正面） nvarchar2(64)-->
 			<if test="entity.legalIdCardCodeOpposite != null">legal_id_card_code_opposite = #{entity.legalIdCardCodeOpposite},</if>     <!-- 法人身份证号（反面） nvarchar2(64)-->
-			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id） number(19)-->
-			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id） number(19)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id） bigint(20)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id） bigint(20)-->
 			<if test="entity.summaryOfCoping != null">summary_of_coping = #{entity.summaryOfCoping},</if>                       <!-- 应付总金额 number(12,3)-->
 			<if test="entity.paymentVoucherPath != null">payment_voucher_path = #{entity.paymentVoucherPath},</if>              <!-- 商家上传付款凭证path nvarchar2(64)-->
 			<if test="entity.paymentInstructions != null">payment_instructions = #{entity.paymentInstructions},</if>            <!-- 商家付款凭证说明 nvarchar2(255)-->

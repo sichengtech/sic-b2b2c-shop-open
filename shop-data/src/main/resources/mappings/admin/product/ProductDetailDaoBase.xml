@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="productDetailColumns">
-		a.p_id AS "pId",                                                     <!-- 商品ID number(19)-->
+		a.p_id AS "pId",                                                     <!-- 商品ID bigint(20)-->
 		a.introduction AS "introduction",                                    <!-- 商品描述详情,pc版 clob-->
 		a.introduction2 AS "introduction2"                                  <!-- 商品描述详情，移动版 clob-->
 		
@@ -97,7 +97,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
 		INSERT INTO product_detail(
-			p_id,                                              <!-- 商品ID number(19)-->
+			p_id,                                              <!-- 商品ID bigint(20)-->
 			introduction,                                      <!-- 商品描述详情,pc版 clob-->
 			introduction2                                     <!-- 商品描述详情，移动版 clob-->
 

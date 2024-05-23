@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="productExtColumns">
 	<trim suffixOverrides=",">
-		a.p_id AS "pId",                                                     <!-- 商品ID number(19)-->
+		a.p_id AS "pId",                                                     <!-- 商品ID bigint(20)-->
 		a.car_ids AS "carIds",                                               <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
 		a.bak2 AS "bak2",                                                    <!-- 备用字段2 nvarchar2(64)-->
@@ -148,7 +148,7 @@
 	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
 		INSERT INTO product_ext
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			p_id,                                              <!-- 商品ID number(19)-->
+			p_id,                                              <!-- 商品ID bigint(20)-->
 			car_ids,                                           <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
 			bak2,                                              <!-- 备用字段2 nvarchar2(64)-->
@@ -291,7 +291,7 @@
 	<update id="updateById">
 		UPDATE product_ext 
 		<set>
-			p_id = #{entity.pId},                                           <!-- 商品ID number(19)-->
+			p_id = #{entity.pId},                                           <!-- 商品ID bigint(20)-->
 			car_ids = #{entity.carIds},                                     <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
 			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
@@ -327,7 +327,7 @@
 	<update id="updateByWhere">
 		UPDATE product_ext a 
 		<set>
-			p_id = #{entity.pId},                                           <!-- 商品ID number(19)-->
+			p_id = #{entity.pId},                                           <!-- 商品ID bigint(20)-->
 			car_ids = #{entity.carIds},                                     <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
 			bak2 = #{entity.bak2},                                          <!-- 备用字段2 nvarchar2(64)-->
@@ -369,7 +369,7 @@
 	<update id="updateByIdSelective">
 		UPDATE product_ext
 		<set>
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID number(19)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID bigint(20)-->
 			<if test="entity.carIds != null">car_ids = #{entity.carIds},</if>                                                   <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
 			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->
@@ -404,7 +404,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE product_ext a
 		<set>
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID number(19)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品ID bigint(20)-->
 			<if test="entity.carIds != null">car_ids = #{entity.carIds},</if>                                                   <!-- 商品&ndash;车型一对一关系。所有父级id+多个product_car表第3级&rdquo;型号&ldquo;的ID多个值用逗号隔开 varchar2(4000)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
 			<if test="entity.bak2 != null">bak2 = #{entity.bak2},</if>                                                          <!-- 备用字段2 nvarchar2(64)-->

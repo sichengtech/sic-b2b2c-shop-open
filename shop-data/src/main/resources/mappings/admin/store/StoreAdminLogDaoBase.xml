@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="storeAdminLogColumns">
 	<trim suffixOverrides=",">
-		a.log_id AS "logId",                                                 <!-- 主键 number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.log_id AS "logId",                                                 <!-- 主键 bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
 		a.type AS "type",                                                    <!-- 日志类型 char(1)-->
 		a.title AS "title",                                                  <!-- 日志标题（操作菜单） nvarchar2(512)-->
 		a.remote_addr AS "remoteAddr",                                       <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -17,7 +17,7 @@
 		a.method AS "method",                                                <!-- 操作的方式(提交方式) nvarchar2(64)-->
 		a.params AS "params",                                                <!-- 操作提交的数据 clob-->
 		a.exception AS "exception",                                          <!-- 异常信息 clob-->
-		a.create_by AS "createBy.id",                                        <!-- 创建者（操作用户id） number(19)-->
+		a.create_by AS "createBy.id",                                        <!-- 创建者（操作用户id） bigint(20)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间（操作时间） date(7)-->
 		a.update_date AS "updateDate",                                       <!-- 更新时间 date(7)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -25,7 +25,7 @@
 		a.bak3 AS "bak3",                                                    <!-- 备用字段3 nvarchar2(64)-->
 		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
 		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
-		a.operator_id AS "operatorId",                                       <!-- 操作者id(登录的店铺会员id) number(19)-->
+		a.operator_id AS "operatorId",                                       <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 
 	</trim>
 	</sql>
@@ -135,8 +135,8 @@
 	<insert id="insert" keyProperty="entity.logId" keyColumn="log_id" useGeneratedKeys="true">
 		INSERT INTO store_admin_log
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			log_id,                                            <!-- 主键 number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			log_id,                                            <!-- 主键 bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
 			type,                                              <!-- 日志类型 char(1)-->
 			title,                                             <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			remote_addr,                                       <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -145,7 +145,7 @@
 			method,                                            <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			params,                                            <!-- 操作提交的数据 clob-->
 			exception,                                         <!-- 异常信息 clob-->
-			create_by,                                         <!-- 创建者（操作用户id） number(19)-->
+			create_by,                                         <!-- 创建者（操作用户id） bigint(20)-->
 			create_date,                                       <!-- 创建时间（操作时间） date(7)-->
 			update_date,                                       <!-- 更新时间 date(7)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->
@@ -153,7 +153,7 @@
 			bak3,                                              <!-- 备用字段3 nvarchar2(64)-->
 			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
 			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
-			operator_id,                                       <!-- 操作者id(登录的店铺会员id) number(19)-->
+			operator_id,                                       <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 
 		</trim>
 		 VALUES 
@@ -164,7 +164,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
 			#{entity.type},                                    <!-- 日志类型 char(1)-->
 			#{entity.title},                                   <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			#{entity.remoteAddr},                              <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -173,7 +173,7 @@
 			#{entity.method},                                  <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			#{entity.params},                                  <!-- 操作提交的数据 clob-->
 			#{entity.exception},                               <!-- 异常信息 clob-->
-			#{entity.createBy.id},                             <!-- 创建者（操作用户id） number(19)-->
+			#{entity.createBy.id},                             <!-- 创建者（操作用户id） bigint(20)-->
 			#{entity.createDate},                              <!-- 创建时间（操作时间） date(7)-->
 			#{entity.updateDate},                              <!-- 更新时间 date(7)-->
 			#{entity.bak1},                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -181,7 +181,7 @@
 			#{entity.bak3},                                    <!-- 备用字段3 nvarchar2(64)-->
 			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
 			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
-			#{entity.operatorId},                              <!-- 操作者id(登录的店铺会员id) number(19)-->
+			#{entity.operatorId},                              <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 
 	</trim>
 	</insert>
@@ -192,7 +192,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.logId != null">log_id,</if></if>
 			<if test="entity.pkMode==2">log_id,</if>
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 日志类型 char(1)-->
 			<if test="entity.title != null">title,</if>                                        <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			<if test="entity.remoteAddr != null">remote_addr,</if>                             <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -201,7 +201,7 @@
 			<if test="entity.method != null">method,</if>                                      <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			<if test="entity.params != null">params,</if>                                      <!-- 操作提交的数据 clob-->
 			<if test="entity.exception != null">exception,</if>                                <!-- 异常信息 clob-->
-			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- 创建者（操作用户id） number(19)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by,</if>                              <!-- 创建者（操作用户id） bigint(20)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间（操作时间） date(7)-->
 			<if test="entity.updateDate != null">update_date,</if>                             <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1,</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -209,7 +209,7 @@
 			<if test="entity.bak3 != null">bak3,</if>                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.operatorId != null">operator_id,</if>                             <!-- 操作者id(登录的店铺会员id) number(19)-->
+			<if test="entity.operatorId != null">operator_id,</if>                             <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -221,7 +221,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 日志类型 char(1)-->
 			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			<if test="entity.remoteAddr != null">#{entity.remoteAddr},</if>                              <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -230,7 +230,7 @@
 			<if test="entity.method != null">#{entity.method},</if>                                      <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			<if test="entity.params != null">#{entity.params},</if>                                      <!-- 操作提交的数据 clob-->
 			<if test="entity.exception != null">#{entity.exception},</if>                                <!-- 异常信息 clob-->
-			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- 创建者（操作用户id） number(19)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">#{entity.createBy.id},</if>                            <!-- 创建者（操作用户id） bigint(20)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间（操作时间） date(7)-->
 			<if test="entity.updateDate != null">#{entity.updateDate},</if>                              <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">#{entity.bak1},</if>                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -238,7 +238,7 @@
 			<if test="entity.bak3 != null">#{entity.bak3},</if>                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.operatorId != null">#{entity.operatorId},</if>                              <!-- 操作者id(登录的店铺会员id) number(19)-->
+			<if test="entity.operatorId != null">#{entity.operatorId},</if>                              <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 		</trim>
 	</insert>
 
@@ -246,7 +246,7 @@
 	<update id="updateById">
 		UPDATE store_admin_log 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			type = #{entity.type},                                          <!-- 日志类型 char(1)-->
 			title = #{entity.title},                                        <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			remote_addr = #{entity.remoteAddr},                             <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -255,7 +255,7 @@
 			method = #{entity.method},                                      <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			params = #{entity.params},                                      <!-- 操作提交的数据 clob-->
 			exception = #{entity.exception},                                <!-- 异常信息 clob-->
-			create_by = #{entity.createBy.id},                              <!-- 创建者（操作用户id） number(19)-->
+			create_by = #{entity.createBy.id},                              <!-- 创建者（操作用户id） bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间（操作时间） date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -263,7 +263,7 @@
 			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
 			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
 			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
-			operator_id = #{entity.operatorId},                             <!-- 操作者id(登录的店铺会员id) number(19)-->
+			operator_id = #{entity.operatorId},                             <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 
 		</set>
 		WHERE log_id = #{entity.logId}
@@ -273,7 +273,7 @@
 	<update id="updateByWhere">
 		UPDATE store_admin_log a 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			type = #{entity.type},                                          <!-- 日志类型 char(1)-->
 			title = #{entity.title},                                        <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			remote_addr = #{entity.remoteAddr},                             <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -282,7 +282,7 @@
 			method = #{entity.method},                                      <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			params = #{entity.params},                                      <!-- 操作提交的数据 clob-->
 			exception = #{entity.exception},                                <!-- 异常信息 clob-->
-			create_by = #{entity.createBy.id},                              <!-- 创建者（操作用户id） number(19)-->
+			create_by = #{entity.createBy.id},                              <!-- 创建者（操作用户id） bigint(20)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间（操作时间） date(7)-->
 			update_date = #{entity.updateDate},                             <!-- 更新时间 date(7)-->
 			bak1 = #{entity.bak1},                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -290,7 +290,7 @@
 			bak3 = #{entity.bak3},                                          <!-- 备用字段3 nvarchar2(64)-->
 			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
 			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
-			operator_id = #{entity.operatorId},                             <!-- 操作者id(登录的店铺会员id) number(19)-->
+			operator_id = #{entity.operatorId},                             <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
@@ -306,7 +306,7 @@
 	<update id="updateByIdSelective">
 		UPDATE store_admin_log
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 日志类型 char(1)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			<if test="entity.remoteAddr != null">remote_addr = #{entity.remoteAddr},</if>                                       <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -315,7 +315,7 @@
 			<if test="entity.method != null">method = #{entity.method},</if>                                                    <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			<if test="entity.params != null">params = #{entity.params},</if>                                                    <!-- 操作提交的数据 clob-->
 			<if test="entity.exception != null">exception = #{entity.exception},</if>                                           <!-- 异常信息 clob-->
-			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- 创建者（操作用户id） number(19)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- 创建者（操作用户id） bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间（操作时间） date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -323,7 +323,7 @@
 			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.operatorId != null">operator_id = #{entity.operatorId},</if>                                       <!-- 操作者id(登录的店铺会员id) number(19)-->
+			<if test="entity.operatorId != null">operator_id = #{entity.operatorId},</if>                                       <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 		</set>
 		WHERE log_id = #{entity.logId}
 	</update>
@@ -332,7 +332,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE store_admin_log a
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 日志类型 char(1)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 日志标题（操作菜单） nvarchar2(512)-->
 			<if test="entity.remoteAddr != null">remote_addr = #{entity.remoteAddr},</if>                                       <!-- 操作用户的IP地址 nvarchar2(255)-->
@@ -341,7 +341,7 @@
 			<if test="entity.method != null">method = #{entity.method},</if>                                                    <!-- 操作的方式(提交方式) nvarchar2(64)-->
 			<if test="entity.params != null">params = #{entity.params},</if>                                                    <!-- 操作提交的数据 clob-->
 			<if test="entity.exception != null">exception = #{entity.exception},</if>                                           <!-- 异常信息 clob-->
-			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- 创建者（操作用户id） number(19)-->
+			<if test="entity.createBy!= null and entity.createBy.id!= null ">create_by = #{entity.createBy.id},</if>                                       <!-- 创建者（操作用户id） bigint(20)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间（操作时间） date(7)-->
 			<if test="entity.updateDate != null">update_date = #{entity.updateDate},</if>                                       <!-- 更新时间 date(7)-->
 			<if test="entity.bak1 != null">bak1 = #{entity.bak1},</if>                                                          <!-- 备用字段1 nvarchar2(64)-->
@@ -349,7 +349,7 @@
 			<if test="entity.bak3 != null">bak3 = #{entity.bak3},</if>                                                          <!-- 备用字段3 nvarchar2(64)-->
 			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
-			<if test="entity.operatorId != null">operator_id = #{entity.operatorId},</if>                                       <!-- 操作者id(登录的店铺会员id) number(19)-->
+			<if test="entity.operatorId != null">operator_id = #{entity.operatorId},</if>                                       <!-- 操作者id(登录的店铺会员id) bigint(20)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
 		<trim prefixOverrides="AND |OR ">

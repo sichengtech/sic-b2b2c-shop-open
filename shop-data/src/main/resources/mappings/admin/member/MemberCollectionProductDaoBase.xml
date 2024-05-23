@@ -7,9 +7,9 @@
 	<!-- 全部字段 -->
 	<sql id="memberCollectionProductColumns">
 	<trim suffixOverrides=",">
-		a.collection_id AS "collectionId",                                   <!-- 主键 number(19)-->
-		a.u_id AS "uId",                                                     <!-- 关联(会员表) number(19)-->
-		a.p_id AS "pId",                                                     <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+		a.collection_id AS "collectionId",                                   <!-- 主键 bigint(20)-->
+		a.u_id AS "uId",                                                     <!-- 关联(会员表) bigint(20)-->
+		a.p_id AS "pId",                                                     <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 		a.image AS "image",                                                  <!-- 封面图path，冗余 nvarchar2(64)-->
 		a.picture_name AS "pictureName",                                     <!-- 商品名称 nvarchar2(64)-->
 		a.picture_price AS "picturePrice",                                   <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -21,7 +21,7 @@
 		a.bak4 AS "bak4",                                                    <!-- 备用字段4 nvarchar2(64)-->
 		a.bak5 AS "bak5",                                                    <!-- 备用字段5 nvarchar2(64)-->
 		a.status AS "status",                                                <!-- 0、下架，1、上架 char(1)-->
-		a.month_sales AS "monthSales",                                       <!-- 月销 number(19)-->
+		a.month_sales AS "monthSales",                                       <!-- 月销 bigint(20)-->
 
 	</trim>
 	</sql>
@@ -124,9 +124,9 @@
 	<insert id="insert" keyProperty="entity.collectionId" keyColumn="collection_id" useGeneratedKeys="true">
 		INSERT INTO member_collection_product
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			collection_id,                                     <!-- 主键 number(19)-->
-			u_id,                                              <!-- 关联(会员表) number(19)-->
-			p_id,                                              <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			collection_id,                                     <!-- 主键 bigint(20)-->
+			u_id,                                              <!-- 关联(会员表) bigint(20)-->
+			p_id,                                              <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			image,                                             <!-- 封面图path，冗余 nvarchar2(64)-->
 			picture_name,                                      <!-- 商品名称 nvarchar2(64)-->
 			picture_price,                                     <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -138,7 +138,7 @@
 			bak4,                                              <!-- 备用字段4 nvarchar2(64)-->
 			bak5,                                              <!-- 备用字段5 nvarchar2(64)-->
 			status,                                            <!-- 0、下架，1、上架 char(1)-->
-			month_sales,                                       <!-- 月销 number(19)-->
+			month_sales,                                       <!-- 月销 bigint(20)-->
 
 		</trim>
 		 VALUES 
@@ -149,8 +149,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.uId},                                     <!-- 关联(会员表) number(19)-->
-			#{entity.pId},                                     <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			#{entity.uId},                                     <!-- 关联(会员表) bigint(20)-->
+			#{entity.pId},                                     <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			#{entity.image},                                   <!-- 封面图path，冗余 nvarchar2(64)-->
 			#{entity.pictureName},                             <!-- 商品名称 nvarchar2(64)-->
 			#{entity.picturePrice},                            <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -162,7 +162,7 @@
 			#{entity.bak4},                                    <!-- 备用字段4 nvarchar2(64)-->
 			#{entity.bak5},                                    <!-- 备用字段5 nvarchar2(64)-->
 			#{entity.status},                                  <!-- 0、下架，1、上架 char(1)-->
-			#{entity.monthSales},                              <!-- 月销 number(19)-->
+			#{entity.monthSales},                              <!-- 月销 bigint(20)-->
 
 	</trim>
 	</insert>
@@ -173,8 +173,8 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.collectionId != null">collection_id,</if></if>
 			<if test="entity.pkMode==2">collection_id,</if>
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 关联(会员表) number(19)-->
-			<if test="entity.pId != null">p_id,</if>                                           <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 关联(会员表) bigint(20)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			<if test="entity.image != null">image,</if>                                        <!-- 封面图path，冗余 nvarchar2(64)-->
 			<if test="entity.pictureName != null">picture_name,</if>                           <!-- 商品名称 nvarchar2(64)-->
 			<if test="entity.picturePrice != null">picture_price,</if>                         <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -186,7 +186,7 @@
 			<if test="entity.bak4 != null">bak4,</if>                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5,</if>                                          <!-- 备用字段5 nvarchar2(64)-->
 			<if test="entity.status != null">status,</if>                                      <!-- 0、下架，1、上架 char(1)-->
-			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销 number(19)-->
+			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销 bigint(20)-->
 		</trim>
 		 VALUES 
 		<trim prefix="(" suffix=")" suffixOverrides=",">
@@ -198,8 +198,8 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 关联(会员表) number(19)-->
-			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 关联(会员表) bigint(20)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			<if test="entity.image != null">#{entity.image},</if>                                        <!-- 封面图path，冗余 nvarchar2(64)-->
 			<if test="entity.pictureName != null">#{entity.pictureName},</if>                            <!-- 商品名称 nvarchar2(64)-->
 			<if test="entity.picturePrice != null">#{entity.picturePrice},</if>                          <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -211,7 +211,7 @@
 			<if test="entity.bak4 != null">#{entity.bak4},</if>                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">#{entity.bak5},</if>                                          <!-- 备用字段5 nvarchar2(64)-->
 			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 0、下架，1、上架 char(1)-->
-			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销 number(19)-->
+			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销 bigint(20)-->
 		</trim>
 	</insert>
 
@@ -219,8 +219,8 @@
 	<update id="updateById">
 		UPDATE member_collection_product 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 关联(会员表) number(19)-->
-			p_id = #{entity.pId},                                           <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 关联(会员表) bigint(20)-->
+			p_id = #{entity.pId},                                           <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			image = #{entity.image},                                        <!-- 封面图path，冗余 nvarchar2(64)-->
 			picture_name = #{entity.pictureName},                           <!-- 商品名称 nvarchar2(64)-->
 			picture_price = #{entity.picturePrice},                         <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -232,7 +232,7 @@
 			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
 			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
 			status = #{entity.status},                                      <!-- 0、下架，1、上架 char(1)-->
-			month_sales = #{entity.monthSales},                             <!-- 月销 number(19)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销 bigint(20)-->
 
 		</set>
 		WHERE collection_id = #{entity.collectionId}
@@ -242,8 +242,8 @@
 	<update id="updateByWhere">
 		UPDATE member_collection_product a 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 关联(会员表) number(19)-->
-			p_id = #{entity.pId},                                           <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 关联(会员表) bigint(20)-->
+			p_id = #{entity.pId},                                           <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			image = #{entity.image},                                        <!-- 封面图path，冗余 nvarchar2(64)-->
 			picture_name = #{entity.pictureName},                           <!-- 商品名称 nvarchar2(64)-->
 			picture_price = #{entity.picturePrice},                         <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -255,7 +255,7 @@
 			bak4 = #{entity.bak4},                                          <!-- 备用字段4 nvarchar2(64)-->
 			bak5 = #{entity.bak5},                                          <!-- 备用字段5 nvarchar2(64)-->
 			status = #{entity.status},                                      <!-- 0、下架，1、上架 char(1)-->
-			month_sales = #{entity.monthSales},                             <!-- 月销 number(19)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销 bigint(20)-->
 
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
@@ -271,8 +271,8 @@
 	<update id="updateByIdSelective">
 		UPDATE member_collection_product
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(会员表) number(19)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(会员表) bigint(20)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图path，冗余 nvarchar2(64)-->
 			<if test="entity.pictureName != null">picture_name = #{entity.pictureName},</if>                                    <!-- 商品名称 nvarchar2(64)-->
 			<if test="entity.picturePrice != null">picture_price = #{entity.picturePrice},</if>                                 <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -284,7 +284,7 @@
 			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 0、下架，1、上架 char(1)-->
-			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销 number(19)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销 bigint(20)-->
 		</set>
 		WHERE collection_id = #{entity.collectionId}
 	</update>
@@ -293,8 +293,8 @@
 	<update id="updateByWhereSelective">
 		UPDATE member_collection_product a
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(会员表) number(19)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 关联(商品SPU表)(SPU级别) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 关联(会员表) bigint(20)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 关联(商品SPU表)(SPU级别) bigint(20)-->
 			<if test="entity.image != null">image = #{entity.image},</if>                                                       <!-- 封面图path，冗余 nvarchar2(64)-->
 			<if test="entity.pictureName != null">picture_name = #{entity.pictureName},</if>                                    <!-- 商品名称 nvarchar2(64)-->
 			<if test="entity.picturePrice != null">picture_price = #{entity.picturePrice},</if>                                 <!-- 商品价格(取SKU中最低价) number(12,3)-->
@@ -306,7 +306,7 @@
 			<if test="entity.bak4 != null">bak4 = #{entity.bak4},</if>                                                          <!-- 备用字段4 nvarchar2(64)-->
 			<if test="entity.bak5 != null">bak5 = #{entity.bak5},</if>                                                          <!-- 备用字段5 nvarchar2(64)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 0、下架，1、上架 char(1)-->
-			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销 number(19)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销 bigint(20)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->
 		<trim prefixOverrides="AND |OR ">

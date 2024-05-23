@@ -6,7 +6,7 @@
 <!--	</cache>-->
 	<!-- 全部字段 -->
 	<sql id="guestbookColumns">
-		a.id AS "id",                                                        <!-- 编号 number(19)-->
+		a.id AS "id",                                                        <!-- 编号 bigint(20)-->
 		a.type AS "type",                                                    <!-- 留言分类 char(1)-->
 		a.content AS "content",                                              <!-- 留言内容 varchar2(255)-->
 		a.name AS "name",                                                    <!-- 姓名 varchar2(100)-->
@@ -15,7 +15,7 @@
 		a.workunit AS "workunit",                                            <!-- 单位 varchar2(100)-->
 		a.ip AS "ip",                                                        <!-- IP varchar2(100)-->
 		a.create_date AS "createDate",                                       <!-- 留言时间 timestamp(6)-->
-		a.re_user_id AS "reUserId",                                          <!-- 回复人 number(19)-->
+		a.re_user_id AS "reUserId",                                          <!-- 回复人 bigint(20)-->
 		a.re_date AS "reDate",                                               <!-- 回复时间 timestamp(6)-->
 		a.re_content AS "reContent",                                         <!-- 回复内容 varchar2(100)-->
 		a.del_flag AS "delFlag"                                             <!-- 删除标记 char(1)-->
@@ -127,7 +127,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO cms_guestbook(
-			id,                                                <!-- 编号 number(19)-->
+			id,                                                <!-- 编号 bigint(20)-->
 			type,                                              <!-- 留言分类 char(1)-->
 			content,                                           <!-- 留言内容 varchar2(255)-->
 			name,                                              <!-- 姓名 varchar2(100)-->
@@ -136,7 +136,7 @@
 			workunit,                                          <!-- 单位 varchar2(100)-->
 			ip,                                                <!-- IP varchar2(100)-->
 			create_date,                                       <!-- 留言时间 timestamp(6)-->
-			re_user_id,                                        <!-- 回复人 number(19)-->
+			re_user_id,                                        <!-- 回复人 bigint(20)-->
 			re_date,                                           <!-- 回复时间 timestamp(6)-->
 			re_content,                                        <!-- 回复内容 varchar2(100)-->
 			del_flag                                          <!-- 删除标记 char(1)-->
@@ -156,7 +156,7 @@
 			#{entity.workunit},                                <!-- 单位 varchar2(100)-->
 			#{entity.ip},                                      <!-- IP varchar2(100)-->
 			#{entity.createDate},                              <!-- 留言时间 timestamp(6)-->
-			#{entity.reUserId},                                <!-- 回复人 number(19)-->
+			#{entity.reUserId},                                <!-- 回复人 bigint(20)-->
 			#{entity.reDate},                                  <!-- 回复时间 timestamp(6)-->
 			#{entity.reContent},                               <!-- 回复内容 varchar2(100)-->
 			#{entity.delFlag}                                 <!-- 删除标记 char(1)-->
@@ -178,7 +178,7 @@
 			<if test="entity.workunit != null">workunit,</if>                                  <!-- 单位 varchar2(100)-->
 			<if test="entity.ip != null">ip,</if>                                              <!-- IP varchar2(100)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 留言时间 timestamp(6)-->
-			<if test="entity.reUserId != null">re_user_id,</if>                                <!-- 回复人 number(19)-->
+			<if test="entity.reUserId != null">re_user_id,</if>                                <!-- 回复人 bigint(20)-->
 			<if test="entity.reDate != null">re_date,</if>                                     <!-- 回复时间 timestamp(6)-->
 			<if test="entity.reContent != null">re_content,</if>                               <!-- 回复内容 varchar2(100)-->
 			<if test="entity.delFlag != null">del_flag,</if>                                   <!-- 删除标记 char(1)-->
@@ -201,7 +201,7 @@
 			<if test="entity.workunit != null">#{entity.workunit},</if>                                  <!-- 单位 varchar2(100)-->
 			<if test="entity.ip != null">#{entity.ip},</if>                                              <!-- IP varchar2(100)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 留言时间 timestamp(6)-->
-			<if test="entity.reUserId != null">#{entity.reUserId},</if>                                  <!-- 回复人 number(19)-->
+			<if test="entity.reUserId != null">#{entity.reUserId},</if>                                  <!-- 回复人 bigint(20)-->
 			<if test="entity.reDate != null">#{entity.reDate},</if>                                      <!-- 回复时间 timestamp(6)-->
 			<if test="entity.reContent != null">#{entity.reContent},</if>                                <!-- 回复内容 varchar2(100)-->
 			<if test="entity.delFlag != null">#{entity.delFlag},</if>                                    <!-- 删除标记 char(1)-->
@@ -219,7 +219,7 @@
 			workunit = #{entity.workunit},                                  <!-- 单位 varchar2(100)-->
 			ip = #{entity.ip},                                              <!-- IP varchar2(100)-->
 			create_date = #{entity.createDate},                             <!-- 留言时间 timestamp(6)-->
-			re_user_id = #{entity.reUserId},                                <!-- 回复人 number(19)-->
+			re_user_id = #{entity.reUserId},                                <!-- 回复人 bigint(20)-->
 			re_date = #{entity.reDate},                                     <!-- 回复时间 timestamp(6)-->
 			re_content = #{entity.reContent}                                <!-- 回复内容 varchar2(100)-->
 
@@ -237,7 +237,7 @@
 			workunit = #{entity.workunit},                                  <!-- 单位 varchar2(100)-->
 			ip = #{entity.ip},                                              <!-- IP varchar2(100)-->
 			create_date = #{entity.createDate},                             <!-- 留言时间 timestamp(6)-->
-			re_user_id = #{entity.reUserId},                                <!-- 回复人 number(19)-->
+			re_user_id = #{entity.reUserId},                                <!-- 回复人 bigint(20)-->
 			re_date = #{entity.reDate},                                     <!-- 回复时间 timestamp(6)-->
 			re_content = #{entity.reContent}                                <!-- 回复内容 varchar2(100)-->
 
@@ -262,7 +262,7 @@
 			<if test="entity.workunit != null">workunit = #{entity.workunit},</if>                                              <!-- 单位 varchar2(100)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- IP varchar2(100)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 留言时间 timestamp(6)-->
-			<if test="entity.reUserId != null">re_user_id = #{entity.reUserId},</if>                                            <!-- 回复人 number(19)-->
+			<if test="entity.reUserId != null">re_user_id = #{entity.reUserId},</if>                                            <!-- 回复人 bigint(20)-->
 			<if test="entity.reDate != null">re_date = #{entity.reDate},</if>                                                   <!-- 回复时间 timestamp(6)-->
 			<if test="entity.reContent != null">re_content = #{entity.reContent},</if>                                          <!-- 回复内容 varchar2(100)-->
 		</set>
@@ -281,7 +281,7 @@
 			<if test="entity.workunit != null">workunit = #{entity.workunit},</if>                                              <!-- 单位 varchar2(100)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- IP varchar2(100)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 留言时间 timestamp(6)-->
-			<if test="entity.reUserId != null">re_user_id = #{entity.reUserId},</if>                                            <!-- 回复人 number(19)-->
+			<if test="entity.reUserId != null">re_user_id = #{entity.reUserId},</if>                                            <!-- 回复人 bigint(20)-->
 			<if test="entity.reDate != null">re_date = #{entity.reDate},</if>                                                   <!-- 回复时间 timestamp(6)-->
 			<if test="entity.reContent != null">re_content = #{entity.reContent},</if>                                          <!-- 回复内容 varchar2(100)-->
 		</set>

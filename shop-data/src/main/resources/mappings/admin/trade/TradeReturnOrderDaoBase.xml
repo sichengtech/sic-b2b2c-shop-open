@@ -7,29 +7,29 @@
 	<!-- 全部字段 -->
 	<sql id="tradeReturnOrderColumns">
 	<trim suffixOverrides=",">
-		a.return_order_id AS "returnOrderId",                                <!-- 主键 number(19)-->
-		a.order_id AS "orderId",                                             <!-- 订单编号(订单表id) number(19)-->
-		a.order_item_id AS "orderItemId",                                    <!-- 订单详情编号(订单详情表id) number(19)-->
+		a.return_order_id AS "returnOrderId",                                <!-- 主键 bigint(20)-->
+		a.order_id AS "orderId",                                             <!-- 订单编号(订单表id) bigint(20)-->
+		a.order_item_id AS "orderItemId",                                    <!-- 订单详情编号(订单详情表id) bigint(20)-->
 		a.type AS "type",                                                    <!-- 类型，1退货退款、2退款 char(1)-->
 		a.return_money AS "returnMoney",                                     <!-- 退款金额 number(12,3)-->
 		a.return_commission AS "returnCommission",                           <!-- 退还佣金 number(12,3)-->
 		a.return_freight AS "returnFreight",                                 <!-- 退还运费 number(12,3)-->
-		a.return_count AS "returnCount",                                     <!-- 退货数量 number(19)-->
+		a.return_count AS "returnCount",                                     <!-- 退货数量 bigint(20)-->
 		a.return_reason AS "returnReason",                                   <!-- 退货原因(从字典里取) char(1)-->
 		a.return_explain AS "returnExplain",                                 <!-- 退货说明 nvarchar2(1024)-->
 		a.apply_date AS "applyDate",                                         <!-- 申请时间 date(7)-->
-		a.u_id AS "uId",                                                     <!-- 申请人(会员表id) number(19)-->
+		a.u_id AS "uId",                                                     <!-- 申请人(会员表id) bigint(20)-->
 		a.business_handle AS "businessHandle",                               <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 		a.business_handle_remarks AS "businessHandleRemarks",                <!-- 商家处理备注 nvarchar2(1024)-->
 		a.business_handle_date AS "businessHandleDate",                      <!-- 商家处理时间 date(7)-->
-		a.system_handle AS "systemHandle",                                   <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+		a.system_handle AS "systemHandle",                                   <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 		a.system_agree_time AS "systemAgreeTime",                            <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 		a.system_handle_remarks AS "systemHandleRemarks",                    <!-- 平台处理备注 nvarchar2(1024)-->
-		a.pay_way_id AS "payWayId",                                          <!-- 支付方式(支付方式表id) number(19)-->
-		a.admin_id AS "adminId",                                             <!-- 管理员id(管理员表id) number(19)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 支付方式(支付方式表id) bigint(20)-->
+		a.admin_id AS "adminId",                                             <!-- 管理员id(管理员表id) bigint(20)-->
 		a.status AS "status",                                                <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 		a.deliver_product_time AS "deliverProductTime",                      <!-- 买家发货时间 date(7)-->
-		a.logistics_template_id AS "logisticsTemplateId",                    <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+		a.logistics_template_id AS "logisticsTemplateId",                    <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 		a.logistics_template_name AS "logisticsTemplateName",                <!-- 物流公司名称 nvarchar2(64)-->
 		a.tracking_no AS "trackingNo",                                       <!-- 运单号 nvarchar2(64)-->
 		a.is_product_receipt AS "isProductReceipt",                          <!-- 商家是否收货，0否、1是 char(1)-->
@@ -40,7 +40,7 @@
 		a.wx_return_moeny AS "wxReturnMoeny",                                <!-- 微信退款金额 number(12,3)-->
 		a.bak1_return_moeny AS "bak1ReturnMoeny",                            <!-- 备用退款金额1 number(12,3)-->
 		a.bak2_return_moeny AS "bak2ReturnMoeny",                            <!-- 备用退款金额2 number(12,3)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
 		a.is_jettison AS "isJettison",                                       <!-- 是否弃货 char(1)-->
 		a.is_return_money AS "isReturnMoney",                                <!-- 是否退款 char(1)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
@@ -190,29 +190,29 @@
 	<insert id="insert" keyProperty="entity.returnOrderId" keyColumn="return_order_id" useGeneratedKeys="true">
 		INSERT INTO trade_return_order
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			return_order_id,                                   <!-- 主键 number(19)-->
-			order_id,                                          <!-- 订单编号(订单表id) number(19)-->
-			order_item_id,                                     <!-- 订单详情编号(订单详情表id) number(19)-->
+			return_order_id,                                   <!-- 主键 bigint(20)-->
+			order_id,                                          <!-- 订单编号(订单表id) bigint(20)-->
+			order_item_id,                                     <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			type,                                              <!-- 类型，1退货退款、2退款 char(1)-->
 			return_money,                                      <!-- 退款金额 number(12,3)-->
 			return_commission,                                 <!-- 退还佣金 number(12,3)-->
 			return_freight,                                    <!-- 退还运费 number(12,3)-->
-			return_count,                                      <!-- 退货数量 number(19)-->
+			return_count,                                      <!-- 退货数量 bigint(20)-->
 			return_reason,                                     <!-- 退货原因(从字典里取) char(1)-->
 			return_explain,                                    <!-- 退货说明 nvarchar2(1024)-->
 			apply_date,                                        <!-- 申请时间 date(7)-->
-			u_id,                                              <!-- 申请人(会员表id) number(19)-->
+			u_id,                                              <!-- 申请人(会员表id) bigint(20)-->
 			business_handle,                                   <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			business_handle_remarks,                           <!-- 商家处理备注 nvarchar2(1024)-->
 			business_handle_date,                              <!-- 商家处理时间 date(7)-->
-			system_handle,                                     <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			system_handle,                                     <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			system_agree_time,                                 <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			system_handle_remarks,                             <!-- 平台处理备注 nvarchar2(1024)-->
-			pay_way_id,                                        <!-- 支付方式(支付方式表id) number(19)-->
-			admin_id,                                          <!-- 管理员id(管理员表id) number(19)-->
+			pay_way_id,                                        <!-- 支付方式(支付方式表id) bigint(20)-->
+			admin_id,                                          <!-- 管理员id(管理员表id) bigint(20)-->
 			status,                                            <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			deliver_product_time,                              <!-- 买家发货时间 date(7)-->
-			logistics_template_id,                             <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			logistics_template_id,                             <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			logistics_template_name,                           <!-- 物流公司名称 nvarchar2(64)-->
 			tracking_no,                                       <!-- 运单号 nvarchar2(64)-->
 			is_product_receipt,                                <!-- 商家是否收货，0否、1是 char(1)-->
@@ -223,7 +223,7 @@
 			wx_return_moeny,                                   <!-- 微信退款金额 number(12,3)-->
 			bak1_return_moeny,                                 <!-- 备用退款金额1 number(12,3)-->
 			bak2_return_moeny,                                 <!-- 备用退款金额2 number(12,3)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
 			is_jettison,                                       <!-- 是否弃货 char(1)-->
 			is_return_money,                                   <!-- 是否退款 char(1)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
@@ -248,28 +248,28 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.orderId},                                 <!-- 订单编号(订单表id) number(19)-->
-			#{entity.orderItemId},                             <!-- 订单详情编号(订单详情表id) number(19)-->
+			#{entity.orderId},                                 <!-- 订单编号(订单表id) bigint(20)-->
+			#{entity.orderItemId},                             <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			#{entity.type},                                    <!-- 类型，1退货退款、2退款 char(1)-->
 			#{entity.returnMoney},                             <!-- 退款金额 number(12,3)-->
 			#{entity.returnCommission},                        <!-- 退还佣金 number(12,3)-->
 			#{entity.returnFreight},                           <!-- 退还运费 number(12,3)-->
-			#{entity.returnCount},                             <!-- 退货数量 number(19)-->
+			#{entity.returnCount},                             <!-- 退货数量 bigint(20)-->
 			#{entity.returnReason},                            <!-- 退货原因(从字典里取) char(1)-->
 			#{entity.returnExplain},                           <!-- 退货说明 nvarchar2(1024)-->
 			#{entity.applyDate},                               <!-- 申请时间 date(7)-->
-			#{entity.uId},                                     <!-- 申请人(会员表id) number(19)-->
+			#{entity.uId},                                     <!-- 申请人(会员表id) bigint(20)-->
 			#{entity.businessHandle},                          <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			#{entity.businessHandleRemarks},                   <!-- 商家处理备注 nvarchar2(1024)-->
 			#{entity.businessHandleDate},                      <!-- 商家处理时间 date(7)-->
-			#{entity.systemHandle},                            <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			#{entity.systemHandle},                            <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			#{entity.systemAgreeTime},                         <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			#{entity.systemHandleRemarks},                     <!-- 平台处理备注 nvarchar2(1024)-->
-			#{entity.payWayId},                                <!-- 支付方式(支付方式表id) number(19)-->
-			#{entity.adminId},                                 <!-- 管理员id(管理员表id) number(19)-->
+			#{entity.payWayId},                                <!-- 支付方式(支付方式表id) bigint(20)-->
+			#{entity.adminId},                                 <!-- 管理员id(管理员表id) bigint(20)-->
 			#{entity.status},                                  <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			#{entity.deliverProductTime},                      <!-- 买家发货时间 date(7)-->
-			#{entity.logisticsTemplateId},                     <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			#{entity.logisticsTemplateId},                     <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			#{entity.logisticsTemplateName},                   <!-- 物流公司名称 nvarchar2(64)-->
 			#{entity.trackingNo},                              <!-- 运单号 nvarchar2(64)-->
 			#{entity.isProductReceipt},                        <!-- 商家是否收货，0否、1是 char(1)-->
@@ -280,7 +280,7 @@
 			#{entity.wxReturnMoeny},                           <!-- 微信退款金额 number(12,3)-->
 			#{entity.bak1ReturnMoeny},                         <!-- 备用退款金额1 number(12,3)-->
 			#{entity.bak2ReturnMoeny},                         <!-- 备用退款金额2 number(12,3)-->
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
 			#{entity.isJettison},                              <!-- 是否弃货 char(1)-->
 			#{entity.isReturnMoney},                           <!-- 是否退款 char(1)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
@@ -305,28 +305,28 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.returnOrderId != null">return_order_id,</if></if>
 			<if test="entity.pkMode==2">return_order_id,</if>
-			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单编号(订单表id) number(19)-->
-			<if test="entity.orderItemId != null">order_item_id,</if>                          <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单编号(订单表id) bigint(20)-->
+			<if test="entity.orderItemId != null">order_item_id,</if>                          <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 类型，1退货退款、2退款 char(1)-->
 			<if test="entity.returnMoney != null">return_money,</if>                           <!-- 退款金额 number(12,3)-->
 			<if test="entity.returnCommission != null">return_commission,</if>                 <!-- 退还佣金 number(12,3)-->
 			<if test="entity.returnFreight != null">return_freight,</if>                       <!-- 退还运费 number(12,3)-->
-			<if test="entity.returnCount != null">return_count,</if>                           <!-- 退货数量 number(19)-->
+			<if test="entity.returnCount != null">return_count,</if>                           <!-- 退货数量 bigint(20)-->
 			<if test="entity.returnReason != null">return_reason,</if>                         <!-- 退货原因(从字典里取) char(1)-->
 			<if test="entity.returnExplain != null">return_explain,</if>                       <!-- 退货说明 nvarchar2(1024)-->
 			<if test="entity.applyDate != null">apply_date,</if>                               <!-- 申请时间 date(7)-->
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 申请人(会员表id) bigint(20)-->
 			<if test="entity.businessHandle != null">business_handle,</if>                     <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			<if test="entity.businessHandleRemarks != null">business_handle_remarks,</if>      <!-- 商家处理备注 nvarchar2(1024)-->
 			<if test="entity.businessHandleDate != null">business_handle_date,</if>            <!-- 商家处理时间 date(7)-->
-			<if test="entity.systemHandle != null">system_handle,</if>                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemHandle != null">system_handle,</if>                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			<if test="entity.systemAgreeTime != null">system_agree_time,</if>                  <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			<if test="entity.systemHandleRemarks != null">system_handle_remarks,</if>          <!-- 平台处理备注 nvarchar2(1024)-->
-			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式(支付方式表id) number(19)-->
-			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.payWayId != null">pay_way_id,</if>                                <!-- 支付方式(支付方式表id) bigint(20)-->
+			<if test="entity.adminId != null">admin_id,</if>                                   <!-- 管理员id(管理员表id) bigint(20)-->
 			<if test="entity.status != null">status,</if>                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			<if test="entity.deliverProductTime != null">deliver_product_time,</if>            <!-- 买家发货时间 date(7)-->
-			<if test="entity.logisticsTemplateId != null">logistics_template_id,</if>          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id,</if>          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			<if test="entity.logisticsTemplateName != null">logistics_template_name,</if>      <!-- 物流公司名称 nvarchar2(64)-->
 			<if test="entity.trackingNo != null">tracking_no,</if>                             <!-- 运单号 nvarchar2(64)-->
 			<if test="entity.isProductReceipt != null">is_product_receipt,</if>                <!-- 商家是否收货，0否、1是 char(1)-->
@@ -337,7 +337,7 @@
 			<if test="entity.wxReturnMoeny != null">wx_return_moeny,</if>                      <!-- 微信退款金额 number(12,3)-->
 			<if test="entity.bak1ReturnMoeny != null">bak1_return_moeny,</if>                  <!-- 备用退款金额1 number(12,3)-->
 			<if test="entity.bak2ReturnMoeny != null">bak2_return_moeny,</if>                  <!-- 备用退款金额2 number(12,3)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.isJettison != null">is_jettison,</if>                             <!-- 是否弃货 char(1)-->
 			<if test="entity.isReturnMoney != null">is_return_money,</if>                      <!-- 是否退款 char(1)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
@@ -363,28 +363,28 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单编号(订单表id) number(19)-->
-			<if test="entity.orderItemId != null">#{entity.orderItemId},</if>                            <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单编号(订单表id) bigint(20)-->
+			<if test="entity.orderItemId != null">#{entity.orderItemId},</if>                            <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型，1退货退款、2退款 char(1)-->
 			<if test="entity.returnMoney != null">#{entity.returnMoney},</if>                            <!-- 退款金额 number(12,3)-->
 			<if test="entity.returnCommission != null">#{entity.returnCommission},</if>                  <!-- 退还佣金 number(12,3)-->
 			<if test="entity.returnFreight != null">#{entity.returnFreight},</if>                        <!-- 退还运费 number(12,3)-->
-			<if test="entity.returnCount != null">#{entity.returnCount},</if>                            <!-- 退货数量 number(19)-->
+			<if test="entity.returnCount != null">#{entity.returnCount},</if>                            <!-- 退货数量 bigint(20)-->
 			<if test="entity.returnReason != null">#{entity.returnReason},</if>                          <!-- 退货原因(从字典里取) char(1)-->
 			<if test="entity.returnExplain != null">#{entity.returnExplain},</if>                        <!-- 退货说明 nvarchar2(1024)-->
 			<if test="entity.applyDate != null">#{entity.applyDate},</if>                                <!-- 申请时间 date(7)-->
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 申请人(会员表id) bigint(20)-->
 			<if test="entity.businessHandle != null">#{entity.businessHandle},</if>                      <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			<if test="entity.businessHandleRemarks != null">#{entity.businessHandleRemarks},</if>        <!-- 商家处理备注 nvarchar2(1024)-->
 			<if test="entity.businessHandleDate != null">#{entity.businessHandleDate},</if>              <!-- 商家处理时间 date(7)-->
-			<if test="entity.systemHandle != null">#{entity.systemHandle},</if>                          <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemHandle != null">#{entity.systemHandle},</if>                          <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			<if test="entity.systemAgreeTime != null">#{entity.systemAgreeTime},</if>                    <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			<if test="entity.systemHandleRemarks != null">#{entity.systemHandleRemarks},</if>            <!-- 平台处理备注 nvarchar2(1024)-->
-			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式(支付方式表id) number(19)-->
-			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.payWayId != null">#{entity.payWayId},</if>                                  <!-- 支付方式(支付方式表id) bigint(20)-->
+			<if test="entity.adminId != null">#{entity.adminId},</if>                                    <!-- 管理员id(管理员表id) bigint(20)-->
 			<if test="entity.status != null">#{entity.status},</if>                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			<if test="entity.deliverProductTime != null">#{entity.deliverProductTime},</if>              <!-- 买家发货时间 date(7)-->
-			<if test="entity.logisticsTemplateId != null">#{entity.logisticsTemplateId},</if>            <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateId != null">#{entity.logisticsTemplateId},</if>            <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			<if test="entity.logisticsTemplateName != null">#{entity.logisticsTemplateName},</if>        <!-- 物流公司名称 nvarchar2(64)-->
 			<if test="entity.trackingNo != null">#{entity.trackingNo},</if>                              <!-- 运单号 nvarchar2(64)-->
 			<if test="entity.isProductReceipt != null">#{entity.isProductReceipt},</if>                  <!-- 商家是否收货，0否、1是 char(1)-->
@@ -395,7 +395,7 @@
 			<if test="entity.wxReturnMoeny != null">#{entity.wxReturnMoeny},</if>                        <!-- 微信退款金额 number(12,3)-->
 			<if test="entity.bak1ReturnMoeny != null">#{entity.bak1ReturnMoeny},</if>                    <!-- 备用退款金额1 number(12,3)-->
 			<if test="entity.bak2ReturnMoeny != null">#{entity.bak2ReturnMoeny},</if>                    <!-- 备用退款金额2 number(12,3)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.isJettison != null">#{entity.isJettison},</if>                              <!-- 是否弃货 char(1)-->
 			<if test="entity.isReturnMoney != null">#{entity.isReturnMoney},</if>                        <!-- 是否退款 char(1)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
@@ -417,28 +417,28 @@
 	<update id="updateById">
 		UPDATE trade_return_order 
 		<set>
-			order_id = #{entity.orderId},                                   <!-- 订单编号(订单表id) number(19)-->
-			order_item_id = #{entity.orderItemId},                          <!-- 订单详情编号(订单详情表id) number(19)-->
+			order_id = #{entity.orderId},                                   <!-- 订单编号(订单表id) bigint(20)-->
+			order_item_id = #{entity.orderItemId},                          <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			type = #{entity.type},                                          <!-- 类型，1退货退款、2退款 char(1)-->
 			return_money = #{entity.returnMoney},                           <!-- 退款金额 number(12,3)-->
 			return_commission = #{entity.returnCommission},                 <!-- 退还佣金 number(12,3)-->
 			return_freight = #{entity.returnFreight},                       <!-- 退还运费 number(12,3)-->
-			return_count = #{entity.returnCount},                           <!-- 退货数量 number(19)-->
+			return_count = #{entity.returnCount},                           <!-- 退货数量 bigint(20)-->
 			return_reason = #{entity.returnReason},                         <!-- 退货原因(从字典里取) char(1)-->
 			return_explain = #{entity.returnExplain},                       <!-- 退货说明 nvarchar2(1024)-->
 			apply_date = #{entity.applyDate},                               <!-- 申请时间 date(7)-->
-			u_id = #{entity.uId},                                           <!-- 申请人(会员表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 申请人(会员表id) bigint(20)-->
 			business_handle = #{entity.businessHandle},                     <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			business_handle_remarks = #{entity.businessHandleRemarks},      <!-- 商家处理备注 nvarchar2(1024)-->
 			business_handle_date = #{entity.businessHandleDate},            <!-- 商家处理时间 date(7)-->
-			system_handle = #{entity.systemHandle},                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			system_handle = #{entity.systemHandle},                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			system_agree_time = #{entity.systemAgreeTime},                  <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			system_handle_remarks = #{entity.systemHandleRemarks},          <!-- 平台处理备注 nvarchar2(1024)-->
-			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式表id) number(19)-->
-			admin_id = #{entity.adminId},                                   <!-- 管理员id(管理员表id) number(19)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式表id) bigint(20)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员id(管理员表id) bigint(20)-->
 			status = #{entity.status},                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			deliver_product_time = #{entity.deliverProductTime},            <!-- 买家发货时间 date(7)-->
-			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			logistics_template_name = #{entity.logisticsTemplateName},      <!-- 物流公司名称 nvarchar2(64)-->
 			tracking_no = #{entity.trackingNo},                             <!-- 运单号 nvarchar2(64)-->
 			is_product_receipt = #{entity.isProductReceipt},                <!-- 商家是否收货，0否、1是 char(1)-->
@@ -449,7 +449,7 @@
 			wx_return_moeny = #{entity.wxReturnMoeny},                      <!-- 微信退款金额 number(12,3)-->
 			bak1_return_moeny = #{entity.bak1ReturnMoeny},                  <!-- 备用退款金额1 number(12,3)-->
 			bak2_return_moeny = #{entity.bak2ReturnMoeny},                  <!-- 备用退款金额2 number(12,3)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			is_jettison = #{entity.isJettison},                             <!-- 是否弃货 char(1)-->
 			is_return_money = #{entity.isReturnMoney},                      <!-- 是否退款 char(1)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
@@ -473,28 +473,28 @@
 	<update id="updateByWhere">
 		UPDATE trade_return_order a 
 		<set>
-			order_id = #{entity.orderId},                                   <!-- 订单编号(订单表id) number(19)-->
-			order_item_id = #{entity.orderItemId},                          <!-- 订单详情编号(订单详情表id) number(19)-->
+			order_id = #{entity.orderId},                                   <!-- 订单编号(订单表id) bigint(20)-->
+			order_item_id = #{entity.orderItemId},                          <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			type = #{entity.type},                                          <!-- 类型，1退货退款、2退款 char(1)-->
 			return_money = #{entity.returnMoney},                           <!-- 退款金额 number(12,3)-->
 			return_commission = #{entity.returnCommission},                 <!-- 退还佣金 number(12,3)-->
 			return_freight = #{entity.returnFreight},                       <!-- 退还运费 number(12,3)-->
-			return_count = #{entity.returnCount},                           <!-- 退货数量 number(19)-->
+			return_count = #{entity.returnCount},                           <!-- 退货数量 bigint(20)-->
 			return_reason = #{entity.returnReason},                         <!-- 退货原因(从字典里取) char(1)-->
 			return_explain = #{entity.returnExplain},                       <!-- 退货说明 nvarchar2(1024)-->
 			apply_date = #{entity.applyDate},                               <!-- 申请时间 date(7)-->
-			u_id = #{entity.uId},                                           <!-- 申请人(会员表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 申请人(会员表id) bigint(20)-->
 			business_handle = #{entity.businessHandle},                     <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			business_handle_remarks = #{entity.businessHandleRemarks},      <!-- 商家处理备注 nvarchar2(1024)-->
 			business_handle_date = #{entity.businessHandleDate},            <!-- 商家处理时间 date(7)-->
-			system_handle = #{entity.systemHandle},                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			system_handle = #{entity.systemHandle},                         <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			system_agree_time = #{entity.systemAgreeTime},                  <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			system_handle_remarks = #{entity.systemHandleRemarks},          <!-- 平台处理备注 nvarchar2(1024)-->
-			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式表id) number(19)-->
-			admin_id = #{entity.adminId},                                   <!-- 管理员id(管理员表id) number(19)-->
+			pay_way_id = #{entity.payWayId},                                <!-- 支付方式(支付方式表id) bigint(20)-->
+			admin_id = #{entity.adminId},                                   <!-- 管理员id(管理员表id) bigint(20)-->
 			status = #{entity.status},                                      <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			deliver_product_time = #{entity.deliverProductTime},            <!-- 买家发货时间 date(7)-->
-			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			logistics_template_id = #{entity.logisticsTemplateId},          <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			logistics_template_name = #{entity.logisticsTemplateName},      <!-- 物流公司名称 nvarchar2(64)-->
 			tracking_no = #{entity.trackingNo},                             <!-- 运单号 nvarchar2(64)-->
 			is_product_receipt = #{entity.isProductReceipt},                <!-- 商家是否收货，0否、1是 char(1)-->
@@ -505,7 +505,7 @@
 			wx_return_moeny = #{entity.wxReturnMoeny},                      <!-- 微信退款金额 number(12,3)-->
 			bak1_return_moeny = #{entity.bak1ReturnMoeny},                  <!-- 备用退款金额1 number(12,3)-->
 			bak2_return_moeny = #{entity.bak2ReturnMoeny},                  <!-- 备用退款金额2 number(12,3)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
 			is_jettison = #{entity.isJettison},                             <!-- 是否弃货 char(1)-->
 			is_return_money = #{entity.isReturnMoney},                      <!-- 是否退款 char(1)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
@@ -535,28 +535,28 @@
 	<update id="updateByIdSelective">
 		UPDATE trade_return_order
 		<set>
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单编号(订单表id) number(19)-->
-			<if test="entity.orderItemId != null">order_item_id = #{entity.orderItemId},</if>                                   <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单编号(订单表id) bigint(20)-->
+			<if test="entity.orderItemId != null">order_item_id = #{entity.orderItemId},</if>                                   <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，1退货退款、2退款 char(1)-->
 			<if test="entity.returnMoney != null">return_money = #{entity.returnMoney},</if>                                    <!-- 退款金额 number(12,3)-->
 			<if test="entity.returnCommission != null">return_commission = #{entity.returnCommission},</if>                     <!-- 退还佣金 number(12,3)-->
 			<if test="entity.returnFreight != null">return_freight = #{entity.returnFreight},</if>                              <!-- 退还运费 number(12,3)-->
-			<if test="entity.returnCount != null">return_count = #{entity.returnCount},</if>                                    <!-- 退货数量 number(19)-->
+			<if test="entity.returnCount != null">return_count = #{entity.returnCount},</if>                                    <!-- 退货数量 bigint(20)-->
 			<if test="entity.returnReason != null">return_reason = #{entity.returnReason},</if>                                 <!-- 退货原因(从字典里取) char(1)-->
 			<if test="entity.returnExplain != null">return_explain = #{entity.returnExplain},</if>                              <!-- 退货说明 nvarchar2(1024)-->
 			<if test="entity.applyDate != null">apply_date = #{entity.applyDate},</if>                                          <!-- 申请时间 date(7)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 申请人(会员表id) bigint(20)-->
 			<if test="entity.businessHandle != null">business_handle = #{entity.businessHandle},</if>                           <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			<if test="entity.businessHandleRemarks != null">business_handle_remarks = #{entity.businessHandleRemarks},</if>     <!-- 商家处理备注 nvarchar2(1024)-->
 			<if test="entity.businessHandleDate != null">business_handle_date = #{entity.businessHandleDate},</if>              <!-- 商家处理时间 date(7)-->
-			<if test="entity.systemHandle != null">system_handle = #{entity.systemHandle},</if>                                 <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemHandle != null">system_handle = #{entity.systemHandle},</if>                                 <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			<if test="entity.systemAgreeTime != null">system_agree_time = #{entity.systemAgreeTime},</if>                       <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			<if test="entity.systemHandleRemarks != null">system_handle_remarks = #{entity.systemHandleRemarks},</if>           <!-- 平台处理备注 nvarchar2(1024)-->
-			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式表id) number(19)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式表id) bigint(20)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(管理员表id) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			<if test="entity.deliverProductTime != null">deliver_product_time = #{entity.deliverProductTime},</if>              <!-- 买家发货时间 date(7)-->
-			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			<if test="entity.logisticsTemplateName != null">logistics_template_name = #{entity.logisticsTemplateName},</if>     <!-- 物流公司名称 nvarchar2(64)-->
 			<if test="entity.trackingNo != null">tracking_no = #{entity.trackingNo},</if>                                       <!-- 运单号 nvarchar2(64)-->
 			<if test="entity.isProductReceipt != null">is_product_receipt = #{entity.isProductReceipt},</if>                    <!-- 商家是否收货，0否、1是 char(1)-->
@@ -567,7 +567,7 @@
 			<if test="entity.wxReturnMoeny != null">wx_return_moeny = #{entity.wxReturnMoeny},</if>                             <!-- 微信退款金额 number(12,3)-->
 			<if test="entity.bak1ReturnMoeny != null">bak1_return_moeny = #{entity.bak1ReturnMoeny},</if>                       <!-- 备用退款金额1 number(12,3)-->
 			<if test="entity.bak2ReturnMoeny != null">bak2_return_moeny = #{entity.bak2ReturnMoeny},</if>                       <!-- 备用退款金额2 number(12,3)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.isJettison != null">is_jettison = #{entity.isJettison},</if>                                       <!-- 是否弃货 char(1)-->
 			<if test="entity.isReturnMoney != null">is_return_money = #{entity.isReturnMoney},</if>                             <!-- 是否退款 char(1)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
@@ -590,28 +590,28 @@
 	<update id="updateByWhereSelective">
 		UPDATE trade_return_order a
 		<set>
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单编号(订单表id) number(19)-->
-			<if test="entity.orderItemId != null">order_item_id = #{entity.orderItemId},</if>                                   <!-- 订单详情编号(订单详情表id) number(19)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单编号(订单表id) bigint(20)-->
+			<if test="entity.orderItemId != null">order_item_id = #{entity.orderItemId},</if>                                   <!-- 订单详情编号(订单详情表id) bigint(20)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，1退货退款、2退款 char(1)-->
 			<if test="entity.returnMoney != null">return_money = #{entity.returnMoney},</if>                                    <!-- 退款金额 number(12,3)-->
 			<if test="entity.returnCommission != null">return_commission = #{entity.returnCommission},</if>                     <!-- 退还佣金 number(12,3)-->
 			<if test="entity.returnFreight != null">return_freight = #{entity.returnFreight},</if>                              <!-- 退还运费 number(12,3)-->
-			<if test="entity.returnCount != null">return_count = #{entity.returnCount},</if>                                    <!-- 退货数量 number(19)-->
+			<if test="entity.returnCount != null">return_count = #{entity.returnCount},</if>                                    <!-- 退货数量 bigint(20)-->
 			<if test="entity.returnReason != null">return_reason = #{entity.returnReason},</if>                                 <!-- 退货原因(从字典里取) char(1)-->
 			<if test="entity.returnExplain != null">return_explain = #{entity.returnExplain},</if>                              <!-- 退货说明 nvarchar2(1024)-->
 			<if test="entity.applyDate != null">apply_date = #{entity.applyDate},</if>                                          <!-- 申请时间 date(7)-->
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 申请人(会员表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 申请人(会员表id) bigint(20)-->
 			<if test="entity.businessHandle != null">business_handle = #{entity.businessHandle},</if>                           <!-- 商家处理，0待审核、1同意、2拒绝 char(1)-->
 			<if test="entity.businessHandleRemarks != null">business_handle_remarks = #{entity.businessHandleRemarks},</if>     <!-- 商家处理备注 nvarchar2(1024)-->
 			<if test="entity.businessHandleDate != null">business_handle_date = #{entity.businessHandleDate},</if>              <!-- 商家处理时间 date(7)-->
-			<if test="entity.systemHandle != null">system_handle = #{entity.systemHandle},</if>                                 <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 number(19)-->
+			<if test="entity.systemHandle != null">system_handle = #{entity.systemHandle},</if>                                 <!-- 平台处理，0未处理、1已审核并退款、2拒绝退款 bigint(20)-->
 			<if test="entity.systemAgreeTime != null">system_agree_time = #{entity.systemAgreeTime},</if>                       <!-- 平台同意退款时间（结算时以此时间为准） date(7)-->
 			<if test="entity.systemHandleRemarks != null">system_handle_remarks = #{entity.systemHandleRemarks},</if>           <!-- 平台处理备注 nvarchar2(1024)-->
-			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式表id) number(19)-->
-			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(管理员表id) number(19)-->
+			<if test="entity.payWayId != null">pay_way_id = #{entity.payWayId},</if>                                            <!-- 支付方式(支付方式表id) bigint(20)-->
+			<if test="entity.adminId != null">admin_id = #{entity.adminId},</if>                                                <!-- 管理员id(管理员表id) bigint(20)-->
 			<if test="entity.status != null">status = #{entity.status},</if>                                                    <!-- 状态，10待商家审核、20商家审核失败、30待买家退货、40待卖家收货、50待平台审核、60平台审核,退款完成，70平台审核失败 char(2)-->
 			<if test="entity.deliverProductTime != null">deliver_product_time = #{entity.deliverProductTime},</if>              <!-- 买家发货时间 date(7)-->
-			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) number(19)-->
+			<if test="entity.logisticsTemplateId != null">logistics_template_id = #{entity.logisticsTemplateId},</if>           <!-- 物流公司id(物流公司表外键，买家发货使用的物流公司) bigint(20)-->
 			<if test="entity.logisticsTemplateName != null">logistics_template_name = #{entity.logisticsTemplateName},</if>     <!-- 物流公司名称 nvarchar2(64)-->
 			<if test="entity.trackingNo != null">tracking_no = #{entity.trackingNo},</if>                                       <!-- 运单号 nvarchar2(64)-->
 			<if test="entity.isProductReceipt != null">is_product_receipt = #{entity.isProductReceipt},</if>                    <!-- 商家是否收货，0否、1是 char(1)-->
@@ -622,7 +622,7 @@
 			<if test="entity.wxReturnMoeny != null">wx_return_moeny = #{entity.wxReturnMoeny},</if>                             <!-- 微信退款金额 number(12,3)-->
 			<if test="entity.bak1ReturnMoeny != null">bak1_return_moeny = #{entity.bak1ReturnMoeny},</if>                       <!-- 备用退款金额1 number(12,3)-->
 			<if test="entity.bak2ReturnMoeny != null">bak2_return_moeny = #{entity.bak2ReturnMoeny},</if>                       <!-- 备用退款金额2 number(12,3)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
 			<if test="entity.isJettison != null">is_jettison = #{entity.isJettison},</if>                                       <!-- 是否弃货 char(1)-->
 			<if test="entity.isReturnMoney != null">is_return_money = #{entity.isReturnMoney},</if>                             <!-- 是否退款 char(1)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->

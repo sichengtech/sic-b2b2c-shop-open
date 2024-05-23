@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="storeColumns">
 	<trim suffixOverrides=",">
-		a.store_id AS "storeId",                                             <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) number(19)-->
+		a.store_id AS "storeId",                                             <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
 		a.head_pic AS "headPic",                                             <!-- 店铺头像图片路径（默认图片） nvarchar2(64)-->
 		a.logo AS "logo",                                                    <!-- 店铺logo图片路径（默认图片） nvarchar2(64)-->
 		a.banner AS "banner",                                                <!-- 店铺横幅图片路径（默认图片） nvarchar2(64)-->
@@ -15,13 +15,13 @@
 		a.product_count AS "productCount",                                   <!-- 店铺商品spu数 number(10)-->
 		a.is_open AS "isOpen",                                               <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 		a.settlement_period AS "settlementPeriod",                           <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-		a.country_id AS "countryId",                                         <!-- 国家(关联地区表) number(19)-->
+		a.country_id AS "countryId",                                         <!-- 国家(关联地区表) bigint(20)-->
 		a.country_name AS "countryName",                                     <!-- 国家名字 nvarchar2(64)-->
-		a.province_id AS "provinceId",                                       <!-- 省(关联地区表) number(19)-->
+		a.province_id AS "provinceId",                                       <!-- 省(关联地区表) bigint(20)-->
 		a.province_name AS "provinceName",                                   <!-- 省名字 nvarchar2(64)-->
-		a.city_id AS "cityId",                                               <!-- 市(关联地区表) number(19)-->
+		a.city_id AS "cityId",                                               <!-- 市(关联地区表) bigint(20)-->
 		a.city_name AS "cityName",                                           <!-- 市名字 nvarchar2(64)-->
-		a.district_id AS "districtId",                                       <!-- 县(关联地区表) number(19)-->
+		a.district_id AS "districtId",                                       <!-- 县(关联地区表) bigint(20)-->
 		a.district_name AS "districtName",                                   <!-- 县名字 nvarchar2(64)-->
 		a.detailed_address AS "detailedAddress",                             <!-- 详细地址 nvarchar2(255)-->
 		a.store_tel AS "storeTel",                                           <!-- 店铺客服电话 nvarchar2(64)-->
@@ -44,8 +44,8 @@
 		a.bak10 AS "bak10",                                                  <!-- 备用字段10 nvarchar2(64)-->
 		a.industry AS "industry",                                            <!-- 店铺主营产品 nvarchar2(255)-->
 		a.store_type AS "storeType",                                         <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-		a.level_id AS "levelId",                                             <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-		a.industry_id AS "industryId",                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+		a.level_id AS "levelId",                                             <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+		a.industry_id AS "industryId",                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 		a.commission AS "commission",                                        <!-- 分佣比例 number(12,3)-->
 		a.marking_img_path AS "markingImgPath",                              <!-- 店铺打标地址path nvarchar2(64)-->
 
@@ -179,7 +179,7 @@
 	<insert id="insert" keyProperty="entity.storeId" keyColumn="store_id" useGeneratedKeys="true">
 		INSERT INTO store
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			store_id,                                          <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) number(19)-->
+			store_id,                                          <!-- 主键(店铺表，店铺二级域名，店铺相册空间信息表用1个id) bigint(20)-->
 			head_pic,                                          <!-- 店铺头像图片路径（默认图片） nvarchar2(64)-->
 			logo,                                              <!-- 店铺logo图片路径（默认图片） nvarchar2(64)-->
 			banner,                                            <!-- 店铺横幅图片路径（默认图片） nvarchar2(64)-->
@@ -187,13 +187,13 @@
 			product_count,                                     <!-- 店铺商品spu数 number(10)-->
 			is_open,                                           <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			settlement_period,                                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			country_id,                                        <!-- 国家(关联地区表) number(19)-->
+			country_id,                                        <!-- 国家(关联地区表) bigint(20)-->
 			country_name,                                      <!-- 国家名字 nvarchar2(64)-->
-			province_id,                                       <!-- 省(关联地区表) number(19)-->
+			province_id,                                       <!-- 省(关联地区表) bigint(20)-->
 			province_name,                                     <!-- 省名字 nvarchar2(64)-->
-			city_id,                                           <!-- 市(关联地区表) number(19)-->
+			city_id,                                           <!-- 市(关联地区表) bigint(20)-->
 			city_name,                                         <!-- 市名字 nvarchar2(64)-->
-			district_id,                                       <!-- 县(关联地区表) number(19)-->
+			district_id,                                       <!-- 县(关联地区表) bigint(20)-->
 			district_name,                                     <!-- 县名字 nvarchar2(64)-->
 			detailed_address,                                  <!-- 详细地址 nvarchar2(255)-->
 			store_tel,                                         <!-- 店铺客服电话 nvarchar2(64)-->
@@ -216,8 +216,8 @@
 			bak10,                                             <!-- 备用字段10 nvarchar2(64)-->
 			industry,                                          <!-- 店铺主营产品 nvarchar2(255)-->
 			store_type,                                        <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			level_id,                                          <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			industry_id,                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			level_id,                                          <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			industry_id,                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			commission,                                        <!-- 分佣比例 number(12,3)-->
 			marking_img_path,                                  <!-- 店铺打标地址path nvarchar2(64)-->
 
@@ -237,13 +237,13 @@
 			#{entity.productCount},                            <!-- 店铺商品spu数 number(10)-->
 			#{entity.isOpen},                                  <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			#{entity.settlementPeriod},                        <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			#{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			#{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
 			#{entity.countryName},                             <!-- 国家名字 nvarchar2(64)-->
-			#{entity.provinceId},                              <!-- 省(关联地区表) number(19)-->
+			#{entity.provinceId},                              <!-- 省(关联地区表) bigint(20)-->
 			#{entity.provinceName},                            <!-- 省名字 nvarchar2(64)-->
-			#{entity.cityId},                                  <!-- 市(关联地区表) number(19)-->
+			#{entity.cityId},                                  <!-- 市(关联地区表) bigint(20)-->
 			#{entity.cityName},                                <!-- 市名字 nvarchar2(64)-->
-			#{entity.districtId},                              <!-- 县(关联地区表) number(19)-->
+			#{entity.districtId},                              <!-- 县(关联地区表) bigint(20)-->
 			#{entity.districtName},                            <!-- 县名字 nvarchar2(64)-->
 			#{entity.detailedAddress},                         <!-- 详细地址 nvarchar2(255)-->
 			#{entity.storeTel},                                <!-- 店铺客服电话 nvarchar2(64)-->
@@ -266,8 +266,8 @@
 			#{entity.bak10},                                   <!-- 备用字段10 nvarchar2(64)-->
 			#{entity.industry},                                <!-- 店铺主营产品 nvarchar2(255)-->
 			#{entity.storeType},                               <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			#{entity.levelId},                                 <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			#{entity.industryId},                              <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			#{entity.levelId},                                 <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			#{entity.industryId},                              <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			#{entity.commission},                              <!-- 分佣比例 number(12,3)-->
 			#{entity.markingImgPath},                          <!-- 店铺打标地址path nvarchar2(64)-->
 
@@ -287,13 +287,13 @@
 			<if test="entity.productCount != null">product_count,</if>                         <!-- 店铺商品spu数 number(10)-->
 			<if test="entity.isOpen != null">is_open,</if>                                     <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			<if test="entity.settlementPeriod != null">settlement_period,</if>                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name,</if>                           <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name,</if>                         <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name,</if>                                 <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name,</if>                         <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.storeTel != null">store_tel,</if>                                 <!-- 店铺客服电话 nvarchar2(64)-->
@@ -316,8 +316,8 @@
 			<if test="entity.bak10 != null">bak10,</if>                                        <!-- 备用字段10 nvarchar2(64)-->
 			<if test="entity.industry != null">industry,</if>                                  <!-- 店铺主营产品 nvarchar2(255)-->
 			<if test="entity.storeType != null">store_type,</if>                               <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			<if test="entity.levelId != null">level_id,</if>                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			<if test="entity.industryId != null">industry_id,</if>                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			<if test="entity.levelId != null">level_id,</if>                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">industry_id,</if>                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			<if test="entity.commission != null">commission,</if>                              <!-- 分佣比例 number(12,3)-->
 			<if test="entity.markingImgPath != null">marking_img_path,</if>                    <!-- 店铺打标地址path nvarchar2(64)-->
 		</trim>
@@ -338,13 +338,13 @@
 			<if test="entity.productCount != null">#{entity.productCount},</if>                          <!-- 店铺商品spu数 number(10)-->
 			<if test="entity.isOpen != null">#{entity.isOpen},</if>                                      <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			<if test="entity.settlementPeriod != null">#{entity.settlementPeriod},</if>                  <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.storeTel != null">#{entity.storeTel},</if>                                  <!-- 店铺客服电话 nvarchar2(64)-->
@@ -367,8 +367,8 @@
 			<if test="entity.bak10 != null">#{entity.bak10},</if>                                        <!-- 备用字段10 nvarchar2(64)-->
 			<if test="entity.industry != null">#{entity.industry},</if>                                  <!-- 店铺主营产品 nvarchar2(255)-->
 			<if test="entity.storeType != null">#{entity.storeType},</if>                                <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			<if test="entity.levelId != null">#{entity.levelId},</if>                                    <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			<if test="entity.industryId != null">#{entity.industryId},</if>                              <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			<if test="entity.levelId != null">#{entity.levelId},</if>                                    <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">#{entity.industryId},</if>                              <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			<if test="entity.commission != null">#{entity.commission},</if>                              <!-- 分佣比例 number(12,3)-->
 			<if test="entity.markingImgPath != null">#{entity.markingImgPath},</if>                      <!-- 店铺打标地址path nvarchar2(64)-->
 		</trim>
@@ -385,13 +385,13 @@
 			product_count = #{entity.productCount},                         <!-- 店铺商品spu数 number(10)-->
 			is_open = #{entity.isOpen},                                     <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			settlement_period = #{entity.settlementPeriod},                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 nvarchar2(255)-->
 			store_tel = #{entity.storeTel},                                 <!-- 店铺客服电话 nvarchar2(64)-->
@@ -414,8 +414,8 @@
 			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
 			industry = #{entity.industry},                                  <!-- 店铺主营产品 nvarchar2(255)-->
 			store_type = #{entity.storeType},                               <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			commission = #{entity.commission},                              <!-- 分佣比例 number(12,3)-->
 			marking_img_path = #{entity.markingImgPath},                    <!-- 店铺打标地址path nvarchar2(64)-->
 
@@ -434,13 +434,13 @@
 			product_count = #{entity.productCount},                         <!-- 店铺商品spu数 number(10)-->
 			is_open = #{entity.isOpen},                                     <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			settlement_period = #{entity.settlementPeriod},                 <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 详细地址 nvarchar2(255)-->
 			store_tel = #{entity.storeTel},                                 <!-- 店铺客服电话 nvarchar2(64)-->
@@ -463,8 +463,8 @@
 			bak10 = #{entity.bak10},                                        <!-- 备用字段10 nvarchar2(64)-->
 			industry = #{entity.industry},                                  <!-- 店铺主营产品 nvarchar2(255)-->
 			store_type = #{entity.storeType},                               <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			level_id = #{entity.levelId},                                   <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			industry_id = #{entity.industryId},                             <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			commission = #{entity.commission},                              <!-- 分佣比例 number(12,3)-->
 			marking_img_path = #{entity.markingImgPath},                    <!-- 店铺打标地址path nvarchar2(64)-->
 
@@ -489,13 +489,13 @@
 			<if test="entity.productCount != null">product_count = #{entity.productCount},</if>                                 <!-- 店铺商品spu数 number(10)-->
 			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			<if test="entity.settlementPeriod != null">settlement_period = #{entity.settlementPeriod},</if>                     <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.storeTel != null">store_tel = #{entity.storeTel},</if>                                             <!-- 店铺客服电话 nvarchar2(64)-->
@@ -518,8 +518,8 @@
 			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
 			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 店铺主营产品 nvarchar2(255)-->
 			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			<if test="entity.commission != null">commission = #{entity.commission},</if>                                        <!-- 分佣比例 number(12,3)-->
 			<if test="entity.markingImgPath != null">marking_img_path = #{entity.markingImgPath},</if>                          <!-- 店铺打标地址path nvarchar2(64)-->
 		</set>
@@ -537,13 +537,13 @@
 			<if test="entity.productCount != null">product_count = #{entity.productCount},</if>                                 <!-- 店铺商品spu数 number(10)-->
 			<if test="entity.isOpen != null">is_open = #{entity.isOpen},</if>                                                   <!-- 店铺营业状态(0关闭、1开启)(首页搜索店铺搜索未关闭的) char(1)-->
 			<if test="entity.settlementPeriod != null">settlement_period = #{entity.settlementPeriod},</if>                     <!-- 结算周期(10日结、20周结、30双周结、40月结) char(2)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 详细地址 nvarchar2(255)-->
 			<if test="entity.storeTel != null">store_tel = #{entity.storeTel},</if>                                             <!-- 店铺客服电话 nvarchar2(64)-->
@@ -566,8 +566,8 @@
 			<if test="entity.bak10 != null">bak10 = #{entity.bak10},</if>                                                       <!-- 备用字段10 nvarchar2(64)-->
 			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 店铺主营产品 nvarchar2(255)-->
 			<if test="entity.storeType != null">store_type = #{entity.storeType},</if>                                          <!-- 店铺类型字典（1普通店铺，2旗舰店铺） char(2)-->
-			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
-			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） number(19)-->
+			<if test="entity.levelId != null">level_id = #{entity.levelId},</if>                                                <!-- 店铺等级（关联店铺等级id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
+			<if test="entity.industryId != null">industry_id = #{entity.industryId},</if>                                       <!-- 主营行业（关联主营行业id）（注意：在商家入驻审核二审通过之后生成的是入驻申请中选择的店铺类型，以后修改的时候记得把入驻申请表，入驻查看表都修改了） bigint(20)-->
 			<if test="entity.commission != null">commission = #{entity.commission},</if>                                        <!-- 分佣比例 number(12,3)-->
 			<if test="entity.markingImgPath != null">marking_img_path = #{entity.markingImgPath},</if>                          <!-- 店铺打标地址path nvarchar2(64)-->
 		</set>

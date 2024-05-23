@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="siteUploadColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.upload_size AS "uploadSize",                                       <!-- 上传文件大小 ,单位字节 number(10)-->
 		a.type AS "type",                                                    <!-- 上传文件类型，jgp,jpeg,gif,png nvarchar2(64)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -117,7 +117,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_upload(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			upload_size,                                       <!-- 上传文件大小 ,单位字节 number(10)-->
 			type,                                              <!-- 上传文件类型，jgp,jpeg,gif,png nvarchar2(64)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->

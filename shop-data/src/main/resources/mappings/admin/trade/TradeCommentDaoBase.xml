@@ -7,19 +7,19 @@
 	<!-- 全部字段 -->
 	<sql id="tradeCommentColumns">
 	<trim suffixOverrides=",">
-		a.comment_id AS "commentId",                                         <!-- 主键 number(19)-->
-		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) number(19)-->
-		a.store_id AS "storeId",                                             <!-- 关联(店铺表) number(19)-->
-		a.p_id AS "pId",                                                     <!-- 产品id(产品表id) number(19)-->
-		a.sku_id AS "skuId",                                                 <!-- sku id(产品sku表id) number(19)-->
-		a.order_id AS "orderId",                                             <!-- 订单id(订单表id) number(19)-->
+		a.comment_id AS "commentId",                                         <!-- 主键 bigint(20)-->
+		a.u_id AS "uId",                                                     <!-- 会员id(会员表id) bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表) bigint(20)-->
+		a.p_id AS "pId",                                                     <!-- 产品id(产品表id) bigint(20)-->
+		a.sku_id AS "skuId",                                                 <!-- sku id(产品sku表id) bigint(20)-->
+		a.order_id AS "orderId",                                             <!-- 订单id(订单表id) bigint(20)-->
 		a.content AS "content",                                              <!-- 评论内容 nvarchar2(512)-->
 		a.grade AS "grade",                                                  <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 		a.product_score AS "productScore",                                   <!-- 商品评分 nvarchar2(64)-->
 		a.service_attitude_score AS "serviceAttitudeScore",                  <!-- 服务态度评分 nvarchar2(64)-->
 		a.delivery_speed_score AS "deliverySpeedScore",                      <!-- 发货速度评分 nvarchar2(64)-->
 		a.type AS "type",                                                    <!-- 类型，0评论、1追评、2回复 char(1)-->
-		a.reply_id AS "replyId",                                             <!-- 回复的评论id(本表的id) number(19)-->
+		a.reply_id AS "replyId",                                             <!-- 回复的评论id(本表的id) bigint(20)-->
 		a.ip AS "ip",                                                        <!-- ip nvarchar2(64)-->
 		a.is_show AS "isShow",                                               <!-- 是否显示，0是、1否 char(1)-->
 		a.create_date AS "createDate",                                       <!-- 创建时间 date(7)-->
@@ -148,19 +148,19 @@
 	<insert id="insert" keyProperty="entity.commentId" keyColumn="comment_id" useGeneratedKeys="true">
 		INSERT INTO trade_comment
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			comment_id,                                        <!-- 主键 number(19)-->
-			u_id,                                              <!-- 会员id(会员表id) number(19)-->
-			store_id,                                          <!-- 关联(店铺表) number(19)-->
-			p_id,                                              <!-- 产品id(产品表id) number(19)-->
-			sku_id,                                            <!-- sku id(产品sku表id) number(19)-->
-			order_id,                                          <!-- 订单id(订单表id) number(19)-->
+			comment_id,                                        <!-- 主键 bigint(20)-->
+			u_id,                                              <!-- 会员id(会员表id) bigint(20)-->
+			store_id,                                          <!-- 关联(店铺表) bigint(20)-->
+			p_id,                                              <!-- 产品id(产品表id) bigint(20)-->
+			sku_id,                                            <!-- sku id(产品sku表id) bigint(20)-->
+			order_id,                                          <!-- 订单id(订单表id) bigint(20)-->
 			content,                                           <!-- 评论内容 nvarchar2(512)-->
 			grade,                                             <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			product_score,                                     <!-- 商品评分 nvarchar2(64)-->
 			service_attitude_score,                            <!-- 服务态度评分 nvarchar2(64)-->
 			delivery_speed_score,                              <!-- 发货速度评分 nvarchar2(64)-->
 			type,                                              <!-- 类型，0评论、1追评、2回复 char(1)-->
-			reply_id,                                          <!-- 回复的评论id(本表的id) number(19)-->
+			reply_id,                                          <!-- 回复的评论id(本表的id) bigint(20)-->
 			ip,                                                <!-- ip nvarchar2(64)-->
 			is_show,                                           <!-- 是否显示，0是、1否 char(1)-->
 			create_date,                                       <!-- 创建时间 date(7)-->
@@ -185,18 +185,18 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.uId},                                     <!-- 会员id(会员表id) number(19)-->
-			#{entity.storeId},                                 <!-- 关联(店铺表) number(19)-->
-			#{entity.pId},                                     <!-- 产品id(产品表id) number(19)-->
-			#{entity.skuId},                                   <!-- sku id(产品sku表id) number(19)-->
-			#{entity.orderId},                                 <!-- 订单id(订单表id) number(19)-->
+			#{entity.uId},                                     <!-- 会员id(会员表id) bigint(20)-->
+			#{entity.storeId},                                 <!-- 关联(店铺表) bigint(20)-->
+			#{entity.pId},                                     <!-- 产品id(产品表id) bigint(20)-->
+			#{entity.skuId},                                   <!-- sku id(产品sku表id) bigint(20)-->
+			#{entity.orderId},                                 <!-- 订单id(订单表id) bigint(20)-->
 			#{entity.content},                                 <!-- 评论内容 nvarchar2(512)-->
 			#{entity.grade},                                   <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			#{entity.productScore},                            <!-- 商品评分 nvarchar2(64)-->
 			#{entity.serviceAttitudeScore},                    <!-- 服务态度评分 nvarchar2(64)-->
 			#{entity.deliverySpeedScore},                      <!-- 发货速度评分 nvarchar2(64)-->
 			#{entity.type},                                    <!-- 类型，0评论、1追评、2回复 char(1)-->
-			#{entity.replyId},                                 <!-- 回复的评论id(本表的id) number(19)-->
+			#{entity.replyId},                                 <!-- 回复的评论id(本表的id) bigint(20)-->
 			#{entity.ip},                                      <!-- ip nvarchar2(64)-->
 			#{entity.isShow},                                  <!-- 是否显示，0是、1否 char(1)-->
 			#{entity.createDate},                              <!-- 创建时间 date(7)-->
@@ -221,18 +221,18 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.commentId != null">comment_id,</if></if>
 			<if test="entity.pkMode==2">comment_id,</if>
-			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">p_id,</if>                                           <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">sku_id,</if>                                       <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">u_id,</if>                                           <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">sku_id,</if>                                       <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">order_id,</if>                                   <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.content != null">content,</if>                                    <!-- 评论内容 nvarchar2(512)-->
 			<if test="entity.grade != null">grade,</if>                                        <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			<if test="entity.productScore != null">product_score,</if>                         <!-- 商品评分 nvarchar2(64)-->
 			<if test="entity.serviceAttitudeScore != null">service_attitude_score,</if>        <!-- 服务态度评分 nvarchar2(64)-->
 			<if test="entity.deliverySpeedScore != null">delivery_speed_score,</if>            <!-- 发货速度评分 nvarchar2(64)-->
 			<if test="entity.type != null">type,</if>                                          <!-- 类型，0评论、1追评、2回复 char(1)-->
-			<if test="entity.replyId != null">reply_id,</if>                                   <!-- 回复的评论id(本表的id) number(19)-->
+			<if test="entity.replyId != null">reply_id,</if>                                   <!-- 回复的评论id(本表的id) bigint(20)-->
 			<if test="entity.ip != null">ip,</if>                                              <!-- ip nvarchar2(64)-->
 			<if test="entity.isShow != null">is_show,</if>                                     <!-- 是否显示，0是、1否 char(1)-->
 			<if test="entity.createDate != null">create_date,</if>                             <!-- 创建时间 date(7)-->
@@ -258,18 +258,18 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">#{entity.skuId},</if>                                        <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">#{entity.uId},</if>                                            <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">#{entity.skuId},</if>                                        <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">#{entity.orderId},</if>                                    <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 评论内容 nvarchar2(512)-->
 			<if test="entity.grade != null">#{entity.grade},</if>                                        <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			<if test="entity.productScore != null">#{entity.productScore},</if>                          <!-- 商品评分 nvarchar2(64)-->
 			<if test="entity.serviceAttitudeScore != null">#{entity.serviceAttitudeScore},</if>          <!-- 服务态度评分 nvarchar2(64)-->
 			<if test="entity.deliverySpeedScore != null">#{entity.deliverySpeedScore},</if>              <!-- 发货速度评分 nvarchar2(64)-->
 			<if test="entity.type != null">#{entity.type},</if>                                          <!-- 类型，0评论、1追评、2回复 char(1)-->
-			<if test="entity.replyId != null">#{entity.replyId},</if>                                    <!-- 回复的评论id(本表的id) number(19)-->
+			<if test="entity.replyId != null">#{entity.replyId},</if>                                    <!-- 回复的评论id(本表的id) bigint(20)-->
 			<if test="entity.ip != null">#{entity.ip},</if>                                              <!-- ip nvarchar2(64)-->
 			<if test="entity.isShow != null">#{entity.isShow},</if>                                      <!-- 是否显示，0是、1否 char(1)-->
 			<if test="entity.createDate != null">#{entity.createDate},</if>                              <!-- 创建时间 date(7)-->
@@ -291,18 +291,18 @@
 	<update id="updateById">
 		UPDATE trade_comment 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
-			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) number(19)-->
-			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) number(19)-->
-			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) bigint(20)-->
+			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) bigint(20)-->
+			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) bigint(20)-->
 			content = #{entity.content},                                    <!-- 评论内容 nvarchar2(512)-->
 			grade = #{entity.grade},                                        <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			product_score = #{entity.productScore},                         <!-- 商品评分 nvarchar2(64)-->
 			service_attitude_score = #{entity.serviceAttitudeScore},        <!-- 服务态度评分 nvarchar2(64)-->
 			delivery_speed_score = #{entity.deliverySpeedScore},            <!-- 发货速度评分 nvarchar2(64)-->
 			type = #{entity.type},                                          <!-- 类型，0评论、1追评、2回复 char(1)-->
-			reply_id = #{entity.replyId},                                   <!-- 回复的评论id(本表的id) number(19)-->
+			reply_id = #{entity.replyId},                                   <!-- 回复的评论id(本表的id) bigint(20)-->
 			ip = #{entity.ip},                                              <!-- ip nvarchar2(64)-->
 			is_show = #{entity.isShow},                                     <!-- 是否显示，0是、1否 char(1)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
@@ -326,18 +326,18 @@
 	<update id="updateByWhere">
 		UPDATE trade_comment a 
 		<set>
-			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) number(19)-->
-			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) number(19)-->
-			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) number(19)-->
-			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) number(19)-->
-			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) number(19)-->
+			u_id = #{entity.uId},                                           <!-- 会员id(会员表id) bigint(20)-->
+			store_id = #{entity.storeId},                                   <!-- 关联(店铺表) bigint(20)-->
+			p_id = #{entity.pId},                                           <!-- 产品id(产品表id) bigint(20)-->
+			sku_id = #{entity.skuId},                                       <!-- sku id(产品sku表id) bigint(20)-->
+			order_id = #{entity.orderId},                                   <!-- 订单id(订单表id) bigint(20)-->
 			content = #{entity.content},                                    <!-- 评论内容 nvarchar2(512)-->
 			grade = #{entity.grade},                                        <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			product_score = #{entity.productScore},                         <!-- 商品评分 nvarchar2(64)-->
 			service_attitude_score = #{entity.serviceAttitudeScore},        <!-- 服务态度评分 nvarchar2(64)-->
 			delivery_speed_score = #{entity.deliverySpeedScore},            <!-- 发货速度评分 nvarchar2(64)-->
 			type = #{entity.type},                                          <!-- 类型，0评论、1追评、2回复 char(1)-->
-			reply_id = #{entity.replyId},                                   <!-- 回复的评论id(本表的id) number(19)-->
+			reply_id = #{entity.replyId},                                   <!-- 回复的评论id(本表的id) bigint(20)-->
 			ip = #{entity.ip},                                              <!-- ip nvarchar2(64)-->
 			is_show = #{entity.isShow},                                     <!-- 是否显示，0是、1否 char(1)-->
 			create_date = #{entity.createDate},                             <!-- 创建时间 date(7)-->
@@ -367,18 +367,18 @@
 	<update id="updateByIdSelective">
 		UPDATE trade_comment
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 评论内容 nvarchar2(512)-->
 			<if test="entity.grade != null">grade = #{entity.grade},</if>                                                       <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			<if test="entity.productScore != null">product_score = #{entity.productScore},</if>                                 <!-- 商品评分 nvarchar2(64)-->
 			<if test="entity.serviceAttitudeScore != null">service_attitude_score = #{entity.serviceAttitudeScore},</if>        <!-- 服务态度评分 nvarchar2(64)-->
 			<if test="entity.deliverySpeedScore != null">delivery_speed_score = #{entity.deliverySpeedScore},</if>              <!-- 发货速度评分 nvarchar2(64)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，0评论、1追评、2回复 char(1)-->
-			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 回复的评论id(本表的id) number(19)-->
+			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 回复的评论id(本表的id) bigint(20)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- ip nvarchar2(64)-->
 			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- 是否显示，0是、1否 char(1)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->
@@ -401,18 +401,18 @@
 	<update id="updateByWhereSelective">
 		UPDATE trade_comment a
 		<set>
-			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) number(19)-->
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) number(19)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) number(19)-->
-			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) number(19)-->
-			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) number(19)-->
+			<if test="entity.uId != null">u_id = #{entity.uId},</if>                                                            <!-- 会员id(会员表id) bigint(20)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 关联(店铺表) bigint(20)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 产品id(产品表id) bigint(20)-->
+			<if test="entity.skuId != null">sku_id = #{entity.skuId},</if>                                                      <!-- sku id(产品sku表id) bigint(20)-->
+			<if test="entity.orderId != null">order_id = #{entity.orderId},</if>                                                <!-- 订单id(订单表id) bigint(20)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 评论内容 nvarchar2(512)-->
 			<if test="entity.grade != null">grade = #{entity.grade},</if>                                                       <!-- 评价等级(1好评,2中评,3差评) char(1)-->
 			<if test="entity.productScore != null">product_score = #{entity.productScore},</if>                                 <!-- 商品评分 nvarchar2(64)-->
 			<if test="entity.serviceAttitudeScore != null">service_attitude_score = #{entity.serviceAttitudeScore},</if>        <!-- 服务态度评分 nvarchar2(64)-->
 			<if test="entity.deliverySpeedScore != null">delivery_speed_score = #{entity.deliverySpeedScore},</if>              <!-- 发货速度评分 nvarchar2(64)-->
 			<if test="entity.type != null">type = #{entity.type},</if>                                                          <!-- 类型，0评论、1追评、2回复 char(1)-->
-			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 回复的评论id(本表的id) number(19)-->
+			<if test="entity.replyId != null">reply_id = #{entity.replyId},</if>                                                <!-- 回复的评论id(本表的id) bigint(20)-->
 			<if test="entity.ip != null">ip = #{entity.ip},</if>                                                                <!-- ip nvarchar2(64)-->
 			<if test="entity.isShow != null">is_show = #{entity.isShow},</if>                                                   <!-- 是否显示，0是、1否 char(1)-->
 			<if test="entity.createDate != null">create_date = #{entity.createDate},</if>                                       <!-- 创建时间 date(7)-->

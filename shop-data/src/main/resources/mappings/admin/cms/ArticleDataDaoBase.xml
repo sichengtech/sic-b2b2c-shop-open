@@ -6,7 +6,7 @@
 <!--	</cache>-->
 	<!-- 全部字段 -->
 	<sql id="articleDataColumns">
-		a.id AS "id",                                                        <!-- 编号 number(19)-->
+		a.id AS "id",                                                        <!-- 编号 bigint(20)-->
 		a.content AS "content",                                              <!-- 文章内容 clob-->
 		a.copyfrom AS "copyfrom",                                            <!-- 文章来源 varchar2(255)-->
 		a.relation AS "relation",                                            <!-- 相关文章 varchar2(255)-->
@@ -101,7 +101,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO cms_article_data(
-			id,                                                <!-- 编号 number(19)-->
+			id,                                                <!-- 编号 bigint(20)-->
 			content,                                           <!-- 文章内容 clob-->
 			copyfrom,                                          <!-- 文章来源 varchar2(255)-->
 			relation,                                          <!-- 相关文章 varchar2(255)-->

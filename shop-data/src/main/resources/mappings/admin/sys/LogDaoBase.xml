@@ -6,7 +6,7 @@
 	</cache>
     <!-- 全部字段 -->
 	<sql id="sysLogColumns">
-		a.id AS "id",                                                        <!-- id number(19)-->
+		a.id AS "id",                                                        <!-- id bigint(20)-->
 		a.type AS "type",                                                    <!-- 日志类型（1：接入日志；2：错误日志） char(1)-->
 		a.title AS "title",                                                  <!-- 日志标题 nvarchar2(500)-->
 		a.create_by AS "createBy.id",                                        <!-- create_by varchar2(64)-->
@@ -116,7 +116,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO sys_log(
-			id,                                                <!-- id number(19)-->
+			id,                                                <!-- id bigint(20)-->
 			type,                                              <!-- 日志类型（1：接入日志；2：错误日志） char(1)-->
 			title,                                             <!-- 日志标题 nvarchar2(500)-->
 			create_by,                                         <!-- create_by varchar2(64)-->

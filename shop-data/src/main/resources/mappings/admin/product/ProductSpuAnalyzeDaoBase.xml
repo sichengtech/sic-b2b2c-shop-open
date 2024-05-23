@@ -7,22 +7,22 @@
 	<!-- 全部字段 -->
 	<sql id="productSpuAnalyzeColumns">
 	<trim suffixOverrides=",">
-		a.p_id AS "pId",                                                     <!-- 商品spu的id number(19)-->
-		a.all_browse AS "allBrowse",                                         <!-- 总浏览量 number(19)-->
+		a.p_id AS "pId",                                                     <!-- 商品spu的id bigint(20)-->
+		a.all_browse AS "allBrowse",                                         <!-- 总浏览量 bigint(20)-->
 		a.all_browse_date AS "allBrowseDate",                                <!-- 总浏览量更新日期 date(7)-->
-		a.week_browse AS "weekBrowse",                                       <!-- 周浏览量 number(19)-->
+		a.week_browse AS "weekBrowse",                                       <!-- 周浏览量 bigint(20)-->
 		a.week_browse_date AS "weekBrowseDate",                              <!-- 周浏览量更新日期 date(7)-->
-		a.month_browse AS "monthBrowse",                                     <!-- 月浏览量 number(19)-->
+		a.month_browse AS "monthBrowse",                                     <!-- 月浏览量 bigint(20)-->
 		a.month_browse_date AS "monthBrowseDate",                            <!-- 月浏览量更新日期 date(7)-->
-		a.month3_browse AS "month3Browse",                                   <!-- 三个月浏览量 number(19)-->
+		a.month3_browse AS "month3Browse",                                   <!-- 三个月浏览量 bigint(20)-->
 		a.month3_browse_date AS "month3BrowseDate",                          <!-- 三个月浏览量更新日期 date(7)-->
-		a.all_sales AS "allSales",                                           <!-- 总销量 number(19)-->
+		a.all_sales AS "allSales",                                           <!-- 总销量 bigint(20)-->
 		a.all_sales_date AS "allSalesDate",                                  <!-- 总销量更新日期 date(7)-->
-		a.week_sales AS "weekSales",                                         <!-- 周销量 number(19)-->
+		a.week_sales AS "weekSales",                                         <!-- 周销量 bigint(20)-->
 		a.week_sales_date AS "weekSalesDate",                                <!-- 周销量更新日期 date(7)-->
-		a.month_sales AS "monthSales",                                       <!-- 月销量 number(19)-->
+		a.month_sales AS "monthSales",                                       <!-- 月销量 bigint(20)-->
 		a.month_sales_date AS "monthSalesDate",                              <!-- 月销量更新日期 date(7)-->
-		a.month3_sales AS "month3Sales",                                     <!-- 三个月销量 number(19)-->
+		a.month3_sales AS "month3Sales",                                     <!-- 三个月销量 bigint(20)-->
 		a.month3_sales_date AS "month3SalesDate",                            <!-- 三个月销量更新日期 date(7)-->
 
 	</trim>
@@ -128,22 +128,22 @@
 	<insert id="insert" keyProperty="entity.pId" keyColumn="p_id" useGeneratedKeys="true">
 		INSERT INTO product_spu_analyze
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			p_id,                                              <!-- 商品spu的id number(19)-->
-			all_browse,                                        <!-- 总浏览量 number(19)-->
+			p_id,                                              <!-- 商品spu的id bigint(20)-->
+			all_browse,                                        <!-- 总浏览量 bigint(20)-->
 			all_browse_date,                                   <!-- 总浏览量更新日期 date(7)-->
-			week_browse,                                       <!-- 周浏览量 number(19)-->
+			week_browse,                                       <!-- 周浏览量 bigint(20)-->
 			week_browse_date,                                  <!-- 周浏览量更新日期 date(7)-->
-			month_browse,                                      <!-- 月浏览量 number(19)-->
+			month_browse,                                      <!-- 月浏览量 bigint(20)-->
 			month_browse_date,                                 <!-- 月浏览量更新日期 date(7)-->
-			month3_browse,                                     <!-- 三个月浏览量 number(19)-->
+			month3_browse,                                     <!-- 三个月浏览量 bigint(20)-->
 			month3_browse_date,                                <!-- 三个月浏览量更新日期 date(7)-->
-			all_sales,                                         <!-- 总销量 number(19)-->
+			all_sales,                                         <!-- 总销量 bigint(20)-->
 			all_sales_date,                                    <!-- 总销量更新日期 date(7)-->
-			week_sales,                                        <!-- 周销量 number(19)-->
+			week_sales,                                        <!-- 周销量 bigint(20)-->
 			week_sales_date,                                   <!-- 周销量更新日期 date(7)-->
-			month_sales,                                       <!-- 月销量 number(19)-->
+			month_sales,                                       <!-- 月销量 bigint(20)-->
 			month_sales_date,                                  <!-- 月销量更新日期 date(7)-->
-			month3_sales,                                      <!-- 三个月销量 number(19)-->
+			month3_sales,                                      <!-- 三个月销量 bigint(20)-->
 			month3_sales_date,                                 <!-- 三个月销量更新日期 date(7)-->
 
 		</trim>
@@ -155,21 +155,21 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.allBrowse},                               <!-- 总浏览量 number(19)-->
+			#{entity.allBrowse},                               <!-- 总浏览量 bigint(20)-->
 			#{entity.allBrowseDate},                           <!-- 总浏览量更新日期 date(7)-->
-			#{entity.weekBrowse},                              <!-- 周浏览量 number(19)-->
+			#{entity.weekBrowse},                              <!-- 周浏览量 bigint(20)-->
 			#{entity.weekBrowseDate},                          <!-- 周浏览量更新日期 date(7)-->
-			#{entity.monthBrowse},                             <!-- 月浏览量 number(19)-->
+			#{entity.monthBrowse},                             <!-- 月浏览量 bigint(20)-->
 			#{entity.monthBrowseDate},                         <!-- 月浏览量更新日期 date(7)-->
-			#{entity.month3Browse},                            <!-- 三个月浏览量 number(19)-->
+			#{entity.month3Browse},                            <!-- 三个月浏览量 bigint(20)-->
 			#{entity.month3BrowseDate},                        <!-- 三个月浏览量更新日期 date(7)-->
-			#{entity.allSales},                                <!-- 总销量 number(19)-->
+			#{entity.allSales},                                <!-- 总销量 bigint(20)-->
 			#{entity.allSalesDate},                            <!-- 总销量更新日期 date(7)-->
-			#{entity.weekSales},                               <!-- 周销量 number(19)-->
+			#{entity.weekSales},                               <!-- 周销量 bigint(20)-->
 			#{entity.weekSalesDate},                           <!-- 周销量更新日期 date(7)-->
-			#{entity.monthSales},                              <!-- 月销量 number(19)-->
+			#{entity.monthSales},                              <!-- 月销量 bigint(20)-->
 			#{entity.monthSalesDate},                          <!-- 月销量更新日期 date(7)-->
-			#{entity.month3Sales},                             <!-- 三个月销量 number(19)-->
+			#{entity.month3Sales},                             <!-- 三个月销量 bigint(20)-->
 			#{entity.month3SalesDate},                         <!-- 三个月销量更新日期 date(7)-->
 
 	</trim>
@@ -181,21 +181,21 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.pId != null">p_id,</if></if>
 			<if test="entity.pkMode==2">p_id,</if>
-			<if test="entity.allBrowse != null">all_browse,</if>                               <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowse != null">all_browse,</if>                               <!-- 总浏览量 bigint(20)-->
 			<if test="entity.allBrowseDate != null">all_browse_date,</if>                      <!-- 总浏览量更新日期 date(7)-->
-			<if test="entity.weekBrowse != null">week_browse,</if>                             <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowse != null">week_browse,</if>                             <!-- 周浏览量 bigint(20)-->
 			<if test="entity.weekBrowseDate != null">week_browse_date,</if>                    <!-- 周浏览量更新日期 date(7)-->
-			<if test="entity.monthBrowse != null">month_browse,</if>                           <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowse != null">month_browse,</if>                           <!-- 月浏览量 bigint(20)-->
 			<if test="entity.monthBrowseDate != null">month_browse_date,</if>                  <!-- 月浏览量更新日期 date(7)-->
-			<if test="entity.month3Browse != null">month3_browse,</if>                         <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3Browse != null">month3_browse,</if>                         <!-- 三个月浏览量 bigint(20)-->
 			<if test="entity.month3BrowseDate != null">month3_browse_date,</if>                <!-- 三个月浏览量更新日期 date(7)-->
-			<if test="entity.allSales != null">all_sales,</if>                                 <!-- 总销量 number(19)-->
+			<if test="entity.allSales != null">all_sales,</if>                                 <!-- 总销量 bigint(20)-->
 			<if test="entity.allSalesDate != null">all_sales_date,</if>                        <!-- 总销量更新日期 date(7)-->
-			<if test="entity.weekSales != null">week_sales,</if>                               <!-- 周销量 number(19)-->
+			<if test="entity.weekSales != null">week_sales,</if>                               <!-- 周销量 bigint(20)-->
 			<if test="entity.weekSalesDate != null">week_sales_date,</if>                      <!-- 周销量更新日期 date(7)-->
-			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销量 number(19)-->
+			<if test="entity.monthSales != null">month_sales,</if>                             <!-- 月销量 bigint(20)-->
 			<if test="entity.monthSalesDate != null">month_sales_date,</if>                    <!-- 月销量更新日期 date(7)-->
-			<if test="entity.month3Sales != null">month3_sales,</if>                           <!-- 三个月销量 number(19)-->
+			<if test="entity.month3Sales != null">month3_sales,</if>                           <!-- 三个月销量 bigint(20)-->
 			<if test="entity.month3SalesDate != null">month3_sales_date,</if>                  <!-- 三个月销量更新日期 date(7)-->
 		</trim>
 		 VALUES 
@@ -208,21 +208,21 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.allBrowse != null">#{entity.allBrowse},</if>                                <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowse != null">#{entity.allBrowse},</if>                                <!-- 总浏览量 bigint(20)-->
 			<if test="entity.allBrowseDate != null">#{entity.allBrowseDate},</if>                        <!-- 总浏览量更新日期 date(7)-->
-			<if test="entity.weekBrowse != null">#{entity.weekBrowse},</if>                              <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowse != null">#{entity.weekBrowse},</if>                              <!-- 周浏览量 bigint(20)-->
 			<if test="entity.weekBrowseDate != null">#{entity.weekBrowseDate},</if>                      <!-- 周浏览量更新日期 date(7)-->
-			<if test="entity.monthBrowse != null">#{entity.monthBrowse},</if>                            <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowse != null">#{entity.monthBrowse},</if>                            <!-- 月浏览量 bigint(20)-->
 			<if test="entity.monthBrowseDate != null">#{entity.monthBrowseDate},</if>                    <!-- 月浏览量更新日期 date(7)-->
-			<if test="entity.month3Browse != null">#{entity.month3Browse},</if>                          <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3Browse != null">#{entity.month3Browse},</if>                          <!-- 三个月浏览量 bigint(20)-->
 			<if test="entity.month3BrowseDate != null">#{entity.month3BrowseDate},</if>                  <!-- 三个月浏览量更新日期 date(7)-->
-			<if test="entity.allSales != null">#{entity.allSales},</if>                                  <!-- 总销量 number(19)-->
+			<if test="entity.allSales != null">#{entity.allSales},</if>                                  <!-- 总销量 bigint(20)-->
 			<if test="entity.allSalesDate != null">#{entity.allSalesDate},</if>                          <!-- 总销量更新日期 date(7)-->
-			<if test="entity.weekSales != null">#{entity.weekSales},</if>                                <!-- 周销量 number(19)-->
+			<if test="entity.weekSales != null">#{entity.weekSales},</if>                                <!-- 周销量 bigint(20)-->
 			<if test="entity.weekSalesDate != null">#{entity.weekSalesDate},</if>                        <!-- 周销量更新日期 date(7)-->
-			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销量 number(19)-->
+			<if test="entity.monthSales != null">#{entity.monthSales},</if>                              <!-- 月销量 bigint(20)-->
 			<if test="entity.monthSalesDate != null">#{entity.monthSalesDate},</if>                      <!-- 月销量更新日期 date(7)-->
-			<if test="entity.month3Sales != null">#{entity.month3Sales},</if>                            <!-- 三个月销量 number(19)-->
+			<if test="entity.month3Sales != null">#{entity.month3Sales},</if>                            <!-- 三个月销量 bigint(20)-->
 			<if test="entity.month3SalesDate != null">#{entity.month3SalesDate},</if>                    <!-- 三个月销量更新日期 date(7)-->
 		</trim>
 	</insert>
@@ -231,21 +231,21 @@
 	<update id="updateById">
 		UPDATE product_spu_analyze 
 		<set>
-			all_browse = #{entity.allBrowse},                               <!-- 总浏览量 number(19)-->
+			all_browse = #{entity.allBrowse},                               <!-- 总浏览量 bigint(20)-->
 			all_browse_date = #{entity.allBrowseDate},                      <!-- 总浏览量更新日期 date(7)-->
-			week_browse = #{entity.weekBrowse},                             <!-- 周浏览量 number(19)-->
+			week_browse = #{entity.weekBrowse},                             <!-- 周浏览量 bigint(20)-->
 			week_browse_date = #{entity.weekBrowseDate},                    <!-- 周浏览量更新日期 date(7)-->
-			month_browse = #{entity.monthBrowse},                           <!-- 月浏览量 number(19)-->
+			month_browse = #{entity.monthBrowse},                           <!-- 月浏览量 bigint(20)-->
 			month_browse_date = #{entity.monthBrowseDate},                  <!-- 月浏览量更新日期 date(7)-->
-			month3_browse = #{entity.month3Browse},                         <!-- 三个月浏览量 number(19)-->
+			month3_browse = #{entity.month3Browse},                         <!-- 三个月浏览量 bigint(20)-->
 			month3_browse_date = #{entity.month3BrowseDate},                <!-- 三个月浏览量更新日期 date(7)-->
-			all_sales = #{entity.allSales},                                 <!-- 总销量 number(19)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 bigint(20)-->
 			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 date(7)-->
-			week_sales = #{entity.weekSales},                               <!-- 周销量 number(19)-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 bigint(20)-->
 			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 date(7)-->
-			month_sales = #{entity.monthSales},                             <!-- 月销量 number(19)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 bigint(20)-->
 			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 date(7)-->
-			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 number(19)-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 bigint(20)-->
 			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 date(7)-->
 
 		</set>
@@ -256,21 +256,21 @@
 	<update id="updateByWhere">
 		UPDATE product_spu_analyze a 
 		<set>
-			all_browse = #{entity.allBrowse},                               <!-- 总浏览量 number(19)-->
+			all_browse = #{entity.allBrowse},                               <!-- 总浏览量 bigint(20)-->
 			all_browse_date = #{entity.allBrowseDate},                      <!-- 总浏览量更新日期 date(7)-->
-			week_browse = #{entity.weekBrowse},                             <!-- 周浏览量 number(19)-->
+			week_browse = #{entity.weekBrowse},                             <!-- 周浏览量 bigint(20)-->
 			week_browse_date = #{entity.weekBrowseDate},                    <!-- 周浏览量更新日期 date(7)-->
-			month_browse = #{entity.monthBrowse},                           <!-- 月浏览量 number(19)-->
+			month_browse = #{entity.monthBrowse},                           <!-- 月浏览量 bigint(20)-->
 			month_browse_date = #{entity.monthBrowseDate},                  <!-- 月浏览量更新日期 date(7)-->
-			month3_browse = #{entity.month3Browse},                         <!-- 三个月浏览量 number(19)-->
+			month3_browse = #{entity.month3Browse},                         <!-- 三个月浏览量 bigint(20)-->
 			month3_browse_date = #{entity.month3BrowseDate},                <!-- 三个月浏览量更新日期 date(7)-->
-			all_sales = #{entity.allSales},                                 <!-- 总销量 number(19)-->
+			all_sales = #{entity.allSales},                                 <!-- 总销量 bigint(20)-->
 			all_sales_date = #{entity.allSalesDate},                        <!-- 总销量更新日期 date(7)-->
-			week_sales = #{entity.weekSales},                               <!-- 周销量 number(19)-->
+			week_sales = #{entity.weekSales},                               <!-- 周销量 bigint(20)-->
 			week_sales_date = #{entity.weekSalesDate},                      <!-- 周销量更新日期 date(7)-->
-			month_sales = #{entity.monthSales},                             <!-- 月销量 number(19)-->
+			month_sales = #{entity.monthSales},                             <!-- 月销量 bigint(20)-->
 			month_sales_date = #{entity.monthSalesDate},                    <!-- 月销量更新日期 date(7)-->
-			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 number(19)-->
+			month3_sales = #{entity.month3Sales},                           <!-- 三个月销量 bigint(20)-->
 			month3_sales_date = #{entity.month3SalesDate},                  <!-- 三个月销量更新日期 date(7)-->
 
 		</set>
@@ -287,21 +287,21 @@
 	<update id="updateByIdSelective">
 		UPDATE product_spu_analyze
 		<set>
-			<if test="entity.allBrowse != null">all_browse = #{entity.allBrowse},</if>                                          <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowse != null">all_browse = #{entity.allBrowse},</if>                                          <!-- 总浏览量 bigint(20)-->
 			<if test="entity.allBrowseDate != null">all_browse_date = #{entity.allBrowseDate},</if>                             <!-- 总浏览量更新日期 date(7)-->
-			<if test="entity.weekBrowse != null">week_browse = #{entity.weekBrowse},</if>                                       <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowse != null">week_browse = #{entity.weekBrowse},</if>                                       <!-- 周浏览量 bigint(20)-->
 			<if test="entity.weekBrowseDate != null">week_browse_date = #{entity.weekBrowseDate},</if>                          <!-- 周浏览量更新日期 date(7)-->
-			<if test="entity.monthBrowse != null">month_browse = #{entity.monthBrowse},</if>                                    <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowse != null">month_browse = #{entity.monthBrowse},</if>                                    <!-- 月浏览量 bigint(20)-->
 			<if test="entity.monthBrowseDate != null">month_browse_date = #{entity.monthBrowseDate},</if>                       <!-- 月浏览量更新日期 date(7)-->
-			<if test="entity.month3Browse != null">month3_browse = #{entity.month3Browse},</if>                                 <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3Browse != null">month3_browse = #{entity.month3Browse},</if>                                 <!-- 三个月浏览量 bigint(20)-->
 			<if test="entity.month3BrowseDate != null">month3_browse_date = #{entity.month3BrowseDate},</if>                    <!-- 三个月浏览量更新日期 date(7)-->
-			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 number(19)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 bigint(20)-->
 			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 date(7)-->
-			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 number(19)-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 bigint(20)-->
 			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 date(7)-->
-			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 number(19)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 bigint(20)-->
 			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 date(7)-->
-			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 number(19)-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 bigint(20)-->
 			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 date(7)-->
 		</set>
 		WHERE p_id = #{entity.pId}
@@ -311,21 +311,21 @@
 	<update id="updateByWhereSelective">
 		UPDATE product_spu_analyze a
 		<set>
-			<if test="entity.allBrowse != null">all_browse = #{entity.allBrowse},</if>                                          <!-- 总浏览量 number(19)-->
+			<if test="entity.allBrowse != null">all_browse = #{entity.allBrowse},</if>                                          <!-- 总浏览量 bigint(20)-->
 			<if test="entity.allBrowseDate != null">all_browse_date = #{entity.allBrowseDate},</if>                             <!-- 总浏览量更新日期 date(7)-->
-			<if test="entity.weekBrowse != null">week_browse = #{entity.weekBrowse},</if>                                       <!-- 周浏览量 number(19)-->
+			<if test="entity.weekBrowse != null">week_browse = #{entity.weekBrowse},</if>                                       <!-- 周浏览量 bigint(20)-->
 			<if test="entity.weekBrowseDate != null">week_browse_date = #{entity.weekBrowseDate},</if>                          <!-- 周浏览量更新日期 date(7)-->
-			<if test="entity.monthBrowse != null">month_browse = #{entity.monthBrowse},</if>                                    <!-- 月浏览量 number(19)-->
+			<if test="entity.monthBrowse != null">month_browse = #{entity.monthBrowse},</if>                                    <!-- 月浏览量 bigint(20)-->
 			<if test="entity.monthBrowseDate != null">month_browse_date = #{entity.monthBrowseDate},</if>                       <!-- 月浏览量更新日期 date(7)-->
-			<if test="entity.month3Browse != null">month3_browse = #{entity.month3Browse},</if>                                 <!-- 三个月浏览量 number(19)-->
+			<if test="entity.month3Browse != null">month3_browse = #{entity.month3Browse},</if>                                 <!-- 三个月浏览量 bigint(20)-->
 			<if test="entity.month3BrowseDate != null">month3_browse_date = #{entity.month3BrowseDate},</if>                    <!-- 三个月浏览量更新日期 date(7)-->
-			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 number(19)-->
+			<if test="entity.allSales != null">all_sales = #{entity.allSales},</if>                                             <!-- 总销量 bigint(20)-->
 			<if test="entity.allSalesDate != null">all_sales_date = #{entity.allSalesDate},</if>                                <!-- 总销量更新日期 date(7)-->
-			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 number(19)-->
+			<if test="entity.weekSales != null">week_sales = #{entity.weekSales},</if>                                          <!-- 周销量 bigint(20)-->
 			<if test="entity.weekSalesDate != null">week_sales_date = #{entity.weekSalesDate},</if>                             <!-- 周销量更新日期 date(7)-->
-			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 number(19)-->
+			<if test="entity.monthSales != null">month_sales = #{entity.monthSales},</if>                                       <!-- 月销量 bigint(20)-->
 			<if test="entity.monthSalesDate != null">month_sales_date = #{entity.monthSalesDate},</if>                          <!-- 月销量更新日期 date(7)-->
-			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 number(19)-->
+			<if test="entity.month3Sales != null">month3_sales = #{entity.month3Sales},</if>                                    <!-- 三个月销量 bigint(20)-->
 			<if test="entity.month3SalesDate != null">month3_sales_date = #{entity.month3SalesDate},</if>                       <!-- 三个月销量更新日期 date(7)-->
 		</set>
 		where  <!-- 防止无where条件时，删除全表、更新全表 -->

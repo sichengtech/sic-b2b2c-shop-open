@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="siteRegisterColumns">
 	<trim suffixOverrides=",">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.is_register AS "isRegister",                                       <!-- 是否开放注册 char(1)-->
 		a.username_max AS "usernameMax",                                     <!-- 用户名最大长度 number(10)-->
 		a.username_min AS "usernameMin",                                     <!-- 用户名最小长度 number(10)-->
@@ -130,7 +130,7 @@
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_register
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			is_register,                                       <!-- 是否开放注册 char(1)-->
 			username_max,                                      <!-- 用户名最大长度 number(10)-->
 			username_min,                                      <!-- 用户名最小长度 number(10)-->

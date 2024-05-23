@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="siteSwitchColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.is_open AS "isOpen",                                               <!-- 是否开放网站 char(1)-->
 		a.msg AS "msg",                                                      <!-- 网站关闭消息 nvarchar2(1024)-->
 		a.bak1 AS "bak1",                                                    <!-- 备用字段1 nvarchar2(64)-->
@@ -107,7 +107,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_switch(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			is_open,                                           <!-- 是否开放网站 char(1)-->
 			msg,                                               <!-- 网站关闭消息 nvarchar2(1024)-->
 			bak1,                                              <!-- 备用字段1 nvarchar2(64)-->

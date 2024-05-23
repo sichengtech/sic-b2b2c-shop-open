@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="siteNavColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
 		a.name AS "name",                                                    <!-- 导航名称 nvarchar2(64)-->
 		a.location AS "location",                                            <!-- 显示位置(1顶部导航、2中部导航、3底部导航) char(1)-->
@@ -124,7 +124,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_nav(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			sort,                                              <!-- 排序 number(10)-->
 			name,                                              <!-- 导航名称 nvarchar2(64)-->
 			location,                                          <!-- 显示位置(1顶部导航、2中部导航、3底部导航) char(1)-->

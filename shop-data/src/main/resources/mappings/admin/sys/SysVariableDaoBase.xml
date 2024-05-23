@@ -7,7 +7,7 @@
 	<!-- 全部字段 -->
 	<sql id="sysVariableColumns">
 	<trim suffixOverrides=",">
-		a.var_id AS "varId",                                                 <!-- 主键 number(19)-->
+		a.var_id AS "varId",                                                 <!-- 主键 bigint(20)-->
 		a.name AS "name",                                                    <!-- 变量名有唯一约束不可重名，就像map的key一样。用于通过name获取value nvarchar2(64)-->
 		a.value AS "value",                                                  <!-- 变量值 nvarchar2(1024)-->
 		a.value_clob AS "valueClob",                                         <!-- 变量值，用于存储clob类型值 clob-->
@@ -112,7 +112,7 @@
 	<insert id="insert" keyProperty="entity.varId" keyColumn="var_id" useGeneratedKeys="true">
 		INSERT INTO sys_variable
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			var_id,                                            <!-- 主键 number(19)-->
+			var_id,                                            <!-- 主键 bigint(20)-->
 			name,                                              <!-- 变量名有唯一约束不可重名，就像map的key一样。用于通过name获取value nvarchar2(64)-->
 			value,                                             <!-- 变量值 nvarchar2(1024)-->
 			value_clob,                                        <!-- 变量值，用于存储clob类型值 clob-->

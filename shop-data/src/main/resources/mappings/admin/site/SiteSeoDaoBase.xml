@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="siteSeoColumns">
-		a.id AS "id",                                                        <!-- 主键 number(19)-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
 		a.type AS "type",                                                    <!-- 业务类型，1大首页、2商品详情页、3店铺首页 char(1)-->
 		a.title AS "title",                                                  <!-- Title nvarchar2(255)-->
 		a.keywords AS "keywords",                                            <!-- Keywords nvarchar2(255)-->
@@ -114,7 +114,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.id" keyColumn="id" useGeneratedKeys="true">
 		INSERT INTO site_seo(
-			id,                                                <!-- 主键 number(19)-->
+			id,                                                <!-- 主键 bigint(20)-->
 			type,                                              <!-- 业务类型，1大首页、2商品详情页、3店铺首页 char(1)-->
 			title,                                             <!-- Title nvarchar2(255)-->
 			keywords,                                          <!-- Keywords nvarchar2(255)-->

@@ -7,18 +7,18 @@
 	<!-- 全部字段 -->
 	<sql id="userMerchantInfoColumns">
 	<trim suffixOverrides=",">
-		a.u_id AS "uId",                                                     <!-- 主键,会员的ID number(19)-->
+		a.u_id AS "uId",                                                     <!-- 主键,会员的ID bigint(20)-->
 		a.type AS "type",                                                    <!-- 企业类型（字典） char(2)-->
 		a.industry AS "industry",                                            <!-- 行业属性（字典） char(2)-->
 		a.name AS "name",                                                    <!-- 公司名称 nvarchar2(64)-->
 		a.introduce AS "introduce",                                          <!-- 公司介绍 nvarchar2(512)-->
-		a.country_id AS "countryId",                                         <!-- 公司所在地国家(关联地区表) number(19)-->
+		a.country_id AS "countryId",                                         <!-- 公司所在地国家(关联地区表) bigint(20)-->
 		a.country_name AS "countryName",                                     <!-- 公司所在地国家名字 nvarchar2(64)-->
-		a.province_id AS "provinceId",                                       <!-- 公司所在地省(关联地区表) number(19)-->
+		a.province_id AS "provinceId",                                       <!-- 公司所在地省(关联地区表) bigint(20)-->
 		a.province_name AS "provinceName",                                   <!-- 公司所在地省名字 nvarchar2(64)-->
-		a.city_id AS "cityId",                                               <!-- 公司所在地市(关联地区表) number(19)-->
+		a.city_id AS "cityId",                                               <!-- 公司所在地市(关联地区表) bigint(20)-->
 		a.city_name AS "cityName",                                           <!-- 公司所在地市名字 nvarchar2(64)-->
-		a.district_id AS "districtId",                                       <!-- 公司所在地县(关联地区表) number(19)-->
+		a.district_id AS "districtId",                                       <!-- 公司所在地县(关联地区表) bigint(20)-->
 		a.district_name AS "districtName",                                   <!-- 公司县名字 nvarchar2(64)-->
 		a.detailed_address AS "detailedAddress",                             <!-- 公司详细地址 nvarchar2(128)-->
 		a.custom_call AS "customCall",                                       <!-- 客服电话 nvarchar2(32)-->
@@ -151,18 +151,18 @@
 	<insert id="insert" keyProperty="entity.uId" keyColumn="u_id" useGeneratedKeys="true">
 		INSERT INTO user_merchant_info
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			u_id,                                              <!-- 主键,会员的ID number(19)-->
+			u_id,                                              <!-- 主键,会员的ID bigint(20)-->
 			type,                                              <!-- 企业类型（字典） char(2)-->
 			industry,                                          <!-- 行业属性（字典） char(2)-->
 			name,                                              <!-- 公司名称 nvarchar2(64)-->
 			introduce,                                         <!-- 公司介绍 nvarchar2(512)-->
-			country_id,                                        <!-- 公司所在地国家(关联地区表) number(19)-->
+			country_id,                                        <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			country_name,                                      <!-- 公司所在地国家名字 nvarchar2(64)-->
-			province_id,                                       <!-- 公司所在地省(关联地区表) number(19)-->
+			province_id,                                       <!-- 公司所在地省(关联地区表) bigint(20)-->
 			province_name,                                     <!-- 公司所在地省名字 nvarchar2(64)-->
-			city_id,                                           <!-- 公司所在地市(关联地区表) number(19)-->
+			city_id,                                           <!-- 公司所在地市(关联地区表) bigint(20)-->
 			city_name,                                         <!-- 公司所在地市名字 nvarchar2(64)-->
-			district_id,                                       <!-- 公司所在地县(关联地区表) number(19)-->
+			district_id,                                       <!-- 公司所在地县(关联地区表) bigint(20)-->
 			district_name,                                     <!-- 公司县名字 nvarchar2(64)-->
 			detailed_address,                                  <!-- 公司详细地址 nvarchar2(128)-->
 			custom_call,                                       <!-- 客服电话 nvarchar2(32)-->
@@ -192,13 +192,13 @@
 			#{entity.industry},                                <!-- 行业属性（字典） char(2)-->
 			#{entity.name},                                    <!-- 公司名称 nvarchar2(64)-->
 			#{entity.introduce},                               <!-- 公司介绍 nvarchar2(512)-->
-			#{entity.countryId},                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			#{entity.countryId},                               <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			#{entity.countryName},                             <!-- 公司所在地国家名字 nvarchar2(64)-->
-			#{entity.provinceId},                              <!-- 公司所在地省(关联地区表) number(19)-->
+			#{entity.provinceId},                              <!-- 公司所在地省(关联地区表) bigint(20)-->
 			#{entity.provinceName},                            <!-- 公司所在地省名字 nvarchar2(64)-->
-			#{entity.cityId},                                  <!-- 公司所在地市(关联地区表) number(19)-->
+			#{entity.cityId},                                  <!-- 公司所在地市(关联地区表) bigint(20)-->
 			#{entity.cityName},                                <!-- 公司所在地市名字 nvarchar2(64)-->
-			#{entity.districtId},                              <!-- 公司所在地县(关联地区表) number(19)-->
+			#{entity.districtId},                              <!-- 公司所在地县(关联地区表) bigint(20)-->
 			#{entity.districtName},                            <!-- 公司县名字 nvarchar2(64)-->
 			#{entity.detailedAddress},                         <!-- 公司详细地址 nvarchar2(128)-->
 			#{entity.customCall},                              <!-- 客服电话 nvarchar2(32)-->
@@ -228,13 +228,13 @@
 			<if test="entity.industry != null">industry,</if>                                  <!-- 行业属性（字典） char(2)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 公司名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">introduce,</if>                                <!-- 公司介绍 nvarchar2(512)-->
-			<if test="entity.countryId != null">country_id,</if>                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id,</if>                               <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name,</if>                           <!-- 公司所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id,</if>                             <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id,</if>                             <!-- 公司所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name,</if>                         <!-- 公司所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id,</if>                                     <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id,</if>                                     <!-- 公司所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name,</if>                                 <!-- 公司所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id,</if>                             <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id,</if>                             <!-- 公司所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name,</if>                         <!-- 公司县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address,</if>                   <!-- 公司详细地址 nvarchar2(128)-->
 			<if test="entity.customCall != null">custom_call,</if>                             <!-- 客服电话 nvarchar2(32)-->
@@ -265,13 +265,13 @@
 			<if test="entity.industry != null">#{entity.industry},</if>                                  <!-- 行业属性（字典） char(2)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 公司名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">#{entity.introduce},</if>                                <!-- 公司介绍 nvarchar2(512)-->
-			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">#{entity.countryId},</if>                                <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">#{entity.countryName},</if>                            <!-- 公司所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">#{entity.provinceId},</if>                              <!-- 公司所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">#{entity.provinceName},</if>                          <!-- 公司所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">#{entity.cityId},</if>                                      <!-- 公司所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">#{entity.cityName},</if>                                  <!-- 公司所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">#{entity.districtId},</if>                              <!-- 公司所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">#{entity.districtName},</if>                          <!-- 公司县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">#{entity.detailedAddress},</if>                    <!-- 公司详细地址 nvarchar2(128)-->
 			<if test="entity.customCall != null">#{entity.customCall},</if>                              <!-- 客服电话 nvarchar2(32)-->
@@ -298,13 +298,13 @@
 			industry = #{entity.industry},                                  <!-- 行业属性（字典） char(2)-->
 			name = #{entity.name},                                          <!-- 公司名称 nvarchar2(64)-->
 			introduce = #{entity.introduce},                                <!-- 公司介绍 nvarchar2(512)-->
-			country_id = #{entity.countryId},                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 公司所在地国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 公司所在地省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 公司所在地省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 公司所在地省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 公司所在地市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 公司所在地市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 公司所在地市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 公司所在地县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 公司所在地县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 公司县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 公司详细地址 nvarchar2(128)-->
 			custom_call = #{entity.customCall},                             <!-- 客服电话 nvarchar2(32)-->
@@ -333,13 +333,13 @@
 			industry = #{entity.industry},                                  <!-- 行业属性（字典） char(2)-->
 			name = #{entity.name},                                          <!-- 公司名称 nvarchar2(64)-->
 			introduce = #{entity.introduce},                                <!-- 公司介绍 nvarchar2(512)-->
-			country_id = #{entity.countryId},                               <!-- 公司所在地国家(关联地区表) number(19)-->
+			country_id = #{entity.countryId},                               <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			country_name = #{entity.countryName},                           <!-- 公司所在地国家名字 nvarchar2(64)-->
-			province_id = #{entity.provinceId},                             <!-- 公司所在地省(关联地区表) number(19)-->
+			province_id = #{entity.provinceId},                             <!-- 公司所在地省(关联地区表) bigint(20)-->
 			province_name = #{entity.provinceName},                         <!-- 公司所在地省名字 nvarchar2(64)-->
-			city_id = #{entity.cityId},                                     <!-- 公司所在地市(关联地区表) number(19)-->
+			city_id = #{entity.cityId},                                     <!-- 公司所在地市(关联地区表) bigint(20)-->
 			city_name = #{entity.cityName},                                 <!-- 公司所在地市名字 nvarchar2(64)-->
-			district_id = #{entity.districtId},                             <!-- 公司所在地县(关联地区表) number(19)-->
+			district_id = #{entity.districtId},                             <!-- 公司所在地县(关联地区表) bigint(20)-->
 			district_name = #{entity.districtName},                         <!-- 公司县名字 nvarchar2(64)-->
 			detailed_address = #{entity.detailedAddress},                   <!-- 公司详细地址 nvarchar2(128)-->
 			custom_call = #{entity.customCall},                             <!-- 客服电话 nvarchar2(32)-->
@@ -374,13 +374,13 @@
 			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 行业属性（字典） char(2)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 公司名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 公司介绍 nvarchar2(512)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 公司所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 公司所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 公司所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 公司所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 公司所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 公司所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 公司县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司详细地址 nvarchar2(128)-->
 			<if test="entity.customCall != null">custom_call = #{entity.customCall},</if>                                       <!-- 客服电话 nvarchar2(32)-->
@@ -408,13 +408,13 @@
 			<if test="entity.industry != null">industry = #{entity.industry},</if>                                              <!-- 行业属性（字典） char(2)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 公司名称 nvarchar2(64)-->
 			<if test="entity.introduce != null">introduce = #{entity.introduce},</if>                                           <!-- 公司介绍 nvarchar2(512)-->
-			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 公司所在地国家(关联地区表) number(19)-->
+			<if test="entity.countryId != null">country_id = #{entity.countryId},</if>                                          <!-- 公司所在地国家(关联地区表) bigint(20)-->
 			<if test="entity.countryName != null">country_name = #{entity.countryName},</if>                                    <!-- 公司所在地国家名字 nvarchar2(64)-->
-			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 公司所在地省(关联地区表) number(19)-->
+			<if test="entity.provinceId != null">province_id = #{entity.provinceId},</if>                                       <!-- 公司所在地省(关联地区表) bigint(20)-->
 			<if test="entity.provinceName != null">province_name = #{entity.provinceName},</if>                                 <!-- 公司所在地省名字 nvarchar2(64)-->
-			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 公司所在地市(关联地区表) number(19)-->
+			<if test="entity.cityId != null">city_id = #{entity.cityId},</if>                                                   <!-- 公司所在地市(关联地区表) bigint(20)-->
 			<if test="entity.cityName != null">city_name = #{entity.cityName},</if>                                             <!-- 公司所在地市名字 nvarchar2(64)-->
-			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 公司所在地县(关联地区表) number(19)-->
+			<if test="entity.districtId != null">district_id = #{entity.districtId},</if>                                       <!-- 公司所在地县(关联地区表) bigint(20)-->
 			<if test="entity.districtName != null">district_name = #{entity.districtName},</if>                                 <!-- 公司县名字 nvarchar2(64)-->
 			<if test="entity.detailedAddress != null">detailed_address = #{entity.detailedAddress},</if>                        <!-- 公司详细地址 nvarchar2(128)-->
 			<if test="entity.customCall != null">custom_call = #{entity.customCall},</if>                                       <!-- 客服电话 nvarchar2(32)-->

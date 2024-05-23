@@ -7,10 +7,10 @@
 	<!-- 全部字段 -->
 	<sql id="productCategoryColumns">
 	<trim suffixOverrides=",">
-		a.category_id AS "categoryId",                                       <!-- 主键 number(19)-->
+		a.category_id AS "categoryId",                                       <!-- 主键 bigint(20)-->
 		a.category_img AS "categoryImg",                                     <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 		a.name AS "name",                                                    <!-- 类别名称 nvarchar2(64)-->
-		a.parent_id AS "parent.id",                                          <!-- 父类id number(19)-->
+		a.parent_id AS "parent.id",                                          <!-- 父类id bigint(20)-->
 		a.parent_ids AS "parentIds",                                         <!-- 所有父级标号 nvarchar2(1024)-->
 		a.cate_level AS "cateLevel",                                         <!-- 类别层级 number(10)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
@@ -151,10 +151,10 @@
 	<insert id="insert" keyProperty="entity.categoryId" keyColumn="category_id" useGeneratedKeys="true">
 		INSERT INTO product_category
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			category_id,                                       <!-- 主键 number(19)-->
+			category_id,                                       <!-- 主键 bigint(20)-->
 			category_img,                                      <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			name,                                              <!-- 类别名称 nvarchar2(64)-->
-			parent_id,                                         <!-- 父类id number(19)-->
+			parent_id,                                         <!-- 父类id bigint(20)-->
 			parent_ids,                                        <!-- 所有父级标号 nvarchar2(1024)-->
 			cate_level,                                        <!-- 类别层级 number(10)-->
 			sort,                                              <!-- 排序 number(10)-->
@@ -190,7 +190,7 @@
 			</if>
 			#{entity.categoryImg},                             <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			#{entity.name},                                    <!-- 类别名称 nvarchar2(64)-->
-			#{entity.parent.id},                               <!-- 父类id number(19)-->
+			#{entity.parent.id},                               <!-- 父类id bigint(20)-->
 			#{entity.parentIds},                               <!-- 所有父级标号 nvarchar2(1024)-->
 			#{entity.cateLevel},                               <!-- 类别层级 number(10)-->
 			#{entity.sort},                                    <!-- 排序 number(10)-->
@@ -226,7 +226,7 @@
 			<if test="entity.pkMode==2">category_id,</if>
 			<if test="entity.categoryImg != null">category_img,</if>                           <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			<if test="entity.name != null">name,</if>                                          <!-- 类别名称 nvarchar2(64)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- 父类id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id,</if>                                <!-- 父类id bigint(20)-->
 			<if test="entity.parentIds != null">parent_ids,</if>                               <!-- 所有父级标号 nvarchar2(1024)-->
 			<if test="entity.cateLevel != null">cate_level,</if>                               <!-- 类别层级 number(10)-->
 			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
@@ -263,7 +263,7 @@
 			</if>
 			<if test="entity.categoryImg != null">#{entity.categoryImg},</if>                            <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			<if test="entity.name != null">#{entity.name},</if>                                          <!-- 类别名称 nvarchar2(64)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- 父类id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">#{entity.parent.id},</if>                                <!-- 父类id bigint(20)-->
 			<if test="entity.parentIds != null">#{entity.parentIds},</if>                                <!-- 所有父级标号 nvarchar2(1024)-->
 			<if test="entity.cateLevel != null">#{entity.cateLevel},</if>                                <!-- 类别层级 number(10)-->
 			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
@@ -296,7 +296,7 @@
 		<set>
 			category_img = #{entity.categoryImg},                           <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			name = #{entity.name},                                          <!-- 类别名称 nvarchar2(64)-->
-			parent_id = #{entity.parent.id},                                <!-- 父类id number(19)-->
+			parent_id = #{entity.parent.id},                                <!-- 父类id bigint(20)-->
 			parent_ids = #{entity.parentIds},                               <!-- 所有父级标号 nvarchar2(1024)-->
 			cate_level = #{entity.cateLevel},                               <!-- 类别层级 number(10)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
@@ -331,7 +331,7 @@
 		<set>
 			category_img = #{entity.categoryImg},                           <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			name = #{entity.name},                                          <!-- 类别名称 nvarchar2(64)-->
-			parent_id = #{entity.parent.id},                                <!-- 父类id number(19)-->
+			parent_id = #{entity.parent.id},                                <!-- 父类id bigint(20)-->
 			parent_ids = #{entity.parentIds},                               <!-- 所有父级标号 nvarchar2(1024)-->
 			cate_level = #{entity.cateLevel},                               <!-- 类别层级 number(10)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
@@ -372,7 +372,7 @@
 		<set>
 			<if test="entity.categoryImg != null">category_img = #{entity.categoryImg},</if>                                    <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 类别名称 nvarchar2(64)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父类id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父类id bigint(20)-->
 			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级标号 nvarchar2(1024)-->
 			<if test="entity.cateLevel != null">cate_level = #{entity.cateLevel},</if>                                          <!-- 类别层级 number(10)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
@@ -406,7 +406,7 @@
 		<set>
 			<if test="entity.categoryImg != null">category_img = #{entity.categoryImg},</if>                                    <!-- 分类导航图标（只有在层级为0的情况下有图片地址） nvarchar2(64)-->
 			<if test="entity.name != null">name = #{entity.name},</if>                                                          <!-- 类别名称 nvarchar2(64)-->
-			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父类id number(19)-->
+			<if test="entity.parent!= null and entity.parent.id!= null ">parent_id = #{entity.parent.id},</if>                                           <!-- 父类id bigint(20)-->
 			<if test="entity.parentIds != null">parent_ids = #{entity.parentIds},</if>                                          <!-- 所有父级标号 nvarchar2(1024)-->
 			<if test="entity.cateLevel != null">cate_level = #{entity.cateLevel},</if>                                          <!-- 类别层级 number(10)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->

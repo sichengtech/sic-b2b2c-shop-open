@@ -6,8 +6,8 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="tradeComplaintDetailColumns">
-		a.cd_id AS "cdId",                                                   <!-- 主键 number(19)-->
-		a.complaint_id AS "complaintId",                                     <!-- 投诉id number(19)-->
+		a.cd_id AS "cdId",                                                   <!-- 主键 bigint(20)-->
+		a.complaint_id AS "complaintId",                                     <!-- 投诉id bigint(20)-->
 		a.count AS "count",                                                  <!-- 内容 nvarchar2(1024)-->
 		a.user_type AS "userType",                                           <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 		a.is_shield AS "isShield",                                           <!-- 是否屏蔽 char(1)-->
@@ -115,8 +115,8 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.cdId" keyColumn="cd_id" useGeneratedKeys="true">
 		INSERT INTO trade_complaint_detail(
-			cd_id,                                             <!-- 主键 number(19)-->
-			complaint_id,                                      <!-- 投诉id number(19)-->
+			cd_id,                                             <!-- 主键 bigint(20)-->
+			complaint_id,                                      <!-- 投诉id bigint(20)-->
 			count,                                             <!-- 内容 nvarchar2(1024)-->
 			user_type,                                         <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			is_shield,                                         <!-- 是否屏蔽 char(1)-->
@@ -135,7 +135,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.complaintId},                             <!-- 投诉id number(19)-->
+			#{entity.complaintId},                             <!-- 投诉id bigint(20)-->
 			#{entity.count},                                   <!-- 内容 nvarchar2(1024)-->
 			#{entity.userType},                                <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			#{entity.isShield},                                <!-- 是否屏蔽 char(1)-->
@@ -156,7 +156,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.cdId != null">cd_id,</if></if>
 			<if test="entity.pkMode==2">cd_id,</if>
-			<if test="entity.complaintId != null">complaint_id,</if>                           <!-- 投诉id number(19)-->
+			<if test="entity.complaintId != null">complaint_id,</if>                           <!-- 投诉id bigint(20)-->
 			<if test="entity.count != null">count,</if>                                        <!-- 内容 nvarchar2(1024)-->
 			<if test="entity.userType != null">user_type,</if>                                 <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			<if test="entity.isShield != null">is_shield,</if>                                 <!-- 是否屏蔽 char(1)-->
@@ -178,7 +178,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.complaintId != null">#{entity.complaintId},</if>                            <!-- 投诉id number(19)-->
+			<if test="entity.complaintId != null">#{entity.complaintId},</if>                            <!-- 投诉id bigint(20)-->
 			<if test="entity.count != null">#{entity.count},</if>                                        <!-- 内容 nvarchar2(1024)-->
 			<if test="entity.userType != null">#{entity.userType},</if>                                  <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			<if test="entity.isShield != null">#{entity.isShield},</if>                                  <!-- 是否屏蔽 char(1)-->
@@ -195,7 +195,7 @@
 	<!-- 根据主键更新记录-->
 	<update id="updateById">
 		UPDATE trade_complaint_detail SET
-			complaint_id = #{entity.complaintId},                           <!-- 投诉id number(19)-->
+			complaint_id = #{entity.complaintId},                           <!-- 投诉id bigint(20)-->
 			count = #{entity.count},                                        <!-- 内容 nvarchar2(1024)-->
 			user_type = #{entity.userType},                                 <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			is_shield = #{entity.isShield},                                 <!-- 是否屏蔽 char(1)-->
@@ -213,7 +213,7 @@
 	<!-- 根据条件更新记录-->
 	<update id="updateByWhere">
 		UPDATE trade_complaint_detail a SET
-			complaint_id = #{entity.complaintId},                           <!-- 投诉id number(19)-->
+			complaint_id = #{entity.complaintId},                           <!-- 投诉id bigint(20)-->
 			count = #{entity.count},                                        <!-- 内容 nvarchar2(1024)-->
 			user_type = #{entity.userType},                                 <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			is_shield = #{entity.isShield},                                 <!-- 是否屏蔽 char(1)-->
@@ -238,7 +238,7 @@
 	<update id="updateByIdSelective">
 		UPDATE trade_complaint_detail
 		<set>
-			<if test="entity.complaintId != null">complaint_id = #{entity.complaintId},</if>                                    <!-- 投诉id number(19)-->
+			<if test="entity.complaintId != null">complaint_id = #{entity.complaintId},</if>                                    <!-- 投诉id bigint(20)-->
 			<if test="entity.count != null">count = #{entity.count},</if>                                                       <!-- 内容 nvarchar2(1024)-->
 			<if test="entity.userType != null">user_type = #{entity.userType},</if>                                             <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			<if test="entity.isShield != null">is_shield = #{entity.isShield},</if>                                             <!-- 是否屏蔽 char(1)-->
@@ -257,7 +257,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE trade_complaint_detail a
 		<set>
-			<if test="entity.complaintId != null">complaint_id = #{entity.complaintId},</if>                                    <!-- 投诉id number(19)-->
+			<if test="entity.complaintId != null">complaint_id = #{entity.complaintId},</if>                                    <!-- 投诉id bigint(20)-->
 			<if test="entity.count != null">count = #{entity.count},</if>                                                       <!-- 内容 nvarchar2(1024)-->
 			<if test="entity.userType != null">user_type = #{entity.userType},</if>                                             <!-- 用户类型，1买家、2商家、3平台 char(1)-->
 			<if test="entity.isShield != null">is_shield = #{entity.isShield},</if>                                             <!-- 是否屏蔽 char(1)-->

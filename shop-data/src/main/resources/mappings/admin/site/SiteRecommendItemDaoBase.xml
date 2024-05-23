@@ -7,13 +7,13 @@
 	<!-- 全部字段 -->
 	<sql id="siteRecommendItemColumns">
 	<trim suffixOverrides=",">
-		a.ri_id AS "riId",                                                   <!-- 主键 number(19)-->
-		a.recommend_id AS "recommendId",                                     <!-- 推荐位表id number(19)-->
+		a.ri_id AS "riId",                                                   <!-- 主键 bigint(20)-->
+		a.recommend_id AS "recommendId",                                     <!-- 推荐位表id bigint(20)-->
 		a.path AS "path",                                                    <!-- 图片地址 nvarchar2(128)-->
-		a.p_id AS "pId",                                                     <!-- 商品id number(19)-->
+		a.p_id AS "pId",                                                     <!-- 商品id bigint(20)-->
 		a.operation_type AS "operationType",                                 <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 		a.operation_content AS "operationContent",                           <!-- 操作内容 nvarchar2(255)-->
-		a.sort AS "sort",                                                    <!-- 排序 number(19)-->
+		a.sort AS "sort",                                                    <!-- 排序 bigint(20)-->
 		a.add_info1 AS "addInfo1",                                           <!-- 附加值1 nvarchar2(255)-->
 		a.add_info2 AS "addInfo2",                                           <!-- 附加值2 nvarchar2(255)-->
 		a.add_info3 AS "addInfo3",                                           <!-- 附加值3 nvarchar2(255)-->
@@ -122,13 +122,13 @@
 	<insert id="insert" keyProperty="entity.riId" keyColumn="ri_id" useGeneratedKeys="true">
 		INSERT INTO site_recommend_item
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			ri_id,                                             <!-- 主键 number(19)-->
-			recommend_id,                                      <!-- 推荐位表id number(19)-->
+			ri_id,                                             <!-- 主键 bigint(20)-->
+			recommend_id,                                      <!-- 推荐位表id bigint(20)-->
 			path,                                              <!-- 图片地址 nvarchar2(128)-->
-			p_id,                                              <!-- 商品id number(19)-->
+			p_id,                                              <!-- 商品id bigint(20)-->
 			operation_type,                                    <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			operation_content,                                 <!-- 操作内容 nvarchar2(255)-->
-			sort,                                              <!-- 排序 number(19)-->
+			sort,                                              <!-- 排序 bigint(20)-->
 			add_info1,                                         <!-- 附加值1 nvarchar2(255)-->
 			add_info2,                                         <!-- 附加值2 nvarchar2(255)-->
 			add_info3,                                         <!-- 附加值3 nvarchar2(255)-->
@@ -146,12 +146,12 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.recommendId},                             <!-- 推荐位表id number(19)-->
+			#{entity.recommendId},                             <!-- 推荐位表id bigint(20)-->
 			#{entity.path},                                    <!-- 图片地址 nvarchar2(128)-->
-			#{entity.pId},                                     <!-- 商品id number(19)-->
+			#{entity.pId},                                     <!-- 商品id bigint(20)-->
 			#{entity.operationType},                           <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			#{entity.operationContent},                        <!-- 操作内容 nvarchar2(255)-->
-			#{entity.sort},                                    <!-- 排序 number(19)-->
+			#{entity.sort},                                    <!-- 排序 bigint(20)-->
 			#{entity.addInfo1},                                <!-- 附加值1 nvarchar2(255)-->
 			#{entity.addInfo2},                                <!-- 附加值2 nvarchar2(255)-->
 			#{entity.addInfo3},                                <!-- 附加值3 nvarchar2(255)-->
@@ -169,12 +169,12 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.riId != null">ri_id,</if></if>
 			<if test="entity.pkMode==2">ri_id,</if>
-			<if test="entity.recommendId != null">recommend_id,</if>                           <!-- 推荐位表id number(19)-->
+			<if test="entity.recommendId != null">recommend_id,</if>                           <!-- 推荐位表id bigint(20)-->
 			<if test="entity.path != null">path,</if>                                          <!-- 图片地址 nvarchar2(128)-->
-			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品id number(19)-->
+			<if test="entity.pId != null">p_id,</if>                                           <!-- 商品id bigint(20)-->
 			<if test="entity.operationType != null">operation_type,</if>                       <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			<if test="entity.operationContent != null">operation_content,</if>                 <!-- 操作内容 nvarchar2(255)-->
-			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 bigint(20)-->
 			<if test="entity.addInfo1 != null">add_info1,</if>                                 <!-- 附加值1 nvarchar2(255)-->
 			<if test="entity.addInfo2 != null">add_info2,</if>                                 <!-- 附加值2 nvarchar2(255)-->
 			<if test="entity.addInfo3 != null">add_info3,</if>                                 <!-- 附加值3 nvarchar2(255)-->
@@ -193,12 +193,12 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.recommendId != null">#{entity.recommendId},</if>                            <!-- 推荐位表id number(19)-->
+			<if test="entity.recommendId != null">#{entity.recommendId},</if>                            <!-- 推荐位表id bigint(20)-->
 			<if test="entity.path != null">#{entity.path},</if>                                          <!-- 图片地址 nvarchar2(128)-->
-			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品id number(19)-->
+			<if test="entity.pId != null">#{entity.pId},</if>                                            <!-- 商品id bigint(20)-->
 			<if test="entity.operationType != null">#{entity.operationType},</if>                        <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			<if test="entity.operationContent != null">#{entity.operationContent},</if>                  <!-- 操作内容 nvarchar2(255)-->
-			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 bigint(20)-->
 			<if test="entity.addInfo1 != null">#{entity.addInfo1},</if>                                  <!-- 附加值1 nvarchar2(255)-->
 			<if test="entity.addInfo2 != null">#{entity.addInfo2},</if>                                  <!-- 附加值2 nvarchar2(255)-->
 			<if test="entity.addInfo3 != null">#{entity.addInfo3},</if>                                  <!-- 附加值3 nvarchar2(255)-->
@@ -213,12 +213,12 @@
 	<update id="updateById">
 		UPDATE site_recommend_item 
 		<set>
-			recommend_id = #{entity.recommendId},                           <!-- 推荐位表id number(19)-->
+			recommend_id = #{entity.recommendId},                           <!-- 推荐位表id bigint(20)-->
 			path = #{entity.path},                                          <!-- 图片地址 nvarchar2(128)-->
-			p_id = #{entity.pId},                                           <!-- 商品id number(19)-->
+			p_id = #{entity.pId},                                           <!-- 商品id bigint(20)-->
 			operation_type = #{entity.operationType},                       <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			operation_content = #{entity.operationContent},                 <!-- 操作内容 nvarchar2(255)-->
-			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(20)-->
 			add_info1 = #{entity.addInfo1},                                 <!-- 附加值1 nvarchar2(255)-->
 			add_info2 = #{entity.addInfo2},                                 <!-- 附加值2 nvarchar2(255)-->
 			add_info3 = #{entity.addInfo3},                                 <!-- 附加值3 nvarchar2(255)-->
@@ -235,12 +235,12 @@
 	<update id="updateByWhere">
 		UPDATE site_recommend_item a 
 		<set>
-			recommend_id = #{entity.recommendId},                           <!-- 推荐位表id number(19)-->
+			recommend_id = #{entity.recommendId},                           <!-- 推荐位表id bigint(20)-->
 			path = #{entity.path},                                          <!-- 图片地址 nvarchar2(128)-->
-			p_id = #{entity.pId},                                           <!-- 商品id number(19)-->
+			p_id = #{entity.pId},                                           <!-- 商品id bigint(20)-->
 			operation_type = #{entity.operationType},                       <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			operation_content = #{entity.operationContent},                 <!-- 操作内容 nvarchar2(255)-->
-			sort = #{entity.sort},                                          <!-- 排序 number(19)-->
+			sort = #{entity.sort},                                          <!-- 排序 bigint(20)-->
 			add_info1 = #{entity.addInfo1},                                 <!-- 附加值1 nvarchar2(255)-->
 			add_info2 = #{entity.addInfo2},                                 <!-- 附加值2 nvarchar2(255)-->
 			add_info3 = #{entity.addInfo3},                                 <!-- 附加值3 nvarchar2(255)-->
@@ -263,12 +263,12 @@
 	<update id="updateByIdSelective">
 		UPDATE site_recommend_item
 		<set>
-			<if test="entity.recommendId != null">recommend_id = #{entity.recommendId},</if>                                    <!-- 推荐位表id number(19)-->
+			<if test="entity.recommendId != null">recommend_id = #{entity.recommendId},</if>                                    <!-- 推荐位表id bigint(20)-->
 			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片地址 nvarchar2(128)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id number(19)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id bigint(20)-->
 			<if test="entity.operationType != null">operation_type = #{entity.operationType},</if>                              <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			<if test="entity.operationContent != null">operation_content = #{entity.operationContent},</if>                     <!-- 操作内容 nvarchar2(255)-->
-			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(20)-->
 			<if test="entity.addInfo1 != null">add_info1 = #{entity.addInfo1},</if>                                             <!-- 附加值1 nvarchar2(255)-->
 			<if test="entity.addInfo2 != null">add_info2 = #{entity.addInfo2},</if>                                             <!-- 附加值2 nvarchar2(255)-->
 			<if test="entity.addInfo3 != null">add_info3 = #{entity.addInfo3},</if>                                             <!-- 附加值3 nvarchar2(255)-->
@@ -284,12 +284,12 @@
 	<update id="updateByWhereSelective">
 		UPDATE site_recommend_item a
 		<set>
-			<if test="entity.recommendId != null">recommend_id = #{entity.recommendId},</if>                                    <!-- 推荐位表id number(19)-->
+			<if test="entity.recommendId != null">recommend_id = #{entity.recommendId},</if>                                    <!-- 推荐位表id bigint(20)-->
 			<if test="entity.path != null">path = #{entity.path},</if>                                                          <!-- 图片地址 nvarchar2(128)-->
-			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id number(19)-->
+			<if test="entity.pId != null">p_id = #{entity.pId},</if>                                                            <!-- 商品id bigint(20)-->
 			<if test="entity.operationType != null">operation_type = #{entity.operationType},</if>                              <!-- 操作类型(1无操作、2链接地址、3关键字、4商品编号、5店铺编号、6商品分类) char(1)-->
 			<if test="entity.operationContent != null">operation_content = #{entity.operationContent},</if>                     <!-- 操作内容 nvarchar2(255)-->
-			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(19)-->
+			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 bigint(20)-->
 			<if test="entity.addInfo1 != null">add_info1 = #{entity.addInfo1},</if>                                             <!-- 附加值1 nvarchar2(255)-->
 			<if test="entity.addInfo2 != null">add_info2 = #{entity.addInfo2},</if>                                             <!-- 附加值2 nvarchar2(255)-->
 			<if test="entity.addInfo3 != null">add_info3 = #{entity.addInfo3},</if>                                             <!-- 附加值3 nvarchar2(255)-->

@@ -6,7 +6,7 @@
 	</cache>
 	<!-- 全部字段 -->
 	<sql id="storeLevelColumns">
-		a.level_id AS "levelId",                                             <!-- 主键 number(19)-->
+		a.level_id AS "levelId",                                             <!-- 主键 bigint(20)-->
 		a.name AS "name",                                                    <!-- 等级名称 nvarchar2(64)-->
 		a.recommend_product_count AS "recommendProductCount",                <!-- 可推荐商品数 number(10)-->
 		a.release_procuct_count AS "releaseProcuctCount",                    <!-- 可发布商品数 number(10)-->
@@ -126,7 +126,7 @@
 	<!--插入。并返回自增长的主键值，mysql、oracle都可以-->
 	<insert id="insert" keyProperty="entity.levelId" keyColumn="level_id" useGeneratedKeys="true">
 		INSERT INTO store_level(
-			level_id,                                          <!-- 主键 number(19)-->
+			level_id,                                          <!-- 主键 bigint(20)-->
 			name,                                              <!-- 等级名称 nvarchar2(64)-->
 			recommend_product_count,                           <!-- 可推荐商品数 number(10)-->
 			release_procuct_count,                             <!-- 可发布商品数 number(10)-->

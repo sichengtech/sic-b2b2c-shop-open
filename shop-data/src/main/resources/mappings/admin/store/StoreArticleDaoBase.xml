@@ -7,8 +7,8 @@
 	<!-- 全部字段 -->
 	<sql id="storeArticleColumns">
 	<trim suffixOverrides=",">
-		a.sa_id AS "saId",                                                   <!-- 主键id number(19)-->
-		a.store_id AS "storeId",                                             <!-- 店铺id number(19)-->
+		a.sa_id AS "saId",                                                   <!-- 主键id bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 店铺id bigint(20)-->
 		a.title AS "title",                                                  <!-- 标题 nvarchar2(255)-->
 		a.sort AS "sort",                                                    <!-- 排序 number(10)-->
 		a.content AS "content",                                              <!-- 内容 clob-->
@@ -119,8 +119,8 @@
 	<insert id="insert" keyProperty="entity.saId" keyColumn="sa_id" useGeneratedKeys="true">
 		INSERT INTO store_article
 		<trim prefix="(" suffix=")" suffixOverrides=",">
-			sa_id,                                             <!-- 主键id number(19)-->
-			store_id,                                          <!-- 店铺id number(19)-->
+			sa_id,                                             <!-- 主键id bigint(20)-->
+			store_id,                                          <!-- 店铺id bigint(20)-->
 			title,                                             <!-- 标题 nvarchar2(255)-->
 			sort,                                              <!-- 排序 number(10)-->
 			content,                                           <!-- 内容 clob-->
@@ -140,7 +140,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			#{entity.storeId},                                 <!-- 店铺id number(19)-->
+			#{entity.storeId},                                 <!-- 店铺id bigint(20)-->
 			#{entity.title},                                   <!-- 标题 nvarchar2(255)-->
 			#{entity.sort},                                    <!-- 排序 number(10)-->
 			#{entity.content},                                 <!-- 内容 clob-->
@@ -160,7 +160,7 @@
 		<trim prefix="(" suffix=")" suffixOverrides=",">
 			<if test="entity.pkMode==1"><if test="entity.saId != null">sa_id,</if></if>
 			<if test="entity.pkMode==2">sa_id,</if>
-			<if test="entity.storeId != null">store_id,</if>                                   <!-- 店铺id number(19)-->
+			<if test="entity.storeId != null">store_id,</if>                                   <!-- 店铺id bigint(20)-->
 			<if test="entity.title != null">title,</if>                                        <!-- 标题 nvarchar2(255)-->
 			<if test="entity.sort != null">sort,</if>                                          <!-- 排序 number(10)-->
 			<if test="entity.content != null">content,</if>                                    <!-- 内容 clob-->
@@ -181,7 +181,7 @@
 				<if test="entity.dbType$ == 'mssql'">null,</if>
 				<if test="entity.dbType$ == 'mysql'">null,</if>
 			</if>
-			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 店铺id number(19)-->
+			<if test="entity.storeId != null">#{entity.storeId},</if>                                    <!-- 店铺id bigint(20)-->
 			<if test="entity.title != null">#{entity.title},</if>                                        <!-- 标题 nvarchar2(255)-->
 			<if test="entity.sort != null">#{entity.sort},</if>                                          <!-- 排序 number(10)-->
 			<if test="entity.content != null">#{entity.content},</if>                                    <!-- 内容 clob-->
@@ -198,7 +198,7 @@
 	<update id="updateById">
 		UPDATE store_article 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 店铺id number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 店铺id bigint(20)-->
 			title = #{entity.title},                                        <!-- 标题 nvarchar2(255)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
 			content = #{entity.content},                                    <!-- 内容 clob-->
@@ -217,7 +217,7 @@
 	<update id="updateByWhere">
 		UPDATE store_article a 
 		<set>
-			store_id = #{entity.storeId},                                   <!-- 店铺id number(19)-->
+			store_id = #{entity.storeId},                                   <!-- 店铺id bigint(20)-->
 			title = #{entity.title},                                        <!-- 标题 nvarchar2(255)-->
 			sort = #{entity.sort},                                          <!-- 排序 number(10)-->
 			content = #{entity.content},                                    <!-- 内容 clob-->
@@ -242,7 +242,7 @@
 	<update id="updateByIdSelective">
 		UPDATE store_article
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id bigint(20)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 标题 nvarchar2(255)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 内容 clob-->
@@ -260,7 +260,7 @@
 	<update id="updateByWhereSelective">
 		UPDATE store_article a
 		<set>
-			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id number(19)-->
+			<if test="entity.storeId != null">store_id = #{entity.storeId},</if>                                                <!-- 店铺id bigint(20)-->
 			<if test="entity.title != null">title = #{entity.title},</if>                                                       <!-- 标题 nvarchar2(255)-->
 			<if test="entity.sort != null">sort = #{entity.sort},</if>                                                          <!-- 排序 number(10)-->
 			<if test="entity.content != null">content = #{entity.content},</if>                                                 <!-- 内容 clob-->
