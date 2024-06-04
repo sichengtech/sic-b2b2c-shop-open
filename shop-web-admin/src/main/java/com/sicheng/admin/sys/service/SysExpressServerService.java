@@ -24,6 +24,10 @@ import org.springframework.transaction.annotation.Transactional;
 /**
  * 管理快递接口的配置 Service
  *
+ * 目前本系统对接第三方快递接口：快递鸟。
+ * 快递鸟汇集国内外2000多家快递公司的物流轨迹数据，以接口形式开放给用户使用，支持即时查询+订阅两种调用方式，为用户提供全流程的物流状态查询服务（包括已揽收、在途中、到达派件城市、派件中、已签收等40多种物流节点状态）。
+ * 快递鸟官网：<a href="https://www.kdniao.com/">快递鸟官网</a>
+ *
  * @author 张加利
  * @version 2017-04-20
  */
