@@ -675,8 +675,13 @@
             <version>2.6.1</version>
         </dependency>
 
-        <!-- RSF远程服务调用框架(正在推进删除这个jar包，使用更常见的组件来替代它) -->
-        <!-- RSF远程服务调用框架 -->
+        <!--
+        RSF远程服务调用框架
+        RSF远程服务调用框架(正在推进删除这个jar包，使用更常见的组件来替代它)
+        RSF的官网：
+        https://gitee.com/sichengtech_admin/rsf-core
+        https://github.com/sichengtech/rsf-core
+        -->
         <dependency>
             <groupId>io.github.sichengtech</groupId>
             <artifactId>rsf-core</artifactId>
@@ -704,11 +709,16 @@
             <version>0.0.3</version>
         </dependency>
 
-        <!-- 支付宝-alipay-sdk jar包 -->
+        <!-- 支付宝-alipay-sdk jar包
+        Alipay SDK（通用版）
+        官方发布地址  https://central.sonatype.com/artifact/com.alipay.sdk/alipay-sdk-java?smo=true
+        可以这里获取最新的 SDK
+        -->
         <dependency>
             <groupId>com.alipay.sdk</groupId>
             <artifactId>alipay-sdk-java</artifactId>
-            <version>3.0.52.ALL</version>
+<!--            <version>3.0.52.ALL</version>-->
+            <version>4.39.99.ALL</version>
         </dependency>
 
         <!-- 微信支付退款通知解密  -->
