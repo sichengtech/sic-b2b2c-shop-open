@@ -25,12 +25,14 @@
 				<ul id="all" class="tab-pane ${ssoReg eq '1' || empty ssoReg?'active':''} table-css">
 					<form id="inputForm1" class="form-signin" action="${ctxsso}/login/login.htm" method="post">
 					<input type="hidden" name="ssoReg" value="1">
-					<label class="control-label label-name"><i class="icon"></i>
+					<label class="control-label label-name">
+						<i class="icon"></i>
+					</label>
 						<input type="text" name="loginName" value="${loginName}" class="input-username" placeholder="${fns:fy('请输入会员帐号')}" value="">
+					<label class="control-label label-password">
+						<i class="icon"></i>
 					</label>
-					<label class="control-label label-password"><i class="icon"></i>
 						<input type="password" name="password" class="input-password" placeholder="${fns:fy('请输入密码')}">
-					</label>
 					<c:if test="${isValidateCodeLogin}">
 						<!--验证码开始-->
 						<label class="control-label label-code"><i class="icon"></i>

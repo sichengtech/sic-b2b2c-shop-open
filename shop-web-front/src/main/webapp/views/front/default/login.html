@@ -46,7 +46,7 @@
 	</div>
 	<!-- 头部 end -->
 	<!-- 中间内容 start -->
-	<div class="sso-main" style="background-image:url(${ctxfs}/tqm_pictures/logo/123.jpg); background-position:center; background-repeat:no-repeat; width:100%;">
+	<div class="sso-main" style="background-image:url(${ctxStatic}/images/login-bannar.jpg); background-position:center; background-repeat:no-repeat; width:100%;">
 		<div class="sui-container">
 			<div class="order-tabs sso-login-box">
 				<ul class="sui-nav nav-tabs">
@@ -59,14 +59,16 @@
 					<ul id="all" class="tab-pane ${ssoReg! == '1' || isEmpty(ssoReg!)?'active':''} table-css">
 						<form id="inputForm1" class="form-signin" action="${ctxsso}/login/login.htm" method="post">
 						<input type="hidden" name="ssoReg" value="1">
-						<label class="control-label label-name"><i class="icon"></i>
-							<%var endMemberAccount =fy.getMsg({key:'请输入会员帐号'});%>
-							<input type="text" name="loginName" value="${loginName!}" class="input-username" placeholder="${endMemberAccount!}" value="">
+						<label class="control-label label-name">
+							<i class="icon"></i>
 						</label>
-						<label class="control-label label-password"><i class="icon"></i>
-							<%var enterPassword =fy.getMsg({key:'请输入密码'});%>
-							<input type="password" name="password" class="input-password" placeholder="${enterPassword!}">
+						<%var endMemberAccount =fy.getMsg({key:'请输入会员帐号'});%>
+						<input type="text" name="loginName" value="${loginName!}" class="input-username" placeholder="${endMemberAccount!}" value="">
+						<label class="control-label label-password">
+							<i class="icon"></i>
 						</label>
+						<%var enterPassword =fy.getMsg({key:'请输入密码'});%>
+						<input type="password" name="password" class="input-password" placeholder="${enterPassword!}">
 						<% if(isNotEmpty(isValidateCodeLogin) && isValidateCodeLogin!){%>
 							<!--验证码开始-->
 							<label class="control-label label-code"><i class="icon"></i>
@@ -134,7 +136,7 @@
 		<div class="wp shopcopy">
 			<div class="copyright">
 				${siteInfo.icp!}<br>
-				Copyright © 2016-2100 SiCheng.net All rights reserved.
+				Copyright © 2016-${date(),dateFormat="yyyy"} SiCheng.net All rights reserved.
 			</div>
 		</div>
 	</div>

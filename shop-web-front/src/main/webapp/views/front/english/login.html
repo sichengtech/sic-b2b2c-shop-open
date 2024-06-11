@@ -71,14 +71,16 @@
 					<ul id="all" class="tab-pane active table-css">
 						<form id="inputForm1" class="form-signin" action="${ctxsso}/login/login.htm" method="post">
 						<input type="hidden" name="ssoReg" value="1">
-						<label class="control-label label-name"><i class="icon"></i>
+						<label class="control-label label-name">
+							<i class="icon"></i>
+						</label>
 							<%var endMemberAccount =fy.getMsg({key:'请输入会员帐号'});%>
 							<input type="text" name="loginName" value="${loginName!}" class="input-username" placeholder="${endMemberAccount!}" value="">
+						<label class="control-label label-password">
+							<i class="icon"></i>
 						</label>
-						<label class="control-label label-password"><i class="icon"></i>
 							<%var enterPassword =fy.getMsg({key:'请输入密码'});%>
 							<input type="password" name="password" class="input-password" placeholder="${enterPassword!}">
-						</label>
 						<% if(isNotEmpty(isValidateCodeLogin) && isValidateCodeLogin!){%>
 							<!--验证码开始-->
 							<label class="control-label label-code"><i class="icon"></i>
