@@ -21,7 +21,7 @@
 		// 判断是否包含错误信息
 		String[] errArr = {"异常", "失败", "错误", "Error"};
 		for (String err : errArr) {
-			System.out.println("err:" + err);
+//			System.out.println("err:" + err);
 			if (content.toLowerCase().contains(err.toLowerCase())) {
 				ctype = "0";
 				break;
