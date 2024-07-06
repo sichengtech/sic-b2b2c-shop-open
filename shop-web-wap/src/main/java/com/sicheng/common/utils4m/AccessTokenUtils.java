@@ -22,15 +22,15 @@ public class AccessTokenUtils {
         String accessToken = accessTokenMap.get("access_token");
         Long nowDate = new Date().getTime();
         if (accessToken != null && time != null && nowDate - Long.parseLong(time) < (1.5 * 60 * 60 * 1000)) {
-            log.info("accessToken存在，且没有超时 ， 返回accessTokenMap");
+            log.info("accessToken存在,且没有超时,返回accessTokenMap");
             return accessTokenMap;
         }
         synchronized (AccessTokenUtils.class) {
             if (accessToken != null && time != null && nowDate - Long.parseLong(time) < (1.5 * 60 * 60 * 1000)) {
-                log.info("accessToken存在，且没有超时 ， 返回accessTokenMap");
+                log.info("accessToken存在,且没有超时,返回accessTokenMap");
                 return accessTokenMap;
             }
-            log.info("accessToken 超时 ， 或者不存在 ， 重新获取");
+            log.info("accessToken 超时,或者不存在,重新获取");
             try {
                 String access_token = WeiXinUtils.getAccessToken();
                 log.info("access_token:" + access_token);
