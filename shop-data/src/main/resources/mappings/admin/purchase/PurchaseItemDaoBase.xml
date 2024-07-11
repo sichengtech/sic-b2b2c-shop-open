@@ -7,17 +7,17 @@
 	<!-- 全部字段 -->
 	<sql id="purchaseItemColumns">
 	<trim suffixOverrides=",">
-		a.purchase_item_id AS 'purchaseItemId',                              <!-- 采购详情id bigint(20)-->
-		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
-		a.name AS 'name',                                                    <!-- 产品名称 varchar(64)-->
-		a.model AS 'model',                                                  <!-- 产品型号 varchar(64)-->
-		a.brand AS 'brand',                                                  <!-- 产品品牌 varchar(64)-->
-		a.amount AS 'amount',                                                <!-- 产品数量 int(11)-->
-		a.purchase_remarks AS 'purchaseRemarks',                             <!-- 产品描述 varchar(255)-->
-		a.price_requirement AS 'priceRequirement',                           <!-- 价格要求 decimal(12,3)-->
-		a.unit AS 'unit',                                                    <!-- 单位 varchar(64)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.purchase_item_id AS "purchaseItemId",                              <!-- 采购详情id bigint(20)-->
+		a.purchase_id AS "purchaseId",                                       <!-- 采购单id(关联purchaes_order(采购单表)) bigint(20)-->
+		a.name AS "name",                                                    <!-- 产品名称 varchar(64)-->
+		a.model AS "model",                                                  <!-- 产品型号 varchar(64)-->
+		a.brand AS "brand",                                                  <!-- 产品品牌 varchar(64)-->
+		a.amount AS "amount",                                                <!-- 产品数量 int(11)-->
+		a.purchase_remarks AS "purchaseRemarks",                             <!-- 产品描述 varchar(255)-->
+		a.price_requirement AS "priceRequirement",                           <!-- 价格要求 decimal(12,3)-->
+		a.unit AS "unit",                                                    <!-- 单位 varchar(64)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

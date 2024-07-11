@@ -7,13 +7,13 @@
 	<!-- 全部字段 -->
 	<sql id="accountBalanceProreturnorderColumns">
 	<trim suffixOverrides=",">
-		a.return_id AS 'returnId',                                           <!-- 商品退单id bigint(20)-->
-		a.status AS 'status',                                                <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
-		a.fail_times AS 'failTimes',                                         <!-- 失败次数 int(10)-->
-		a.begin_time AS 'beginTime',                                         <!-- 开始对账时间 datetime-->
-		a.end_time AS 'endTime',                                             <!-- 结束对账时间 datetime-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.return_id AS "returnId",                                           <!-- 商品退单id bigint(20)-->
+		a.status AS "status",                                                <!-- 状态(1对账中，2对账失败，3对账成功) char(1)-->
+		a.fail_times AS "failTimes",                                         <!-- 失败次数 int(10)-->
+		a.begin_time AS "beginTime",                                         <!-- 开始对账时间 datetime-->
+		a.end_time AS "endTime",                                             <!-- 结束对账时间 datetime-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

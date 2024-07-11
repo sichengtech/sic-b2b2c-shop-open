@@ -7,15 +7,15 @@
 	<!-- 全部字段 -->
 	<sql id="settlementTaskMainColumns">
 	<trim suffixOverrides=",">
-		a.task_main_id AS 'taskMainId',                                      <!-- 主键 bigint(20)-->
-		a.name AS 'name',                                                    <!-- 名称(年-月-日) varchar(64)-->
-		a.type AS 'type',                                                    <!-- 任务类型，1商品账单，2服务账单 char(1)-->
-		a.begin_time AS 'beginTime',                                         <!-- 开始时间(年-月-日 时：分：秒) datetime-->
-		a.end_time AS 'endTime',                                             <!-- 结束时间(年-月-日 时：分：秒 datetime-->
-		a.status AS 'status',                                                <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
-		a.success_count AS 'successCount',                                   <!-- 成功数 int(11)-->
-		a.error_count AS 'errorCount',                                       <!-- 失败数 int(11)-->
-		a.sum_count AS 'sumCount',                                           <!-- 总数 int(11)-->
+		a.task_main_id AS "taskMainId",                                      <!-- 主键 bigint(20)-->
+		a.name AS "name",                                                    <!-- 名称(年-月-日) varchar(64)-->
+		a.type AS "type",                                                    <!-- 任务类型，1商品账单，2服务账单 char(1)-->
+		a.begin_time AS "beginTime",                                         <!-- 开始时间(年-月-日 时：分：秒) datetime-->
+		a.end_time AS "endTime",                                             <!-- 结束时间(年-月-日 时：分：秒 datetime-->
+		a.status AS "status",                                                <!-- 状态(1未运行,2运行中,3已完成) char(1)-->
+		a.success_count AS "successCount",                                   <!-- 成功数 int(11)-->
+		a.error_count AS "errorCount",                                       <!-- 失败数 int(11)-->
+		a.sum_count AS "sumCount",                                           <!-- 总数 int(11)-->
 
 	</trim>
 	</sql>

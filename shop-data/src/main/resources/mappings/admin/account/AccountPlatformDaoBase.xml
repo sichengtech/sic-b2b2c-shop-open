@@ -7,12 +7,12 @@
 	<!-- 全部字段 -->
 	<sql id="accountPlatformColumns">
 	<trim suffixOverrides=",">
-		a.ap_id AS 'apId',                                                   <!-- 平台账户id bigint(20)-->
-		a.account_type AS 'accountType',                                       <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
-		a.own_money AS 'ownMoney',                                           <!-- 账户余额 decimal(12,3)-->
-		a.frozen_money AS 'frozenMoney',                                     <!-- 冻结金额 decimal(12,3)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.ap_id AS "apId",                                                   <!-- 平台账户id bigint(20)-->
+		a.account_type AS "accountType",                                       <!-- 账户类型（0.未结算账户、1.营收账户、2保证金账户） int(11)-->
+		a.own_money AS "ownMoney",                                           <!-- 账户余额 decimal(12,3)-->
+		a.frozen_money AS "frozenMoney",                                     <!-- 冻结金额 decimal(12,3)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

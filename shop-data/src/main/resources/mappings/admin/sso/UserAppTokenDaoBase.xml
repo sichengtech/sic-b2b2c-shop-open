@@ -7,13 +7,13 @@
 	<!-- 全部字段 -->
 	<sql id="userAppTokenColumns">
 	<trim suffixOverrides=",">
-		a.t_id AS 'tId',                                                     <!-- 主键 bigint(20)-->
-		a.u_id AS 'uId',                                                     <!-- 会员ID bigint(20)-->
-		a.token AS 'token',                                                  <!-- 令牌（uuid） varchar(64)-->
-		a.type AS 'type',                                                    <!-- 业务类型：0用户是前台会员，1用户是后台管理员。shop有两套用户表，目前只给前台会员开发了app，未给后台管理员开发app varchar(4)-->
-		a.status AS 'status',                                                <!-- 是否有效（0无效，1有效），如用户退出或修改了密码，应置为无效 char(1)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.valid_date AS 'validDate',                                         <!-- 有效期的开始时间，如2019-01-01，有效果是3个月，将于2019-03-01的前一秒到期。当生成续命时，valid_date值被更新 datetime-->
+		a.t_id AS "tId",                                                     <!-- 主键 bigint(20)-->
+		a.u_id AS "uId",                                                     <!-- 会员ID bigint(20)-->
+		a.token AS "token",                                                  <!-- 令牌（uuid） varchar(64)-->
+		a.type AS "type",                                                    <!-- 业务类型：0用户是前台会员，1用户是后台管理员。shop有两套用户表，目前只给前台会员开发了app，未给后台管理员开发app varchar(4)-->
+		a.status AS "status",                                                <!-- 是否有效（0无效，1有效），如用户退出或修改了密码，应置为无效 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.valid_date AS "validDate",                                         <!-- 有效期的开始时间，如2019-01-01，有效果是3个月，将于2019-03-01的前一秒到期。当生成续命时，valid_date值被更新 datetime-->
 
 	</trim>
 	</sql>

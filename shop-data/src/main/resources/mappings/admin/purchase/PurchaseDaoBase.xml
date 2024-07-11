@@ -7,19 +7,19 @@
 	<!-- 全部字段 -->
 	<sql id="purchaseColumns">
 	<trim suffixOverrides=",">
-		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id bigint(20)-->
-		a.content AS 'content',                                              <!-- 采购内容 varchar(2000)-->
-		a.title AS 'title',                                                  <!-- 采购标题 varchar(64)-->
-		a.bom_path AS 'bomPath',                                             <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
-		a.bom_new_path AS 'bomNewPath',                                      <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
-		a.u_id AS 'uId',                                                     <!-- 会员ID bigint(20)-->
-		a.type AS 'type',                                                    <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
-		a.status AS 'status',                                                <!-- 采购状态:  10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
-		a.expiry_time AS 'expiryTime',                                       <!-- 采购到期时间 datetime-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
-		a.cycle AS 'cycle',                                                  <!-- 交货周期 varchar(64)-->
-		a.purchase_explain AS 'purchaseExplain',                             <!-- purchase_explain varchar(255)-->
+		a.purchase_id AS "purchaseId",                                       <!-- 采购单id bigint(20)-->
+		a.content AS "content",                                              <!-- 采购内容 varchar(2000)-->
+		a.title AS "title",                                                  <!-- 采购标题 varchar(64)-->
+		a.bom_path AS "bomPath",                                             <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+		a.bom_new_path AS "bomNewPath",                                      <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+		a.u_id AS "uId",                                                     <!-- 会员ID bigint(20)-->
+		a.type AS "type",                                                    <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+		a.status AS "status",                                                <!-- 采购状态:  10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+		a.expiry_time AS "expiryTime",                                       <!-- 采购到期时间 datetime-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+		a.cycle AS "cycle",                                                  <!-- 交货周期 varchar(64)-->
+		a.purchase_explain AS "purchaseExplain",                             <!-- purchase_explain varchar(255)-->
 
 	</trim>
 	</sql>

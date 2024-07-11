@@ -7,15 +7,15 @@
 	<!-- 全部字段 -->
 	<sql id="purchaseMatchmakingColumns">
 	<trim suffixOverrides=",">
-		a.purchase_matchmaking_id AS 'purchaseMatchmakingId',                <!-- 撮合采购id bigint(20)-->
-		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id bigint(20)-->
-		a.purchase_trade_id AS 'purchaseTradeId',                            <!-- 订单id(关联trade_order订单表) bigint(20)-->
-		a.offer_u_id AS 'offerUId',                                          <!-- 会员id(报价方id) bigint(20)-->
-		a.status AS 'status',                                                <!-- 10待采购   20已采购 char(2)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.purchase_u_id AS 'purchaseUId',                                    <!-- 会员id(采购方id) bigint(20)-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
-		a.price AS 'price',                                                  <!-- 总价格 decimal(12,3)-->
+		a.purchase_matchmaking_id AS "purchaseMatchmakingId",                <!-- 撮合采购id bigint(20)-->
+		a.purchase_id AS "purchaseId",                                       <!-- 采购单id bigint(20)-->
+		a.purchase_trade_id AS "purchaseTradeId",                            <!-- 订单id(关联trade_order订单表) bigint(20)-->
+		a.offer_u_id AS "offerUId",                                          <!-- 会员id(报价方id) bigint(20)-->
+		a.status AS "status",                                                <!-- 10待采购   20已采购 char(2)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.purchase_u_id AS "purchaseUId",                                    <!-- 会员id(采购方id) bigint(20)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+		a.price AS "price",                                                  <!-- 总价格 decimal(12,3)-->
 
 	</trim>
 	</sql>

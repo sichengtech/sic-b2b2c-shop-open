@@ -38,10 +38,10 @@
 						pm.purchase_id = pu.purchase_id
 					)
 			) AS purchase_counts,
-			pi.purchase_item_id AS pi_id,
-			pi.name AS pi_name,
-			pi.model AS pi_model,
-			pi.brand AS pi_brand,
+			max(pi.purchase_item_id) AS pi_id,
+			max(pi.name) AS pi_name,
+			max(pi.model) AS pi_model,
+			max(pi.brand) AS pi_brand,
 			um.login_name AS um_login_name,
 			um.mobile AS um_mobile,
 			ps.space_id AS ps_id
@@ -75,7 +75,10 @@
 			</when>
 			<otherwise>
 				GROUP BY
-				pu.create_date DESC
+				pu.purchase_id, pu.title, pu.content, pu.bom_path, pu.bom_new_path, pu.u_id, pu.TYPE, pu.status, pu.expiry_time, pu.CYCLE, pu.purchase_explain, pu.create_date,
+				pu.update_date, um.login_name, um.mobile, ps.space_id
+				ORDER BY
+				pu.purchase_id DESC
 			</otherwise>
 		</choose>
 	</select>

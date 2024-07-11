@@ -4,13 +4,13 @@
 	<!-- 全部字段 -->
 	<sql id="businAccountMappingColumns">
 	<trim suffixOverrides=",">
-		a.b_id AS 'bId',                                                     <!-- 主键 bigint(20)-->
-		a.business_id AS 'businessId',                                       <!-- 业务id bigint(20)-->
-		a.serial_number AS 'serialNumber',                                   <!-- 流水号 varchar(64)-->
-		a.business_type AS 'businessType',                                   <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
-		a.service_charge_status AS 'serviceChargeStatus',                    <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 修改时间 datetime-->
+		a.b_id AS "bId",                                                     <!-- 主键 bigint(20)-->
+		a.business_id AS "businessId",                                       <!-- 业务id bigint(20)-->
+		a.serial_number AS "serialNumber",                                   <!-- 流水号 varchar(64)-->
+		a.business_type AS "businessType",                                   <!-- 类型（10商品支付，12保证金支付，14支付服务费用，16支付二次服务费用，18会员提现，20平台提现，22商品退款，24保证金退款，26服务费用退款，28二次服务费用退款，30商品结算，32服务单结算，34结束服务单，36生成优惠券，38回收优惠券） char(2)-->
+		a.service_charge_status AS "serviceChargeStatus",                    <!-- 第三方支付手续费用：1.商家承担，2平台承担 char(1)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 修改时间 datetime-->
 
 	</trim>
 	</sql>

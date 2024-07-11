@@ -7,12 +7,12 @@
 	<!-- 全部字段 -->
 	<sql id="payCallbackLogColumns">
 	<trim suffixOverrides=",">
-		a.id AS 'id',                                                        <!-- 主键id bigint(20)-->
-		a.pay_way_id AS 'payWayId',                                          <!-- 支付方式id bigint(20)-->
-		a.pay_way_name AS 'payWayName',                                      <!-- 支付方式名称 varchar(64)-->
-		a.callback_info AS 'callbackInfo',                                   <!-- 支付回调信息(大字段) longtext-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.id AS "id",                                                        <!-- 主键id bigint(20)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 支付方式id bigint(20)-->
+		a.pay_way_name AS "payWayName",                                      <!-- 支付方式名称 varchar(64)-->
+		a.callback_info AS "callbackInfo",                                   <!-- 支付回调信息(大字段) longtext-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

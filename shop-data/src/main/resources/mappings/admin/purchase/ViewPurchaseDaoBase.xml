@@ -4,27 +4,27 @@
 	<!-- 全部字段 -->
 	<sql id="viewPurchaseColumns">
 	<trim suffixOverrides=",">
-		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id bigint(20)-->
-		a.purchase_title AS 'purchaseTitle',                                 <!-- 采购标题 varchar(64)-->
-		a.purchase_content AS 'purchaseContent',                             <!-- 采购内容 varchar(2000)-->
-		a.purchase_bom_path AS 'purchaseBomPath',                            <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
-		a.purchase_bom_new_path AS 'purchaseBomNewPath',                     <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
-		a.purchase_u_id AS 'purchaseUId',                                    <!-- 会员ID bigint(20)-->
-		a.purchase_type AS 'purchaseType',                                   <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
-		a.purchase_status AS 'purchaseStatus',                               <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
-		a.purchase_expiry_time AS 'purchaseExpiryTime',                      <!-- 采购到期时间 datetime-->
-		a.pu_cycle AS 'puCycle',                                             <!-- 交货周期 varchar(64)-->
-		a.purchase_explain AS 'purchaseExplain',                             <!-- purchase_explain varchar(255)-->
-		a.purchase_create_date AS 'purchaseCreateDate',                      <!-- 创建时间 datetime-->
-		a.purchase_update_date AS 'purchaseUpdateDate',                      <!-- 更新时间 datetime-->
-		a.purchase_counts AS 'purchaseCounts',                               <!-- purchase_counts bigint(21)-->
-		a.pi_id AS 'piId',                                                   <!-- 采购详情id bigint(20)-->
-		a.pi_name AS 'piName',                                               <!-- 产品名称 varchar(64)-->
-		a.pi_model AS 'piModel',                                             <!-- 产品型号 varchar(64)-->
-		a.pi_brand AS 'piBrand',                                             <!-- 产品品牌 varchar(64)-->
-		a.um_login_name AS 'umLoginName',                                    <!-- 用户名、登录名 varchar(64)-->
-		a.um_mobile AS 'umMobile',                                           <!-- 手机号 varchar(64)-->
-		a.ps_id AS 'psId',                                                   <!-- 采购空间id bigint(20)-->
+		a.purchase_id AS "purchaseId",                                       <!-- 采购单id bigint(20)-->
+		a.purchase_title AS "purchaseTitle",                                 <!-- 采购标题 varchar(64)-->
+		a.purchase_content AS "purchaseContent",                             <!-- 采购内容 varchar(2000)-->
+		a.purchase_bom_path AS "purchaseBomPath",                            <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+		a.purchase_bom_new_path AS "purchaseBomNewPath",                     <!-- 管理员上传的bom表地址（当type=20时使用本字段） varchar(64)-->
+		a.purchase_u_id AS "purchaseUId",                                    <!-- 会员ID bigint(20)-->
+		a.purchase_type AS "purchaseType",                                   <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+		a.purchase_status AS "purchaseStatus",                               <!-- 采购状态:10.审核中20.审核未通过30.待拆分35.报价中40.交易中50.完成交易60.交易取消 char(2)-->
+		a.purchase_expiry_time AS "purchaseExpiryTime",                      <!-- 采购到期时间 datetime-->
+		a.pu_cycle AS "puCycle",                                             <!-- 交货周期 varchar(64)-->
+		a.purchase_explain AS "purchaseExplain",                             <!-- purchase_explain varchar(255)-->
+		a.purchase_create_date AS "purchaseCreateDate",                      <!-- 创建时间 datetime-->
+		a.purchase_update_date AS "purchaseUpdateDate",                      <!-- 更新时间 datetime-->
+		a.purchase_counts AS "purchaseCounts",                               <!-- purchase_counts bigint(21)-->
+		a.pi_id AS "piId",                                                   <!-- 采购详情id bigint(20)-->
+		a.pi_name AS "piName",                                               <!-- 产品名称 varchar(64)-->
+		a.pi_model AS "piModel",                                             <!-- 产品型号 varchar(64)-->
+		a.pi_brand AS "piBrand",                                             <!-- 产品品牌 varchar(64)-->
+		a.um_login_name AS "umLoginName",                                    <!-- 用户名、登录名 varchar(64)-->
+		a.um_mobile AS "umMobile",                                           <!-- 手机号 varchar(64)-->
+		a.ps_id AS "psId",                                                   <!-- 采购空间id bigint(20)-->
 
 	</trim>
 	</sql>

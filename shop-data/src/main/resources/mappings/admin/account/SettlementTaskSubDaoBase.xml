@@ -7,11 +7,11 @@
 	<!-- 全部字段 -->
 	<sql id="settlementTaskSubColumns">
 	<trim suffixOverrides=",">
-		a.task_sub_id AS 'taskSubId',                                        <!-- 主键 bigint(20)-->
-		a.task_main_id AS 'taskMainId',                                      <!-- 任务id bigint(20)-->
-		a.store_id AS 'storeId',                                             <!-- 店铺id(关联店铺表)，任务类型是商品结算任务时有值 bigint(20)-->
-		a.status AS 'status',                                                <!-- 状态(1未运行,2运行中,3成功,4失败) char(1)-->
-		a.error_msg AS 'errorMsg',                                           <!-- 错误信息 varchar(255)-->
+		a.task_sub_id AS "taskSubId",                                        <!-- 主键 bigint(20)-->
+		a.task_main_id AS "taskMainId",                                      <!-- 任务id bigint(20)-->
+		a.store_id AS "storeId",                                             <!-- 店铺id(关联店铺表)，任务类型是商品结算任务时有值 bigint(20)-->
+		a.status AS "status",                                                <!-- 状态(1未运行,2运行中,3成功,4失败) char(1)-->
+		a.error_msg AS "errorMsg",                                           <!-- 错误信息 varchar(255)-->
 
 	</trim>
 	</sql>

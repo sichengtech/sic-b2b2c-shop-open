@@ -7,38 +7,38 @@
 	<!-- 全部字段 -->
 	<sql id="settlementBillColumns">
 	<trim suffixOverrides=",">
-		a.bill_id AS 'billId',                                               <!-- 主键 bigint(20)-->
-		a.bill_type AS 'billType',                                           <!-- 账单类型，1商品账单，2服务账单 char(1)-->
-		a.store_id AS 'storeId',                                             <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
-		a.balance_date AS 'balanceDate',                                     <!-- 出账日期 datetime-->
-		a.bill_amount AS 'billAmount',                                       <!-- 本期应结(元) decimal(12,3)-->
-		a.status AS 'status',                                                <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
-		a.order_amount AS 'orderAmount',                                     <!-- 订单总金额 decimal(12,3)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.platform_commission AS 'platformCommission',                       <!-- 平台分佣金额 decimal(12,3)-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
-		a.return_commission AS 'returnCommission',                           <!-- 退还佣金 decimal(12,3)-->
-		a.refund AS 'refund',                                                <!-- 退单金额 decimal(12,3)-->
-		a.promotion_expenses AS 'promotionExpenses',                         <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
-		a.red_packets AS 'redPackets',                                       <!-- 红包(促销时用) decimal(12,3)-->
-		a.return_red_packets AS 'returnRedPackets',                          <!-- 退还红包(促销时用) decimal(12,3)-->
-		a.deposit AS 'deposit',                                              <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
-		a.begin_time AS 'beginTime',                                         <!-- 账单开始时间 datetime-->
-		a.end_time AS 'endTime',                                             <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
-		a.pay_date AS 'payDate',                                             <!-- 付款时间 datetime-->
-		a.pay_person AS 'payPerson',                                         <!-- 付款人 varchar(64)-->
-		a.pay_remarks AS 'payRemarks',                                       <!-- 付款备注 varchar(1024)-->
-		a.bak1 AS 'bak1',                                                    <!-- 备用字段1 varchar(64)-->
-		a.bak2 AS 'bak2',                                                    <!-- 备用字段2 varchar(64)-->
-		a.bak3 AS 'bak3',                                                    <!-- 备用字段3 varchar(64)-->
-		a.bak4 AS 'bak4',                                                    <!-- 备用字段4 varchar(64)-->
-		a.bak5 AS 'bak5',                                                    <!-- 备用字段5 varchar(64)-->
-		a.bak6 AS 'bak6',                                                    <!-- 备用字段6 varchar(64)-->
-		a.bak7 AS 'bak7',                                                    <!-- 备用字段7 varchar(64)-->
-		a.bak8 AS 'bak8',                                                    <!-- 备用字段8 varchar(64)-->
-		a.bak9 AS 'bak9',                                                    <!-- 备用字段9 varchar(64)-->
-		a.bak10 AS 'bak10',                                                  <!-- 备用字段10 varchar(64)-->
-		a.tasksubid AS 'tasksubid',                                          <!-- 子任务id bigint(20)-->
+		a.bill_id AS "billId",                                               <!-- 主键 bigint(20)-->
+		a.bill_type AS "billType",                                           <!-- 账单类型，1商品账单，2服务账单 char(1)-->
+		a.store_id AS "storeId",                                             <!-- 关联(店铺表)，服务类型是1时有值 bigint(20)-->
+		a.balance_date AS "balanceDate",                                     <!-- 出账日期 datetime-->
+		a.bill_amount AS "billAmount",                                       <!-- 本期应结(元) decimal(12,3)-->
+		a.status AS "status",                                                <!-- 账单状态，10账单已生成，等待商家确认、20商家已确认，等待平台审核、30平台已审核，等待平台付款、40平台已付款，平台结算完成 char(2)-->
+		a.order_amount AS "orderAmount",                                     <!-- 订单总金额 decimal(12,3)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.platform_commission AS "platformCommission",                       <!-- 平台分佣金额 decimal(12,3)-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+		a.return_commission AS "returnCommission",                           <!-- 退还佣金 decimal(12,3)-->
+		a.refund AS "refund",                                                <!-- 退单金额 decimal(12,3)-->
+		a.promotion_expenses AS "promotionExpenses",                         <!-- 店铺推广费用（元）(促销时用) decimal(12,3)-->
+		a.red_packets AS "redPackets",                                       <!-- 红包(促销时用) decimal(12,3)-->
+		a.return_red_packets AS "returnRedPackets",                          <!-- 退还红包(促销时用) decimal(12,3)-->
+		a.deposit AS "deposit",                                              <!-- 预定订单未退定金(元)(促销时用) decimal(12,3)-->
+		a.begin_time AS "beginTime",                                         <!-- 账单开始时间 datetime-->
+		a.end_time AS "endTime",                                             <!-- 账单结束时间(大于开始时间，小于等于结束时间) datetime-->
+		a.pay_date AS "payDate",                                             <!-- 付款时间 datetime-->
+		a.pay_person AS "payPerson",                                         <!-- 付款人 varchar(64)-->
+		a.pay_remarks AS "payRemarks",                                       <!-- 付款备注 varchar(1024)-->
+		a.bak1 AS "bak1",                                                    <!-- 备用字段1 varchar(64)-->
+		a.bak2 AS "bak2",                                                    <!-- 备用字段2 varchar(64)-->
+		a.bak3 AS "bak3",                                                    <!-- 备用字段3 varchar(64)-->
+		a.bak4 AS "bak4",                                                    <!-- 备用字段4 varchar(64)-->
+		a.bak5 AS "bak5",                                                    <!-- 备用字段5 varchar(64)-->
+		a.bak6 AS "bak6",                                                    <!-- 备用字段6 varchar(64)-->
+		a.bak7 AS "bak7",                                                    <!-- 备用字段7 varchar(64)-->
+		a.bak8 AS "bak8",                                                    <!-- 备用字段8 varchar(64)-->
+		a.bak9 AS "bak9",                                                    <!-- 备用字段9 varchar(64)-->
+		a.bak10 AS "bak10",                                                  <!-- 备用字段10 varchar(64)-->
+		a.tasksubid AS "tasksubid",                                          <!-- 子任务id bigint(20)-->
 
 	</trim>
 	</sql>

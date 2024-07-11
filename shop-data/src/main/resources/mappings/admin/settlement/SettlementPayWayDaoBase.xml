@@ -7,20 +7,20 @@
 	<!-- 全部字段 -->
 	<sql id="settlementPayWayColumns">
 		<trim suffixOverrides=",">
-			a.pay_way_id AS 'payWayId',                                          <!-- 主键 bigint(20)-->
-			a.pay_way_num AS 'payWayNum',                                        <!-- 支付方式编号 varchar(64)-->
-			a.name AS 'name',                                                    <!-- 支付方式 varchar(64)-->
-			a.poundage AS 'poundage',                                            <!-- 手续费 decimal(12,3)-->
-			a.use_terminal AS 'useTerminal',                                     <!-- 使用终端,0pc、1移动端 char(1)-->
-			a.pay_way_logo AS 'payWayLogo',                                      <!-- 支付方式logo varchar(128)-->
-			a.status AS 'status',                                                <!-- 状态，0关闭、1开启 char(1)-->
-			a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-			a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
-			a.bak1 AS 'bak1',                                                    <!-- 备用字段1 varchar(64)-->
-			a.bak2 AS 'bak2',                                                    <!-- 备用字段2 varchar(64)-->
-			a.bak3 AS 'bak3',                                                    <!-- 备用字段3 varchar(64)-->
-			a.bak4 AS 'bak4',                                                    <!-- 备用字段4 varchar(64)-->
-			a.bak5 AS 'bak5',                                                    <!-- 备用字段5 varchar(64)-->
+			a.pay_way_id AS "payWayId",                                          <!-- 主键 bigint(20)-->
+			a.pay_way_num AS "payWayNum",                                        <!-- 支付方式编号 varchar(64)-->
+			a.name AS "name",                                                    <!-- 支付方式 varchar(64)-->
+			a.poundage AS "poundage",                                            <!-- 手续费 decimal(12,3)-->
+			a.use_terminal AS "useTerminal",                                     <!-- 使用终端,0pc、1移动端 char(1)-->
+			a.pay_way_logo AS "payWayLogo",                                      <!-- 支付方式logo varchar(128)-->
+			a.status AS "status",                                                <!-- 状态，0关闭、1开启 char(1)-->
+			a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+			a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
+			a.bak1 AS "bak1",                                                    <!-- 备用字段1 varchar(64)-->
+			a.bak2 AS "bak2",                                                    <!-- 备用字段2 varchar(64)-->
+			a.bak3 AS "bak3",                                                    <!-- 备用字段3 varchar(64)-->
+			a.bak4 AS "bak4",                                                    <!-- 备用字段4 varchar(64)-->
+			a.bak5 AS "bak5",                                                    <!-- 备用字段5 varchar(64)-->
 
 		</trim>
 	</sql>

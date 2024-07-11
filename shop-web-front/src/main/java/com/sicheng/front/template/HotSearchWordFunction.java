@@ -50,7 +50,8 @@ public class HotSearchWordFunction implements Function {
         Wrapper wrapper = new Wrapper();
         wrapper.and("type = ", type);
         wrapper.and("is_show = ", 1);
-        wrapper.orderBy("`sort` asc");
+//        wrapper.orderBy("`sort` asc");
+        wrapper.orderBy("sort asc");
         Page<SiteHotSearchWord> page = new Page<>();
         page.setPageSize(pageSize);
         page = siteHotSearchWordService.selectByWhere(page, wrapper);

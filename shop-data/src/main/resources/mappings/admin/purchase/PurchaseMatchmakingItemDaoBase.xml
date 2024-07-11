@@ -7,14 +7,14 @@
 	<!-- 全部字段 -->
 	<sql id="purchaseMatchmakingItemColumns">
 	<trim suffixOverrides=",">
-		a.pmi_id AS 'pmiId',                                                 <!-- 撮合采购详情id bigint(20)-->
-		a.pm_id AS 'pmId',                                                   <!-- 撮合采购id bigint(20)-->
-		a.purchase_item_id AS 'purchaseItemId',                              <!-- 采购单详情id bigint(20)-->
-		a.amount AS 'amount',                                                <!-- 数量 int(11)-->
-		a.offer_price AS 'offerPrice',                                       <!-- 报价单价 decimal(12,2)-->
-		a.offer_remarks AS 'offerRemarks',                                   <!-- 报价备注 varchar(255)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.pmi_id AS "pmiId",                                                 <!-- 撮合采购详情id bigint(20)-->
+		a.pm_id AS "pmId",                                                   <!-- 撮合采购id bigint(20)-->
+		a.purchase_item_id AS "purchaseItemId",                              <!-- 采购单详情id bigint(20)-->
+		a.amount AS "amount",                                                <!-- 数量 int(11)-->
+		a.offer_price AS "offerPrice",                                       <!-- 报价单价 decimal(12,2)-->
+		a.offer_remarks AS "offerRemarks",                                   <!-- 报价备注 varchar(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

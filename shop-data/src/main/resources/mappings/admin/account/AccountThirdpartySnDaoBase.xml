@@ -7,16 +7,16 @@
 	<!-- 全部字段 -->
 	<sql id="accountThirdpartySnColumns">
 	<trim suffixOverrides=",">
-		a.id AS 'id',                                                        <!-- 主键id bigint(20)-->
-		a.serial_number AS 'serialNumber',                                   <!-- 流水号 varchar(64)-->
-		a.money_flow_type AS 'moneyFlowType',                                <!-- 资金流类型（1.付款、2.提现、3.充值、4.退款） char(1)-->
-		a.money AS 'money',                                                  <!-- 交易金额 decimal(12,3)-->
-		a.pay_way_id AS 'payWayId',                                          <!-- 交易渠道（支付方式id） bigint(20)-->
-		a.pay_way_name AS 'payWayName',                                      <!-- 支付方式名称 varchar(64)-->
-		a.outer_trade_no AS 'outerTradeNo',                                  <!-- 外部交易记录号 varchar(64)-->
-		a.trade_remarks AS 'tradeRemarks',                                   <!-- 交易备注 varchar(255)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.id AS "id",                                                        <!-- 主键id bigint(20)-->
+		a.serial_number AS "serialNumber",                                   <!-- 流水号 varchar(64)-->
+		a.money_flow_type AS "moneyFlowType",                                <!-- 资金流类型（1.付款、2.提现、3.充值、4.退款） char(1)-->
+		a.money AS "money",                                                  <!-- 交易金额 decimal(12,3)-->
+		a.pay_way_id AS "payWayId",                                          <!-- 交易渠道（支付方式id） bigint(20)-->
+		a.pay_way_name AS "payWayName",                                      <!-- 支付方式名称 varchar(64)-->
+		a.outer_trade_no AS "outerTradeNo",                                  <!-- 外部交易记录号 varchar(64)-->
+		a.trade_remarks AS "tradeRemarks",                                   <!-- 交易备注 varchar(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

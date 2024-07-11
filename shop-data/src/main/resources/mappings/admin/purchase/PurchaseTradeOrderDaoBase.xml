@@ -7,18 +7,18 @@
 	<!-- 全部字段 -->
 	<sql id="purchaseTradeOrderColumns">
 	<trim suffixOverrides=",">
-		a.purchase_trade_id AS 'purchaseTradeId',                            <!-- 订单id bigint(20)-->
-		a.purchase_u_id AS 'purchaseUId',                                    <!-- 采购方 bigint(20)-->
-		a.offer_u_id AS 'offerUId',                                          <!-- 报价方 bigint(20)-->
-		a.purchase_id AS 'purchaseId',                                       <!-- 采购单id bigint(20)-->
-		a.title AS 'title',                                                  <!-- 采购标题 varchar(64)-->
-		a.content AS 'content',                                              <!-- 采购内容 varchar(2000)-->
-		a.bom_path AS 'bomPath',                                             <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
-		a.price AS 'price',                                                  <!-- 总价格 decimal(12,3)-->
-		a.type AS 'type',                                                    <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
-		a.status AS 'status',                                                <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.purchase_trade_id AS "purchaseTradeId",                            <!-- 订单id bigint(20)-->
+		a.purchase_u_id AS "purchaseUId",                                    <!-- 采购方 bigint(20)-->
+		a.offer_u_id AS "offerUId",                                          <!-- 报价方 bigint(20)-->
+		a.purchase_id AS "purchaseId",                                       <!-- 采购单id bigint(20)-->
+		a.title AS "title",                                                  <!-- 采购标题 varchar(64)-->
+		a.content AS "content",                                              <!-- 采购内容 varchar(2000)-->
+		a.bom_path AS "bomPath",                                             <!-- 用户bom表的地址（当type=20时使用本字段） varchar(64)-->
+		a.price AS "price",                                                  <!-- 总价格 decimal(12,3)-->
+		a.type AS "type",                                                    <!-- 类型：10快捷采购一句话采购，20BOM采购 30批量发布采购 char(2)-->
+		a.status AS "status",                                                <!-- 订单状态：10交易中20已上传交易凭证待审核30凭证审核未通过40交易完成 char(2)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

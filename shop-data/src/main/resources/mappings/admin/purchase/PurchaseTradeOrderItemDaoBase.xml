@@ -7,21 +7,21 @@
 	<!-- 全部字段 -->
 	<sql id="purchaseTradeOrderItemColumns">
 	<trim suffixOverrides=",">
-		a.ptoi_id AS 'ptoiId',                                               <!-- 采购订单详情id bigint(20)-->
-		a.pto_id AS 'ptoId',                                                 <!-- 采购订单id bigint(20)-->
-		a.purchase_item_id AS 'purchaseItemId',                              <!-- 采购单详情id bigint(20)-->
-		a.pmi_id AS 'pmiId',                                                 <!-- 撮合采购详情id bigint(20)-->
-		a.name AS 'name',                                                    <!-- 产品名称 varchar(64)-->
-		a.model AS 'model',                                                  <!-- 规格型号 varchar(64)-->
-		a.brand AS 'brand',                                                  <!-- 品牌 varchar(64)-->
-		a.amount AS 'amount',                                                <!-- 数量 int(11)-->
-		a.price_requirement AS 'priceRequirement',                           <!-- 采购单价 decimal(12,3)-->
-		a.unit AS 'unit',                                                    <!-- 单位 varchar(64)-->
-		a.purchase_remarks AS 'purchaseRemarks',                             <!-- 采购备注 varchar(255)-->
-		a.offer_price AS 'offerPrice',                                       <!-- 报价单价 decimal(12,3)-->
-		a.offer_remarks AS 'offerRemarks',                                   <!-- 报价备注 varchar(255)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.ptoi_id AS "ptoiId",                                               <!-- 采购订单详情id bigint(20)-->
+		a.pto_id AS "ptoId",                                                 <!-- 采购订单id bigint(20)-->
+		a.purchase_item_id AS "purchaseItemId",                              <!-- 采购单详情id bigint(20)-->
+		a.pmi_id AS "pmiId",                                                 <!-- 撮合采购详情id bigint(20)-->
+		a.name AS "name",                                                    <!-- 产品名称 varchar(64)-->
+		a.model AS "model",                                                  <!-- 规格型号 varchar(64)-->
+		a.brand AS "brand",                                                  <!-- 品牌 varchar(64)-->
+		a.amount AS "amount",                                                <!-- 数量 int(11)-->
+		a.price_requirement AS "priceRequirement",                           <!-- 采购单价 decimal(12,3)-->
+		a.unit AS "unit",                                                    <!-- 单位 varchar(64)-->
+		a.purchase_remarks AS "purchaseRemarks",                             <!-- 采购备注 varchar(255)-->
+		a.offer_price AS "offerPrice",                                       <!-- 报价单价 decimal(12,3)-->
+		a.offer_remarks AS "offerRemarks",                                   <!-- 报价备注 varchar(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

@@ -7,17 +7,17 @@
 	<!-- 全部字段 -->
 	<sql id="accountTiedCardColumns">
 	<trim suffixOverrides=",">
-		a.tied_card_id AS 'tiedCardId',                                      <!-- 主键ID bigint(20) unsigned-->
-		a.u_id AS 'uId',                                                     <!-- 会员id bigint(20)-->
-		a.bank_card_number AS 'bankCardNumber',                              <!-- 银行卡号 varchar(64)-->
-		a.payee AS 'payee',                                                  <!-- 收款人 varchar(64)-->
-		a.id_number AS 'idNumber',                                           <!-- 身份证号 bigint(64)-->
-		a.account_opening_bank AS 'accountOpeningBank',                      <!-- 开户银行 varchar(64)-->
-		a.mobile_phone_number AS 'mobilePhoneNumber',                        <!-- 开户手机号 varchar(64)-->
-		a.audit_status AS 'auditStatus',                                     <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
-		a.audit_opinion AS 'auditOpinion',                                   <!-- 审核理由 varchar(255)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.tied_card_id AS "tiedCardId",                                      <!-- 主键ID bigint(20) unsigned-->
+		a.u_id AS "uId",                                                     <!-- 会员id bigint(20)-->
+		a.bank_card_number AS "bankCardNumber",                              <!-- 银行卡号 varchar(64)-->
+		a.payee AS "payee",                                                  <!-- 收款人 varchar(64)-->
+		a.id_number AS "idNumber",                                           <!-- 身份证号 bigint(64)-->
+		a.account_opening_bank AS "accountOpeningBank",                      <!-- 开户银行 varchar(64)-->
+		a.mobile_phone_number AS "mobilePhoneNumber",                        <!-- 开户手机号 varchar(64)-->
+		a.audit_status AS "auditStatus",                                     <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+		a.audit_opinion AS "auditOpinion",                                   <!-- 审核理由 varchar(255)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

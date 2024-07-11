@@ -7,17 +7,17 @@
 	<!-- 全部字段 -->
 	<sql id="accountWithdrawalsColumns">
 	<trim suffixOverrides=",">
-		a.id AS 'id',                                                        <!-- 主键 bigint(20)-->
-		a.account_id AS 'accountId',                                         <!-- 账户id bigint(20)-->
-		a.status AS 'status',                                                <!-- 类型（1会员提现，2平台提现） char(1)-->
-		a.money AS 'money',                                                  <!-- 提现金额 decimal(12,3)-->
-		a.tied_card_id AS 'tiedCardId',                                      <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
-		a.audit_status AS 'auditStatus',                                     <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
-		a.audit_opinion AS 'auditOpinion',                                   <!-- 审核理由 varchar(255)-->
-		a.is_pay AS 'isPay',                                                 <!-- 是否支付（0未支付、1已支付） char(1)-->
-		a.pay_time AS 'payTime',                                             <!-- 支付时间 datetime-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.id AS "id",                                                        <!-- 主键 bigint(20)-->
+		a.account_id AS "accountId",                                         <!-- 账户id bigint(20)-->
+		a.status AS "status",                                                <!-- 类型（1会员提现，2平台提现） char(1)-->
+		a.money AS "money",                                                  <!-- 提现金额 decimal(12,3)-->
+		a.tied_card_id AS "tiedCardId",                                      <!-- 提现卡号id（account_tied_card(账户绑卡表)）（个人提现有值，平台提现没有值） bigint(20)-->
+		a.audit_status AS "auditStatus",                                     <!-- 审核是否通过（0待审核，1审核同意，2审核失败） char(1)-->
+		a.audit_opinion AS "auditOpinion",                                   <!-- 审核理由 varchar(255)-->
+		a.is_pay AS "isPay",                                                 <!-- 是否支付（0未支付、1已支付） char(1)-->
+		a.pay_time AS "payTime",                                             <!-- 支付时间 datetime-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>

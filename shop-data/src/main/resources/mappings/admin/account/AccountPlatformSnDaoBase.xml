@@ -7,14 +7,14 @@
 	<!-- 全部字段 -->
 	<sql id="accountPlatformSnColumns">
 	<trim suffixOverrides=",">
-		a.id AS 'id',                                                        <!-- 主键id bigint(20)-->
-		a.ap_id AS 'apId',                                                   <!-- 平台账户id bigint(20)-->
-		a.serial_number AS 'serialNumber',                                   <!-- 流水号 varchar(64)-->
-		a.pay_remarks AS 'payRemarks',                                       <!-- 名称/备注 varchar(255)-->
-		a.income_money AS 'incomeMoney',                                     <!-- 收入金额 decimal(12,3)-->
-		a.expenses_money AS 'expensesMoney',                                 <!-- 支出金额 decimal(12,3)-->
-		a.create_date AS 'createDate',                                       <!-- 创建时间 datetime-->
-		a.update_date AS 'updateDate',                                       <!-- 更新时间 datetime-->
+		a.id AS "id",                                                        <!-- 主键id bigint(20)-->
+		a.ap_id AS "apId",                                                   <!-- 平台账户id bigint(20)-->
+		a.serial_number AS "serialNumber",                                   <!-- 流水号 varchar(64)-->
+		a.pay_remarks AS "payRemarks",                                       <!-- 名称/备注 varchar(255)-->
+		a.income_money AS "incomeMoney",                                     <!-- 收入金额 decimal(12,3)-->
+		a.expenses_money AS "expensesMoney",                                 <!-- 支出金额 decimal(12,3)-->
+		a.create_date AS "createDate",                                       <!-- 创建时间 datetime-->
+		a.update_date AS "updateDate",                                       <!-- 更新时间 datetime-->
 
 	</trim>
 	</sql>
