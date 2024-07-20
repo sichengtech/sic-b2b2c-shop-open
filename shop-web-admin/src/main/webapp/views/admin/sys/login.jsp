@@ -57,9 +57,7 @@
             </c:if>
             <!--验证码结束-->
             <label class="control-label"><input type="submit" class="input-ok" value="${fns:fy('登录')}"></label>
-            <div class="textl"><input type="checkbox" class="checkbox" id="rememberMe"
-                                      name="rememberMe" ${rememberMe ? 'checked' : ''} > ${fns:fy('记住我')}(${fns:fy('公共场所慎用')})
-            </div>
+            <div class="textl"><input type="checkbox" class="checkbox" id="rememberMe" name="rememberMe" ${rememberMe ? 'checked' : ''} > ${fns:fy('记住我')}(${fns:fy('公共场所慎用')}) </div>
             <div class="clear"></div>
             <div class="cp">
                 ${fns:getConfig('productName')}&nbsp;${fns:getConfig('version')} &copy; 2016-<fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyy"/>
@@ -69,7 +67,6 @@
     </div>
 </div>
 <img src="${ctxStatic}/sicheng-admin/images/login-bg.png" width="100%" height="100%" alt="" class="admin-login-bgimg"/>
-<!--body wrapper start-->
 <!--body wrapper end-->
 </body>
 </html>
