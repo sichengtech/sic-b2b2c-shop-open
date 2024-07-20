@@ -70,7 +70,7 @@ public class ImageUtils4GM {
     /**
      * 取得图片信息 （宽、高、图片类型）
      *
-     * @param fileContent 文件内容字节数组
+     * @param inputStream 文件内容字节数组
      * @return ImageInfo
      */
     public static ImageInfo getImageInfo(InputStream inputStream) {
@@ -158,11 +158,9 @@ public class ImageUtils4GM {
      * 生成缩略图，保持图片原有长宽比例 只有当图片的宽与高，大于给定的宽与高时，才进行“缩小”操作 默认处理多帧的GIF时，会保留动画效果.
      * 如不想保留GIF的动画效果，只取第一帧，请使用"d:\\380k.gif[0]"做为源图片文件名。
      *
-     * @param inImgPath  源图片路径
-     * @param outImgPath 输出图片路径
+     * @param inputStream  源图片
      * @param width      宽，像素
      * @param height     高，像素
-     * @param quality    清晰度，1-100
      * @param suffix     文件后最
      */
     public static InputStream resize(InputStream inputStream, int width, int height, String suffix) {
@@ -234,7 +232,7 @@ public class ImageUtils4GM {
      * <p>
      * 注：本功能，第一个用户是，为搜狗搜索、360搜索准备合格的图片
      *
-     * @param fileContent
+     * @param inputStream
      * @param width
      * @param height
      * @param quality
@@ -288,7 +286,7 @@ public class ImageUtils4GM {
      * 缩小图片并补白 缩小图片，由于长宽比不同，补白的位置，补指定颜色的背景。产出目标尺寸的图片 如果源图小于目标尺寸，会放大原图
      * 注：本功能，第一个用户是，为搜狗搜索、360搜索准备合格的图片
      *
-     * @param fileContent
+     * @param inputStream
      * @param width       目标宽
      * @param height      目标高
      * @param quality     清晰度
@@ -341,9 +339,9 @@ public class ImageUtils4GM {
     /**
      * 设定图片的品质(清晰度) 品质下降后，图片大小(字节)也会变小
      *
-     * @param inImgPath  源图片路径
-     * @param outImgPath 输出图片路径
+     * @param inputStream  源图片路径
      * @param quality    品质 1-100 ，一般85比较合适
+     * @param suffix 后缀
      */
     public static InputStream setQuality(InputStream inputStream, int quality, String suffix) {
         if (inputStream == null) {
@@ -378,8 +376,7 @@ public class ImageUtils4GM {
     /**
      * 裁剪图片
      *
-     * @param inImgPath  来源图片
-     * @param outImgPath 输出图片
+     * @param inputStream  来源图片
      * @param x          保留区的起点坐标
      * @param y          保留区的起点坐标
      * @param width      保留区的宽度
@@ -447,7 +444,7 @@ public class ImageUtils4GM {
     /**
      * 转换图片格式
      *
-     * @param imageContent
+     * @param inputStream
      * @param format       图片的格式：jpg\png\bmp
      * @return
      */
