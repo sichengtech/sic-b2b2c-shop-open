@@ -12,7 +12,7 @@
 	 * 扩展示例
 	 * 当你需要扩展fdp工具时，请参考本示例复制以下代码再进行扩展
 	 * 调用示例：fdp.xxx()
-	 * @author 作者
+	 * @author zhaolei
 	 * @version 2017-xx-xx
 	 */
 	fdp.xxx=function(){
@@ -23,7 +23,7 @@
 	 * 通用msg提示框
 	 * 
 	 * 调用示例：fdp.msg("你好",3000)
-	 * @author 赵磊
+	 * @author zhaolei
 	 * @version 2016-12-26
 	 */
 	fdp.msg=function(message,showTime){
@@ -61,7 +61,7 @@
 	 * 通用alert提示窗口
 	 * 
 	 * 调用示例：fdp.alert("你好");
-	 * @author 赵磊
+	 * @author zhaolei
 	 * @version 2016-12-26
 	 */
 	fdp.alert=function(message,closed){
@@ -183,7 +183,7 @@
 	/**
 	 * 引入js和css文件
 	 * 调用示例：fdp.include()
-	 * @author 作者
+	 * @author zhaolei
 	 * @version 2017-xx-xx
 	 */
 	fdp.include=function (id, path, file){
@@ -205,7 +205,7 @@
 	/**
 	 * 获取URL地址中的参数
 	 * 调用示例：fdp.getQueryString()
-	 * @author 作者
+	 * @author zhaolei
 	 * @version 2017-xx-xx
 	 */
 	fdp.getQueryString=function (name, url) {
@@ -222,7 +222,7 @@
 	/**
 	 * 获取字典标签
 	 * 调用示例：fdp.getDictLabel()
-	 * @author 作者
+	 * @author zhaolei
 	 * @version 2017-xx-xx
 	 */
 	fdp.getDictLabel=function (data, value, defaultValue){
@@ -238,7 +238,7 @@
 	/**
 	 * 打开一个窗体
 	 * 调用示例：fdp.windowOpen()
-	 * @author 作者
+	 * @author zhaolei
 	 * @version 2017-xx-xx
 	 */
 	fdp.windowOpen=function (url, name, width, height){

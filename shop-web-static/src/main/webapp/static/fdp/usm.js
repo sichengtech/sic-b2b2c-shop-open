@@ -1,6 +1,6 @@
 /**
 是否登录失效(持久性存储30分钟)（有效期要和session时间一样长）* 用户登录状态管理器
- * @author 蔡龙
+ * @author cl
  * @version 2017-06-26
  */
 (function(){

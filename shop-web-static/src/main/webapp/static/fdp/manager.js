@@ -1,7 +1,7 @@
 /**
  * 参数管理器
  * 参数例子：www.a.b.c.htm?attr=1_北京:上海,price_60-100:10-50&sort=collectionCount&sortMode=DESC
- * @author 蔡龙
+ * @author cl
  * @version 2017-06-06
  */
 (function(){

@@ -1,6 +1,6 @@
 /**
  * 微信用户登录状态管理器
- * @author 张加利
+ * @author zjl
  * @version 2017-12-21
  */
 (function(){

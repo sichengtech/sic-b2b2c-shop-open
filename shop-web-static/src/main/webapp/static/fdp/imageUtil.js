@@ -2,7 +2,7 @@
  * 前台的图片工具，保持图片长宽比的情况下缩小图片
  * 使用示例：<img onload="imageUtil.resize(118,240);"/>
  * 
- * @author 赵磊 2009-04-25 
+ * @author zhaolei
  * http://elf8848.iteye.com/blog/374788
  */
 (function(){

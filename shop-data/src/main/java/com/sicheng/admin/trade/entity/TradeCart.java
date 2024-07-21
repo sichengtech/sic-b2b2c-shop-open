@@ -1,7 +1,7 @@
 /**
- * SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
+ * 本作品使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权。
  * Copyright (c) 2016 SiCheng.Net
- * SiC B2B2C Shop is licensed under Mulan PubL v2.
+ * This software is licensed under Mulan PubL v2.
  * You can use this software according to the terms and conditions of the Mulan PubL v2.
  * You may obtain a copy of Mulan PubL v2 at:
  *          http://license.coscl.org.cn/MulanPubL-2.0
@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * 购物车 Entity 子类，请把你的业务代码写在这里
  *
- * @author 范秀秀
+ * @author fxx
  * @version 2017-02-08
  */
 public class TradeCart extends TradeCartBase<TradeCart> {

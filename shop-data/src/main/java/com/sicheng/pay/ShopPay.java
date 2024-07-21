@@ -1,7 +1,7 @@
 /**
- * SiC B2B2C Shop 使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权书。
+ * 本作品使用 木兰公共许可证,第2版（Mulan PubL v2） 开源协议，请遵守相关条款，或者联系sicheng.net获取商用授权。
  * Copyright (c) 2016 SiCheng.Net
- * SiC B2B2C Shop is licensed under Mulan PubL v2.
+ * This software is licensed under Mulan PubL v2.
  * You can use this software according to the terms and conditions of the Mulan PubL v2.
  * You may obtain a copy of Mulan PubL v2 at:
  *          http://license.coscl.org.cn/MulanPubL-2.0
@@ -22,7 +22,7 @@ import java.util.Map;
  * 业务层可调用接口，可实现订单支付、退款、关闭、查询等操作。
  * 由于接口实现的是第三方支付，强制性抛出异常。
  *
- * @author cailong
+ * @author cl
  * @version 2018年3月26日 上午10:24:07
  */
 public interface ShopPay {
