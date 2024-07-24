@@ -17,6 +17,7 @@
 <%@ attribute name="labelName" type="java.lang.String" required="true" description="输入框名称（Name）" %>
 <%@ attribute name="labelValue" type="java.lang.String" required="true" description="输入框值（Name）" %>
 <%@ attribute name="title" type="java.lang.String" required="true" description="选择框标题" %>
+<%@ attribute name="ctxPath" type="java.lang.String" required="false" description="ctx的地址，若空默认使用ctxa，也就是admin后台" %>
 <%@ attribute name="url" type="java.lang.String" required="true" description="树结构数据地址" %>
 <%@ attribute name="checked" type="java.lang.Boolean" required="false"
               description="是否显示复选框，如果不需要返回父节点，请设置notAllowSelectParent为true" %>
@@ -59,8 +60,10 @@
         if ($("#${id}Button").hasClass("disabled")) {
             return true;
         }
-        // 正常打开
-        top.$.jBox.open("iframe:${ctxa}/tag/treeselect.do?url=" + encodeURIComponent("${url}") + "&module=${module}&checked=${checked}&extId=${extId}&isAll=${isAll}", "${fns:fy('选择')}${title}", 300, 420, {
+        // 得到ctxPath,若参数ctxPath不为空则使用ctxPath，否则使用ctxa（是admin后台）。  文档：https://www.sicheng.net/shopdoc/3604709.html
+        var ctxPath='${not empty ctxPath?ctxPath:ctxa}';
+        // 正常打开iframe
+        top.$.jBox.open("iframe:"+ctxPath+"/tag/treeselect.do?url=" + encodeURIComponent("${url}") + "&module=${module}&checked=${checked}&extId=${extId}&isAll=${isAll}", "${fns:fy('选择')}${title}", 300, 420, {
             ajaxData: {selectIds: $("#${id}Id").val()},
             buttons: {"${fns:fy('确定')}": "ok", "${fns:fy('关闭')}": true},
             submit: function (v, h, f) {

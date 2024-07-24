@@ -51,7 +51,7 @@
 						<div class="control-group">
 							<label class="control-label">${fns:fy('上级分类：')}</label>
 							<sys:treeselect id="parent" name="parent.id" value="${storeCategory.parent.id}" labelName="parent.name" labelValue="${storeCategory.parent.name}"
-								title="上级分类" url="/store/storeCategory/treeData.htm" extId="${storeCategory.id}" cssClass="" allowClear="true"/>
+								title="上级分类" ctxPath="${ctxs}" url="/store/storeCategory/treeData.htm" extId="${storeCategory.id}" cssClass="" allowClear="true"/>
 							<div class="formPrompt">
 								<i class="msg-icon"></i>
 								<div class="msg-con">${fns:fy('请选择上级分类')}</div>
