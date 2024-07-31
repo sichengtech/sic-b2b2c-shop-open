@@ -22,10 +22,8 @@
 	<bean id="javaMailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="javaMailProperties">
 			<props>
-				<prop key="mail.smtp.auth">${mail.smtp.auth}</prop>
-				<prop key="mail.smtp.timeout">${mail.smtp.timeout}</prop>
-				<prop key="mail.smtp.starttls.enable">${mail.smtp.starttls.enable}</prop>
 				<!--
+				不需要在这里配置了，因为JavaMailSenderImpl已经配置了，在管理后台有“邮件通道”管理模块，在邮件通道管理模块中可以配置邮件通道信息。
 				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
 				-->
 			</props>

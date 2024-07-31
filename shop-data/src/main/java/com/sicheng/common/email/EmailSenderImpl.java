@@ -4,7 +4,7 @@
  * This software is licensed under Mulan PubL v2.
  * You can use this software according to the terms and conditions of the Mulan PubL v2.
  * You may obtain a copy of Mulan PubL v2 at:
- *          http://license.coscl.org.cn/MulanPubL-2.0
+ * http://license.coscl.org.cn/MulanPubL-2.0
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
  * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -12,7 +12,6 @@
  */
 package com.sicheng.common.email;
 
-import com.sicheng.admin.site.entity.SiteInfo;
 import com.sicheng.admin.sys.dao.SysEmailServerDao;
 import com.sicheng.admin.sys.entity.SysEmailServer;
 import com.sicheng.common.persistence.Page;
@@ -27,13 +26,12 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.util.Assert;
 
 import javax.annotation.Resource;
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeUtility;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
 /**
  * <p>标题: EmailSender 邮箱发送者</p>
@@ -107,38 +105,38 @@ public class EmailSenderImpl implements EmailSender {
             return map;
         }
 
-        String sender=entity.getSender();//发件人展示名称或网站名称,发件人的显示名，一般是站点名称
+        String sender = entity.getSender();//发件人展示名称或网站名称,发件人的显示名，一般是站点名称
         String smtpHost = entity.getSmtp();//SMTP服务器地址
         Integer smtpPort = Integer.valueOf(entity.getPort());//SMTP服务器端口
         String smtpUsername = entity.getUsername();//SMTP用户名
         String smtpPassword = entity.getPwd();//SMTP密码
         String smtpFromMail = entity.getUsername();//用户名就是发件的邮箱，两者要一致才能通过smtp服务器的验证
-        String safe=entity.getSafe();//是否使用安全连接
+        String safe = entity.getSafe();//是否使用安全连接，0否，1是
 
-        if(StringUtils.isBlank(smtpHost)){
+        if (StringUtils.isBlank(smtpHost)) {
             String msg = "SMTP服务器地址为空，无法发送邮件";
             map.put("status", "0");//测试邮件发送结果：0失败，1成功
-            map.put("msg", msg );//提示信息
+            map.put("msg", msg);//提示信息
             return map;
         }
-        if(smtpPort==null){
+        if (smtpPort == null) {
             String msg = "SMTP服务器端口为空，无法发送邮件";
             map.put("status", "0");//测试邮件发送结果：0失败，1成功
-            map.put("msg", msg );//提示信息
+            map.put("msg", msg);//提示信息
             return map;
         }
-        if(StringUtils.isBlank(smtpUsername)){
+        if (StringUtils.isBlank(smtpUsername)) {
             String msg = "SMTP用户名为空，无法发送邮件";
             map.put("status", "0");//测试邮件发送结果：0失败，1成功
-            map.put("msg", msg );//提示信息
+            map.put("msg", msg);//提示信息
             return map;
         }
 
         try {
-            send(sender, smtpFromMail, smtpHost, smtpPort,smtpUsername, smtpPassword, toMail, subject, text, async);
+            send(sender, smtpFromMail, smtpHost, smtpPort, smtpUsername, smtpPassword, toMail, subject, text, async, safe);
             String msg = "发送邮件成功";
             map.put("status", "1");//测试邮件发送结果：0失败，1成功
-            map.put("msg", msg );//提示信息
+            map.put("msg", msg);//提示信息
             return map;
         } catch (Exception e) {
             String msg = "发送邮件时异常，";
@@ -162,27 +160,43 @@ public class EmailSenderImpl implements EmailSender {
      * @param subject      邮件的标题
      * @param text         邮件的正文，支持HTML
      * @param async        true表示异步发送，false表示同步发送
+     * @param safe         是否使用SSL安全连接，0否，1是
      */
     public void send(String sender, String smtpFromMail, String smtpHost, Integer smtpPort, String smtpUsername,
-                     String smtpPassword, String toMail, String subject, String text, boolean async) {
-        Assert.hasText(sender);
-        Assert.hasText(smtpFromMail);
-        Assert.hasText(smtpHost);
-        Assert.notNull(smtpPort);
-        Assert.hasText(smtpUsername);
-        Assert.hasText(smtpPassword);
-        Assert.hasText(toMail);
-        Assert.hasText(subject);
-        Assert.hasText(text);
+                     String smtpPassword, String toMail, String subject, String text, boolean async, String safe) {
+//        Assert.hasText(sender);
+//        Assert.hasText(smtpFromMail);
+//        Assert.hasText(smtpHost);
+//        Assert.notNull(smtpPort);
+//        Assert.hasText(smtpUsername);
+//        Assert.hasText(smtpPassword);
+//        Assert.hasText(toMail);
+//        Assert.hasText(subject);
+//        Assert.hasText(text);
 
         try {
             if (sender == null) {
-                sender = "SiC B2B2C Shop";
+                sender = "FDP快速开发平台";
             }
-            javaMailSender.setHost(smtpHost);
-            javaMailSender.setPort(smtpPort);
-            javaMailSender.setUsername(smtpUsername);
-            javaMailSender.setPassword(smtpPassword);
+
+            Properties props = new Properties();
+            props.put("mail.transport.protocol", "smtp");
+            props.put("mail.mime.encodefilename", "true");
+            // 发送服务器需要身份验证
+            props.put("mail.smtp.auth", "true");
+
+            //是否使用SSL安全连接，0否，1是
+            if("1".equals(safe)) {
+                // 设置使用ssl
+                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.put("mail.smtp.ssl.protocols", "TLSv1.2");
+            }
+
+            javaMailSender.setJavaMailProperties(props);
+            javaMailSender.setHost(smtpHost); // 设置邮件服务器主机名
+            javaMailSender.setPort(smtpPort); // 设置邮件服务器端口号
+            javaMailSender.setUsername(smtpUsername); //用户名
+            javaMailSender.setPassword(smtpPassword); //密码
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, false, "utf-8");
             mimeMessageHelper.setFrom(MimeUtility.encodeWord(sender) + " <" + smtpFromMail + ">");
@@ -227,18 +241,18 @@ public class EmailSenderImpl implements EmailSender {
         }
         return entity;
     }
-    
+
     /**
      * 邮件内容模板
      * @param text 邮件内容
      * @return
      */
-    private String textTemplate(String text){
-    	text="<p height='40px;'><br/></p>"
-    			+"<p style='width: 400px; text-align: left; margin: 0px auto; line-height: 30px; text-indent: 2em;font-size: 18px'>"
-    			+text
-                +"</p>"
-    			+"<p height='40px;'><br/></p>";
-    	return text;
+    private String textTemplate(String text) {
+        text = "<p height='40px;'><br/></p>"
+                + "<p style='width: 400px; text-align: left; margin: 0px auto; line-height: 30px; text-indent: 2em;font-size: 18px'>"
+                + text
+                + "</p>"
+                + "<p height='40px;'><br/></p>";
+        return text;
     }
 }

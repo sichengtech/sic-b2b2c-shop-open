@@ -27,7 +27,7 @@ import java.util.Set;
 
 /**
  * 翻译工具类（获取国际化配置文件的值）
- * @author fanxiuixu
+ * @author fxx
  * @version 2019-11-20
  */
 public class FYUtils {
@@ -46,7 +46,7 @@ public class FYUtils {
 	        message = requestContext.getMessage(key,params);
 		} catch (Exception e) {
 			message=key;
-			logger.error("获取国际化值发生错误,key="+key,e);
+			logger.warn("获取国际化值发生错误,key="+key,e);
 		}
 		return message;
 	}

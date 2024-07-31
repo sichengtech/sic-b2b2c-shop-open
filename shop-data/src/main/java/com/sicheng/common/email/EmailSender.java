@@ -53,9 +53,10 @@ public interface EmailSender {
      * @param subject      邮件的标题
      * @param text         邮件的正文，支持HTML
      * @param async        true表示异步发送，false表示同步发送
+     * @param safe         是否使用SSL安全连接，0否，1是
      */
     void send(String sender, String smtpFromMail, String smtpHost, Integer smtpPort, String smtpUsername,
-              String smtpPassword, String toMail, String subject, String text, boolean async);
+              String smtpPassword, String toMail, String subject, String text, boolean async, String safe);
 
 
 }
