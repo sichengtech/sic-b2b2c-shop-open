@@ -30,7 +30,6 @@ import java.util.*;
  * 自动加载被修改的MyBatis Mapper XML文件
  * 实现MyBatis Mapper文件动态重新加载，只加载修改的文件
  * <p>
- * 原文：http://thinkgem.iteye.com/blog/2304557
  *
  * @author zhaolei
  * @version 2016-5-29
@@ -319,12 +318,12 @@ public class MapperRefresh implements java.lang.Runnable {
 
         @SuppressWarnings("unchecked")
         public V put(String key, V value) {
-            // ThinkGem 如果现在状态为刷新，则刷新(先删除后添加)
+            //  如果现在状态为刷新，则刷新(先删除后添加)
             if (MapperRefresh.isRefresh()) {
                 remove(key);
                 MapperRefresh.log.debug("refresh key:" + key.substring(key.lastIndexOf(".") + 1));
             }
-            // ThinkGem end
+            //  end
             if (containsKey(key)) {
                 throw new IllegalArgumentException(name + " already contains value for " + key);
             }

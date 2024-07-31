@@ -21,7 +21,7 @@ import java.util.Map;
  *  <p>标题: ReportDao</p>
  *  <p>描述: 统计报表的dao</p>
  *  <p>公司: 思程科技 www.sicheng.net</p>
- *  @author zhangjiali
+ *  @author zjl
  *  @version 2017年7月20日 下午12:48:45
  * 
  */

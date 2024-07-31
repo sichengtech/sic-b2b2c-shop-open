@@ -47,7 +47,7 @@ import java.util.Map;
   * <p>标题: WeiXinController</p>
   * <p>描述: 微信接口Controller</p>
   * <p>公司: 思程科技 www.sicheng.net</p>
-  * @author  zhangjiali
+  * @author zjl
   * @version 2017年12月18日 上午11:37:06
   *
   */

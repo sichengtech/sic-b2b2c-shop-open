@@ -334,7 +334,7 @@ public class RouteController extends BaseController {
         return "/categoryAll";
     }
 
-//	/*  -------------------------范秀秀(测试demo)start-----------------------------  */	
+//	/*  -------------------------fxx(测试demo)start-----------------------------  */
 //	/**
 //	 * 进入front系统的商品分页
 //	 */
@@ -377,9 +377,9 @@ public class RouteController extends BaseController {
 //		return "/demo/productConsultationPage";
 //	}
 //	
-//	/*  -------------------------范秀秀(测试demo)end-----------------------------  */
+//	/*  -------------------------fxx(测试demo)end-----------------------------  */
 //	
-//	/*  -------------------------蔡龙(测试demo)start-----------------------------  */
+//	/*  -------------------------cl(测试demo)start-----------------------------  */
 //	
 //	/**
 //	 * 进入front系统的页面demo
@@ -397,7 +397,7 @@ public class RouteController extends BaseController {
 //		return "/demo/cmsDemo";
 //	}
 //	
-//	/*  -------------------------蔡龙(测试demo)end-----------------------------  */
+//	/*  -------------------------cl(测试demo)end-----------------------------  */
 
     /**
      * 进入demo页，测试单个标签

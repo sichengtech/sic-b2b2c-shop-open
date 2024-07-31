@@ -4,7 +4,7 @@ response.setStatus(403);
 //获取异常类
 Throwable ex = Exceptions.getThrowable(request);
 
-//如果是App，则按《统一数据包装体和状态码》返回信息   （赵磊2019-2-7添加）
+//如果是App，则按《统一数据包装体和状态码》返回信息   （zhaolei2019-2-7添加）
 if (AppTokenUtils.isAppRequest()) {
 	String errMsg="操作权限不足.";
 	String json = AppDataUtils.getJson(AppDataUtils.STATUS_SERVER_ERROR,errMsg,null,null);

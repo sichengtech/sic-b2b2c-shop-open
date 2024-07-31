@@ -37,7 +37,7 @@ import java.util.Map;
  *  <p>标题: EmailSender</p>
  *  <p>描述: 执行发送app通知</p>
  *  <p>公司: 思程科技 www.sicheng.net</p>
- *  @author zhangjiali
+ *  @author zjl
  *  @version 2019年10月9日 上午10:18:26
  */
 public class AppPushImpl implements AppPush {

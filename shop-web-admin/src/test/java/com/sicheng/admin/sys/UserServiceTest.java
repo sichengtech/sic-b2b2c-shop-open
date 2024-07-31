@@ -784,7 +784,7 @@ public class UserServiceTest {
     public void test_selectOne() {
         User entity = new User();
 //		entity.setId(1L);
-        entity.setLoginName("thinkgem");
+        entity.setLoginName("zhaolei");
         userService.selectOne(new Wrapper(entity));
     }
 

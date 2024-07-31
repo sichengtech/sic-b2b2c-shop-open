@@ -60,7 +60,7 @@ import static org.springframework.util.StringUtils.tokenizeToStringArray;
  * demarcation in combination with a {@code SqlSessionFactory}. JTA should be used for transactions
  * which span multiple databases or when container managed transactions (CMT) are being used.
  *
- * @Modified By  赵磊 2017-1-28 来自 MyBatisSpring1.3.1版本, 只在536行添加了“启动刷新MapperXML定时器”
+ * @Modified By  zhaolei 2017-1-28 来自 MyBatisSpring1.3.1版本, 只在536行添加了“启动刷新MapperXML定时器”
  * @see #setConfigLocation
  * @see #setDataSource
  */
@@ -509,7 +509,7 @@ public class SqlSessionFactoryBean implements FactoryBean<SqlSessionFactory>, In
                 }
             }
 
-            // ThinkGem 启动刷新MapperXML定时器（有助于开发者调试）。
+            //  启动刷新MapperXML定时器（有助于开发者调试）。
             new MapperRefresh(this.mapperLocations, configuration).run();
 
 

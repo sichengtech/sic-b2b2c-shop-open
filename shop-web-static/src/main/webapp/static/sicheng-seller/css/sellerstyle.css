@@ -474,7 +474,7 @@ line-height: 15px;position: absolute;left: 91px;top:-6px;background: #ffffff;cur
 .seller-login .wraper .login-header{ height:73px;}
 .seller-login .wraper .login-header .logo-box{ float:left; margin-right:30px;}
 .seller-login .wraper .login-header .page-name{ font-size:20px;padding-top:28px;display: block;}
-.seller-login .wraper .login-box{ width:320px; float:right; background:#fff; margin-top:50px;padding:30px 40px; text-align:center;display: block;background-color: #fff;border-radius:3x;-webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.2);-moz-box-shadow: 0 0 5px 0 rgba(0,0,0,.2);box-shadow: 0 0 5px 0 rgba(0,0,0,.2);}
+.seller-login .wraper .login-box{ width:320px; float:right; background:#fff; margin-top:50px;padding:30px 40px; text-align:center;display: block;background-color: #fff;border-radius:3px;-webkit-box-shadow: 0 0 5px 0 rgba(0,0,0,.2);-moz-box-shadow: 0 0 5px 0 rgba(0,0,0,.2);box-shadow: 0 0 5px 0 rgba(0,0,0,.2);}
 .seller-login .wraper .login-box .r{ font-size:12px;}
 .seller-login .wraper .login-box h2{ font-size:18px; font-weight:normal; text-align:left}
 .seller-login .wraper .login-ads{ float:left; max-width:800px;}
@@ -673,7 +673,7 @@ input:-webkit-autofill, textarea:-webkit-autofill, select:-webkit-autofill { out
 .sui-container, .navbar-static-top .sui-container, .navbar-fixed-top .sui-container, .navbar-fixed-bottom .sui-container {width: 1200px;}
 }
 /*操作提示
-(fanxiuxiu加)
+(fxx加)
 */
 .point_hidden{display: none;}
 #point ul{padding-bottom: 5px;}

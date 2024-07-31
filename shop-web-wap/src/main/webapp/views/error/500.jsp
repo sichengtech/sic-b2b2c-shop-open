@@ -14,7 +14,7 @@ if (ex != null) {
 	sb.append("未知错误.\n\n");
 }
 
-// 如果是App，则按《统一数据包装体和状态码》返回信息   （赵磊2019-2-7添加）
+// 如果是App，则按《统一数据包装体和状态码》返回信息   （zhaolei2019-2-7添加）
 if (AppTokenUtils.isAppRequest()) {
 	String errMsg=null;
 	if (ex != null){

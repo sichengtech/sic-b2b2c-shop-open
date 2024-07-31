@@ -97,7 +97,7 @@ public class LogUtils {
         public void run() {
             // 如果有异常，设置异常信息
             log.setException(ex == null ? null : ex.toString());
-            //记录整个异常栈信息，因信息量太大所以注释了 2016-12-22 赵磊
+            //记录整个异常栈信息，因信息量太大所以注释了 2016-12-22 zhaolei
             //log.setException(Exceptions.getStackTraceAsString(ex));
             // 保存日志信息
             log.preInsert();

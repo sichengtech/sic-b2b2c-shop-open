@@ -7,7 +7,7 @@
 	<rsf:protocol id="clear_rsf" name="rsf" port="63638" ></rsf:protocol>	
 	
 	<!-- 登录，服务端-->
-	<rsf:service displayName="清理权限的缓存服务" owner="蔡龙" department="开发部" 
+	<rsf:service displayName="清理权限的缓存服务" owner="cl" department="开发部"
 		interfaceClass="com.sicheng.common.shiro.SsoClearAuthorizationCache" 
 		springBean="auto" portalId="seller">
 		<rsf:document><![CDATA[ 

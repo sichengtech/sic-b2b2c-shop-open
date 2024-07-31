@@ -11,7 +11,7 @@
 	第二次替换时，TradeConsultationDao.xml文件的内容你要自行做好备份。
 	-->
 	<!-- 根据多个replyId查询出一个回复咨询列表
-		@author 范秀秀
+		@author fxx
 	 -->
 	<select id="selectByReplyIdIn" resultType="TradeConsultation">
 		SELECT * FROM trade_consultation a

@@ -40,7 +40,7 @@ import java.util.Map;
  *  <p>标题: SiteSpecialListFunction</p>
  *  <p>描述: 获取特版详情(列表)</p>
  *  <p>公司: 思程科技 www.sicheng.net</p>
- *  @author zhangjiali
+ *  @author zjl
  *  @date 2018年6月2日 下午2:40:59
  * 
  */

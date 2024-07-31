@@ -4,7 +4,7 @@
  * This software is licensed under Mulan PubL v2.
  * You can use this software according to the terms and conditions of the Mulan PubL v2.
  * You may obtain a copy of Mulan PubL v2 at:
- *          http://license.coscl.org.cn/MulanPubL-2.0
+ * http://license.coscl.org.cn/MulanPubL-2.0
  * THIS SOFTWARE IS PROVIDED ON AN "AS IS" BASIS, WITHOUT WARRANTIES OF ANY KIND,
  * EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO NON-INFRINGEMENT,
  * MERCHANTABILITY OR FIT FOR A PARTICULAR PURPOSE.
@@ -37,7 +37,6 @@ public class RouteController extends BaseController {
     @ModelAttribute
     public void init(Model model) {
         model.addAttribute("ctx", R.getCtx());
-
         model.addAttribute("ctxf", R.getCtx() + Global.getFrontPath());
         model.addAttribute("ctxa", R.getCtx() + Global.getAdminPath());
         model.addAttribute("ctxs", R.getCtx() + Global.getSellerPath());
@@ -48,12 +47,10 @@ public class RouteController extends BaseController {
 
         model.addAttribute("ctxStatic", "/static/static");
         model.addAttribute("ctxfs", "/upload" + Global.getConfig("filestorage.dir"));
-
     }
 
     /**
      *  进入微信系统的首页
-     *  @return
      */
     @RequestMapping(value = "/index")
     public String index(Model model) {
@@ -63,7 +60,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的分类首页
-     *  @return
      */
     @RequestMapping(value = "/categoryIndex")
     public String categoryIndex(Model model) {
@@ -73,11 +69,9 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的注册页面
-     *  @return
-     *  @throws IOException
      */
     @RequestMapping(value = "/user/register/form")
-    public String userRegister() throws IOException {
+    public String userRegister() {
 //		Object openId=cache.get(CacheConstant.WEIXIN_OPENID+AppTokenUtils.getRequestFlag());
 //		if(openId==null){
 //			String flag="2";//入口类型
@@ -88,12 +82,9 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的登录页面 
-     *  @return
-     *
-     * @throws IOException
      */
     @RequestMapping(value = "/user/login/form")
-    public String userLogin() throws IOException {
+    public String userLogin() {
 //		Object openId=cache.get(CacheConstant.WEIXIN_OPENID+AppTokenUtils.getRequestFlag());
 //		if(openId==null){
 //			String flag="3";//入口类型
@@ -104,12 +95,9 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的登录页面 
-     *  @return
-     *
-     * @throws IOException
      */
     @RequestMapping(value = "/user/forgetPwd/form")
-    public String userForgetPwd() throws IOException {
+    public String userForgetPwd() {
 //		Object openId=cache.get(CacheConstant.WEIXIN_OPENID+AppTokenUtils.getRequestFlag());
 //		if(openId==null){
 //			String flag="4";//入口类型
@@ -120,7 +108,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的用户信息表单页面 
-     *  @return
      */
     @RequestMapping(value = "/user/userInfo/form")
     public String userInfo() {
@@ -129,8 +116,7 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的用户中心页面 
-     *  @param model
-     *  @return
+     *  @param model model
      */
     @RequestMapping(value = "/user/userCentral")
     public String userCentral(Model model) {
@@ -140,7 +126,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的收货地址列表页面
-     *  @return
      */
     @RequestMapping(value = "/user/address/list")
     public String addressList() {
@@ -149,7 +134,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的收货地址表单页面
-     *  @return
      */
     @RequestMapping(value = "/user/address/form")
     public String addressForm() {
@@ -158,7 +142,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的我的消息页面
-     *  @return
      */
     @RequestMapping(value = "/user/userMessage/list")
     public String userMessage() {
@@ -167,7 +150,6 @@ public class RouteController extends BaseController {
 
     /**
      *  进入微信系统的店铺收藏页面 
-     *  @return
      */
     @RequestMapping(value = "/user/collectionStore/list")
     public String userCollectionStoreList() {
@@ -185,8 +167,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的商品详情页
-     *
-     * @return
      */
     @RequestMapping(value = "/product/detail")
     public String productDetail() {
@@ -195,8 +175,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的商品列表页
-     *
-     * @return
      */
     @RequestMapping(value = "/product/list")
     public String productList() {
@@ -205,8 +183,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的商品不存在页
-     *
-     * @return
      */
     @RequestMapping(value = "/product/error")
     public String productError() {
@@ -215,8 +191,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的店铺主页
-     *
-     * @return
      */
     @RequestMapping(value = "/store/index")
     public String storeIndex(Model model) {
@@ -226,8 +200,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城店铺不存在页面
-     *
-     * @return
      */
     @RequestMapping(value = "/store/error")
     public String storeError() {
@@ -236,8 +208,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的店铺文章列表页面
-     *
-     * @return
      */
     @RequestMapping(value = "/store/article/list")
     public String storeArticleList(Model model) {
@@ -247,8 +217,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的店铺文章详情页面
-     *
-     * @return
      */
     @RequestMapping(value = "/store/article/detail")
     public String storeArticleDetail(Model model) {
@@ -258,8 +226,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的商品咨询列表
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/consultation/list")
     public String tradeConsultationList() {
@@ -268,8 +234,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的商品咨询表单页
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/consultation/form")
     public String tradeConsultationForm() {
@@ -278,8 +242,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城我的咨询列表页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/myConsultation/list")
     public String myTradeConsultationList() {
@@ -288,8 +250,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的商品评价列表页
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/comment/list")
     public String tradeCommentList() {
@@ -298,8 +258,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的我的评价列表页
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/myComment/list")
     public String tradeMyCommentList() {
@@ -308,8 +266,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的物流信息页
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/logistics/info")
     public String trderLogisticsInfo() {
@@ -318,8 +274,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的购物车页
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/cart/list")
     public String tradeCartList(Model model) {
@@ -329,8 +283,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的确认订单页
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/order/confirmOrder")
     public String tradeConfirmOrder() {
@@ -339,8 +291,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的订单列表页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/order/list")
     public String tradeOrderList() {
@@ -349,8 +299,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的订单详情页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/order/detail")
     public String tradeOrderDetail() {
@@ -359,8 +307,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的发票列表页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/deliver/list")
     public String tradeDeliverList() {
@@ -369,8 +315,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的发票列表页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/deliver/save")
     public String tradeDeliverSave() {
@@ -379,8 +323,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的发票表单页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/deliver/edit")
     public String tradeDeliverEdit() {
@@ -389,8 +331,6 @@ public class RouteController extends BaseController {
 
     /**
      * 进入微信商城的评价表单页面
-     *
-     * @return
      */
     @RequestMapping(value = "/trade/comment/form")
     public String tradeCommentForm() {
@@ -399,8 +339,6 @@ public class RouteController extends BaseController {
 
     /**
      * 网络请求发生异常，返回错误页面
-     *
-     * @return
      */
     @RequestMapping(value = "/webRequest/error")
     public String webRequestError() {

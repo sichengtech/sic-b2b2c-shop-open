@@ -1,7 +1,7 @@
 <%
 response.setStatus(404);
 
-//如果是App，则按《统一数据包装体和状态码》返回信息   （赵磊2019-2-7添加）
+//如果是App，则按《统一数据包装体和状态码》返回信息   （zhaolei2019-2-7添加）
 if (AppTokenUtils.isAppRequest()) {
 	String errMsg="页面不存在.";
 	String json = AppDataUtils.getJson(AppDataUtils.STATUS_SERVER_ERROR,errMsg,null,null);

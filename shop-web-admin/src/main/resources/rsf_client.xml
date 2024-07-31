@@ -8,7 +8,7 @@
 	
 	<!-- 登录，客户端-->
 	<rsf:client portalId="order" id="clearAuthorizationCache" url="rsf://127.0.0.1:63638" timeout="20000"
-	displayName="清理权限的缓存服务" owner="蔡龙" department="开发部" 
+	displayName="清理权限的缓存服务" owner="cl" department="开发部"
 	interfaceClass="com.sicheng.common.shiro.SsoClearAuthorizationCache">
 	</rsf:client>
 

@@ -82,7 +82,7 @@ public class AccountServiceTest {
 		BigDecimal couponMoney=new BigDecimal("0");
 		BigDecimal totalMoney=new BigDecimal("6");
 		Long payWayId=12L;
-		String payWayName="赵磊支付";
+		String payWayName="zhaolei支付";
 		String outerTradeNo="zl_20185988686";
 		accountService.paymentProduct(id, money, couponMoney, totalMoney, payWayId, payWayName, outerTradeNo);
 	}
@@ -126,7 +126,7 @@ public class AccountServiceTest {
 		Long accountId=2L;//会员账户
 		BigDecimal money=new BigDecimal("0.01");
 		Long payWayId=12L;
-		String payWayName="赵磊支付";
+		String payWayName="zhaolei支付";
 		String outerTradeNo="zl_20185988685";
 		accountService.withdrawExecuteUser(id,accountId,money,payWayId,payWayName,outerTradeNo);
 	}
@@ -148,7 +148,7 @@ public class AccountServiceTest {
 		Long accountId=null;
 		BigDecimal money=new BigDecimal("0.01");
 		Long payWayId=12L;
-		String payWayName="赵磊支付";
+		String payWayName="zhaolei支付";
 		String outerTradeNo="zl_20185988685";
 		accountService.withdrawExecutePlatform(id,accountId,money,payWayId,payWayName,outerTradeNo);
 	}
@@ -193,7 +193,7 @@ public class AccountServiceTest {
 		BigDecimal money=new BigDecimal("5");
 		BigDecimal couponMoney=new BigDecimal("5");
 		Long payWayId=12L;
-		String payWayName="赵磊支付";
+		String payWayName="zhaolei支付";
 		String outerTradeNo="zl_20185988685";
 		accountService.refundProduct(id, money, couponMoney, payWayId, payWayName, outerTradeNo);
 	}
@@ -288,7 +288,7 @@ public class AccountServiceTest {
 		BigDecimal couponMoney1=new BigDecimal("0");
 		BigDecimal totalMoney1=new BigDecimal("1000");
 		Long payWayId1=12L;
-		String payWayName1="赵磊支付";
+		String payWayName1="zhaolei支付";
 		String outerTradeNo1="zl_20185988686";
 		accountService.paymentProduct(id1, money1, couponMoney1, totalMoney1, payWayId1, payWayName1, outerTradeNo1);
 
@@ -302,7 +302,7 @@ public class AccountServiceTest {
 		BigDecimal couponMoney2=new BigDecimal("0");
 		BigDecimal totalMoney2=new BigDecimal("500");
 		Long payWayId2=12L;
-		String payWayName2="赵磊支付";
+		String payWayName2="zhaolei支付";
 		String outerTradeNo2="zl_20185988681";
 		accountService.paymentProduct(id2, money2, couponMoney2, totalMoney2, payWayId2, payWayName2, outerTradeNo2);
 
@@ -315,7 +315,7 @@ public class AccountServiceTest {
 		BigDecimal money3=new BigDecimal("500");
 		BigDecimal couponMoney3=new BigDecimal("0");
 		Long payWayId3=12L;
-		String payWayName3="赵磊支付";
+		String payWayName3="zhaolei支付";
 		String outerTradeNo3="zl_20185988681";
 		accountService.refundProduct(id3, money3, couponMoney3, payWayId3, payWayName3, outerTradeNo3);
 
@@ -345,7 +345,7 @@ public class AccountServiceTest {
 		Long accountId6=auid;//会员账户
 		BigDecimal money6=new BigDecimal("984");
 		Long payWayId6=12L;
-		String payWayName6="赵磊支付";
+		String payWayName6="zhaolei支付";
 		String outerTradeNo6="zl_20185988685";
 		accountService.withdrawExecuteUser(10L,accountId6,money6,payWayId6,payWayName6,outerTradeNo6);
 
@@ -361,7 +361,7 @@ public class AccountServiceTest {
 		Long accountId8=null;
 		BigDecimal money8=new BigDecimal("10");
 		Long payWayId8=12L;
-		String payWayName8="赵磊支付";
+		String payWayName8="zhaolei支付";
 		String outerTradeNo8="zl_20185988685";
 		accountService.withdrawExecutePlatform(11L,accountId8,money8,payWayId8,payWayName8,outerTradeNo8);
 
@@ -399,7 +399,7 @@ public class AccountServiceTest {
 		BigDecimal couponMoney1=new BigDecimal("0");
 		BigDecimal totalMoney1=new BigDecimal("1000");
 		Long payWayId1=12L;
-		String payWayName1="赵磊支付";
+		String payWayName1="zhaolei支付";
 		String outerTradeNo1="zl_20185988686";
 		accountService.paymentProduct(id1, money1, couponMoney1, totalMoney1, payWayId1, payWayName1, outerTradeNo1);
 
@@ -413,7 +413,7 @@ public class AccountServiceTest {
 		BigDecimal couponMoney2=new BigDecimal("0");
 		BigDecimal totalMoney2=new BigDecimal("500");
 		Long payWayId2=12L;
-		String payWayName2="赵磊支付";
+		String payWayName2="zhaolei支付";
 		String outerTradeNo2="zl_20185988681";
 		accountService.paymentProduct(id2, money2, couponMoney2, totalMoney2, payWayId2, payWayName2, outerTradeNo2);
 
@@ -426,7 +426,7 @@ public class AccountServiceTest {
 		BigDecimal money3=new BigDecimal("500");
 		BigDecimal couponMoney3=new BigDecimal("0");
 		Long payWayId3=12L;
-		String payWayName3="赵磊支付";
+		String payWayName3="zhaolei支付";
 		String outerTradeNo3="zl_20185988681";
 		accountService.refundProduct(id3, money3, couponMoney3, payWayId3, payWayName3, outerTradeNo3);
 
@@ -456,7 +456,7 @@ public class AccountServiceTest {
 		Long accountId6=auid;//会员账户
 		BigDecimal money6=new BigDecimal("990");
 		Long payWayId6=12L;
-		String payWayName6="赵磊支付";
+		String payWayName6="zhaolei支付";
 		String outerTradeNo6="zl_20185988685";
 		accountService.withdrawExecuteUser(10L,accountId6,money6,payWayId6,payWayName6,outerTradeNo6);
 
@@ -479,7 +479,7 @@ public class AccountServiceTest {
 		Long accountId8=null;
 		BigDecimal money8=new BigDecimal("10");
 		Long payWayId8=12L;
-		String payWayName8="赵磊支付";
+		String payWayName8="zhaolei支付";
 		String outerTradeNo8="zl_20185988685";
 		accountService.withdrawExecutePlatform(11L,accountId8,money8,payWayId8,payWayName8,outerTradeNo8);
 

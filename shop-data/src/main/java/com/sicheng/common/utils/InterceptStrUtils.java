@@ -19,7 +19,7 @@ public class InterceptStrUtils {
 	 * @param a
 	 * @param b
 	 * @return
-	 * @2016-8-26 蔡龙
+	 * @2016-8-26 cl
 	 */
 	
 	public static String InterceptCompany(String str,int a,int b){

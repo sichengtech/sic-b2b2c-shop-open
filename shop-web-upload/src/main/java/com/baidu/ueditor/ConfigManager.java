@@ -166,7 +166,7 @@ public final class ConfigManager {
     }
 
     /**
-     * 替换变量 赵磊 使用Global.getConfig("filestorage.dir")替换####
+     * 替换变量 zhaolei 使用Global.getConfig("filestorage.dir")替换####
      *
      * @param configContent json配置文件
      * @param contextPath2  应用的根路径 contextPath
@@ -183,8 +183,8 @@ public final class ConfigManager {
     }
 
     /**
-     * 这方法是拼全config.json的绝对路径。 赵磊 UEditor官方给的方案是：parentPath是controller.jsp
-     * 的目录路径，所以限制config.json 必须和controller.jsp在同一个目录下。 赵磊的替代方案：用spring
+     * 这方法是拼全config.json的绝对路径。 zhaolei UEditor官方给的方案是：parentPath是controller.jsp
+     * 的目录路径，所以限制config.json 必须和controller.jsp在同一个目录下。 zhaolei的替代方案：用spring
      * controller代替controller.jsp，在类路径下查找config.json。
      */
     private String getConfigPath() {

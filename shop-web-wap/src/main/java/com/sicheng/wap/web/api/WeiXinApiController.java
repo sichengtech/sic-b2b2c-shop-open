@@ -41,7 +41,7 @@ import java.util.UUID;
   * <p>标题: WeiXinController</p>
   * <p>描述: 微信接口Controller</p>
   * <p>公司: 思程科技 www.sicheng.net</p>
-  * @author  zhangjiali
+  * @author zjl
   * @version 2017年12月18日 上午11:37:06
   *
   */
@@ -58,8 +58,8 @@ public class WeiXinApiController extends BaseController {
 
     /**
      * 微信支付
-     * @param request
-     * @return
+     * @param request HttpServletRequest
+     * @return Map<String, Object>
      */
     @ResponseBody
     @RequestMapping(value = "/{version}/weixin/pay")
@@ -68,8 +68,8 @@ public class WeiXinApiController extends BaseController {
         String totalFee = R.get("total_fee");
         //支付订单号（多个订单编号用逗号分割）
         String orderId = R.get("orderId");
-        logger.info("请求微信支付，支付金额：" + totalFee);
-        logger.info("请求微信支付，支付单号：" + orderId);
+        logger.info("请求微信支付，支付金额：{}", totalFee);
+        logger.info("请求微信支付，支付单号：{}", orderId);
         if (StrKit.isBlank(totalFee)) {
             return AppDataUtils.getMap(AppDataUtils.STATUS_INVALID, "支付金额不能为空", null, null);
         }
@@ -78,7 +78,7 @@ public class WeiXinApiController extends BaseController {
         }
         String openId = AppTokenUtils.findUser().getUserMember().getOpenId();
         String ip = IpKit.getRealIp(request);
-        logger.info("请求微信支付，获取客户端的真实ip：" + ip);
+        logger.info("请求微信支付，获取客户端的真实ip：{}", ip);
         if (!StrKit.isBlank(ip) && ip.split(",").length > 0) {
             ip = ip.split(",")[0];
         }
@@ -86,17 +86,17 @@ public class WeiXinApiController extends BaseController {
             ip = "127.0.0.1";
         }
         //支付金额
-        int price = (int) (Float.valueOf(totalFee) * 100);
+        int price = (int) (Float.parseFloat(totalFee) * 100);
         //商户系统内部订单号
         String outTradeNo = IdGen.uuid();//Long.toString(System.currentTimeMillis());
         //统一下单文档地址：https://pay.weixin.qq.com/wiki/doc/api/jsapi.php?chapter=9_1
         Map<String, String> params = new HashMap<>();
         //公众号标识
         params.put("appid", appid);
-        logger.info("请求微信支付appid:" + appid);
+        logger.info("请求微信支付appid:{}", appid);
         //商户号
         params.put("mch_id", partner);
-        logger.info("请求微信支付partner:" + partner);
+        logger.info("请求微信支付partner:{}", partner);
         //商品名称
         params.put("body", R.get("body"));
         //total_fee :订单总金额
@@ -105,28 +105,28 @@ public class WeiXinApiController extends BaseController {
         params.put("attach", orderId);
         //请求ip
         params.put("spbill_create_ip", ip);
-        logger.info("请求微信支付ip:" + ip);
+        logger.info("请求微信支付ip:{}", ip);
         //trade_type 交易类型
         params.put("trade_type", TradeType.JSAPI.name());
-        logger.info("请求微信支付trade_type:" + TradeType.JSAPI.name());
+        logger.info("请求微信支付trade_type:{}", TradeType.JSAPI.name());
         //nonce_str 随机串JSAPI、NATIVE、APP
         params.put("nonce_str", Long.toString(System.currentTimeMillis() / 1000));
         //notify_url 付款成功后的回调 地址
         params.put("notify_url", notify_url);
-        logger.info("请求微信支付notify_url:" + notify_url);
+        logger.info("请求微信支付notify_url:{}", notify_url);
         //用户openId
         params.put("openid", openId);
         params.put("out_trade_no", outTradeNo);
         //sign签名
         String sign = PaymentKit.createSign(params, paternerKey);
         params.put("sign", sign);
-        logger.info("请求微信支付sign:" + sign);
+        logger.info("请求微信支付sign:{}", sign);
         String xmlResult = PaymentApi.pushOrder(params);
         Map<String, String> result = PaymentKit.xmlToMap(xmlResult);
         String returnCode = result.get("return_code");
-        logger.info("请求支付returnCode:" + returnCode);
+        logger.info("请求支付returnCode:{}", returnCode);
         String returnMsg = result.get("return_msg");
-        logger.info("请求支付returnMsg:" + returnMsg);
+        logger.info("请求支付returnMsg:{}", returnMsg);
         //code 标记成功失败，默认0：成功，1：失败、用于alert，2：失败、用于confirm
         if (StrKit.isBlank(returnCode) || !"SUCCESS".equals(returnCode)) {
             return AppDataUtils.getMap(AppDataUtils.STATUS_INVALID, returnMsg, null, null);
@@ -135,7 +135,7 @@ public class WeiXinApiController extends BaseController {
         if (StrKit.isBlank(resultCode) || !"SUCCESS".equals(resultCode)) {
             return AppDataUtils.getMap(AppDataUtils.STATUS_INVALID, returnMsg, null, null);
         }
-        logger.info("notify_url:" + params.get("notify_url"));
+        logger.info("notify_url:{}", params.get("notify_url"));
         // 以下字段在return_code 和result_code都为SUCCESS的时候有返回
         String prepayId = result.get("prepay_id");
         Map<String, String> packageParams = new HashMap<>();
@@ -147,14 +147,13 @@ public class WeiXinApiController extends BaseController {
         String packageSign = PaymentKit.createSign(packageParams, paternerKey);
         packageParams.put("paySign", packageSign);
         String jsonStr = JsonUtils.toJson(packageParams);
-        logger.info("请求微信支付返回的json：" + jsonStr);
+        logger.info("请求微信支付返回的json：{}", jsonStr);
         return AppDataUtils.getMap(AppDataUtils.STATUS_OK, "请求支付成功", jsonStr, null);
     }
 
     /**
      * 获取微信信息(access_token,signature,timestamp,noncestr,appId)
-     * @param request
-     * @return
+     * @return Map<String, Object>
      */
     @ResponseBody
     @RequestMapping(value = "/{version}/weixin/info")
@@ -182,13 +181,13 @@ public class WeiXinApiController extends BaseController {
             //url = R.getRequest().getScheme()+"://"+ R.getRequest().getServerName()+R.getRequest().getRequestURI()+"?"+R.getRequest().getQueryString();
             //}
             url = url.split("#")[0];
-            logger.info("当前页的地址：" + url);
+            logger.info("当前页的地址：{}", url);
             //5、将参数排序并拼接字符串
             String str = "jsapi_ticket=" + jsapiTicket + "&noncestr=" + noncestr + "&timestamp=" + timestamp + "&url=" + url;
-            logger.info("参数拼接的字符串：" + str);
+            logger.info("参数拼接的字符串：{}", str);
             //6、将字符串进行sha1加密
             String signature = WeiXinUtils.SHA1(str);
-            logger.info("签名：" + signature);
+            logger.info("签名：{}", signature);
             Map<String, Object> data = new HashMap<>();
             data.put("timestamp", timestamp);
             data.put("nonceStr", noncestr);

@@ -47,7 +47,7 @@ public class AreaController extends BaseController {
 
     /**
      * 三级联动地区获取
-     * 2017-4-18  蔡龙
+     * 2017-4-18  cl
      *
      * @param response
      * @param parentId

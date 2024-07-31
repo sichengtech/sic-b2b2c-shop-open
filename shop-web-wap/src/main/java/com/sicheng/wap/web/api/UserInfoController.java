@@ -45,7 +45,7 @@ import java.util.*;
  *  <p>标题: UserInfoController</p>
  *  <p>描述: </p>
  *  <p>公司: 思程科技 www.sicheng.net</p>
- *  @author zhangjiali
+ *  @author zjl
  *  @version 2018年2月11日 下午3:27:23
  */
 @Controller
