@@ -789,8 +789,8 @@
                 <configuration>
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
-                    <meminitial>128m</meminitial>
-                    <maxmem>512m</maxmem>
+                    <meminitial>256m</meminitial>
+                    <maxmem>1024m</maxmem>
                     <showWarnings>false</showWarnings>
                 </configuration>
             </plugin>
@@ -932,6 +932,14 @@
                     <skipTests>false</skipTests>
                     <!-- 忽略单元测试失败,建议加上，否则如果单元测试失败就会直接中断运行 -->
                     <testFailureIgnore>true</testFailureIgnore>
+                    <!--
+                    在执行单元测试时指定使用ipv4的网络接口（不使用 ipv6）。
+                    MacOS系统需要这个配置，否则EhCache会报错误：net.sf.ehcache.CacheException: Can't assign requested address
+                    参考文章：
+                        https://www.modb.pro/db/216916
+                        https://www.cnblogs.com/blog411032/p/10534065.html
+                    -->
+                    <argLine>-Djava.net.preferIPv4Stack=true</argLine>
                 </configuration>
             </plugin>
 
