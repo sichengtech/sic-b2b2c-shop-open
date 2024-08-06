@@ -832,7 +832,7 @@
                     </packagingExcludes>
 
                     <webappDirectory>${project.build.directory}/${project.artifactId}</webappDirectory><!--
-					<webXml>${project.basedir}/target/jspweb.xml</webXml> -->
+                    <webXml>${project.basedir}/target/jspweb.xml</webXml> -->
                     <warName>${project.artifactId}</warName>
 
                     <!-- Maven多环境配置，第三部分，打war包时进行配置文件替换覆盖
