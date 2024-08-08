@@ -203,7 +203,7 @@ public class SmsAliyunSenderImpl implements SmsSender {
 	
 	/**
 	 * 将短信信息存入到短信日志表中 
-	 * @param rsp 阿里大于发送短信响应结果
+	 * @param sendSmsResponse 阿里大于发送短信响应结果
 	 * @param paramString 短信内容参数
 	 * @param templateCode 短信模板ID
 	 */
