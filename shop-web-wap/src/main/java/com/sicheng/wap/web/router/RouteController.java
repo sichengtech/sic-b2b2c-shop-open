@@ -37,16 +37,15 @@ public class RouteController extends BaseController {
     @ModelAttribute
     public void init(Model model) {
         model.addAttribute("ctx", R.getCtx());
-        model.addAttribute("ctxf", R.getCtx() + Global.getFrontPath());
-        model.addAttribute("ctxa", R.getCtx() + Global.getAdminPath());
-        model.addAttribute("ctxs", R.getCtx() + Global.getSellerPath());
-        model.addAttribute("ctxm", R.getCtx() + Global.getMemberPath());
-        model.addAttribute("ctxsso", R.getCtx() + Global.getSsoPath());
-        model.addAttribute("ctxw", R.getCtx() + Global.getWapPath());
-        model.addAttribute("ctxu", "/upload");
-
-        model.addAttribute("ctxStatic", "/static/static");
-        model.addAttribute("ctxfs", "/upload" + Global.getConfig("filestorage.dir"));
+        model.addAttribute("ctxf", Global.getConfig("ctx_front") + Global.getFrontPath());
+        model.addAttribute("ctxs", Global.getConfig("ctx_front") + Global.getSellerPath());
+        model.addAttribute("ctxm", Global.getConfig("ctx_front") + Global.getMemberPath());
+        model.addAttribute("ctxsso", Global.getConfig("ctx_front") + Global.getSsoPath());
+        model.addAttribute("ctxa", Global.getConfig("ctx_admin") + Global.getAdminPath());
+        model.addAttribute("ctxw", Global.getConfig("ctx_wap") + Global.getWapPath());
+        model.addAttribute("ctxu", Global.getConfig("ctx_upload") + Global.getUploadPath());
+        model.addAttribute("ctxStatic", Global.getConfig("ctx_static") + "/static");
+        model.addAttribute("ctxfs", Global.getConfig("ctx_upload") + Global.getUploadPath() + Global.getConfig("filestorage.dir"));
     }
 
     /**

@@ -7,7 +7,7 @@
 <%@ taglib prefix="fnc" uri="https://java.sicheng.net/jsp/jstl/fnc" %>
 <%@ taglib prefix="sys" uri="https://java.sicheng.net/jsp/jstl/sys" %>
 <c:set var="ctx" value="${pageContext.request.contextPath}"/>
-<c:set var="ctxa" value="${ctx}${fns:getAdminPath()}"/>
+<c:set var="ctxa" value="${ctx}${fns:getConfig('adminPath')}"/>
 <c:set var="ctxu" value="/upload"/>
 <c:set var="ctxStatic" value="/static/static"/>
 <c:set var="ctxfs" value="${ctxu}${fns:getConfig('filestorage.dir')}"/>

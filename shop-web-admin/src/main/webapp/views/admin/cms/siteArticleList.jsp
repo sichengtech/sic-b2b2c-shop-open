@@ -32,7 +32,7 @@
 			<%@ include file="../include/functionBtn.jsp"%>
 			<ul class="nav nav-tabs pull-right">
 				<li class="active"><a href="javaScript:;"> <i class="fa fa-user"></i> ${fns:fy("文章列表")}</a></li>
-				<li class=""><a href="<c:url value='${fns:getAdminPath()}/cms/article/form.do?id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>"><i class="fa fa-user"></i> <shiro:hasPermission name="cms:article:edit">${not empty article.id? fns:fy("文章修改"): fns:fy("文章添加")}</shiro:hasPermission><shiro:lacksPermission name="cms:article:view">${fns:fy("查看")}</shiro:lacksPermission></a></li>
+				<li class=""><a href="<c:url value='${fns:getConfig(\'adminPath\')}/cms/article/form.do?id=${article.id}&category.id=${article.category.id}'><c:param name='category.name' value='${article.category.name}'/></c:url>"><i class="fa fa-user"></i> <shiro:hasPermission name="cms:article:edit">${not empty article.id? fns:fy("文章修改"): fns:fy("文章添加")}</shiro:hasPermission><shiro:lacksPermission name="cms:article:view">${fns:fy("查看")}</shiro:lacksPermission></a></li>
 			</ul>
 		</header>
 		<sys:message content="${message}"/>

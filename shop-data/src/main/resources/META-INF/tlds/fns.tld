@@ -9,55 +9,6 @@
     <tlib-version>1.1</tlib-version>
     <short-name>fns</short-name>
     <uri>https://java.sicheng.net/jsp/jstl/fns</uri>
-    <!--	<function>-->
-    <!--		<description>获取网站域名</description>-->
-    <!--		<name>getDoMainPath</name>-->
-    <!--		<function-class>com.sicheng.common.config.Global</function-class>-->
-    <!--		<function-signature>java.lang.String getDoMainPath()</function-signature>-->
-    <!--		<example>${fns:getDoMainPath()}</example>-->
-    <!--	</function>-->
-    <function>
-        <description>获取管理后台的基础路径</description>
-        <name>getAdminPath</name>
-        <function-class>com.sicheng.common.config.Global</function-class>
-        <function-signature>java.lang.String getAdminPath()</function-signature>
-        <example>${fns:getAdminPath()}</example>
-    </function>
-    <function>
-        <description>获取商家后台的基础路径</description>
-        <name>getSellerPath</name>
-        <function-class>com.sicheng.common.config.Global</function-class>
-        <function-signature>java.lang.String getSellerPath()</function-signature>
-        <example>${fns:getSellerPath()}</example>
-    </function>
-    <function>
-        <description>获取会员中心的基础路径</description>
-        <name>getMemberPath</name>
-        <function-class>com.sicheng.common.config.Global</function-class>
-        <function-signature>java.lang.String getMemberPath()</function-signature>
-        <example>${fns:getMemberPath()}</example>
-    </function>
-    <function>
-        <description>获取前台的基础路径</description>
-        <name>getFrontPath</name>
-        <function-class>com.sicheng.common.config.Global</function-class>
-        <function-signature>java.lang.String getFrontPath()</function-signature>
-        <example>${fns:getFrontPath()}</example>
-    </function>
-    <function>
-        <description>获取SSO的基础路径</description>
-        <name>getSsoPath</name>
-        <function-class>com.sicheng.common.config.Global</function-class>
-        <function-signature>java.lang.String getSsoPath()</function-signature>
-        <example>${fns:getSsoPath()}</example>
-    </function>
-    <function>
-        <description>获取微信商城的基础路径</description>
-        <name>getWapPath</name>
-        <function-class>com.sicheng.common.config.Global</function-class>
-        <function-signature>java.lang.String getWapPath()</function-signature>
-        <example>${fns:getWapPath()}</example>
-    </function>
 
     <function>
         <description>获取网站前台URL的后缀(如*.htm)</description>

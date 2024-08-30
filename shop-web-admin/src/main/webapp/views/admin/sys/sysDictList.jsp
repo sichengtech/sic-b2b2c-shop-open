@@ -90,7 +90,7 @@
 								<a href="${ctxa}/sys/dict/form.do?id=${dict.id}" class="btn btn-info btn-sm">
 									<i class="fa fa-edit"></i> ${fns:fy("修改")}
 								 </a>
-								 <a class="btn btn-info btn-sm" href="<c:url value='${fns:getAdminPath()}/sys/dict/form.do?type=${dict.type}&sort=${dict.sort+10}'><c:param name='description' value='${dict.description}'/></c:url>">
+								 <a class="btn btn-info btn-sm" href="<c:url value='${fns:getConfig(\'adminPath\')}/sys/dict/form.do?type=${dict.type}&sort=${dict.sort+10}'><c:param name='description' value='${dict.description}'/></c:url>">
 									<i class="fa fa-edit"></i> ${fns:fy("添加键值")}
 								 </a>
 								</shiro:hasPermission>
