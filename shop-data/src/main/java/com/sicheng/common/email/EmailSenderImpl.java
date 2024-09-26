@@ -17,6 +17,7 @@ import com.sicheng.admin.sys.entity.SysEmailServer;
 import com.sicheng.common.persistence.Page;
 import com.sicheng.common.persistence.wrapper.Wrapper;
 import com.sicheng.common.utils.StringUtils;
+import com.sun.mail.util.MailSSLSocketFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -187,8 +188,17 @@ public class EmailSenderImpl implements EmailSender {
 
             //是否使用SSL安全连接，0否，1是
             if("1".equals(safe)) {
+                //MailSSLSocketFactory是提高发送邮件兼容性的逻辑。
+                //如果你连接一些知名大厂的SMTP服务器发送邮件，一般都是很顺利的。 但是，如果你连接一些小厂商的SMTP服务器或企业自建的SMTP服务器，可能会出现一些问题。
+                //例如：服务端的证书不被信任，导致发送邮件失败。  比如证书过期了，再比如证书是xx.abc.com域名的通配符证书但smtp域名是mail.xx.abc.com等于没证书。
+                //所以，MailSSLSocketFactory就是为了解决这个问题的。目标是让 java邮件客户端 信任所有SSL证书，就可提高发送邮件兼容性，遇到奇葩的smtp服务器也能成功发送。
+                MailSSLSocketFactory sslfac = new MailSSLSocketFactory();
+                sslfac.setTrustAllHosts(true); //信任所有SSL证书
+
                 // 设置使用ssl
-                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.setProperty("mail.smtp.ssl.enable", "true");
+//                props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+                props.put("mail.smtp.ssl.socketFactory", sslfac);
                 props.put("mail.smtp.ssl.protocols", "TLSv1.2");
             }
 

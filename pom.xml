@@ -521,12 +521,28 @@
             <version>${freemarker.version}</version>
         </dependency>
 
-        <!-- email -->
+        <!--
+        本系统的java邮件客户端使用的是Spring Framework中的JavaMailSender，而Spring Framework中的JavaMailSender又依赖于JavaMail API。
+        关于JavaMail API，以下都是JavaMail API的jar包，它们jar内的内容高度相似。经过比较，最终选择了com.sun.mail:javax.mail。
+            com.sun.mail:javax.mail
+            com.sun.mail:mailapi
+            com.sun.mail:smtp
+            javax.mail:mail
+            javax.mail:javax.mail-api
+            jakarta.mail:jakarta.mail
+            jakarta.mail:jakarta.mail-api
+        问：为什么淘汰了com.sun.mail:mailapi？
+        答：它总体满意但它会在控制台输出一行红警告信息，所以没有选择它。
+        问：什么是JavaMailSender？
+        答：JavaMailSender是Spring Framework中的一个接口，用于发送电子邮件。它是Spring对JavaMail API的封装，提供了更简单和更方便的方式来发送邮件。
+           JavaMailSender接口定义了一组发送邮件的方法，包括发送简单文本邮件、发送带附件的邮件、发送HTML格式的邮件等。它隐藏了底层JavaMail API的复杂性，使得在Spring应用中发送邮件变得更加容易。
+         -->
         <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>mail</artifactId>
-            <version>1.4.7</version>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
         </dependency>
+
         <dependency>
             <groupId>javax.activation</groupId>
             <artifactId>activation</artifactId>

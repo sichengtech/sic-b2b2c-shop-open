@@ -1,4 +1,4 @@
-2024-08-30 13:56:40 Commit Log:
- - 同步自fdp50-上下文Path可配置，增加模块路径的概念。
+2024-09-26 20:56:40 Commit Log:
+ - MailSSLSocketFactory是提高发送邮件兼容性的逻辑。
 
 
